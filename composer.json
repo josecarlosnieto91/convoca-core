@@ -1,0 +1,14 @@
+{
+    "name": "biodevas/common",
+    "description": "Biodevas Common Utilities",
+    "type": "wordpress-plugin",
+    "require": {
+        "dompdf/dompdf": "^3.0"
+    },
+    "config": {
+        "platform": {
+            "php": "8.1"
+        },
+        "allow-plugins": false
+    }
+}

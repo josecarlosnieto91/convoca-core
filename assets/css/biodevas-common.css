@@ -1,0 +1,553 @@
+/**
+ * Biodevas Common CSS (Shared across ecosystem)
+ * Version: 1.0.0
+ * Note: Designed to work alongside Biodevas Theme (FSE).
+ */
+
+/* ── Basic Normalize ──────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* ── Accessibility ──────────────────────────── */
+.screen-reader-text {
+    border: 0;
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    word-wrap: normal !important;
+}
+
+.biodevas-badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+/* Badge colour variants */
+.biodevas-badge--confirmed { background: #e6f7e6; color: #2d5a27; }
+.biodevas-badge--success { background: #e6f7e6; color: #2d5a27; }
+.biodevas-badge--pending { background: #fff3e0; color: #cc6e00; }
+.biodevas-badge--warning { background: #fff3e0; color: #cc6e00; }
+.biodevas-badge--waitlist { background: #f3e8ff; color: #6b21a8; }
+.biodevas-badge--cancelled { background: #fef2f2; color: #991b1b; }
+.biodevas-badge--error { background: #fef2f2; color: #991b1b; }
+.biodevas-badge--danger { background: #fef2f2; color: #991b1b; }
+.biodevas-badge--info { background: #e0f2fe; color: #0369a1; }
+.biodevas-badge--lugg { background: #2d5a27; color: #fff; }
+
+/* ── Typography & Globals ─────────────────────── */
+.biodevas-text-center { text-align: center; }
+.biodevas-small { font-size: 0.85rem; color: #777; margin-top: 0.3rem; }
+.biodevas-mt-small { margin-top: 0.75rem; }
+.biodevas-mt-medium { margin-top: 1.5rem; }
+.biodevas-mb-small { margin-bottom: 0.75rem; }
+.biodevas-mb-medium { margin-bottom: 1.5rem; }
+.biodevas-margin-y { margin: 1.5rem 0; }
+
+/* ── Flex & Grid ──────────────────────────────── */
+.biodevas-flex-start {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.biodevas-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+@media (max-width: 600px) {
+    .biodevas-grid-2 { grid-template-columns: 1fr; }
+}
+
+.biodevas-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+@media (max-width: 768px) {
+    .biodevas-grid-3 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+    .biodevas-grid-3 { grid-template-columns: 1fr; }
+}
+
+/* ── Boxes ────────────────────────────────────── */
+.biodevas-box {
+    background: #faf8f6;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+}
+.biodevas-box-warning {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+/* ── Success screen ───────────────────────────── */
+.biodevas-success-screen {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    margin: 2rem auto;
+    max-width: 480px;
+}
+.biodevas-success-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+/* ── Form Fields ──────────────────────────────── */
+.biodevas-field {
+    margin-bottom: 1rem;
+}
+
+.biodevas-field label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+    color: var(--wp--preset--color--violeta, #320028);
+}
+
+.biodevas-field input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+.biodevas-field select,
+.biodevas-field textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--wp--preset--color--gris-medio, #e0e0e0);
+    border-radius: var(--wp--custom--radius--small, 8px);
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: border-color var(--wp--custom--transition, 0.3s ease), box-shadow var(--wp--custom--transition, 0.3s ease);
+    background: var(--wp--preset--color--blanco, #fff);
+    color: var(--wp--preset--color--antracita, #1a1a1a);
+}
+
+.biodevas-field input:focus,
+.biodevas-field select:focus,
+.biodevas-field textarea:focus {
+    outline: none;
+    border-color: var(--wp--preset--color--naranja, #ff8700);
+    box-shadow: 0 0 0 4px rgba(255, 135, 0, 0.12);
+}
+
+.biodevas-field input:focus-visible,
+.biodevas-field select:focus-visible,
+.biodevas-field textarea:focus-visible {
+    outline: 3px solid var(--wp--preset--color--amarillo, #ffab00);
+    outline-offset: 2px;
+}
+
+/* File Upload */
+.biodevas-field input[type="file"] {
+    padding: 0.5rem;
+    border: 2px dashed var(--wp--preset--color--gris-medio, #e0e0e0);
+    border-radius: var(--wp--custom--radius--small, 8px);
+    cursor: pointer;
+    width: 100%;
+}
+.biodevas-field input[type="file"]:hover {
+    border-color: var(--wp--preset--color--naranja, #ff8700);
+    background: rgba(255, 135, 0, 0.03);
+}
+
+/* Error States */
+.biodevas-error-msg {
+    color: var(--wp--preset--color--naranja-intenso, #ff500a);
+    font-size: 0.85rem;
+    margin-top: 0.2rem;
+    display: none;
+}
+
+.biodevas-field.has-error input,
+.biodevas-field.has-error select,
+.biodevas-field.has-error textarea {
+    border-color: var(--wp--preset--color--naranja-intenso, #ff500a);
+}
+.biodevas-field.has-error .biodevas-error-msg {
+    display: block;
+}
+
+/* ── Check Groups ─────────────────────────────── */
+.biodevas-check-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: 0.75rem 0;
+}
+
+.biodevas-check-group input[type="checkbox"] {
+    margin-top: 4px;
+    accent-color: var(--wp--preset--color--naranja, #ff8700);
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.biodevas-check-group input[type="checkbox"]:focus-visible {
+    outline: 3px solid var(--wp--preset--color--amarillo, #ffab00);
+    outline-offset: 2px;
+}
+
+.biodevas-check-group label {
+    flex: 1;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    cursor: pointer;
+}
+
+.biodevas-check-group a {
+    color: var(--wp--preset--color--naranja, #ff8700);
+}
+.biodevas-check-group a:hover {
+    color: var(--wp--preset--color--naranja-intenso, #ff500a);
+}
+
+.biodevas-checkbox-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    padding: 12px;
+    border: 1px solid var(--wp--preset--color--gris-medio, #e0e0e0);
+    border-radius: var(--wp--custom--radius--small, 8px);
+    background: var(--wp--preset--color--gris-piedra, #f4f4f4);
+    transition: all 0.2s ease;
+}
+.biodevas-checkbox-box:hover {
+    border-color: var(--wp--preset--color--naranja, #ff8700);
+}
+
+/* ── Buttons ──────────────────────────────────── */
+.biodevas-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--wp--custom--radius--pill, 50px);
+    font-family: var(--wp--preset--font-family--display, 'Outfit', sans-serif);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    text-decoration: none;
+    border: 2px solid transparent;
+    transition: all var(--wp--custom--transition, 0.3s ease);
+    line-height: 1;
+}
+
+.biodevas-btn--full { width: 100%; margin-top: 0.5rem; }
+
+.biodevas-btn-primary {
+    background: var(--wp--preset--color--naranja, #ff8700);
+    color: var(--wp--preset--color--blanco, #fff);
+    border-color: var(--wp--preset--color--naranja, #ff8700);
+}
+.biodevas-btn-primary:hover {
+    background: var(--wp--preset--color--naranja-intenso, #ff500a);
+    border-color: var(--wp--preset--color--naranja-intenso, #ff500a);
+    color: var(--wp--preset--color--blanco, #fff);
+}
+
+.biodevas-btn-secondary {
+    background: var(--wp--preset--color--amarillo, #ffab00);
+    border-color: var(--wp--preset--color--amarillo, #ffab00);
+    color: var(--wp--preset--color--violeta, #320028);
+}
+.biodevas-btn-secondary:hover {
+    background: #e69a00;
+    border-color: #e69a00;
+}
+
+.biodevas-btn-outline {
+    background: transparent;
+    color: var(--wp--preset--color--naranja, #ff8700);
+    border-color: var(--wp--preset--color--naranja, #ff8700);
+}
+.biodevas-btn-outline:hover {
+    background: var(--wp--preset--color--naranja, #ff8700);
+    color: var(--wp--preset--color--blanco, #fff);
+}
+
+.biodevas-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.biodevas-btn--full {
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.biodevas-btn--danger {
+    background: #dc3232;
+    border-color: #dc3232;
+    color: #fff;
+}
+.biodevas-btn--danger:hover {
+    background: #b91c1c;
+    border-color: #b91c1c;
+}
+
+.biodevas-btn-outline.biodevas-btn--danger {
+    background: transparent;
+    color: #dc3232;
+    border-color: #dc3232;
+}
+.biodevas-btn-outline.biodevas-btn--danger:hover {
+    background: #dc3232;
+    color: #fff;
+}
+
+/* ── Diagnostic Panel ───────────────────────── */
+.biodevas-diagnostic {
+    background: #fff;
+    border: 1px solid var(--wp--preset--color--gris-medio, #c3c4c7);
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    margin-top: 20px;
+    border-radius: var(--wp--custom--radius--small, 8px);
+    overflow: hidden;
+}
+
+.biodevas-diagnostic-header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--wp--preset--color--gris claros, #eee);
+    background: var(--wp--preset--color--gris claros, #fafafa);
+}
+
+.biodevas-diagnostic-header--success { background: #f0fdf4; border-left: 4px solid #46b450; }
+.biodevas-diagnostic-header--warning { background: #fefce8; border-left: 4px solid #ffb900; }
+.biodevas-diagnostic-header--error { background: #fef2f2; border-left: 4px solid #dc3232; }
+
+.biodevas-diagnostic-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: 20px;
+    color: #fff !important;
+}
+
+
+
+/* ── Alert variants ──────────────────────────── */
+.biodevas-alert--info {
+    background: #e8f0fe;
+    border-left: 4px solid #72aee6;
+    color: #1a3a5c;
+}
+.biodevas-alert--danger {
+    background: #fef2f2;
+    border-left: 4px solid #dc2626;
+    color: #991b1b;
+}
+.biodevas-alert--warning {
+    background: #fffbeb;
+    border-left: 4px solid #f59e0b;
+    color: #92400e;
+}
+.biodevas-alert--ok,
+.biodevas-alert--success {
+    background: #f0fdf4;
+    border-left: 4px solid #16a34a;
+    color: #166534;
+}
+
+.biodevas-diagnostic-summary h3 {
+    margin: 0;
+    font-size: 1.4em;
+    color: var(--wp--preset--color--antracita, #1a1a1a);
+}
+
+.biodevas-diagnostic-summary p {
+    margin: 5px 0 0;
+    color: #666;
+}
+
+.biodevas-diagnostic-results {
+    padding: 0;
+}
+
+.biodevas-diagnostic-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--wp--preset--color--gris claros, #f0f0f1);
+}
+
+.biodevas-diagnostic-row:last-child {
+    border-bottom: none;
+}
+
+.biodevas-diagnostic-severity {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 14px;
+}
+
+.biodevas-diagnostic-content {
+    flex: 1;
+}
+
+.biodevas-diagnostic-message {
+    display: block;
+    font-size: 0.95em;
+    color: #444;
+    margin-top: 2px;
+}
+
+.biodevas-diagnostic-fix {
+    display: block;
+    font-size: 0.85em;
+    color: #666;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+/* ── Rating Stars ──────────────────────────────── */
+.biodevas-rating-stars {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.biodevas-rating-stars input[type="radio"] {
+    display: none;
+}
+
+.biodevas-rating-star {
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.biodevas-rating-star:hover,
+.biodevas-rating-star.is-checked,
+.biodevas-rating-star:has(input:checked) {
+    transform: scale(1.2);
+}
+
+.biodevas-rating-star .biodevas-star {
+    font-size: 1.5rem;
+    color: var(--wp--preset--color--gris-medio, #e0e0e0);
+    transition: color 0.15s ease;
+}
+
+.biodevas-rating-star:hover .biodevas-star,
+.biodevas-rating-star:has(input:checked) .biodevas-star {
+    color: var(--wp--preset--color--amarillo, #ffab00);
+}
+
+/* ── Email Preview Layout ──────────────────── */
+.biodevas-email-preview-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 10px;
+}
+.biodevas-email-editor { grid-column: 1; }
+.biodevas-email-preview { grid-column: 2; }
+
+.biodevas-email-preview-frame {
+    background: #fff;
+    border: 1px solid var(--wp--preset--color--gris-medio, #e0e0e0);
+    border-radius: var(--wp--custom--radius--small, 8px);
+    padding: 20px;
+    min-height: 250px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+    overflow-y: auto;
+    word-wrap: break-word;
+}
+.biodevas-email-preview-frame h1,
+.biodevas-email-preview-frame h2,
+.biodevas-email-preview-frame h3 {
+    margin-top: 0;
+    color: #1a1a1a;
+}
+@media (max-width: 768px) {
+    .biodevas-email-preview-wrap { grid-template-columns: 1fr; }
+    .biodevas-email-editor,
+    .biodevas-email-preview { grid-column: 1; }
+}
+
+/* ── Chips Component ─────────────────────────── */
+.bdv-chips-container {
+    display: flex; flex-wrap: wrap; gap: 6px; padding: 8px;
+    border: 2px solid var(--wp--preset--color--gris-medio, #e0e0e0);
+    border-radius: var(--wp--custom--radius--small, 8px);
+    min-height: 42px; cursor: text; background: #fff;
+}
+.bdv-chips-container:focus-within {
+    border-color: var(--wp--preset--color--naranja, #ff8700);
+    box-shadow: 0 0 0 4px rgba(255,135,0,0.12);
+}
+.bdv-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--wp--preset--color--violeta, #320028);
+    color: #fff; padding: 4px 10px; border-radius: 20px;
+    font-size: 12px; font-weight: 600; line-height: 1.4;
+}
+.bdv-chip-remove {
+    cursor: pointer; font-size: 14px; line-height: 1;
+    opacity: 0.7; transition: opacity 0.15s;
+}
+.bdv-chip-remove:hover { opacity: 1; }
+.bdv-chips-input {
+    border: none; outline: none; flex: 1; min-width: 120px;
+    font-size: 13px; padding: 2px; background: transparent;
+}
+.bdv-chips-dropdown {
+    position: absolute; z-index: 9999; background: #fff;
+    border: 1px solid #e0e0e0; border-radius: 8px;
+    max-height: 200px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: none; width: 100%;
+}
+.bdv-chips-dropdown-item {
+    padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f1;
+    font-size: 13px;
+}
+.bdv-chips-dropdown-item:hover { background: #f0f7ff; }
+
+/* ── Print & Accessibility ────────────────────── */
+@media print {
+    .biodevas-btn { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}

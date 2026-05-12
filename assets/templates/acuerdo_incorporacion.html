@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Acuerdo de Incorporación</title>
+    <style>
+        body { font-family: "Helvetica", "Arial", sans-serif; font-size: 14px; line-height: 1.6; color: #333; }
+        h1 { color: #2c5c36; font-size: 22px; border-bottom: 2px solid #2c5c36; padding-bottom: 10px; margin-bottom: 20px; }
+        h2 { font-size: 16px; color: #444; margin-top: 25px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .box { border: 1px solid #ccc; padding: 15px; background: #f9f9f9; margin-bottom: 20px; }
+        .content { text-align: justify; margin-bottom: 20px; }
+        .footer { margin-top: 40px; font-size: 11px; color: #777; border-top: 1px solid #eee; padding-top: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Acuerdo de Incorporación al Voluntariado</h1>
+    
+    <div class="box">
+        <h2>Datos Personales</h2>
+        <p><strong>Nombre y Apellidos:</strong> {{nombre}}</p>
+        <p><strong>DNI/NIE:</strong> {{dni}}</p>
+        <p><strong>Fecha de Incorporación:</strong> {{fecha_incorporacion}}</p>
+    </div>
+
+    {{dynamic_fields}}
+
+    <div class="content">
+        <h2>Declaración Responsable</h2>
+        {{declaracion}}
+    </div>
+    
+    <div class="content">
+        <h2>Condiciones y Obligaciones</h2>
+        <p>El/la voluntario/a se compromete a respetar los fines y la normativa de la asociación, así como a cumplir los compromisos adquiridos.</p>
+        <p>La asociación se compromete a dotar de los medios necesarios para la labor voluntaria, así como de un seguro pertinente durante el desarrollo de las actividades aprobadas.</p>
+    </div>
+
+    <!-- FIRMA DIGITAL SERÁ AÑADIDA POR LA CLASE BDV_Signature -->
+</body>
+</html>
