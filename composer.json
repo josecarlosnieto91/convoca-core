@@ -12,6 +12,9 @@
         "allow-plugins": false
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.5"
+        "phpunit/phpunit": "^10.5",
+        "phpstan/phpstan": "^2.1",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "wp-coding-standards/wpcs": "^3.1"
     }
 }
