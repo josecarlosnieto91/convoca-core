@@ -6,6 +6,7 @@
  * Author: Jose Carlos Nieto Ramos
  * Author URI: https://example.com
  * Version: 2.1.2
+
  */
 
 
@@ -363,7 +364,7 @@ function convoca_common_enqueue_assets(): void {
         true
     );
 }
-add_action('wp_enqueue_scripts', 'Biodevas\\Common\\biodevas_common_enqueue_assets');
+add_action('wp_enqueue_scripts', 'Convoca\\Core\\convoca_common_enqueue_assets');
 
 // Enqueue common assets (Admin)
 function convoca_common_enqueue_admin_assets(): void {
@@ -378,7 +379,7 @@ function convoca_common_enqueue_admin_assets(): void {
         true
     );
 }
-add_action('admin_enqueue_scripts', 'Biodevas\\Common\\biodevas_common_enqueue_admin_assets');
+add_action('admin_enqueue_scripts', 'Convoca\\Core\\convoca_common_enqueue_admin_assets');
 
 /* ── Admin Appearance (Prompts 19, 20) ────────────────── */
 
@@ -443,12 +444,12 @@ function convoca_remove_submitdiv(): void
         remove_meta_box('submitdiv', $cpt, 'side');
     }
 }
-add_action('admin_head', 'Biodevas\\Common\\biodevas_remove_submitdiv');
+add_action('admin_head', 'Convoca\\Core\\biodevas_remove_submitdiv');
 
 /**
  * Customize the "New" admin bar menu to point to custom editors.
  */
-add_action('admin_bar_menu', 'Biodevas\\Common\\biodevas_customize_new_menu', 999);
+add_action('admin_bar_menu', 'Convoca\\Core\\biodevas_customize_new_menu', 999);
 
 function convoca_customize_new_menu(\WP_Admin_Bar $wp_admin_bar): void
 {
@@ -832,7 +833,7 @@ function convoca_build_metrics(): array
 add_action('rest_api_init', function () {
     register_rest_route('biodevas/v1', '/admin/metrics', [
         'methods'             => 'GET',
-        'callback'            => 'Biodevas\\Common\\assoc_rest_metrics',
+        'callback'            => 'Convoca\\Core\\assoc_rest_metrics',
         'permission_callback' => function () {
             return current_user_can('manage_options');
         },
