@@ -73,11 +73,11 @@ register_activation_hook(__FILE__, function (): void {
     // Ensure new granular capabilities are assigned to admin role
     $admin_role = get_role('administrator');
     if ($admin_role) {
-        if (!$admin_role->has_cap('manage_biodevas_templates')) {
-            $admin_role->add_cap('manage_biodevas_templates');
+        if (!$admin_role->has_cap('manage_convoca_templates')) {
+            $admin_role->add_cap('manage_convoca_templates');
         }
-        if (!$admin_role->has_cap('manage_biodevas_logs')) {
-            $admin_role->add_cap('manage_biodevas_logs');
+        if (!$admin_role->has_cap('manage_convoca_logs')) {
+            $admin_role->add_cap('manage_convoca_logs');
         }
     }
 });
@@ -113,15 +113,15 @@ add_action('plugins_loaded', function () {
     if (is_admin()) {
         $admin_role = get_role('administrator');
         if ($admin_role) {
-            if (!$admin_role->has_cap('manage_biodevas_templates')) $admin_role->add_cap('manage_biodevas_templates');
-            if (!$admin_role->has_cap('manage_biodevas_logs')) $admin_role->add_cap('manage_biodevas_logs');
+            if (!$admin_role->has_cap('manage_convoca_templates')) $admin_role->add_cap('manage_convoca_templates');
+            if (!$admin_role->has_cap('manage_convoca_logs')) $admin_role->add_cap('manage_convoca_logs');
         }
         Admin_Templates::init();
         new Admin_Setup_Wizard();
         new Admin_Backup();
-        add_filter('screen_options_show_screen', 'Convoca\Core\biodevas_hide_screen_options', 10, 2);
-        add_filter('admin_footer_text', 'Convoca\Core\biodevas_admin_footer', 999);
-        add_filter('update_footer', 'Convoca\Core\biodevas_admin_footer_version', 999);
+        add_filter('screen_options_show_screen', 'Convoca\Core\convoca_hide_screen_options', 10, 2);
+        add_filter('admin_footer_text', 'Convoca\Core\convoca_admin_footer', 999);
+        add_filter('update_footer', 'Convoca\Core\convoca_admin_footer_version', 999);
         add_action('admin_head', 'Convoca\Core\convoca_remove_help_tab');
         add_action('admin_bar_menu', 'Convoca\Core\convoca_add_wizard_link', 999);
     }
@@ -197,7 +197,7 @@ function convoca_health_page(): void
     echo '<div class="wrap">';
     echo '<h1>🔍 ' . esc_html__('Salud del Sistema Biodevas', 'convoca-core') . '</h1>';
     echo '<p>' . esc_html__('Diagnóstico consolidado de todos los plugins del ecosistema.', 'convoca-core') . '</p>';
-    echo '<p><a href="' . esc_url(add_query_arg('force', '1')) . '" class="biodevas-btn biodevas-btn-outline">🔄 ' . esc_html__('Forzar comprobación', 'convoca-core') . '</a></p>';
+    echo '<p><a href="' . esc_url(add_query_arg('force', '1')) . '" class="convoca-btn convoca-btn-outline">🔄 ' . esc_html__('Forzar comprobación', 'convoca-core') . '</a></p>';
     echo '<hr>';
 
     $all_checks = [];
@@ -275,7 +275,7 @@ function convoca_health_page(): void
     // ── Common self-check ──
     $all_checks[] = ['title' => 'Biodevas Common — Versión', 'status' => 'ok', 'message' => 'v' . BDV_COMMON_VERSION];
     global $wpdb;
-    $tables = ['biodevas_logs', 'biodevas_locks', 'biodevas_webhook_retries'];
+    $tables = ['convoca_logs', 'convoca_locks', 'convoca_webhook_retries'];
     foreach ($tables as $t) {
         $exists = $wpdb->get_var("SHOW TABLES LIKE '{$wpdb->prefix}{$t}'") === $wpdb->prefix . $t;
         $all_checks[] = [
@@ -291,7 +291,7 @@ function convoca_health_page(): void
 }
 
 // Notifications list page
-add_action('admin_menu', 'Convoca\Core\biodevas_notifications_menu');
+add_action('admin_menu', 'Convoca\Core\convoca_notifications_menu');
 function convoca_notifications_menu(): void
 {
     add_submenu_page(
@@ -300,7 +300,7 @@ function convoca_notifications_menu(): void
         __('Notificaciones', 'convoca-core'),
         'manage_options',
         'bdv-notificaciones',
-        'Convoca\Core\biodevas_notifications_page'
+        'Convoca\Core\convoca_notifications_page'
     );
 }
 
@@ -351,14 +351,14 @@ function convoca_notifications_page(): void
 function convoca_common_enqueue_assets(): void {
     wp_enqueue_style(
         'convoca-core',
-        BDV_COMMON_URL . 'assets/css/biodevas-common.css',
+        BDV_COMMON_URL . 'assets/css/convoca-common.css',
         [],
         BDV_COMMON_VERSION
     );
 
     wp_enqueue_script(
-        'biodevas-common-js',
-        BDV_COMMON_URL . 'assets/js/biodevas-common.js',
+        'convoca-common-js',
+        BDV_COMMON_URL . 'assets/js/convoca-common.js',
         [],
         BDV_COMMON_VERSION,
         true
@@ -369,11 +369,11 @@ add_action('wp_enqueue_scripts', 'Convoca\\Core\\convoca_common_enqueue_assets')
 // Enqueue common assets (Admin)
 function convoca_common_enqueue_admin_assets(): void {
     // Also load the CSS on admin
-    biodevas_common_enqueue_assets();
+    convoca_common_enqueue_assets();
 
     wp_enqueue_script(
-        'biodevas-common-admin-js',
-        BDV_COMMON_URL . 'assets/js/biodevas-common-admin.js',
+        'convoca-common-admin-js',
+        BDV_COMMON_URL . 'assets/js/convoca-common-admin.js',
         [],
         BDV_COMMON_VERSION,
         true
@@ -388,8 +388,8 @@ add_action('admin_enqueue_scripts', 'Convoca\\Core\\convoca_common_enqueue_admin
  */
 function convoca_hide_screen_options(bool $show_screen, \WP_Screen $screen): bool
 {
-    $biodevas_slugs = ['bdv-', 'bde-', 'bdg-', 'cst-'];
-    foreach ($biodevas_slugs as $prefix) {
+    $convoca_slugs = ['bdv-', 'bde-', 'bdg-', 'cst-'];
+    foreach ($convoca_slugs as $prefix) {
         if (str_contains($screen->id, $prefix) || str_contains($screen->base ?? '', $prefix)) {
             return false;
         }
@@ -405,7 +405,7 @@ function convoca_admin_footer(string $text): string
     return sprintf(
         '© %d <a href="%s" target="_blank">Biodevas</a> — %s',
         wp_date('Y'),
-        'https://biodevas.org',
+        'https://convoca.app',
         __('Plataforma de gestión de la asociación.', 'convoca-core')
     );
 }
@@ -425,8 +425,8 @@ function convoca_remove_help_tab(): void
 {
     $screen = get_current_screen();
     if (!$screen) return;
-    $biodevas_slugs = ['bdv-', 'bde-', 'bdg-', 'cst-'];
-    foreach ($biodevas_slugs as $prefix) {
+    $convoca_slugs = ['bdv-', 'bde-', 'bdg-', 'cst-'];
+    foreach ($convoca_slugs as $prefix) {
         if (str_contains($screen->id, $prefix) || str_contains($screen->base ?? '', $prefix)) {
             $screen->remove_help_tabs();
             return;
@@ -444,12 +444,12 @@ function convoca_remove_submitdiv(): void
         remove_meta_box('submitdiv', $cpt, 'side');
     }
 }
-add_action('admin_head', 'Convoca\\Core\\biodevas_remove_submitdiv');
+add_action('admin_head', 'Convoca\\Core\\convoca_remove_submitdiv');
 
 /**
  * Customize the "New" admin bar menu to point to custom editors.
  */
-add_action('admin_bar_menu', 'Convoca\\Core\\biodevas_customize_new_menu', 999);
+add_action('admin_bar_menu', 'Convoca\\Core\\convoca_customize_new_menu', 999);
 
 function convoca_customize_new_menu(\WP_Admin_Bar $wp_admin_bar): void
 {
@@ -583,7 +583,7 @@ add_action('admin_post_bdg_export_payments_pdf', function () {
         }
     }
 
-    biodevas_export_pdf(__('Listado de Pagos', 'convoca-core'), $headers, $rows, 'pagos-biodevas');
+    convoca_export_pdf(__('Listado de Pagos', 'convoca-core'), $headers, $rows, 'pagos-convoca');
 });
 
 /**
@@ -591,7 +591,7 @@ add_action('admin_post_bdg_export_payments_pdf', function () {
  */
 function convoca_logs_page(): void
 {
-    if (!current_user_can('manage_biodevas_logs') && !current_user_can('manage_options')) {
+    if (!current_user_can('manage_convoca_logs') && !current_user_can('manage_options')) {
         wp_die(__('No tienes permisos.', 'convoca-core'));
     }
     require_once __DIR__ . '/admin/class-admin-logs-list.php';
@@ -665,8 +665,8 @@ function convoca_dashboard_page(): void
     <div class="wrap">
         <h1>📊 <?php esc_html_e('Panel de Control Biodevas', 'convoca-core'); ?></h1>
         <p>
-            <a href="<?php echo esc_url(add_query_arg('refresh', '1')); ?>" class="biodevas-btn biodevas-btn-outline">🔄 <?php esc_html_e('Actualizar datos', 'convoca-core'); ?></a>
-            <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=bdv_generate_memory'), 'bdv_generate_memory')); ?>" class="biodevas-btn biodevas-btn-primary" style="margin-left:8px;">📄 <?php esc_html_e('Generar memoria PDF', 'convoca-core'); ?></a>
+            <a href="<?php echo esc_url(add_query_arg('refresh', '1')); ?>" class="convoca-btn convoca-btn-outline">🔄 <?php esc_html_e('Actualizar datos', 'convoca-core'); ?></a>
+            <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=bdv_generate_memory'), 'bdv_generate_memory')); ?>" class="convoca-btn convoca-btn-primary" style="margin-left:8px;">📄 <?php esc_html_e('Generar memoria PDF', 'convoca-core'); ?></a>
         </p>
 
         <div class="bdv-analytics-cards">
@@ -829,9 +829,9 @@ function convoca_build_metrics(): array
 }
 
 
-/* ── REST endpoint: /biodevas/v1/admin/metrics ── */
+/* ── REST endpoint: /convoca/v1/admin/metrics ── */
 add_action('rest_api_init', function () {
-    register_rest_route('biodevas/v1', '/admin/metrics', [
+    register_rest_route('convoca/v1', '/admin/metrics', [
         'methods'             => 'GET',
         'callback'            => 'Convoca\\Core\\assoc_rest_metrics',
         'permission_callback' => function () {

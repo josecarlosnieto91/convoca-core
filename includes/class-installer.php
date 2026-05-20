@@ -22,8 +22,8 @@ class Installer
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
 
-        // 1. Centralized logs (wp_biodevas_logs).
-        $table_logs = $wpdb->prefix . 'biodevas_logs';
+        // 1. Centralized logs (wp_convoca_logs).
+        $table_logs = $wpdb->prefix . 'convoca_logs';
 
         $sql_logs = "CREATE TABLE $table_logs (
             id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -57,9 +57,9 @@ class Installer
 
         if (!$table_exists) {
             if (!empty($wpdb->last_error)) {
-                Logger::error('Failed to create biodevas_logs table: ' . $wpdb->last_error, 'System');
+                Logger::error('Failed to create convoca_logs table: ' . $wpdb->last_error, 'System');
             } else {
-                Logger::error('Failed to create biodevas_logs table: unknown error', 'System');
+                Logger::error('Failed to create convoca_logs table: unknown error', 'System');
             }
         } else {
             // Invalidate logger cache now that the table exists
@@ -68,8 +68,8 @@ class Installer
 
         update_option('bdv_common_db_version', BDV_COMMON_DB_VERSION);
 
-        // 2. Webhook retries (wp_biodevas_webhook_retries).
-        $table_retries = $wpdb->prefix . 'biodevas_webhook_retries';
+        // 2. Webhook retries (wp_convoca_webhook_retries).
+        $table_retries = $wpdb->prefix . 'convoca_webhook_retries';
         $sql_retries = "CREATE TABLE $table_retries (
             id bigint(20) NOT NULL AUTO_INCREMENT,
             webhook_id varchar(50) NOT NULL,
@@ -89,8 +89,8 @@ class Installer
         // Ensure index exists for existing installations
         $wpdb->query("ALTER TABLE $table_retries ADD INDEX status (status)");
 
-        // 3. Locks table (wp_biodevas_locks).
-        $table_locks = $wpdb->prefix . 'biodevas_locks';
+        // 3. Locks table (wp_convoca_locks).
+        $table_locks = $wpdb->prefix . 'convoca_locks';
         $sql_locks = "CREATE TABLE $table_locks (
             lock_key varchar(100) NOT NULL,
             expires int(11) NOT NULL,

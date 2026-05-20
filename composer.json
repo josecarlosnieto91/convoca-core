@@ -1,15 +1,14 @@
 {
-    "name": "biodevas/common",
+    "name": "convoca/common",
     "description": "Biodevas Common Utilities",
     "type": "wordpress-plugin",
     "require": {
         "dompdf/dompdf": "^3.0"
     },
     "config": {
-        "platform": {
-            "php": "8.1"
-        },
-        "allow-plugins": false
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     },
     "require-dev": {
         "phpunit/phpunit": "^10.5",
