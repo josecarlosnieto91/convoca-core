@@ -76,24 +76,24 @@ class Webhook_Manager
     private function register_hooks(): void
     {
         // Member events
-        add_action('biodevas_members_estado_changed', [$this, 'on_member_state_change'], 20, 3);
-        add_action('biodevas_members_created', [$this, 'on_member_created'], 20, 1);
-        add_action('biodevas_members_membership_expired', [$this, 'on_member_expired'], 20, 1);
+        add_action('convoca_members_estado_changed', [$this, 'on_member_state_change'], 20, 3);
+        add_action('convoca_members_created', [$this, 'on_member_created'], 20, 1);
+        add_action('convoca_members_membership_expired', [$this, 'on_member_expired'], 20, 1);
 
         // Payment events
-        add_action('biodevas_gateway_payment_completed', [$this, 'on_payment_completed'], 20, 4);
-        add_action('biodevas_gateway_payment_failed', [$this, 'on_payment_failed'], 20, 2);
-        add_action('biodevas_members_payment_reminder_sent', [$this, 'on_payment_reminder'], 20, 3);
+        add_action('convoca_gateway_payment_completed', [$this, 'on_payment_completed'], 20, 4);
+        add_action('convoca_gateway_payment_failed', [$this, 'on_payment_failed'], 20, 2);
+        add_action('convoca_members_payment_reminder_sent', [$this, 'on_payment_reminder'], 20, 3);
 
         // Enrollment events
-        add_action('biodevas_enroll_inscripcion_nueva', [$this, 'on_enrollment_created'], 20, 2);
-        add_action('biodevas_enroll_inscripcion_cancelada', [$this, 'on_enrollment_cancelled'], 20, 2);
-        add_action('biodevas_enroll_asistencia_cambiada', [$this, 'on_enrollment_checkin'], 20, 2);
+        add_action('convoca_enroll_inscripcion_nueva', [$this, 'on_enrollment_created'], 20, 2);
+        add_action('convoca_enroll_inscripcion_cancelada', [$this, 'on_enrollment_cancelled'], 20, 2);
+        add_action('convoca_enroll_asistencia_cambiada', [$this, 'on_enrollment_checkin'], 20, 2);
 
         // Volunteer events
-        add_action('biodevas_members_hours_submitted', [$this, 'on_volunteer_hours_logged'], 20, 2);
-        add_action('biodevas_members_hora_aprobada', [$this, 'on_volunteer_hours_approved'], 20, 2);
-        add_action('biodevas_members_hora_rechazada', [$this, 'on_volunteer_hours_rejected'], 20, 2);
+        add_action('convoca_members_hours_submitted', [$this, 'on_volunteer_hours_logged'], 20, 2);
+        add_action('convoca_members_hora_aprobada', [$this, 'on_volunteer_hours_approved'], 20, 2);
+        add_action('convoca_members_hora_rechazada', [$this, 'on_volunteer_hours_rejected'], 20, 2);
     }
 
     /* ── Event Handlers ───────────────────────────────────── */
@@ -302,7 +302,7 @@ class Webhook_Manager
             'timeout'   => 5,
             'redirection' => 2,
             'blocking'  => true,
-            'sslverify' => apply_filters('biodevas_common_webhook_sslverify', true),
+            'sslverify' => apply_filters('convoca_common_webhook_sslverify', true),
         ]);
 
         // Check for HTTP errors
