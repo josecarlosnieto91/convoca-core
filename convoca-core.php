@@ -5,7 +5,7 @@
  * Description: Common functions, validation, and logging.
  * Author: Jose Carlos Nieto Ramos
  * Author URI: https://example.com.
- * Version: 2.1.2
+  * Version: 2.1.3
  */
 
 
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'BDV_COMMON_VERSION' ) ) {
-	define( 'BDV_COMMON_VERSION', '2.1.2' );
+	define( 'BDV_COMMON_VERSION', '2.1.3' );
 }
 if ( ! defined( 'BDV_COMMON_DB_VERSION' ) ) {
 	define( 'BDV_COMMON_DB_VERSION', '1.1.0' );
