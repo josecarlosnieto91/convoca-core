@@ -140,7 +140,7 @@ class Utils {
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
 
-		$out = fopen( 'php://output', 'w' ); .
+		$out = fopen( 'php://output', 'w' );
 		// BOM for Excel.
 		fprintf( $out, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) );
 		fclose( $out );
@@ -685,7 +685,7 @@ class Utils {
 	/**
 	 * Feature registry: check if a plugin feature is available without hardcoding class names.
 	 *
-	 * @param string $feature Feature key: 'members', 'enroll', 'gateway', 'turnos'.
+	 * @param string $feature Feature key: 'members', 'enroll', 'gateway', 'turnos '
 	 * @return bool
 	 */
 	public static function has_feature( string $feature ): bool {

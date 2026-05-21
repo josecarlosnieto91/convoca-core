@@ -27,7 +27,7 @@ class Push_Notifier {
 	 * @param string $topic   The ntfy.sh topic/channel name.
 	 * @param string $title   Notification title.
 	 * @param string $message Notification message body.
-	 * @param string $priority Priority: 'default', 'low', 'high', 'urgent', 'min', 'max'.
+	 * @param string $priority Priority: 'default', 'low', 'high', 'urgent', 'min', 'max '
 	 * @param array  $tags    Optional tags/emojis (e.g., ['warning', 'bell']).
 	 * @return bool True on success.
 	 */
@@ -37,7 +37,7 @@ class Push_Notifier {
 			return false;
 		}
 
-		$server = untrailingslashit( $config['server'] ?? 'https://ntfy.sh' );.
+		$server = untrailingslashit( $config['server'] ?? 'https://ntfy.sh' );
 		$topic  = ! empty( $topic ) ? $topic : ( $config['topic'] ?? 'convoca_alerts' );
 		$url    = $server . '/' . $topic;
 
@@ -119,7 +119,7 @@ class Push_Notifier {
 		return array(
 			'enabled' => false,
 			'topic'   => 'convoca_alerts',
-			'server'  => 'https://ntfy.sh',.
+			'server'  => 'https://ntfy.sh',
 		);
 	}
 

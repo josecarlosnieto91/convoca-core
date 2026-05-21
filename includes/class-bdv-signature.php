@@ -269,7 +269,6 @@ class CONV_Signature {
 
 		if ( ! file_exists( $index_file ) ) {
 			if ( @file_put_contents( $index_file, "<?php\n// Silence is golden.\n" ) === false ) {
-				.
 				$this->last_error = sprintf( __( 'No se pudo crear el archivo de protección index.php en %s.', 'convoca-core' ), $dir );
 				return false;
 			}

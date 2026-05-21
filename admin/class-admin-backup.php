@@ -151,7 +151,7 @@ class Admin_Backup {
 		}
 
 		$add_csv = function ( $name, $headers, $rows ) use ( $zip ) {
-			$handle = fopen( 'php://temp', 'r+' ); .
+			$handle = fopen( 'php://temp', 'r+' );
 			fwrite( $handle, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) ); // BOM for UTF-8.
 			fputcsv( $handle, $headers, ',', '"' );
 			foreach ( $rows as $row ) {
@@ -346,7 +346,7 @@ class Admin_Backup {
 			file_put_contents( $import_dir . '/.htaccess', "Deny from all\n" );
 		}
 		if ( ! file_exists( $import_dir . '/index.php' ) ) {
-			file_put_contents( $import_dir . '/index.php', "<?php\n// Silence is golden.\n" ); .
+			file_put_contents( $import_dir . '/index.php', "<?php\n// Silence is golden.\n" );
 		}
 
 		$token  = wp_generate_password( 24, false );

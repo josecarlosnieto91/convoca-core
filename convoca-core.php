@@ -457,7 +457,6 @@ function convoca_admin_footer( string $text ): string {
 		'© %d <a href="%s" target="_blank">Biodevas</a> — %s',
 		wp_date( 'Y' ),
 		'https://getconvoca.app', 
-		.
 		__( 'Plataforma de gestión de la asociación.', 'convoca-core' )
 	);
 }

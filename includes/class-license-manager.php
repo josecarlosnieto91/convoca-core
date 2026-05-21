@@ -36,9 +36,9 @@ class License_Manager {
 
 	/**
 	 * API endpoint for license validation.
-	 * Override via filter 'convoca_license_api_url'.
+	 * Override via filter 'convoca_license_api_url '
 	 */
-	const API_URL = 'https://convoca.app/api/license'; .
+	const API_URL = 'https://convoca.app/api/license';
 
 	/**
 	 * Initialize hooks.

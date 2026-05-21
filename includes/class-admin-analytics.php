@@ -417,14 +417,14 @@ class Admin_Analytics {
 		if ( wp_script_is( 'chart-js', 'registered' ) ) {
 			return;
 		}
-		wp_enqueue_script( 'chart-js', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '4.4.1', true ); .
+		wp_enqueue_script( 'chart-js', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '4.4.1', true );
 	}
 
 	/**
 	 * Render inline chart HTML + JS for a line/bar chart.
 	 *
 	 * @param string $canvas_id DOM id.
-	 * @param string $type      'line'|'bar'|'pie'|'doughnut'.
+	 * @param string $type      'line'|'bar'|'pie'|'doughnut '
 	 * @param array  $labels    X-axis / segment labels.
 	 * @param array  $datasets  Array of ['label','data','color'].
 	 * @param array  $opts      Extra Chart.js options.
