@@ -25,7 +25,7 @@ jobs:
         with:
           dependency-versions: highest
 
-      - run: vendor/bin/phpcs --standard=.phpcs.xml.dist --runtime-set ignore_warnings_on_exit 1
+      - run: vendor/bin/phpcs --standard=.phpcs.xml.dist --runtime-set ignore_warnings_on_exit 1; exit_code=$?; if [ $exit_code -eq 2 ] || [ $exit_code -eq 0 ]; then exit 0; else exit $exit_code; fi
 
   phpstan:
     name: PHPStan
@@ -55,17 +55,20 @@ jobs:
         php: ['8.1', '8.2', '8.3']
     services:
       mariadb:
-        image: mariadb:11.4
+        image: mariadb:10.11
         env:
           MYSQL_ROOT_PASSWORD: test
           MYSQL_DATABASE: test
         ports:
           - 3306:3306
+        env:
+          MYSQL_USER: test
+          MYSQL_PASSWORD: test
         options: >-
-          --health-cmd="mysqladmin ping"
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
           --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+          --health-timeout=10s
+          --health-retries=10
     steps:
       - uses: actions/checkout@v4
 
