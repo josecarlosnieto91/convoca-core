@@ -52,15 +52,15 @@ class Capabilities {
 			),
 
 			// Biodevas Members.
-			'bdv_manage_hours'       => array(
+			'conv_manage_hours'       => array(
 				'description' => __( 'Gestionar horas de voluntarios (aprobar)', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'bdv_export_members'     => array(
+			'conv_export_members'     => array(
 				'description' => __( 'Exportar listado de socios', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
-			'bdv_manage_webhooks'    => array(
+			'conv_manage_webhooks'    => array(
 				'description' => __( 'Gestionar webhooks', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
@@ -115,12 +115,12 @@ class Capabilities {
 			return;
 		}
 
-		$version_hash = md5( 'biodevas_caps_v1' );
-		if ( get_option( 'bdv_capabilities_hash' ) === $version_hash ) {
+		$version_hash = md5( 'convoca_caps_v1' );
+		if ( get_option( 'conv_capabilities_hash' ) === $version_hash ) {
 			return;
 		}
 
 		self::register();
-		update_option( 'bdv_capabilities_hash', $version_hash, false );
+		update_option( 'conv_capabilities_hash', $version_hash, false );
 	}
 }

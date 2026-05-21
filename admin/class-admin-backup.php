@@ -8,14 +8,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Admin_Backup {
 
 	private const MAX_ZIP_SIZE = 524288000; // 500MB
-	private const IMPORT_DIR   = 'biodevas-imports';
+	private const IMPORT_DIR   = 'convoca-imports';
 	private const PREVIEW_TTL  = 600;
 
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
-		add_action( 'admin_post_bdv_export_backup', array( $this, 'handle_export' ) );
-		add_action( 'admin_post_bdv_import_backup', array( $this, 'handle_import_preview' ) );
-		add_action( 'admin_post_bdv_import_backup_run', array( $this, 'handle_import_run' ) );
+		add_action( 'admin_post_conv_export_backup', array( $this, 'handle_export' ) );
+		add_action( 'admin_post_conv_import_backup', array( $this, 'handle_import_preview' ) );
+		add_action( 'admin_post_conv_import_backup_run', array( $this, 'handle_import_run' ) );
 	}
 
 	public function register_page(): void {
@@ -26,7 +26,7 @@ class Admin_Backup {
 		if ( ! current_user_can( 'common_manage_backup' ) ) {
 			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
 		}
-		$preview = get_transient( 'bdv_import_preview_' . get_current_user_id() );
+		$preview = get_transient( 'conv_import_preview_' . get_current_user_id() );
 		?>
 		<div class="wrap" style="max-width:900px;">
 			<div class="bdv-admin-header" style="display:flex;align-items:center;gap:20px;margin-bottom:20px;">
@@ -39,46 +39,46 @@ class Admin_Backup {
 
 			<?php $import_result = sanitize_text_field( wp_unslash( $_GET['import_result'] ?? '' ) ); ?>
 			<?php if ( $import_result ) : ?>
-				<div class="biodevas-alert <?php echo str_contains( strtolower( $import_result ), 'error' ) ? 'biodevas-alert--danger' : 'biodevas-alert--success'; ?>" style="display:block;margin-bottom:20px;">
+				<div class="convoca-alert <?php echo str_contains( strtolower( $import_result ), 'error' ) ? 'convoca-alert--danger' : 'convoca-alert--success'; ?>" style="display:block;margin-bottom:20px;">
 					<p><?php echo esc_html( $import_result ); ?></p>
 				</div>
 			<?php endif; ?>
 
 			<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-				<div class="biodevas-box" style="background:#fff;border-radius:12px;padding:30px;border:1px solid #e2e8f0;">
+				<div class="convoca-box" style="background:#fff;border-radius:12px;padding:30px;border:1px solid #e2e8f0;">
 					<h2>📤 <?php esc_html_e( 'Exportar Datos', 'convoca-core' ); ?></h2>
 					<p><?php esc_html_e( 'Genera un archivo ZIP con CSVs de todas las entidades y un JSON con la configuración.', 'convoca-core' ); ?></p>
 					<div style="margin-top:20px;">
-						<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=bdv_export_backup' ), 'bdv_export_backup' ) ); ?>" class="biodevas-btn biodevas-btn-primary">⬇️ <?php esc_html_e( 'Descargar ZIP de Seguridad', 'convoca-core' ); ?></a>
+						<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=conv_export_backup' ), 'conv_export_backup' ) ); ?>" class="convoca-btn convoca-btn-primary">⬇️ <?php esc_html_e( 'Descargar ZIP de Seguridad', 'convoca-core' ); ?></a>
 					</div>
 				</div>
 
-				<div class="biodevas-box" style="background:#fff;border-radius:12px;padding:30px;border:1px solid #e2e8f0;">
+				<div class="convoca-box" style="background:#fff;border-radius:12px;padding:30px;border:1px solid #e2e8f0;">
 					<h2>📥 <?php esc_html_e( 'Importar Datos', 'convoca-core' ); ?></h2>
 					<p><?php esc_html_e( 'Restaura entidades o configuraciones desde un archivo ZIP oficial.', 'convoca-core' ); ?></p>
 
 					<?php if ( ! $preview ) : ?>
 					<form method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:20px;">
-						<?php wp_nonce_field( 'bdv_import_backup' ); ?>
-						<input type="hidden" name="action" value="bdv_import_backup">
-						<div class="biodevas-field">
+						<?php wp_nonce_field( 'conv_import_backup' ); ?>
+						<input type="hidden" name="action" value="conv_import_backup">
+						<div class="convoca-field">
 							<input type="file" name="backup_zip" accept=".zip" required style="width:100%;">
 						</div>
-						<button type="submit" class="biodevas-btn biodevas-btn-primary">🔍 <?php esc_html_e( 'Validar archivo y previsualizar', 'convoca-core' ); ?></button>
+						<button type="submit" class="convoca-btn convoca-btn-primary">🔍 <?php esc_html_e( 'Validar archivo y previsualizar', 'convoca-core' ); ?></button>
 					</form>
 					<?php endif; ?>
 				</div>
 			</div>
 
 			<?php if ( $preview ) : ?>
-			<div class="biodevas-box" style="background:#fff;border-radius:12px;padding:30px;margin-top:20px;border:1px solid #e2e8f0;box-shadow:0 10px 25px rgba(0,0,0,0.05);">
-				<div class="biodevas-alert biodevas-alert--warning" style="display:block;margin-bottom:25px;">
+			<div class="convoca-box" style="background:#fff;border-radius:12px;padding:30px;margin-top:20px;border:1px solid #e2e8f0;box-shadow:0 10px 25px rgba(0,0,0,0.05);">
+				<div class="convoca-alert convoca-alert--warning" style="display:block;margin-bottom:25px;">
 					<p>⚠️ <strong><?php esc_html_e( 'Modo de Importación Atómica:', 'convoca-core' ); ?></strong> <?php esc_html_e( 'Se crearán nuevos registros. Los IDs originales se perderán y se generarán nuevos. El sistema intentará remapear las relaciones internas.', 'convoca-core' ); ?></p>
 				</div>
 				
 				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-					<?php wp_nonce_field( 'bdv_import_backup_run' ); ?>
-					<input type="hidden" name="action" value="bdv_import_backup_run">
+					<?php wp_nonce_field( 'conv_import_backup_run' ); ?>
+					<input type="hidden" name="action" value="conv_import_backup_run">
 					<input type="hidden" name="session_token" value="<?php echo esc_attr( $preview['token'] ); ?>">
 					
 					<h3 style="margin-bottom:15px;"><?php esc_html_e( 'Contenido Detectado', 'convoca-core' ); ?></h3>
@@ -96,7 +96,7 @@ class Admin_Backup {
 					</table>
 
 					<div style="margin-top:30px;display:flex;gap:15px;align-items:center;">
-						<button type="submit" class="biodevas-btn biodevas-btn--danger" style="padding:12px 30px;" onclick="return confirm('¿Confirmas la importación de los datos seleccionados?');">✅ <?php esc_html_e( 'Ejecutar Importación', 'convoca-core' ); ?></button>
+						<button type="submit" class="convoca-btn convoca-btn--danger" style="padding:12px 30px;" onclick="return confirm('¿Confirmas la importación de los datos seleccionados?');">✅ <?php esc_html_e( 'Ejecutar Importación', 'convoca-core' ); ?></button>
 						<a href="<?php echo esc_url( admin_url( 'admin.php?page=bdv-backup' ) ); ?>" style="color:#64748b;text-decoration:none;font-weight:500;"><?php esc_html_e( 'Cancelar y borrar temporal', 'convoca-core' ); ?></a>
 					</div>
 				</form>
@@ -115,7 +115,7 @@ class Admin_Backup {
 	/* ── Export ── */
 
 	public function handle_export(): void {
-		if ( ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'bdv_export_backup' ) ) {
+		if ( ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'conv_export_backup' ) ) {
 			wp_die( 'Nonce inválido.' );
 		}
 		if ( ! current_user_can( 'common_manage_backup' ) ) {
@@ -130,7 +130,7 @@ class Admin_Backup {
 
 		$temp_dir = get_temp_dir() . 'bdv-export-' . wp_generate_password( 16, false ) . '/';
 		wp_mkdir_p( $temp_dir );
-		$tmp_file = $temp_dir . 'biodevas-backup.zip';
+		$tmp_file = $temp_dir . 'convoca-backup.zip';
 		$cleanup  = function () use ( $temp_dir ) {
 			if ( is_dir( $temp_dir ) ) {
 				$files = new \RecursiveIteratorIterator(
@@ -200,11 +200,11 @@ class Admin_Backup {
 				return array(
 					$id,
 					$title,
-					get_post_meta( $id, '_bdv_email', true ),
-					get_post_meta( $id, '_bdv_dni', true ),
-					get_post_meta( $id, '_bdv_plan', true ),
-					get_post_meta( $id, '_bdv_estado_miembro', true ),
-					get_post_meta( $id, '_bdv_vencimiento', true ),
+					get_post_meta( $id, '_conv_email', true ),
+					get_post_meta( $id, '_conv_dni', true ),
+					get_post_meta( $id, '_conv_plan', true ),
+					get_post_meta( $id, '_conv_estado_miembro', true ),
+					get_post_meta( $id, '_conv_vencimiento', true ),
 				);
 			}
 		);
@@ -232,9 +232,9 @@ class Admin_Backup {
 				return array(
 					$id,
 					get_the_title( $id ),
-					get_post_meta( $id, '_bdv_fecha_inicio', true ),
-					get_post_meta( $id, '_bdv_fecha_fin', true ),
-					get_post_meta( $id, '_bdv_activo', true ),
+					get_post_meta( $id, '_conv_fecha_inicio', true ),
+					get_post_meta( $id, '_conv_fecha_fin', true ),
+					get_post_meta( $id, '_conv_activo', true ),
 				);
 			}
 		);
@@ -257,7 +257,7 @@ class Admin_Backup {
 
 		// Settings (Whitelist based).
 		$settings        = array();
-		$allowed_options = array( 'bdg_settings', 'bdv_members_settings', 'bdv_members_plans', 'bde_settings', 'cst_hora_apertura', 'cst_hora_cierre', 'cst_calendar_page_url' );
+		$allowed_options = array( 'bdg_settings', 'conv_members_settings', 'conv_members_plans', 'bde_settings', 'cst_hora_apertura', 'cst_hora_cierre', 'cst_calendar_page_url' );
 		foreach ( $allowed_options as $k ) {
 			$settings[ $k ] = get_option( $k );
 		}
@@ -270,7 +270,7 @@ class Admin_Backup {
 		}
 
 		header( 'Content-Type: application/zip' );
-		header( 'Content-Disposition: attachment; filename="biodevas-backup-' . wp_date( 'Y-m-d-His' ) . '.zip"' );
+		header( 'Content-Disposition: attachment; filename="convoca-backup-' . wp_date( 'Y-m-d-His' ) . '.zip"' );
 		header( 'Content-Length: ' . filesize( $tmp_file ) );
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
@@ -282,7 +282,7 @@ class Admin_Backup {
 	/* ── Import Preview ── */
 
 	public function handle_import_preview(): void {
-		check_admin_referer( 'bdv_import_backup' );
+		check_admin_referer( 'conv_import_backup' );
 		if ( ! current_user_can( 'common_manage_backup' ) ) {
 			wp_die( 'No tienes permisos.' );
 		}
@@ -356,7 +356,7 @@ class Admin_Backup {
 		}
 
 		set_transient(
-			'bdv_import_preview_' . get_current_user_id(),
+			'conv_import_preview_' . get_current_user_id(),
 			array(
 				'token'    => $token,
 				'entities' => $entities,
@@ -372,12 +372,12 @@ class Admin_Backup {
 
 	public function handle_import_run(): void {
 		global $wpdb;
-		check_admin_referer( 'bdv_import_backup_run' );
+		check_admin_referer( 'conv_import_backup_run' );
 		if ( ! current_user_can( 'common_manage_backup' ) ) {
 			wp_die( 'No tienes permisos.' );
 		}
 
-		$preview = get_transient( 'bdv_import_preview_' . get_current_user_id() );
+		$preview = get_transient( 'conv_import_preview_' . get_current_user_id() );
 		if ( ! $preview || ! isset( $_POST['session_token'] ) || ! hash_equals( $preview['token'], $_POST['session_token'] ) ) {
 			wp_die( 'Token de sesión inválido o expirado.' );
 		}
@@ -412,7 +412,7 @@ class Admin_Backup {
 		$imported_posts = array();
 
 		// Prevent concurrent imports.
-		if ( ! \Convoca\Core\Utils::acquire_lock( 'bdv_backup_import', 300 ) ) {
+		if ( ! \Convoca\Core\Utils::acquire_lock( 'conv_backup_import', 300 ) ) {
 			wp_die( 'Otra importación está en curso. Espera a que termine.' );
 		}
 
@@ -473,7 +473,7 @@ class Admin_Backup {
 					$imported_posts[] = $new_id;
 					// Store old ID as meta instead of keeping a RAM dict.
 					if ( $old_id ) {
-						update_post_meta( $new_id, '_bdv_old_import_id', $old_id );
+						update_post_meta( $new_id, '_conv_old_import_id', $old_id );
 					}
 					$this->apply_meta( $entity, $new_id, $data );
 					++$results['total'];
@@ -484,20 +484,20 @@ class Admin_Backup {
 			foreach ( $imported_posts as $pid ) {
 				wp_delete_post( $pid, true );
 			}
-			\Convoca\Core\Utils::release_lock( 'bdv_backup_import' );
+			\Convoca\Core\Utils::release_lock( 'conv_backup_import' );
 			$zip->close();
 			unlink( $filepath );
-			delete_transient( 'bdv_import_preview_' . get_current_user_id() );
+			delete_transient( 'conv_import_preview_' . get_current_user_id() );
 			\Convoca\Core\Logger::error( 'Importación masiva fallida: ' . $e->getMessage(), 'System' );
 			wp_safe_redirect( admin_url( 'admin.php?page=bdv-backup&import_result=' . urlencode( 'Error: ' . $e->getMessage() ) ) );
 			exit;
 		}
 
-		\Convoca\Core\Utils::release_lock( 'bdv_backup_import' );
+		\Convoca\Core\Utils::release_lock( 'conv_backup_import' );
 
 		$zip->close();
 		unlink( $filepath );
-		delete_transient( 'bdv_import_preview_' . get_current_user_id() );
+		delete_transient( 'conv_import_preview_' . get_current_user_id() );
 
 		\Convoca\Core\Logger::info( sprintf( 'Importación masiva completada: %d registros.', $results['total'] ), 'System' );
 
@@ -509,16 +509,16 @@ class Admin_Backup {
 	private function apply_meta( $entity, $id, $data ): void {
 		switch ( $entity ) {
 			case 'miembros':
-				update_post_meta( $id, '_bdv_email', sanitize_email( $data[2] ?? '' ) );
-				update_post_meta( $id, '_bdv_dni', sanitize_text_field( $data[3] ?? '' ) );
-				update_post_meta( $id, '_bdv_plan', sanitize_text_field( $data[4] ?? '' ) );
-				update_post_meta( $id, '_bdv_estado_miembro', sanitize_text_field( $data[5] ?? 'activo' ) );
-				update_post_meta( $id, '_bdv_vencimiento', sanitize_text_field( $data[6] ?? '' ) );
+				update_post_meta( $id, '_conv_email', sanitize_email( $data[2] ?? '' ) );
+				update_post_meta( $id, '_conv_dni', sanitize_text_field( $data[3] ?? '' ) );
+				update_post_meta( $id, '_conv_plan', sanitize_text_field( $data[4] ?? '' ) );
+				update_post_meta( $id, '_conv_estado_miembro', sanitize_text_field( $data[5] ?? 'activo' ) );
+				update_post_meta( $id, '_conv_vencimiento', sanitize_text_field( $data[6] ?? '' ) );
 				break;
 			case 'proyectos':
-				update_post_meta( $id, '_bdv_fecha_inicio', sanitize_text_field( $data[2] ?? '' ) );
-				update_post_meta( $id, '_bdv_fecha_fin', sanitize_text_field( $data[3] ?? '' ) );
-				update_post_meta( $id, '_bdv_activo', sanitize_text_field( $data[4] ?? '1' ) );
+				update_post_meta( $id, '_conv_fecha_inicio', sanitize_text_field( $data[2] ?? '' ) );
+				update_post_meta( $id, '_conv_fecha_fin', sanitize_text_field( $data[3] ?? '' ) );
+				update_post_meta( $id, '_conv_activo', sanitize_text_field( $data[4] ?? '1' ) );
 				break;
 			case 'inscripciones':
 				update_post_meta( $id, '_bde_nombre', sanitize_text_field( $data[1] ?? '' ) );
@@ -531,7 +531,7 @@ class Admin_Backup {
 					$mapped = get_posts(
 						array(
 							'post_type'      => 'proyecto',
-							'meta_key'       => '_bdv_old_import_id',
+							'meta_key'       => '_conv_old_import_id',
 							'meta_value'     => $old_pid,
 							'fields'         => 'ids',
 							'posts_per_page' => 1,
@@ -568,7 +568,7 @@ class Admin_Backup {
 			return;
 		}
 
-		$allowed = array( 'bdg_settings', 'bdv_members_settings', 'bdv_members_plans', 'bde_settings', 'cst_hora_apertura', 'cst_hora_cierre', 'cst_calendar_page_url' );
+		$allowed = array( 'bdg_settings', 'conv_members_settings', 'conv_members_plans', 'bde_settings', 'cst_hora_apertura', 'cst_hora_cierre', 'cst_calendar_page_url' );
 
 		foreach ( $allowed as $key ) {
 			if ( ! isset( $data[ $key ] ) ) {

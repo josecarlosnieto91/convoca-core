@@ -1,6 +1,6 @@
 <?php
 /**
- * Centralized log viewer for the biodevas_logs table.
+ * Centralized log viewer for the convoca_logs table.
  *
  * @package Convoca\Core
  */
@@ -95,7 +95,7 @@ class Admin_Logs_List extends \WP_List_Table {
 
 	public function prepare_items(): void {
 		global $wpdb;
-		$table    = $wpdb->prefix . 'biodevas_logs';
+		$table    = $wpdb->prefix . 'convoca_logs';
 		$per_page = 40;
 		$page     = $this->get_pagenum();
 
@@ -170,7 +170,7 @@ class Admin_Logs_List extends \WP_List_Table {
 
 	public function process_bulk_action(): void {
 		global $wpdb;
-		$table = $wpdb->prefix . 'biodevas_logs';
+		$table = $wpdb->prefix . 'convoca_logs';
 
 		if ( $this->current_action() === 'delete' && isset( $_POST['log_ids'] ) ) {
 			check_admin_referer( 'bulk-logs' );
@@ -213,7 +213,7 @@ class Admin_Logs_List extends \WP_List_Table {
 		$filter_date_to   = $_GET['filter_date_to'] ?? '';
 
 		global $wpdb;
-		$table    = $wpdb->prefix . 'biodevas_logs';
+		$table    = $wpdb->prefix . 'convoca_logs';
 		$contexts = $wpdb->get_col( "SELECT DISTINCT context FROM $table ORDER BY context" );
 		$levels   = array( 'info', 'warning', 'error', 'success' );
 		wp_nonce_field( 'bulk-logs' );
@@ -233,7 +233,7 @@ class Admin_Logs_List extends \WP_List_Table {
 			</select>
 			<input type="date" name="filter_date_from" value="<?php echo esc_attr( $filter_date_from ); ?>">
 			<input type="date" name="filter_date_to" value="<?php echo esc_attr( $filter_date_to ); ?>">
-			<?php submit_button( __( 'Filtrar', 'convoca-core' ), 'biodevas-btn biodevas-btn-outline', 'filter_action', false ); ?>
+			<?php submit_button( __( 'Filtrar', 'convoca-core' ), 'convoca-btn convoca-btn-outline', 'filter_action', false ); ?>
 		</div>
 		<?php
 	}

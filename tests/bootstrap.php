@@ -53,14 +53,14 @@ if ($wp_tests_dir && file_exists($wp_tests_dir . '/includes/functions.php')) {
     if (!defined('WP_DEBUG')) {
         define('WP_DEBUG', true);
     }
-    if (!defined('BDV_COMMON_VERSION')) {
-        define('BDV_COMMON_VERSION', '2.1.2');
+    if (!defined('CONV_COMMON_VERSION')) {
+        define('CONV_COMMON_VERSION', '2.1.2');
     }
-    if (!defined('BDV_COMMON_DIR')) {
-        define('BDV_COMMON_DIR', dirname(__DIR__) . '/');
+    if (!defined('CONV_COMMON_DIR')) {
+        define('CONV_COMMON_DIR', dirname(__DIR__) . '/');
     }
-    if (!defined('BDV_COMMON_DB_VERSION')) {
-        define('BDV_COMMON_DB_VERSION', '1.1.0');
+    if (!defined('CONV_COMMON_DB_VERSION')) {
+        define('CONV_COMMON_DB_VERSION', '1.1.0');
     }
 
     // Load plugin's own autoloader.

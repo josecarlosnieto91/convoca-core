@@ -62,7 +62,7 @@ class Logger {
 		self::$log_timestamps[] = $now;
 
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'biodevas_logs';
+		$table_name = $wpdb->prefix . 'convoca_logs';
 
 		if ( ! self::table_exists() ) {
 			return;
@@ -124,7 +124,7 @@ class Logger {
 	 */
 	public static function get_logs( array $args = array() ): array {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'biodevas_logs';
+		$table_name = $wpdb->prefix . 'convoca_logs';
 
 		if ( ! self::table_exists() ) {
 			return array();
@@ -183,7 +183,7 @@ class Logger {
 		@set_time_limit( 30 );
 
 		global $wpdb;
-		$table_name    = $wpdb->prefix . 'biodevas_logs';
+		$table_name    = $wpdb->prefix . 'convoca_logs';
 		$today         = current_time( 'mysql' );
 		$batch_size    = 1000;
 		$total_deleted = 0;
@@ -240,7 +240,7 @@ class Logger {
 		@set_time_limit( 30 );
 
 		global $wpdb;
-		$table_name    = $wpdb->prefix . 'biodevas_logs';
+		$table_name    = $wpdb->prefix . 'convoca_logs';
 		$cutoff        = current_time( 'mysql' );
 		$batch_size    = 1000;
 		$total_deleted = 0;
@@ -266,7 +266,7 @@ class Logger {
 	 */
 	public static function get_stats(): array {
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'biodevas_logs';
+		$table_name = $wpdb->prefix . 'convoca_logs';
 
 		if ( ! self::table_exists() ) {
 			return array(
@@ -313,7 +313,7 @@ class Logger {
 	 */
 	private static function table_exists(): bool {
 		global $wpdb;
-		$transient_key = 'bdv_logger_table_exists';
+		$transient_key = 'conv_logger_table_exists';
 
 		// Only trust a POSITIVE transient cache.
 		$cached = get_transient( $transient_key );
@@ -322,7 +322,7 @@ class Logger {
 		}
 
 		// Verify table existence against the database.
-		$table_name = $wpdb->prefix . 'biodevas_logs';
+		$table_name = $wpdb->prefix . 'convoca_logs';
 		$exists     = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name );
 
 		if ( $exists ) {
@@ -336,6 +336,6 @@ class Logger {
 	 * Invalidate the table existence cache (e.g., after a write failure).
 	 */
 	private static function clear_table_cache(): void {
-		delete_transient( 'bdv_logger_table_exists' );
+		delete_transient( 'conv_logger_table_exists' );
 	}
 }

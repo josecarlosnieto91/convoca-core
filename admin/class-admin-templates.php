@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Admin_Templates {
 
-	private static $option_name = 'bdv_pdf_templates';
+	private static $option_name = 'conv_pdf_templates';
 
 	public static function init() {
 		add_action( 'admin_menu', array( self::class, 'add_menu_page' ) );
@@ -26,7 +26,7 @@ class Admin_Templates {
 		add_options_page(
 			__( 'Plantillas PDF (Biodevas)', 'convoca-core' ),
 			__( 'Plantillas PDF', 'convoca-core' ),
-			'manage_biodevas_templates',
+			'manage_convoca_templates',
 			'bdv-pdf-templates',
 			array( self::class, 'render_page' )
 		);
@@ -37,18 +37,18 @@ class Admin_Templates {
 			return;
 		}
 
-		if ( ! current_user_can( 'manage_biodevas_templates' ) ) {
+		if ( ! current_user_can( 'manage_convoca_templates' ) ) {
 			return;
 		}
 
 		// Restore Defaults.
-		if ( isset( $_POST['bdv_restore_templates'] ) && check_admin_referer( 'bdv_restore_templates_nonce' ) ) {
+		if ( isset( $_POST['conv_restore_templates'] ) && check_admin_referer( 'conv_restore_templates_nonce' ) ) {
 			self::restore_default_templates();
 			\Convoca\Core\Utils::set_admin_notice( __( 'Plantillas restauradas a sus valores por defecto.', 'convoca-core' ), 'success' );
 		}
 
 		// Save Custom Templates.
-		if ( isset( $_POST['bdv_save_templates'] ) && check_admin_referer( 'bdv_save_templates_nonce' ) ) {
+		if ( isset( $_POST['conv_save_templates'] ) && check_admin_referer( 'conv_save_templates_nonce' ) ) {
 			$templates = self::get_templates();
 			$changed   = false;
 
@@ -429,7 +429,7 @@ class Admin_Templates {
 		$templates = array();
 
 		foreach ( $default_keys as $key => $name ) {
-			$file_path = BDV_COMMON_DIR . 'assets/templates/' . $key . '.html';
+			$file_path = CONV_COMMON_DIR . 'assets/templates/' . $key . '.html';
 			$content   = "<h1>$name</h1>";
 			if ( file_exists( $file_path ) ) {
 				$loaded = @file_get_contents( $file_path );
@@ -450,7 +450,7 @@ class Admin_Templates {
 	}
 
 	public static function render_page() {
-		if ( ! current_user_can( 'manage_biodevas_templates' ) ) {
+		if ( ! current_user_can( 'manage_convoca_templates' ) ) {
 			return;
 		}
 
@@ -470,7 +470,7 @@ class Admin_Templates {
 			<p><?php printf( esc_html__( 'Utiliza etiquetas como %1$s, %2$s, %3$s para que se rellenen automáticamente según el contexto.', 'convoca-core' ), '<code>{{nombre}}</code>', '<code>{{dni}}</code>', '<code>{{fecha}}</code>' ); ?></p>
 
 			<form method="post" action="">
-				<?php wp_nonce_field( 'bdv_save_templates_nonce' ); ?>
+				<?php wp_nonce_field( 'conv_save_templates_nonce' ); ?>
 				
 				<h2 class="nav-tab-wrapper">
 					<?php
@@ -502,16 +502,16 @@ class Admin_Templates {
 				</div>
 
 				<p class="submit">
-					<input type="submit" name="bdv_save_templates" id="submit" class="button button-primary" value="<?php echo esc_attr__( 'Guardar Cambios', 'convoca-core' ); ?>">
+					<input type="submit" name="conv_save_templates" id="submit" class="button button-primary" value="<?php echo esc_attr__( 'Guardar Cambios', 'convoca-core' ); ?>">
 				</p>
 			</form>
 
 			<hr>
 			
 			<form method="post" action="" onsubmit="return confirm('<?php echo esc_js( __( '¿Estás seguro de que deseas restaurar las plantillas por defecto? Perderás cualquier cambio que hayas hecho en el HTML.', 'convoca-core' ) ); ?>');">
-				<?php wp_nonce_field( 'bdv_restore_templates_nonce' ); ?>
+				<?php wp_nonce_field( 'conv_restore_templates_nonce' ); ?>
 				<p>
-					<input type="submit" name="bdv_restore_templates" class="button button-secondary" value="<?php echo esc_attr__( 'Restaurar Plantillas por Defecto', 'convoca-core' ); ?>">
+					<input type="submit" name="conv_restore_templates" class="button button-secondary" value="<?php echo esc_attr__( 'Restaurar Plantillas por Defecto', 'convoca-core' ); ?>">
 				</p>
 			</form>
 		</div>

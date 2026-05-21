@@ -2,7 +2,7 @@
  * Biodevas Common Admin JS Library
  * Version 1.2.0
  */
-window.biodevasAdmin = window.biodevasAdmin || {};
+window.convocaAdmin = window.convocaAdmin || {};
 
 (function (bdvAdmin) {
   'use strict';
@@ -87,7 +87,7 @@ window.biodevasAdmin = window.biodevasAdmin || {};
     });
   };
 
-})(window.biodevasAdmin);
+})(window.convocaAdmin);
 
 /**
  * Biodevas Bulk Action Confirmation
@@ -129,13 +129,13 @@ window.biodevasAdmin = window.biodevasAdmin || {};
   /**
    * Show a Biodevas notification at the top of the page.
    */
-  window.biodevasNotify = function (message, type) {
+  window.convocaNotify = function (message, type) {
     type = type || 'success';
-    const existing = document.querySelector('.biodevas-notification');
+    const existing = document.querySelector('.convoca-notification');
     if (existing) existing.remove();
 
     const div = document.createElement('div');
-    div.className = 'biodevas-notification biodevas-alert biodevas-alert--' + type;
+    div.className = 'convoca-notification convoca-alert convoca-alert--' + type;
     div.setAttribute('role', 'alert');
     div.style.cssText = 'display:block;margin-bottom:20px;padding:15px;border-radius:8px;font-weight:600;';
     const msgP = document.createElement('p');
@@ -155,8 +155,8 @@ window.biodevasAdmin = window.biodevasAdmin || {};
     }, 5000);
   };
 
-  // Replace standard WP admin notices with biodevas notices inside .wrap
-  document.querySelectorAll('.notice:not(.biodevas-notification)').forEach(function (notice) {
+  // Replace standard WP admin notices with convoca notices inside .wrap
+  document.querySelectorAll('.notice:not(.convoca-notification)').forEach(function (notice) {
     const wrap = notice.closest('.wrap');
     if (!wrap) return;
     const text = notice.textContent.trim();
@@ -167,7 +167,7 @@ window.biodevasAdmin = window.biodevasAdmin || {};
     else if (notice.classList.contains('notice-error')) type = 'danger';
     else if (notice.classList.contains('notice-warning')) type = 'warning';
 
-    window.biodevasNotify(text, type);
+    window.convocaNotify(text, type);
     notice.style.display = 'none';
   });
 })();
@@ -235,13 +235,13 @@ window.biodevasAdmin = window.biodevasAdmin || {};
     if (!card) return;
 
     // Check if preview already exists
-    if (card.querySelector('.biodevas-email-preview-wrap')) return;
+    if (card.querySelector('.convoca-email-preview-wrap')) return;
 
     const editorCol = document.createElement('div');
-    editorCol.className = 'biodevas-email-editor';
+    editorCol.className = 'convoca-email-editor';
 
     const previewCol = document.createElement('div');
-    previewCol.className = 'biodevas-email-preview';
+    previewCol.className = 'convoca-email-preview';
 
     const previewLabel = document.createElement('strong');
     previewLabel.textContent = '📧 Previsualización';
@@ -255,14 +255,14 @@ window.biodevasAdmin = window.biodevasAdmin || {};
 
     const frame = document.createElement('div');
     frame.id = 'bdv-preview-body-' + slug;
-    frame.className = 'biodevas-email-preview-frame';
+    frame.className = 'convoca-email-preview-frame';
     frame.innerHTML = replaceVariables(bodyEl.value);
     previewCol.appendChild(frame);
 
     // Mobile toggle button
     const toggleBtn = document.createElement('button');
     toggleBtn.type = 'button';
-    toggleBtn.className = 'biodevas-btn biodevas-btn-outline biodevas-preview-toggle';
+    toggleBtn.className = 'convoca-btn convoca-btn-outline convoca-preview-toggle';
     toggleBtn.textContent = '📱 Alternar vista previa';
     toggleBtn.addEventListener('click', function () {
       if (previewCol.style.display === 'none') {
@@ -282,7 +282,7 @@ window.biodevasAdmin = window.biodevasAdmin || {};
 
     // Create wrap
     const wrap = document.createElement('div');
-    wrap.className = 'biodevas-email-preview-wrap';
+    wrap.className = 'convoca-email-preview-wrap';
 
     // Move subject and body into editor column
     editorCol.appendChild(toggleBtn.cloneNode(true));
@@ -349,7 +349,7 @@ window.biodevasAdmin = window.biodevasAdmin || {};
   // Close modals with Escape
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
-      document.querySelectorAll('.cst-modal.is-active, .bdv-modal.is-active, .biodevas-modal.is-active').forEach(function (modal) {
+      document.querySelectorAll('.cst-modal.is-active, .bdv-modal.is-active, .convoca-modal.is-active').forEach(function (modal) {
         modal.classList.remove('is-active');
         modal.setAttribute('aria-hidden', 'true');
       });
@@ -372,9 +372,9 @@ window.biodevasAdmin = window.biodevasAdmin || {};
 /**
  * Biodevas Chips Component
  * Enhances a <select multiple> by converting it into a searchable chips UI.
- * Usage: biodevasChips(document.getElementById('my-select'), '/wp-json/.../search?term=');
+ * Usage: convocaChips(document.getElementById('my-select'), '/wp-json/.../search?term=');
  */
-function biodevasChips(select, searchUrl) {
+function convocaChips(select, searchUrl) {
   if (!select || select.tagName !== 'SELECT' || !select.multiple) return;
 
   var container = document.createElement('div');
@@ -476,6 +476,6 @@ function biodevasChips(select, searchUrl) {
 // Auto-init for any select with data-chips attribute
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('select[data-chips]').forEach(function (sel) {
-    biodevasChips(sel, sel.getAttribute('data-chips-url') || '/wp-json/biodevas-enroll/v1/admin/users/search?term=');
+    convocaChips(sel, sel.getAttribute('data-chips-url') || '/wp-json/convoca-enroll/v1/admin/users/search?term=');
   });
 });

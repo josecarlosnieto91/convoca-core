@@ -1,6 +1,6 @@
 <?php
 /**
- * Class BDV_Signature
+ * Class CONV_Signature
  *
  * Reusable PDF signature class for Biodevas.
  * Uses Dompdf (must be installed via Composer).
@@ -17,15 +17,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class BDV_Signature {
+class CONV_Signature {
 
 	protected $last_error = '';
 
 	public function __construct() {
-		// Dompdf must be installed in biodevas-common via Composer:.
-		// cd biodevas-common && composer require dompdf/dompdf.
-		if ( file_exists( BDV_COMMON_DIR . 'vendor/autoload.php' ) ) {
-			require_once BDV_COMMON_DIR . 'vendor/autoload.php';
+		// Dompdf must be installed in convoca-common via Composer:.
+		// cd convoca-common && composer require dompdf/dompdf.
+		if ( file_exists( CONV_COMMON_DIR . 'vendor/autoload.php' ) ) {
+			require_once CONV_COMMON_DIR . 'vendor/autoload.php';
 		}
 	}
 
@@ -50,13 +50,13 @@ class BDV_Signature {
 
 		if ( ! class_exists( 'Dompdf\Dompdf' ) ) {
 			$this->last_error = __( 'La librería Dompdf no está instalada. Por favor, contacta con el administrador.', 'convoca-core' );
-			error_log( 'BDV_Signature Error: Dompdf class not found. Run composer require dompdf/dompdf.' );
+			error_log( 'CONV_Signature Error: Dompdf class not found. Run composer require dompdf/dompdf.' );
 			return false;
 		}
 
 		// List of keys that should be treated as raw HTML (not escaped).
 		$html_safe_keys = apply_filters(
-			'bdv_pdf_html_safe_keys',
+			'conv_pdf_html_safe_keys',
 			array(
 				'dynamic_fields',
 				'declaracion',
@@ -70,7 +70,7 @@ class BDV_Signature {
 
 		// Allowed HTML tags for PDF-safe content.
 		$pdf_allowed_html = apply_filters(
-			'bdv_pdf_allowed_html',
+			'conv_pdf_allowed_html',
 			array(
 				'p'      => array( 'style' => array() ),
 				'br'     => array(),
@@ -187,7 +187,7 @@ class BDV_Signature {
 			return $output_path;
 		} catch ( \Exception $e ) {
 			$this->last_error = __( 'Excepción durante la generación del PDF: ', 'convoca-core' ) . $e->getMessage();
-			error_log( 'BDV_Signature Exception: ' . $e->getMessage() );
+			error_log( 'CONV_Signature Exception: ' . $e->getMessage() );
 			return false;
 		}
 	}

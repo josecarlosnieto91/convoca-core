@@ -62,10 +62,10 @@ class Installer {
 			}
 		} else {
 			// Invalidate logger cache now that the table exists.
-			delete_transient( 'bdv_logger_table_exists' );
+			delete_transient( 'conv_logger_table_exists' );
 		}
 
-		update_option( 'bdv_common_db_version', BDV_COMMON_DB_VERSION );
+		update_option( 'conv_common_db_version', CONV_COMMON_DB_VERSION );
 
 		// 2. Webhook retries (wp_convoca_webhook_retries).
 		$table_retries = $wpdb->prefix . 'convoca_webhook_retries';
@@ -100,7 +100,7 @@ class Installer {
 		dbDelta( $sql_locks );
 
 		// 4. Member sequence table (for atomic member number assignment)
-		$table_seq = $wpdb->prefix . 'bdv_member_sequence';
+		$table_seq = $wpdb->prefix . 'conv_member_sequence';
 		$sql_seq   = "CREATE TABLE $table_seq (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             member_id BIGINT(20) UNSIGNED NOT NULL,
@@ -110,12 +110,12 @@ class Installer {
 		dbDelta( $sql_seq );
 
 		// Schedule daily log cleanup.
-		if ( ! wp_next_scheduled( 'bdv_log_cleanup' ) ) {
-			wp_schedule_event( time(), 'daily', 'bdv_log_cleanup' );
+		if ( ! wp_next_scheduled( 'conv_log_cleanup' ) ) {
+			wp_schedule_event( time(), 'daily', 'conv_log_cleanup' );
 		}
 		// Schedule daily log purge (60-day retention).
-		if ( ! wp_next_scheduled( 'bdv_log_purge' ) ) {
-			wp_schedule_event( time(), 'daily', 'bdv_log_purge' );
+		if ( ! wp_next_scheduled( 'conv_log_purge' ) ) {
+			wp_schedule_event( time(), 'daily', 'conv_log_purge' );
 		}
 
 		// Run migrations.
@@ -142,13 +142,13 @@ class Installer {
 	 */
 	public static function ensure_member_access_codes(): void {
 		global $wpdb;
-		$meta_key   = '_bdv_access_code';
+		$meta_key   = '_conv_access_code';
 		$batch_size = 100;
 		$start_time = time();
 		$max_time   = 25;
 
 		// Acquire lock to prevent concurrent runs.
-		if ( ! Utils::acquire_lock( 'bdv_access_code_generation', 300 ) ) {
+		if ( ! Utils::acquire_lock( 'conv_access_code_generation', 300 ) ) {
 			return;
 		}
 
@@ -183,11 +183,11 @@ class Installer {
 				}
 			} while ( true );
 
-			if ( ! wp_next_scheduled( 'bdv_continue_access_codes' ) ) {
-				wp_schedule_event( time() + 300, 'hourly', 'bdv_continue_access_codes' );
+			if ( ! wp_next_scheduled( 'conv_continue_access_codes' ) ) {
+				wp_schedule_event( time() + 300, 'hourly', 'conv_continue_access_codes' );
 			}
 		} finally {
-			Utils::release_lock( 'bdv_access_code_generation' );
+			Utils::release_lock( 'conv_access_code_generation' );
 		}
 	}
 
@@ -201,11 +201,11 @@ class Installer {
 		global $wpdb;
 		$remaining = (int) $wpdb->get_var(
 			"SELECT COUNT(*) FROM {$wpdb->posts} p
-             LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_bdv_access_code'
+             LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_conv_access_code'
              WHERE p.post_type = 'miembro' AND pm.meta_id IS NULL"
 		);
 		if ( $remaining === 0 ) {
-			wp_clear_scheduled_hook( 'bdv_continue_access_codes' );
+			wp_clear_scheduled_hook( 'conv_continue_access_codes' );
 		}
 	}
 }

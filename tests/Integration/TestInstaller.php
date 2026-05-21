@@ -40,10 +40,10 @@ class TestInstaller extends TestCase
 
         global $wpdb;
         $expected_tables = [
-            $wpdb->prefix . 'biodevas_logs',
-            $wpdb->prefix . 'biodevas_webhook_retries',
-            $wpdb->prefix . 'biodevas_locks',
-            $wpdb->prefix . 'bdv_member_sequence',
+            $wpdb->prefix . 'convoca_logs',
+            $wpdb->prefix . 'convoca_webhook_retries',
+            $wpdb->prefix . 'convoca_locks',
+            $wpdb->prefix . 'conv_member_sequence',
         ];
 
         foreach ($expected_tables as $table) {
@@ -66,7 +66,7 @@ class TestInstaller extends TestCase
         Installer::db_init();
 
         global $wpdb;
-        $table = $wpdb->prefix . 'biodevas_logs';
+        $table = $wpdb->prefix . 'convoca_logs';
         $columns = $wpdb->get_results("SHOW COLUMNS FROM $table");
 
         $column_names = array_map(function ($col) {
@@ -96,7 +96,7 @@ class TestInstaller extends TestCase
         Installer::db_init();
 
         global $wpdb;
-        $table = $wpdb->prefix . 'biodevas_logs';
+        $table = $wpdb->prefix . 'convoca_logs';
         $indexes = $wpdb->get_results("SHOW INDEX FROM $table");
 
         $index_names = array_map(function ($idx) {
@@ -122,7 +122,7 @@ class TestInstaller extends TestCase
         Installer::db_init();
 
         global $wpdb;
-        $table = $wpdb->prefix . 'biodevas_webhook_retries';
+        $table = $wpdb->prefix . 'convoca_webhook_retries';
         $columns = $wpdb->get_results("SHOW COLUMNS FROM $table");
 
         $column_names = array_map(function ($col) {
@@ -151,7 +151,7 @@ class TestInstaller extends TestCase
         Installer::db_init();
 
         global $wpdb;
-        $table = $wpdb->prefix . 'biodevas_locks';
+        $table = $wpdb->prefix . 'convoca_locks';
         $columns = $wpdb->get_results("SHOW COLUMNS FROM $table");
 
         $column_names = array_map(function ($col) {

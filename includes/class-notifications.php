@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Notifications {
 
-	const META_KEY = '_bdv_notifications';
+	const META_KEY = '_conv_notifications';
 
 	/**
 	 * Initialize hooks.
@@ -24,19 +24,19 @@ class Notifications {
 	public static function init(): void {
 		// Admin bar bell icon.
 		add_action( 'admin_bar_menu', array( __CLASS__, 'admin_bar_bell' ), 100 );
-		add_action( 'wp_ajax_bdv_notifications_mark_read', array( __CLASS__, 'ajax_mark_read' ) );
-		add_action( 'wp_ajax_bdv_notifications_dismiss', array( __CLASS__, 'ajax_dismiss' ) );
+		add_action( 'wp_ajax_conv_notifications_mark_read', array( __CLASS__, 'ajax_mark_read' ) );
+		add_action( 'wp_ajax_conv_notifications_dismiss', array( __CLASS__, 'ajax_dismiss' ) );
 
 		// Event hooks.
-		add_action( 'bdv_member_created', array( __CLASS__, 'on_member_created' ), 10, 2 );
-		add_action( 'biodevas_payment_failed', array( __CLASS__, 'on_payment_failed' ), 10, 2 );
-		add_action( 'biodevas_hours_submitted', array( __CLASS__, 'on_hours_submitted' ), 10, 2 );
-		add_action( 'bdv_inscripcion_pendiente_pago', array( __CLASS__, 'on_inscripcion_pendiente' ), 10, 2 );
-		add_action( 'bdv_voluntario_pendiente', array( __CLASS__, 'on_voluntario_pendiente' ), 10 );
-		add_action( 'biodevas_members_unsubscribe_request', array( __CLASS__, 'on_unsubscribe_request' ), 10 );
+		add_action( 'conv_member_created', array( __CLASS__, 'on_member_created' ), 10, 2 );
+		add_action( 'convoca_payment_failed', array( __CLASS__, 'on_payment_failed' ), 10, 2 );
+		add_action( 'convoca_hours_submitted', array( __CLASS__, 'on_hours_submitted' ), 10, 2 );
+		add_action( 'conv_inscripcion_pendiente_pago', array( __CLASS__, 'on_inscripcion_pendiente' ), 10, 2 );
+		add_action( 'conv_voluntario_pendiente', array( __CLASS__, 'on_voluntario_pendiente' ), 10 );
+		add_action( 'convoca_members_unsubscribe_request', array( __CLASS__, 'on_unsubscribe_request' ), 10 );
 
 		// Enhanced hooks: push + member notifications.
-		add_action( 'bdv_voluntario_aprobado', array( __CLASS__, 'on_voluntario_aprobado' ), 10 );
+		add_action( 'conv_voluntario_aprobado', array( __CLASS__, 'on_voluntario_aprobado' ), 10 );
 	}
 
 	/* ── Storage ── */
@@ -52,7 +52,7 @@ class Notifications {
 			)
 		);
 		$notification = array(
-			'id'    => uniqid( 'bdv_', true ),
+			'id'    => uniqid( 'conv_', true ),
 			'title' => $title,
 			'url'   => $url,
 			'type'  => $type,
@@ -76,7 +76,7 @@ class Notifications {
 	 */
 	public static function add_member( int $member_id, string $title, string $url = '', string $type = 'info' ): void {
 		$notification = array(
-			'id'    => uniqid( 'bdv_m_', true ),
+			'id'    => uniqid( 'conv_m_', true ),
 			'title' => $title,
 			'url'   => $url,
 			'type'  => $type,
@@ -263,9 +263,9 @@ class Notifications {
 					if (item && item.classList.contains('bdv-notif-unread')) {
 						var id = item.dataset.id;
 						var fd = new FormData();
-						fd.append('action', 'bdv_notifications_mark_read');
+						fd.append('action', 'conv_notifications_mark_read');
 						fd.append('id', id);
-						fd.append('nonce', '<?php echo wp_create_nonce( 'bdv_notifications_ajax' ); ?>');
+						fd.append('nonce', '<?php echo wp_create_nonce( 'conv_notifications_ajax' ); ?>');
 						fetch(ajaxurl, { method: 'POST', body: fd });
 						item.classList.remove('bdv-notif-unread');
 					}
@@ -278,9 +278,9 @@ class Notifications {
 					if (item) {
 						var id = item.dataset.id;
 						var fd = new FormData();
-						fd.append('action', 'bdv_notifications_dismiss');
+						fd.append('action', 'conv_notifications_dismiss');
 						fd.append('id', id);
-						fd.append('nonce', '<?php echo wp_create_nonce( 'bdv_notifications_ajax' ); ?>');
+						fd.append('nonce', '<?php echo wp_create_nonce( 'conv_notifications_ajax' ); ?>');
 						fetch(ajaxurl, { method: 'POST', body: fd }).then(function() { item.remove(); });
 					}
 				}
@@ -291,9 +291,9 @@ class Notifications {
 					document.querySelectorAll('.bdv-notif-item.bdv-notif-unread').forEach(function(item) {
 						var id = item.dataset.id;
 						var fd = new FormData();
-						fd.append('action', 'bdv_notifications_mark_read');
+						fd.append('action', 'conv_notifications_mark_read');
 						fd.append('id', id);
-						fd.append('nonce', '<?php echo wp_create_nonce( 'bdv_notifications_ajax' ); ?>');
+						fd.append('nonce', '<?php echo wp_create_nonce( 'conv_notifications_ajax' ); ?>');
 						fetch(ajaxurl, { method: 'POST', body: fd });
 						item.classList.remove('bdv-notif-unread');
 					});
@@ -307,7 +307,7 @@ class Notifications {
 	/* ── AJAX ── */
 
 	public static function ajax_mark_read(): void {
-		check_ajax_referer( 'bdv_notifications_ajax', 'nonce' );
+		check_ajax_referer( 'conv_notifications_ajax', 'nonce' );
 		if ( ! is_user_logged_in() ) {
 			return;
 		}
@@ -328,7 +328,7 @@ class Notifications {
 	}
 
 	public static function ajax_dismiss(): void {
-		check_ajax_referer( 'bdv_notifications_ajax', 'nonce' );
+		check_ajax_referer( 'conv_notifications_ajax', 'nonce' );
 		$id = sanitize_text_field( $_POST['id'] ?? '' );
 		if ( ! $id ) {
 			return;
@@ -393,7 +393,7 @@ class Notifications {
 					'posts_per_page' => 1,
 					'meta_query'     => array(
 						array(
-							'key'   => '_bdv_email',
+							'key'   => '_conv_email',
 							'value' => $email,
 						),
 					),
@@ -454,7 +454,7 @@ class Notifications {
 				'posts_per_page' => 1,
 				'meta_query'     => array(
 					array(
-						'key'   => '_bdv_email',
+						'key'   => '_conv_email',
 						'value' => $user->user_email,
 					),
 				),

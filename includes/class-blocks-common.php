@@ -31,7 +31,7 @@ class Blocks_Common {
 				'icon'  => 'admin-users',
 			),
 			array(
-				'slug'  => 'biodevas-turnos',
+				'slug'  => 'convoca-turnos',
 				'title' => 'Biodevas: Turnos',
 				'icon'  => 'calendar-alt',
 			),
@@ -61,7 +61,7 @@ class Blocks_Common {
 
 	public static function register_blocks() {
 		register_block_type(
-			'biodevas-common/post-meta-field',
+			'convoca-common/post-meta-field',
 			array(
 				'apiVersion'      => 3,
 				'title'           => __( 'Metadato de Post', 'convoca-core' ),

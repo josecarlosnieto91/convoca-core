@@ -18,9 +18,9 @@ class Utils {
 	const CAP_GESTIONAR_MIEMBROS          = 'gestionar_miembros';
 	const CAP_GESTIONAR_DOCS_VOLUNTARIADO = 'gestionar_documentos_voluntariado';
 	const CAP_VIEW_REPORTS                = 'view_reports';
-	const CAP_MANAGE_TEMPLATES            = 'manage_biodevas_templates';
-	const CAP_MANAGE_LOGS                 = 'manage_biodevas_logs';
-	const CAP_MANAGE_GATEWAY              = 'manage_biodevas_gateway';
+	const CAP_MANAGE_TEMPLATES            = 'manage_convoca_templates';
+	const CAP_MANAGE_LOGS                 = 'manage_convoca_logs';
+	const CAP_MANAGE_GATEWAY              = 'manage_convoca_gateway';
 	const CAP_GESTIONAR_MIS_TURNOS        = 'gestionar_mis_turnos';
 
 	/**
@@ -93,8 +93,8 @@ class Utils {
 	 * @return array|\WP_Error Result with URL.
 	 */
 	public static function get_payment_link( array $args ): array|\WP_Error {
-		if ( function_exists( '\Convoca\Gateway\bdv_gateway_create_payment' ) ) {
-			return \Convoca\Gateway\bdv_gateway_create_payment( $args );
+		if ( function_exists( '\Convoca\Gateway\conv_gateway_create_payment' ) ) {
+			return \Convoca\Gateway\conv_gateway_create_payment( $args );
 		}
 		return new \WP_Error( 'gateway_no_activo', 'La pasarela de pago no está activa.' );
 	}
@@ -171,7 +171,7 @@ class Utils {
 				$wpdb->prepare(
 					"SELECT pm.post_id FROM {$wpdb->postmeta} pm 
                  INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id 
-                 WHERE pm.meta_key = '_bdv_access_code' AND pm.meta_value = %s 
+                 WHERE pm.meta_key = '_conv_access_code' AND pm.meta_value = %s 
                  AND p.post_type = 'miembro' LIMIT 1",
 					$code
 				)
@@ -236,10 +236,10 @@ class Utils {
 	 */
 	public static function check_rate_limit( string $action, int $max = 10, int $window = 300 ): bool {
 		$ip        = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-		$cache_key = 'bdv_rl_' . $action . '_' . md5( $ip );
+		$cache_key = 'conv_rl_' . $action . '_' . md5( $ip );
 
 		// Try object cache first.
-		$cached = wp_cache_get( $cache_key, 'biodevas_rate_limits' );
+		$cached = wp_cache_get( $cache_key, 'convoca_rate_limits' );
 		if ( $cached !== false ) {
 			return $cached > 0;
 		}
@@ -286,12 +286,12 @@ class Utils {
 
 			// If within window, check limit.
 			if ( $stored_expires > $now && $attempts > $max ) {
-				wp_cache_set( $cache_key, 0, 'biodevas_rate_limits', $stored_expires - $now );
+				wp_cache_set( $cache_key, 0, 'convoca_rate_limits', $stored_expires - $now );
 				Logger::warning( "Rate limit exceeded for $action from IP $ip", 'Common/Security' );
 				return false;
 			}
 
-			wp_cache_set( $cache_key, 1, 'biodevas_rate_limits', max( 60, $stored_expires - $now ) );
+			wp_cache_set( $cache_key, 1, 'convoca_rate_limits', max( 60, $stored_expires - $now ) );
 			return true;
 		} catch ( \Exception $e ) {
 			Logger::error( 'Rate limit check failed: ' . $e->getMessage(), 'Common/Security' );
@@ -304,7 +304,7 @@ class Utils {
 	 */
 	private static function locks_table(): string {
 		global $wpdb;
-		return $wpdb->prefix . 'biodevas_locks';
+		return $wpdb->prefix . 'convoca_locks';
 	}
 
 	/**
@@ -316,7 +316,7 @@ class Utils {
 	 */
 	public static function acquire_lock( string $key, int $ttl = 60 ): bool {
 		global $wpdb;
-		$lock_key = 'bdv_lock_' . $key;
+		$lock_key = 'conv_lock_' . $key;
 		$expires  = time() + $ttl;
 
 		// Try dedicated locks table first.
@@ -395,7 +395,7 @@ class Utils {
 	 */
 	public static function release_lock( string $key ): bool {
 		global $wpdb;
-		$lock_key = 'bdv_lock_' . $key;
+		$lock_key = 'conv_lock_' . $key;
 
 		$locks_table  = self::locks_table();
 		$table_exists = $wpdb->get_var( "SHOW TABLES LIKE '$locks_table'" ) === $locks_table;
@@ -416,7 +416,7 @@ class Utils {
 			);
 		}
 
-		wp_cache_delete( $lock_key, 'biodevas_locks' );
+		wp_cache_delete( $lock_key, 'convoca_locks' );
 		return true;
 	}
 
@@ -438,7 +438,7 @@ class Utils {
 		$total += (int) $wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM $wpdb->options WHERE option_name LIKE %s AND CAST(option_value AS SIGNED) < %d",
-				'bdv_lock_%',
+				'conv_lock_%',
 				$now
 			)
 		);
@@ -465,13 +465,13 @@ class Utils {
 
 		// Fallback to internal logo if it exists.
 		if ( empty( $logo_url ) ) {
-			$logo_path = BDV_COMMON_DIR . 'assets/images/logo.png';
+			$logo_path = CONV_COMMON_DIR . 'assets/images/logo.png';
 			if ( file_exists( $logo_path ) ) {
-				$logo_url = BDV_COMMON_URL . 'assets/images/logo.png';
+				$logo_url = CONV_COMMON_URL . 'assets/images/logo.png';
 			}
 		}
 
-		return (string) apply_filters( "bdv_{$filter_suffix}_logo_url", $logo_url );
+		return (string) apply_filters( "conv_{$filter_suffix}_logo_url", $logo_url );
 	}
 
 	/**
@@ -503,10 +503,10 @@ class Utils {
 	 * @return string
 	 */
 	public static function get_persistent_salt(): string {
-		$salt = get_option( 'bdv_persistent_salt' );
+		$salt = get_option( 'conv_persistent_salt' );
 		if ( ! $salt ) {
 			$salt = wp_generate_password( 64, true, true );
-			update_option( 'bdv_persistent_salt', $salt, 'no' );
+			update_option( 'conv_persistent_salt', $salt, 'no' );
 		}
 		return $salt;
 	}
@@ -540,28 +540,28 @@ class Utils {
 
 		$title = $title ?: $default_title;
 		?>
-		<div class="biodevas-diagnostic">
-			<div class="biodevas-diagnostic-header biodevas-diagnostic-header--<?php echo esc_attr( $level ); ?>">
-				<div class="biodevas-diagnostic-icon biodevas-badge biodevas-badge--<?php echo esc_attr( $level ); ?>">
+		<div class="convoca-diagnostic">
+			<div class="convoca-diagnostic-header convoca-diagnostic-header--<?php echo esc_attr( $level ); ?>">
+				<div class="convoca-diagnostic-icon convoca-badge convoca-badge--<?php echo esc_attr( $level ); ?>">
 					<?php echo $icon; ?>
 				</div>
-				<div class="biodevas-diagnostic-summary">
+				<div class="convoca-diagnostic-summary">
 					<h3><?php echo esc_html( $title ); ?></h3>
 					<p><?php echo esc_html( $text ); ?></p>
 				</div>
 			</div>
 
-			<div class="biodevas-diagnostic-results">
+			<div class="convoca-diagnostic-results">
 				<?php foreach ( $checks as $check ) : ?>
-				<div class="biodevas-diagnostic-row">
-					<span class="biodevas-diagnostic-severity biodevas-badge biodevas-badge--<?php echo esc_attr( $check['status'] === 'error' ? 'error' : ( $check['status'] === 'warning' ? 'warning' : 'success' ) ); ?>">
+				<div class="convoca-diagnostic-row">
+					<span class="convoca-diagnostic-severity convoca-badge convoca-badge--<?php echo esc_attr( $check['status'] === 'error' ? 'error' : ( $check['status'] === 'warning' ? 'warning' : 'success' ) ); ?>">
 						<?php echo $check['status'] === 'error' ? '✗' : ( $check['status'] === 'warning' ? '⚠' : '✓' ); ?>
 					</span>
-					<div class="biodevas-diagnostic-content">
+					<div class="convoca-diagnostic-content">
 						<strong><?php echo esc_html( $check['title'] ); ?></strong>
-						<span class="biodevas-diagnostic-message"><?php echo esc_html( $check['message'] ); ?></span>
+						<span class="convoca-diagnostic-message"><?php echo esc_html( $check['message'] ); ?></span>
 						<?php if ( ! empty( $check['fix'] ) ) : ?>
-						<span class="biodevas-diagnostic-fix">💡 <?php echo esc_html( $check['fix'] ); ?></span>
+						<span class="convoca-diagnostic-fix">💡 <?php echo esc_html( $check['fix'] ); ?></span>
 						<?php endif; ?>
 					</div>
 				</div>
@@ -593,33 +593,33 @@ class Utils {
 	 * Render log level badge HTML using CSS classes.
 	 */
 	public static function render_log_level_badge( string $level ): string {
-		$css_class = 'biodevas-badge';
+		$css_class = 'convoca-badge';
 		switch ( $level ) {
 			case 'error':
-				$css_class .= ' biodevas-badge--error';
+				$css_class .= ' convoca-badge--error';
 				break;
 			case 'warning':
-				$css_class .= ' biodevas-badge--warning';
+				$css_class .= ' convoca-badge--warning';
 				break;
 			case 'success':
-				$css_class .= ' biodevas-badge--success';
+				$css_class .= ' convoca-badge--success';
 				break;
 			case 'info':
 			default:
-				$css_class .= ' biodevas-badge--info';
+				$css_class .= ' convoca-badge--info';
 				break;
 		}
 		return '<span class="' . esc_attr( $css_class ) . '">' . esc_html( ucfirst( $level ) ) . '</span>';
 	}
 
 	/**
-	 * Render a biodevas-alert notice.
+	 * Render a convoca-alert notice.
 	 *
 	 * @param string $message The message to display.
 	 * @param string $type    success|danger|warning|info.
 	 */
 	public static function admin_notice( string $message, string $type = 'success' ): void {
-		echo '<div class="biodevas-alert biodevas-alert--' . esc_attr( $type ) . '" role="alert" style="display:block;margin-bottom:20px;"><p>' . wp_kses_post( $message ) . '</p></div>';
+		echo '<div class="convoca-alert convoca-alert--' . esc_attr( $type ) . '" role="alert" style="display:block;margin-bottom:20px;"><p>' . wp_kses_post( $message ) . '</p></div>';
 	}
 
 	/**
@@ -629,23 +629,23 @@ class Utils {
 	 * @param string $type    success|danger|warning|info.
 	 */
 	public static function set_admin_notice( string $message, string $type = 'success' ): void {
-		$notices   = get_transient( 'bdv_notice_' . get_current_user_id() ) ?: array();
+		$notices   = get_transient( 'conv_notice_' . get_current_user_id() ) ?: array();
 		$notices[] = array(
 			'message' => $message,
 			'type'    => $type,
 		);
-		set_transient( 'bdv_notice_' . get_current_user_id(), $notices, 60 );
+		set_transient( 'conv_notice_' . get_current_user_id(), $notices, 60 );
 	}
 
 	/**
 	 * Render all stored notices for the current user and clear them.
 	 */
 	public static function render_stored_notices(): void {
-		$notices = get_transient( 'bdv_notice_' . get_current_user_id() );
+		$notices = get_transient( 'conv_notice_' . get_current_user_id() );
 		if ( ! $notices ) {
 			return;
 		}
-		delete_transient( 'bdv_notice_' . get_current_user_id() );
+		delete_transient( 'conv_notice_' . get_current_user_id() );
 		foreach ( $notices as $notice ) {
 			self::admin_notice( $notice['message'], $notice['type'] );
 		}
@@ -663,13 +663,13 @@ class Utils {
 
 	/**
 	 * Get a PDF template by key from the centralized option.
-	 * All plugins should use this instead of get_option('bdv_pdf_templates') directly.
+	 * All plugins should use this instead of get_option('conv_pdf_templates') directly.
 	 *
 	 * @param string $key Template key.
 	 * @return array|null Template data with 'name' and 'content', or null.
 	 */
 	public static function get_pdf_template( string $key ): ?array {
-		$templates = get_option( 'bdv_pdf_templates', array() );
+		$templates = get_option( 'conv_pdf_templates', array() );
 		return $templates[ $key ] ?? null;
 	}
 
@@ -679,7 +679,7 @@ class Utils {
 	 * @return array
 	 */
 	public static function get_pdf_templates(): array {
-		return get_option( 'bdv_pdf_templates', array() );
+		return get_option( 'conv_pdf_templates', array() );
 	}
 
 	/**
@@ -725,7 +725,7 @@ class Utils {
 	 * @return array Response data.
 	 */
 	public static function rest_cache_get( string $key, int $ttl, callable $callback ): array {
-		$cache_key = 'bdv_rest_' . md5( $key );
+		$cache_key = 'conv_rest_' . md5( $key );
 		$cached    = get_transient( $cache_key );
 		if ( false !== $cached ) {
 			return $cached;
@@ -739,6 +739,6 @@ class Utils {
 	 * Invalidate a REST cache key.
 	 */
 	public static function rest_cache_invalidate( string $key ): void {
-		delete_transient( 'bdv_rest_' . md5( $key ) );
+		delete_transient( 'conv_rest_' . md5( $key ) );
 	}
 }

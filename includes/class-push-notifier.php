@@ -19,7 +19,7 @@ class Push_Notifier {
 	/**
 	 * Option key for ntfy configuration.
 	 */
-	const CONFIG_OPTION = 'bdv_ntfy_config';
+	const CONFIG_OPTION = 'conv_ntfy_config';
 
 	/**
 	 * Send a push notification.
@@ -38,7 +38,7 @@ class Push_Notifier {
 		}
 
 		$server = untrailingslashit( $config['server'] ?? 'https://ntfy.sh' );.
-		$topic  = ! empty( $topic ) ? $topic : ( $config['topic'] ?? 'biodevas_alerts' );
+		$topic  = ! empty( $topic ) ? $topic : ( $config['topic'] ?? 'convoca_alerts' );
 		$url    = $server . '/' . $topic;
 
 		// Validate priority.
@@ -103,7 +103,7 @@ class Push_Notifier {
 	 */
 	public static function notify_admins( string $title, string $message, string $priority = 'default', array $tags = array() ): bool {
 		$config = get_option( self::CONFIG_OPTION, array() );
-		$topic  = $config['topic'] ?? 'biodevas_alerts';
+		$topic  = $config['topic'] ?? 'convoca_alerts';
 
 		if ( empty( $topic ) ) {
 			return false;
@@ -118,7 +118,7 @@ class Push_Notifier {
 	public static function get_defaults(): array {
 		return array(
 			'enabled' => false,
-			'topic'   => 'biodevas_alerts',
+			'topic'   => 'convoca_alerts',
 			'server'  => 'https://ntfy.sh',.
 		);
 	}

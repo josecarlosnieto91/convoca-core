@@ -17,11 +17,11 @@ class Settings_Helper {
 	 * Format: 'legacy_key' => 'standard_key'
 	 */
 	private const ALIASES = array(
-		'cst_hora_apertura'     => 'bdv_centro_hora_apertura',
-		'cst_hora_cierre'       => 'bdv_centro_hora_cierre',
-		'cst_calendar_page_url' => 'bdv_centro_calendar_page_url',
-		'bdg_settings'          => 'bdv_gateway_settings',
-		'bde_settings'          => 'bdv_enroll_settings',
+		'cst_hora_apertura'     => 'conv_centro_hora_apertura',
+		'cst_hora_cierre'       => 'conv_centro_hora_cierre',
+		'cst_calendar_page_url' => 'conv_centro_calendar_page_url',
+		'bdg_settings'          => 'conv_gateway_settings',
+		'bde_settings'          => 'conv_enroll_settings',
 	);
 
 	/**

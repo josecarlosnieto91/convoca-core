@@ -139,7 +139,7 @@
     function fetchMetrics() {
         if (isBackingOff) return;
 
-        var url = (window.bdvMonitor && window.bdvMonitor.restUrl) || '/wp-json/biodevas/v1/admin/metrics';
+        var url = (window.bdvMonitor && window.bdvMonitor.restUrl) || '/wp-json/convoca/v1/admin/metrics';
         var nonce = (window.bdvMonitor && window.bdvMonitor.nonce) || '';
         var controller = new AbortController();
         var timeoutId = setTimeout(function () {

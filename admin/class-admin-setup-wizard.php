@@ -15,18 +15,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Admin_Setup_Wizard {
 
-	const COMPLETED_OPTION = 'bdv_setup_wizard_completed';
-	const DISMISS_OPTION   = 'bdv_setup_wizard_dismissed';
-	const PROGRESS_OPTION  = 'bdv_setup_wizard_progress';
-	const SEEN_OPTION      = 'bdv_setup_wizard_seen';
+	const COMPLETED_OPTION = 'conv_setup_wizard_completed';
+	const DISMISS_OPTION   = 'conv_setup_wizard_dismissed';
+	const PROGRESS_OPTION  = 'conv_setup_wizard_progress';
+	const SEEN_OPTION      = 'conv_setup_wizard_seen';
 
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
 		add_action( 'admin_init', array( $this, 'maybe_redirect' ) );
-		add_action( 'admin_post_bdv_wizard_save', array( $this, 'handle_save' ) );
-		add_action( 'admin_post_bdv_wizard_skip', array( $this, 'handle_skip' ) );
-		add_action( 'admin_post_bdv_wizard_create_pages', array( $this, 'handle_create_pages' ) );
-		add_action( 'admin_post_bdv_wizard_complete', array( $this, 'handle_complete' ) );
+		add_action( 'admin_post_conv_wizard_save', array( $this, 'handle_save' ) );
+		add_action( 'admin_post_conv_wizard_skip', array( $this, 'handle_skip' ) );
+		add_action( 'admin_post_conv_wizard_create_pages', array( $this, 'handle_create_pages' ) );
+		add_action( 'admin_post_conv_wizard_complete', array( $this, 'handle_complete' ) );
 	}
 
 	public function register_page(): void {
@@ -95,7 +95,7 @@ class Admin_Setup_Wizard {
 		global $wpdb;
 
 		// 1. Tables
-		foreach ( array( 'biodevas_logs', 'biodevas_locks' ) as $t ) {
+		foreach ( array( 'convoca_logs', 'convoca_locks' ) as $t ) {
 			if ( $wpdb->get_var( "SHOW TABLES LIKE '{$wpdb->prefix}{$t}'" ) !== $wpdb->prefix . $t ) {
 				return false;
 			}
@@ -117,7 +117,7 @@ class Admin_Setup_Wizard {
 	}
 
 	public function handle_skip(): void {
-		check_admin_referer( 'bdv_wizard_skip' );
+		check_admin_referer( 'conv_wizard_skip' );
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( 'Access denied.' );
 		}
@@ -159,7 +159,7 @@ class Admin_Setup_Wizard {
 			</div>
 
 			<div style="text-align:center;margin-top:30px;">
-				<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=bdv_wizard_skip' ), 'bdv_wizard_skip' ) ); ?>" style="color:#94a3b8;text-decoration:none;font-size:13px;font-weight:500;">
+				<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=conv_wizard_skip' ), 'conv_wizard_skip' ) ); ?>" style="color:#94a3b8;text-decoration:none;font-size:13px;font-weight:500;">
 					<?php esc_html_e( 'Omitir asistente y configurar manualmente', 'convoca-core' ); ?>
 				</a>
 			</div>
@@ -201,7 +201,7 @@ class Admin_Setup_Wizard {
 
 		$checks[] = $this->check_item( __( 'Biodevas Common', 'convoca-core' ), class_exists( '\\Convoca\\Core\\Utils' ), __( 'Plugin activo.', 'convoca-core' ), __( 'Activa Biodevas Common.', 'convoca-core' ) );
 
-		foreach ( array( 'biodevas_logs', 'biodevas_locks' ) as $t ) {
+		foreach ( array( 'convoca_logs', 'convoca_locks' ) as $t ) {
 			$exists   = $wpdb->get_var( "SHOW TABLES LIKE '{$wpdb->prefix}{$t}'" ) === $wpdb->prefix . $t;
 			$checks[] = $this->check_item( sprintf( __( 'Tabla %s', 'convoca-core' ), $t ), $exists, __( 'Correcto.', 'convoca-core' ), __( 'No encontrada.', 'convoca-core' ) );
 		}
@@ -238,7 +238,7 @@ class Admin_Setup_Wizard {
 		$pages = array(
 			'alta-socios' => array(
 				'title' => 'Alta de Socios',
-				'sc'    => '[biodevas_alta]',
+				'sc'    => '[convoca_alta]',
 				'req'   => true,
 			),
 			'panel-socio' => array(
@@ -248,14 +248,14 @@ class Admin_Setup_Wizard {
 			),
 			'pago'        => array(
 				'title' => 'Página de Pago',
-				'sc'    => '[biodevas_pago]',
+				'sc'    => '[convoca_pago]',
 				'req'   => true,
 			),
 		);
 
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
-		wp_nonce_field( 'bdv_wizard_create_pages' );
-		echo '<input type="hidden" name="action" value="bdv_wizard_create_pages">';
+		wp_nonce_field( 'conv_wizard_create_pages' );
+		echo '<input type="hidden" name="action" value="conv_wizard_create_pages">';
 		echo '<table style="width:100%;margin-bottom:20px;">';
 		$all_mand = true;
 		foreach ( $pages as $slug => $info ) {
@@ -268,7 +268,7 @@ class Admin_Setup_Wizard {
 		}
 		echo '</table>';
 		if ( ! $all_mand ) {
-			submit_button( __( 'Crear páginas faltantes', 'convoca-core' ), 'biodevas-btn biodevas-btn-primary', '', false );
+			submit_button( __( 'Crear páginas faltantes', 'convoca-core' ), 'convoca-btn convoca-btn-primary', '', false );
 		}
 		echo '</form>';
 
@@ -276,12 +276,12 @@ class Admin_Setup_Wizard {
 	}
 
 	public function handle_create_pages(): void {
-		check_admin_referer( 'bdv_wizard_create_pages' );
+		check_admin_referer( 'conv_wizard_create_pages' );
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( 'Access denied.' );
 		}
 
-		if ( ! \Convoca\Core\Utils::acquire_lock( 'bdv_wizard_create_pages', 30 ) ) {
+		if ( ! \Convoca\Core\Utils::acquire_lock( 'conv_wizard_create_pages', 30 ) ) {
 			wp_die( 'Otra operación de creación de páginas está en curso.' );
 		}
 
@@ -289,7 +289,7 @@ class Admin_Setup_Wizard {
 			$pages = array(
 				'alta-socios' => array(
 					'title' => 'Alta de Socios',
-					'sc'    => '[biodevas_alta]',
+					'sc'    => '[convoca_alta]',
 				),
 				'panel-socio' => array(
 					'title' => 'Mi Panel de Socio',
@@ -297,7 +297,7 @@ class Admin_Setup_Wizard {
 				),
 				'pago'        => array(
 					'title' => 'Pago',
-					'sc'    => '[biodevas_pago]',
+					'sc'    => '[convoca_pago]',
 				),
 			);
 
@@ -321,7 +321,7 @@ class Admin_Setup_Wizard {
 				}
 			}
 		} finally {
-			\Convoca\Core\Utils::release_lock( 'bdv_wizard_create_pages' );
+			\Convoca\Core\Utils::release_lock( 'conv_wizard_create_pages' );
 		}
 
 		wp_safe_redirect( admin_url( 'admin.php?page=bdv-setup-wizard&step=2' ) );
@@ -356,12 +356,12 @@ class Admin_Setup_Wizard {
 		?>
 		<h2><?php esc_html_e( '4. Configuración de Redsys', 'convoca-core' ); ?></h2>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<?php wp_nonce_field( 'bdv_wizard_save' ); ?>
-			<input type="hidden" name="action" value="bdv_wizard_save">
+			<?php wp_nonce_field( 'conv_wizard_save' ); ?>
+			<input type="hidden" name="action" value="conv_wizard_save">
 			<input type="hidden" name="wizard_step" value="4">
 			<p><label>Merchant Code:</label><input type="text" name="merchant_code" value="<?php echo esc_attr( $settings['merchant_code'] ?? '' ); ?>"></p>
 			<p><label>Secret Key:</label><input type="password" name="secret_key" value="<?php echo esc_attr( $settings['secret_key'] ?? '' ); ?>"></p>
-			<button type="submit" class="biodevas-btn biodevas-btn-primary"><?php esc_html_e( 'Guardar', 'convoca-core' ); ?></button>
+			<button type="submit" class="convoca-btn convoca-btn-primary"><?php esc_html_e( 'Guardar', 'convoca-core' ); ?></button>
 		</form>
 		<?php
 		$this->step_nav( 4, true );
@@ -373,12 +373,12 @@ class Admin_Setup_Wizard {
 		?>
 		<h2><?php esc_html_e( '5. Centro Social Turnos', 'convoca-core' ); ?></h2>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<?php wp_nonce_field( 'bdv_wizard_save' ); ?>
-			<input type="hidden" name="action" value="bdv_wizard_save">
+			<?php wp_nonce_field( 'conv_wizard_save' ); ?>
+			<input type="hidden" name="action" value="conv_wizard_save">
 			<input type="hidden" name="wizard_step" value="5">
 			<p><label>Hora Apertura:</label><input type="time" name="cst_apertura" value="<?php echo esc_attr( get_option( 'cst_hora_apertura', '09:00' ) ); ?>"></p>
 			<p><label>Hora Cierre:</label><input type="time" name="cst_cierre" value="<?php echo esc_attr( get_option( 'cst_hora_cierre', '22:00' ) ); ?>"></p>
-			<button type="submit" class="biodevas-btn biodevas-btn-primary"><?php esc_html_e( 'Guardar', 'convoca-core' ); ?></button>
+			<button type="submit" class="convoca-btn convoca-btn-primary"><?php esc_html_e( 'Guardar', 'convoca-core' ); ?></button>
 		</form>
 		<?php
 		$this->step_nav( 5, true );
@@ -392,9 +392,9 @@ class Admin_Setup_Wizard {
 		<h2><?php esc_html_e( '6. Finalización', 'convoca-core' ); ?></h2>
 		<?php if ( $status['is_ready'] ) : ?>
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-				<?php wp_nonce_field( 'bdv_wizard_complete' ); ?>
-				<input type="hidden" name="action" value="bdv_wizard_complete">
-				<button type="submit" class="biodevas-btn biodevas-btn-primary"><?php esc_html_e( 'Finalizar configuración', 'convoca-core' ); ?></button>
+				<?php wp_nonce_field( 'conv_wizard_complete' ); ?>
+				<input type="hidden" name="action" value="conv_wizard_complete">
+				<button type="submit" class="convoca-btn convoca-btn-primary"><?php esc_html_e( 'Finalizar configuración', 'convoca-core' ); ?></button>
 			</form>
 		<?php else : ?>
 			<p>⚠ <?php esc_html_e( 'Faltan requisitos obligatorios.', 'convoca-core' ); ?></p>
@@ -407,7 +407,7 @@ class Admin_Setup_Wizard {
 	}
 
 	public function handle_save(): void {
-		check_admin_referer( 'bdv_wizard_save' );
+		check_admin_referer( 'conv_wizard_save' );
 		$step = (int) $_POST['wizard_step'];
 		if ( $step === 4 ) {
 			$settings                  = get_option( 'bdg_settings', array() );
@@ -425,7 +425,7 @@ class Admin_Setup_Wizard {
 	}
 
 	public function handle_complete(): void {
-		check_admin_referer( 'bdv_wizard_complete' );
+		check_admin_referer( 'conv_wizard_complete' );
 		update_option( self::COMPLETED_OPTION, 1 );
 		delete_option( self::PROGRESS_OPTION );
 		wp_safe_redirect( admin_url() );
@@ -435,12 +435,12 @@ class Admin_Setup_Wizard {
 	private function step_nav( int $current, bool $can_continue ): void {
 		echo '<div style="margin-top:35px;display:flex;justify-content:space-between;">';
 		if ( $current > 1 ) {
-			echo '<a href="' . esc_url( admin_url( 'admin.php?page=bdv-setup-wizard&step=' . ( $current - 1 ) ) ) . '" class="biodevas-btn biodevas-btn-outline">Anterior</a>';
+			echo '<a href="' . esc_url( admin_url( 'admin.php?page=bdv-setup-wizard&step=' . ( $current - 1 ) ) ) . '" class="convoca-btn convoca-btn-outline">Anterior</a>';
 		} else {
 			echo '<div></div>';
 		}
 		if ( $can_continue && $current < 6 ) {
-			echo '<a href="' . esc_url( admin_url( 'admin.php?page=bdv-setup-wizard&step=' . ( $current + 1 ) ) ) . '" class="biodevas-btn biodevas-btn-primary">Siguiente</a>';
+			echo '<a href="' . esc_url( admin_url( 'admin.php?page=bdv-setup-wizard&step=' . ( $current + 1 ) ) ) . '" class="convoca-btn convoca-btn-primary">Siguiente</a>';
 		}
 		echo '</div>';
 	}

@@ -30,7 +30,7 @@ class Features {
 	 * Comprueba si el plugin Biodevas Members está activo.
 	 */
 	public static function is_members_active(): bool {
-		return class_exists( '\Convoca\Members\Member_Auth' ) || defined( 'BDV_MEMBERS_VERSION' );
+		return class_exists( '\Convoca\Members\Member_Auth' ) || defined( 'CONV_MEMBERS_VERSION' );
 	}
 
 	/**
@@ -41,11 +41,11 @@ class Features {
 	}
 
 	/**
-	 * Comprueba si el theme activo es biodevas-theme.
+	 * Comprueba si el theme activo es convoca-theme.
 	 */
-	public static function is_biodevas_theme_active(): bool {
+	public static function is_convoca_theme_active(): bool {
 		$theme = wp_get_theme();
-		return $theme->get_template() === 'biodevas-theme';
+		return $theme->get_template() === 'convoca-theme';
 	}
 
 	/**

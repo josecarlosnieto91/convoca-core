@@ -37,7 +37,7 @@ class TestCapabilities extends TestCase
         // Verify a few known capabilities exist.
         $this->assertArrayHasKey('cst_manage_turnos', $caps);
         $this->assertArrayHasKey('bde_manage_checkin', $caps);
-        $this->assertArrayHasKey('bdv_manage_hours', $caps);
+        $this->assertArrayHasKey('conv_manage_hours', $caps);
         $this->assertArrayHasKey('bdg_view_payments', $caps);
         $this->assertArrayHasKey('common_view_logs', $caps);
         $this->assertArrayHasKey('common_manage_backup', $caps);
@@ -152,11 +152,11 @@ class TestCapabilities extends TestCase
         $this->assertTrue($monitor->has_cap('manage_inscripciones'));
         $this->assertTrue($monitor->has_cap('cst_manage_turnos'));
         $this->assertTrue($monitor->has_cap('bde_manage_checkin'));
-        $this->assertTrue($monitor->has_cap('bdv_manage_hours'));
+        $this->assertTrue($monitor->has_cap('conv_manage_hours'));
 
         // Admin-only capabilities should NOT be on monitor.
-        $this->assertFalse($monitor->has_cap('bdv_export_members'));
-        $this->assertFalse($monitor->has_cap('bdv_manage_webhooks'));
+        $this->assertFalse($monitor->has_cap('conv_export_members'));
+        $this->assertFalse($monitor->has_cap('conv_manage_webhooks'));
         $this->assertFalse($monitor->has_cap('common_manage_backup'));
     }
 

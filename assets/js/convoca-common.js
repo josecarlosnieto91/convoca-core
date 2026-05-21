@@ -3,12 +3,12 @@
  * Version 1.2.1
  * 
  * Asset versioning: Assets are versioned via the plugin version constant.
- * When updating biodevas-common, bump the version to force cache refresh.
+ * When updating convoca-common, bump the version to force cache refresh.
  * 
  * @since 1.2.0 Initial release
  * @since 1.2.1 Fixed observeDynamicForms, showAlert whitelist, copyToClipboard fallback
  */
-window.biodevas = window.biodevas || {};
+window.convoca = window.convoca || {};
 
 (function (bdv) {
   'use strict';
@@ -30,7 +30,7 @@ window.biodevas = window.biodevas || {};
       type = 'danger';
     }
     element.innerHTML = message;
-    element.className = 'biodevas-alert biodevas-alert--' + type;
+    element.className = 'convoca-alert convoca-alert--' + type;
     element.style.display = 'block';
     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
@@ -167,18 +167,18 @@ window.biodevas = window.biodevas || {};
 
   /**
    * Basic Tab interaction functionality initialization.
-   * Uses semantic .biodevas-tab-btn and .biodevas-tab-content data bindings.
+   * Uses semantic .convoca-tab-btn and .convoca-tab-content data bindings.
    * Expects DOM struct: 
-   *    <button class="biodevas-tab-btn active" data-tab-target="pane-1">Tab</button>
-   *    <div id="pane-1" class="biodevas-tab-content">...</div>
+   *    <button class="convoca-tab-btn active" data-tab-target="pane-1">Tab</button>
+   *    <div id="pane-1" class="convoca-tab-content">...</div>
    * @param {string} containerSelector - The DOM CSS selector restricting tab search area.
    */
   bdv.initTabs = function (containerSelector) {
      const container = bdv.$(containerSelector);
      if (!container) return;
 
-     const tabBtns = bdv.$$('.biodevas-tab-btn', container);
-     const tabPanels = bdv.$$('.biodevas-tab-content', container);
+     const tabBtns = bdv.$$('.convoca-tab-btn', container);
+     const tabPanels = bdv.$$('.convoca-tab-content', container);
 
      tabBtns.forEach(btn => {
          btn.addEventListener('click', (e) => {
@@ -294,7 +294,7 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
            
            fields.forEach(f => {
                const tag = f.tagName.toLowerCase();
-               const field = f.closest('.biodevas-field');
+               const field = f.closest('.convoca-field');
                let valid = true;
                
                if (tag === 'textarea') {
@@ -391,28 +391,28 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
     * Safe localStorage wrapper with versioned schema
     */
    bdv.storage = {
-       VERSION_KEY: 'biodevas_version',
+       VERSION_KEY: 'convoca_version',
        set: function(key, value) {
            try {
-               localStorage.setItem('biodevas_' + key, JSON.stringify(value));
+               localStorage.setItem('convoca_' + key, JSON.stringify(value));
            } catch(e) {}
        },
        get: function(key, defaultValue) {
            try {
-               var raw = localStorage.getItem('biodevas_' + key);
+               var raw = localStorage.getItem('convoca_' + key);
                if (!raw) return defaultValue;
                var parsed = JSON.parse(raw);
                return parsed;
            } catch(e) {
                try {
-                   localStorage.removeItem('biodevas_' + key);
+                   localStorage.removeItem('convoca_' + key);
                } catch(e2) {}
                return defaultValue;
            }
        },
        remove: function(key) {
            try {
-               localStorage.removeItem('biodevas_' + key);
+               localStorage.removeItem('convoca_' + key);
            } catch(e) {}
        }
    };
@@ -448,17 +448,17 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
   };
 
   /**
-   * Shows an inline error message under a .biodevas-field element.
-   * @param {HTMLElement} field - The .biodevas-field wrapper.
+   * Shows an inline error message under a .convoca-field element.
+   * @param {HTMLElement} field - The .convoca-field wrapper.
    * @param {string} message - Error text to display.
    */
   bdv.showFieldError = function (field, message) {
     if (!field) return;
     field.classList.add('has-error');
-    let msgEl = field.querySelector('.biodevas-error-msg');
+    let msgEl = field.querySelector('.convoca-error-msg');
     if (!msgEl) {
       msgEl = document.createElement('small');
-      msgEl.className = 'biodevas-error-msg';
+      msgEl.className = 'convoca-error-msg';
       field.appendChild(msgEl);
     }
     msgEl.textContent = message;
@@ -466,13 +466,13 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
   };
 
   /**
-   * Clears the inline error for a .biodevas-field element.
+   * Clears the inline error for a .convoca-field element.
    * @param {HTMLElement} field
    */
   bdv.clearFieldError = function (field) {
     if (!field) return;
     field.classList.remove('has-error');
-    const msgEl = field.querySelector('.biodevas-error-msg');
+    const msgEl = field.querySelector('.convoca-error-msg');
     if (msgEl) {
       msgEl.textContent = '';
       msgEl.style.display = 'none';
@@ -481,7 +481,7 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
 
   /**
    * Validates a single field and shows/clears inline error.
-   * @param {HTMLElement} field - .biodevas-field wrapper.
+   * @param {HTMLElement} field - .convoca-field wrapper.
    * @returns {boolean}
    */
   bdv.validateField = function (field) {
@@ -534,20 +534,20 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
    * Adds 'is-checked' class when radio is checked.
    */
   bdv.initRatingStars = function () {
-    document.querySelectorAll('.biodevas-rating-stars').forEach(function (group) {
+    document.querySelectorAll('.convoca-rating-stars').forEach(function (group) {
       group.querySelectorAll('input[type="radio"]').forEach(function (radio) {
         radio.addEventListener('change', function () {
           // Remove is-checked from all siblings in same group
-          group.querySelectorAll('.biodevas-rating-star').forEach(function (star) {
+          group.querySelectorAll('.convoca-rating-star').forEach(function (star) {
             star.classList.remove('is-checked');
           });
           // Add it to the clicked star's parent label
-          var label = radio.closest('.biodevas-rating-star');
+          var label = radio.closest('.convoca-rating-star');
           if (label) label.classList.add('is-checked');
         });
         // Set initial state
         if (radio.checked) {
-          var label = radio.closest('.biodevas-rating-star');
+          var label = radio.closest('.convoca-rating-star');
           if (label) label.classList.add('is-checked');
         }
       });
@@ -560,4 +560,4 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
     bdv.initRatingStars();
   }
 
-})(window.biodevas);
+})(window.convoca);

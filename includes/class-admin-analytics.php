@@ -21,7 +21,7 @@ class Admin_Analytics {
 	const CACHE_TTL = 300;
 
 	/** Metric groups (used for partial invalidation). */
-	const CACHE_PREFIX = 'bdv_analytics_';
+	const CACHE_PREFIX = 'conv_analytics_';
 
 	/**
 	 * Get all metrics aggregated across plugins.
@@ -82,7 +82,7 @@ class Admin_Analytics {
                 SUM(IF(pm.meta_value = 'pendiente_documentacion', 1, 0)) AS pendientes_doc
              FROM {$wpdb->postmeta} pm
              JOIN {$wpdb->posts} ON {$wpdb->posts}.ID = pm.post_id AND $campo
-             WHERE pm.meta_key = '_bdv_estado_miembro"
+             WHERE pm.meta_key = '_conv_estado_miembro"
 		);
 
 		$total = (int) $wpdb->get_var(
@@ -100,8 +100,8 @@ class Admin_Analytics {
 		$vencen_7d = (int) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$wpdb->posts} p
-             JOIN {$wpdb->postmeta} pe ON p.ID = pe.post_id AND pe.meta_key = '_bdv_estado_miembro' AND pe.meta_value = 'activo'
-             JOIN {$wpdb->postmeta} pr ON p.ID = pr.post_id AND pr.meta_key = '_bdv_fecha_renovacion'
+             JOIN {$wpdb->postmeta} pe ON p.ID = pe.post_id AND pe.meta_key = '_conv_estado_miembro' AND pe.meta_value = 'activo'
+             JOIN {$wpdb->postmeta} pr ON p.ID = pr.post_id AND pr.meta_key = '_conv_fecha_renovacion'
              WHERE p.post_type = 'miembro' AND p.post_status = 'publish'
              AND CAST(pr.meta_value AS DATE) BETWEEN %s AND %s",
 				$hoy,

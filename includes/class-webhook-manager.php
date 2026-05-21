@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Webhook_Manager {
 
 	/** Option key for stored webhooks. */
-	private const OPTION = 'bdv_webhooks';
+	private const OPTION = 'conv_webhooks';
 
 	/** Supported event types. */
 	public const EVENTS = array(
@@ -58,14 +58,14 @@ class Webhook_Manager {
 	 */
 	private static function get_retry_table_name(): string {
 		global $wpdb;
-		return $wpdb->prefix . 'biodevas_webhook_retries';
+		return $wpdb->prefix . 'convoca_webhook_retries';
 	}
 
 	public function __construct() {
 		$this->register_hooks();
 
 		// Register cron hook for webhook retries.
-		add_action( 'bdv_webhook_retry', array( __CLASS__, 'process_retries' ) );
+		add_action( 'conv_webhook_retry', array( __CLASS__, 'process_retries' ) );
 	}
 
 	/**
@@ -101,8 +101,8 @@ class Webhook_Manager {
 			array(
 				'member_id' => $member_id,
 				'nombre'    => get_the_title( $member_id ),
-				'email'     => get_post_meta( $member_id, '_bdv_email', true ),
-				'plan'      => get_post_meta( $member_id, '_bdv_plan', true ),
+				'email'     => get_post_meta( $member_id, '_conv_email', true ),
+				'plan'      => get_post_meta( $member_id, '_conv_plan', true ),
 			)
 		);
 	}
@@ -140,7 +140,7 @@ class Webhook_Manager {
 			array(
 				'member_id'        => $member_id,
 				'nombre'           => get_the_title( $member_id ),
-				'fecha_renovacion' => get_post_meta( $member_id, '_bdv_fecha_renovacion', true ),
+				'fecha_renovacion' => get_post_meta( $member_id, '_conv_fecha_renovacion', true ),
 			)
 		);
 	}
@@ -185,7 +185,7 @@ class Webhook_Manager {
 			array(
 				'inscripcion_id' => $inscripcion_id,
 				'actividad_id'   => $actividad_id,
-				'nombre'         => get_post_meta( $inscripcion_id, '_bdv_nombre', true ),
+				'nombre'         => get_post_meta( $inscripcion_id, '_conv_nombre', true ),
 			)
 		);
 	}
@@ -216,8 +216,8 @@ class Webhook_Manager {
 			array(
 				'registro_id' => $registro_id,
 				'member_id'   => $member_id,
-				'horas'       => get_post_meta( $registro_id, '_bdv_horas', true ),
-				'descripcion' => get_post_meta( $registro_id, '_bdv_descripcion', true ),
+				'horas'       => get_post_meta( $registro_id, '_conv_horas', true ),
+				'descripcion' => get_post_meta( $registro_id, '_conv_descripcion', true ),
 			)
 		);
 	}
@@ -228,7 +228,7 @@ class Webhook_Manager {
 			array(
 				'registro_id' => $registro_id,
 				'member_id'   => $member_id,
-				'horas'       => get_post_meta( $registro_id, '_bdv_horas', true ),
+				'horas'       => get_post_meta( $registro_id, '_conv_horas', true ),
 			)
 		);
 	}
@@ -239,7 +239,7 @@ class Webhook_Manager {
 			array(
 				'registro_id' => $registro_id,
 				'member_id'   => $member_id,
-				'horas'       => get_post_meta( $registro_id, '_bdv_horas', true ),
+				'horas'       => get_post_meta( $registro_id, '_conv_horas', true ),
 			)
 		);
 	}
@@ -260,7 +260,7 @@ class Webhook_Manager {
 		}
 
 		// Dedup: prevent duplicate notifications for the same event+payload within 10 seconds.
-		$dedup_key = 'bdv_webhook_dedup_' . $event . '_' . md5( wp_json_encode( $payload ) );
+		$dedup_key = 'conv_webhook_dedup_' . $event . '_' . md5( wp_json_encode( $payload ) );
 		if ( get_transient( $dedup_key ) ) {
 			Logger::debug( "Webhook $event omitido (dedup dentro de 10s)", 'Common/Webhook' );
 			return;
@@ -408,8 +408,8 @@ class Webhook_Manager {
 		);
 
 		// Schedule cron job if not already scheduled.
-		if ( ! wp_next_scheduled( 'bdv_webhook_retry' ) ) {
-			wp_schedule_event( time(), 'hourly', 'bdv_webhook_retry' );
+		if ( ! wp_next_scheduled( 'conv_webhook_retry' ) ) {
+			wp_schedule_event( time(), 'hourly', 'conv_webhook_retry' );
 		}
 
 		Logger::info( sprintf( 'Webhook retry scheduled: intento %d en %ds para %s', $attempt, $delay, $webhook['url'] ), 'Common/Webhook' );
@@ -424,10 +424,10 @@ class Webhook_Manager {
 		$table_name = self::get_retry_table_name();
 
 		// Acquire lock to prevent concurrent runs.
-		if ( get_transient( 'bdv_webhook_retry_lock' ) ) {
+		if ( get_transient( 'conv_webhook_retry_lock' ) ) {
 			return;
 		}
-		set_transient( 'bdv_webhook_retry_lock', true, 10 * MINUTE_IN_SECONDS );
+		set_transient( 'conv_webhook_retry_lock', true, 10 * MINUTE_IN_SECONDS );
 
 		try {
 			// Get retries that are due.
@@ -498,7 +498,7 @@ class Webhook_Manager {
 				}
 			}
 		} finally {
-			delete_transient( 'bdv_webhook_retry_lock' );
+			delete_transient( 'conv_webhook_retry_lock' );
 		}
 	}
 
@@ -669,7 +669,7 @@ class Webhook_Manager {
 	 * Uses autoload=no to avoid loading in every page load.
 	 */
 	private static function log_delivery( string $webhook_id, string $event, bool $success, string $message ): void {
-		$log_key = 'bdv_webhook_log_' . $webhook_id;
+		$log_key = 'conv_webhook_log_' . $webhook_id;
 		$logs    = get_option( $log_key, array() );
 
 		$logs[] = array(
@@ -692,7 +692,7 @@ class Webhook_Manager {
 	 * Get delivery logs for a webhook.
 	 */
 	public static function get_delivery_logs( string $webhook_id, int $limit = 20 ): array {
-		$logs = get_option( 'bdv_webhook_log_' . $webhook_id, array() );
+		$logs = get_option( 'conv_webhook_log_' . $webhook_id, array() );
 		return array_slice( array_reverse( $logs ), 0, $limit );
 	}
 
@@ -700,6 +700,6 @@ class Webhook_Manager {
 	 * Clear delivery logs for a webhook.
 	 */
 	public static function clear_delivery_logs( string $webhook_id ): void {
-		delete_option( 'bdv_webhook_log_' . $webhook_id );
+		delete_option( 'conv_webhook_log_' . $webhook_id );
 	}
 }

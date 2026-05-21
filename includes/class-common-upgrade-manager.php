@@ -5,7 +5,7 @@
  * Handles database structure upgrades for the common plugin.
  *
  * To add a new upgrade:
- * 1. Increment BDV_COMMON_DB_VERSION in biodevas-common.php
+ * 1. Increment CONV_COMMON_DB_VERSION in convoca-common.php
  * 2. Add a callback: '1.0.1' => [$this, 'upgrade_to_1_0_1']
  * 3. Implement the private method with idempotent logic.
  *
@@ -25,15 +25,15 @@ class Common_Upgrade_Manager extends Upgrade_Manager {
 	}
 
 	protected function get_db_version(): string {
-		return defined( 'BDV_COMMON_DB_VERSION' ) ? BDV_COMMON_DB_VERSION : '0.0.0';
+		return defined( 'CONV_COMMON_DB_VERSION' ) ? CONV_COMMON_DB_VERSION : '0.0.0';
 	}
 
 	protected function get_option_name(): string {
-		return 'bdv_common_db_version';
+		return 'conv_common_db_version';
 	}
 
 	protected function get_transient_prefix(): string {
-		return 'bdv_common';
+		return 'conv_common';
 	}
 
 	protected function get_upgrade_callbacks(): array {
@@ -43,14 +43,14 @@ class Common_Upgrade_Manager extends Upgrade_Manager {
 	}
 
 	/**
-	 * Upgrade to 1.0.1: Add whatsapp_reminder_sent column to biodevas_logs table.
+	 * Upgrade to 1.0.1: Add whatsapp_reminder_sent column to convoca_logs table.
 	 *
 	 * This column tracks whether a WhatsApp reminder has been sent for a log entry.
 	 * Idempotent: checks if column exists before adding.
 	 */
 	protected function upgrade_to_1_0_1(): void {
 		global $wpdb;
-		$table  = $wpdb->prefix . 'biodevas_logs';
+		$table  = $wpdb->prefix . 'convoca_logs';
 		$column = 'whatsapp_reminder_sent';
 
 		// Check if table exists first.

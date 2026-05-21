@@ -22,7 +22,7 @@ class PDF_Serve {
 	 */
 	public static function serve( string $filename ): void {
 		$upload_dir = wp_upload_dir();
-		$file_path  = $upload_dir['basedir'] . '/biodevas-documentos/' . basename( $filename );
+		$file_path  = $upload_dir['basedir'] . '/convoca-documentos/' . basename( $filename );
 
 		if ( ! file_exists( $file_path ) ) {
 			wp_die( 'Archivo no encontrado.', '', array( 'response' => 404 ) );

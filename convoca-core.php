@@ -15,20 +15,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! defined( 'BDV_COMMON_VERSION' ) ) {
-	define( 'BDV_COMMON_VERSION', '2.1.3' );
+if ( ! defined( 'CONV_COMMON_VERSION' ) ) {
+	define( 'CONV_COMMON_VERSION', '2.1.3' );
 }
-if ( ! defined( 'BDV_COMMON_DB_VERSION' ) ) {
-	define( 'BDV_COMMON_DB_VERSION', '1.1.0' );
+if ( ! defined( 'CONV_COMMON_DB_VERSION' ) ) {
+	define( 'CONV_COMMON_DB_VERSION', '1.1.0' );
 }
-if ( ! defined( 'BDV_COMMON_DIR' ) ) {
-	define( 'BDV_COMMON_DIR', plugin_dir_path( __FILE__ ) );
+if ( ! defined( 'CONV_COMMON_DIR' ) ) {
+	define( 'CONV_COMMON_DIR', plugin_dir_path( __FILE__ ) );
 }
-if ( ! defined( 'BDV_COMMON_URL' ) ) {
-	define( 'BDV_COMMON_URL', plugin_dir_url( __FILE__ ) );
+if ( ! defined( 'CONV_COMMON_URL' ) ) {
+	define( 'CONV_COMMON_URL', plugin_dir_url( __FILE__ ) );
 }
 if ( ! defined( 'CONVOCA_IMAGES_URL' ) ) {
-	define( 'CONVOCA_IMAGES_URL', BDV_COMMON_URL . 'assets/images/' );
+	define( 'CONVOCA_IMAGES_URL', CONV_COMMON_URL . 'assets/images/' );
 }
 
 /* ── Composer autoload (Dompdf, etc.) ──────────── */
@@ -51,13 +51,13 @@ spl_autoload_register(
 		$relative = substr( $class, strlen( $prefix ) );
 		$relative = strtolower( str_replace( array( '\\', '_' ), array( '/', '-' ), $relative ) );
 
-		$file = BDV_COMMON_DIR . 'includes/class-' . $relative . '.php';
+		$file = CONV_COMMON_DIR . 'includes/class-' . $relative . '.php';
 
 		if ( file_exists( $file ) ) {
 			require_once $file;
 		} else {
 			// Also check admin directory for admin classes.
-			$admin_file = BDV_COMMON_DIR . 'admin/class-' . $relative . '.php';
+			$admin_file = CONV_COMMON_DIR . 'admin/class-' . $relative . '.php';
 			if ( file_exists( $admin_file ) ) {
 				require_once $admin_file;
 			}
@@ -71,7 +71,7 @@ register_activation_hook(
 	__FILE__,
 	function (): void {
 		Installer::db_init();
-		add_option( 'bdv_common_db_version', BDV_COMMON_DB_VERSION, '', false );
+		add_option( 'conv_common_db_version', CONV_COMMON_DB_VERSION, '', false );
 
 		// Ensure new granular capabilities are assigned to admin role.
 		$admin_role = get_role( 'administrator' );
@@ -89,21 +89,21 @@ register_activation_hook(
 register_deactivation_hook(
 	__FILE__,
 	function (): void {
-		wp_clear_scheduled_hook( 'bdv_log_cleanup' );
-		wp_clear_scheduled_hook( 'bdv_log_purge' );
-		wp_clear_scheduled_hook( 'bdv_continue_access_codes' );
+		wp_clear_scheduled_hook( 'conv_log_cleanup' );
+		wp_clear_scheduled_hook( 'conv_log_purge' );
+		wp_clear_scheduled_hook( 'conv_continue_access_codes' );
 	}
 );
 
 // Cron: log cleanup (90-day retention).
-add_action( 'bdv_log_cleanup', array( '\Convoca\Core\Installer', 'run_cleanup' ) );
+add_action( 'conv_log_cleanup', array( '\Convoca\Core\Installer', 'run_cleanup' ) );
 
 // Cron: log purge (60-day retention).
-add_action( 'bdv_log_purge', array( '\Convoca\Core\Installer', 'run_purge' ) );
+add_action( 'conv_log_purge', array( '\Convoca\Core\Installer', 'run_purge' ) );
 
 // Cron: continue access code generation if interrupted during activation.
 add_action(
-	'bdv_continue_access_codes',
+	'conv_continue_access_codes',
 	function () {
 		\Convoca\Core\Installer::continue_access_codes();
 	}
@@ -315,7 +315,7 @@ function convoca_health_page(): void {
 	$all_checks[] = array(
 		'title'   => 'Biodevas Common — Versión',
 		'status'  => 'ok',
-		'message' => 'v' . BDV_COMMON_VERSION,
+		'message' => 'v' . CONV_COMMON_VERSION,
 	);
 	global $wpdb;
 	$tables = array( 'convoca_logs', 'convoca_locks', 'convoca_webhook_retries' );
@@ -404,16 +404,16 @@ endif;
 function convoca_common_enqueue_assets(): void {
 	wp_enqueue_style(
 		'convoca-core',
-		BDV_COMMON_URL . 'assets/css/convoca-common.css',
+		CONV_COMMON_URL . 'assets/css/convoca-common.css',
 		array(),
-		BDV_COMMON_VERSION
+		CONV_COMMON_VERSION
 	);
 
 	wp_enqueue_script(
 		'convoca-common-js',
-		BDV_COMMON_URL . 'assets/js/convoca-common.js',
+		CONV_COMMON_URL . 'assets/js/convoca-common.js',
 		array(),
-		BDV_COMMON_VERSION,
+		CONV_COMMON_VERSION,
 		true
 	);
 }
@@ -426,9 +426,9 @@ function convoca_common_enqueue_admin_assets(): void {
 
 	wp_enqueue_script(
 		'convoca-common-admin-js',
-		BDV_COMMON_URL . 'assets/js/convoca-common-admin.js',
+		CONV_COMMON_URL . 'assets/js/convoca-common-admin.js',
 		array(),
-		BDV_COMMON_VERSION,
+		CONV_COMMON_VERSION,
 		true
 	);
 }
@@ -466,7 +466,7 @@ function convoca_admin_footer( string $text ): string {
  * Replace WP version in footer with Biodevas version.
  */
 function convoca_admin_footer_version( string $version ): string {
-	return 'Biodevas v' . BDV_COMMON_VERSION;
+	return 'Biodevas v' . CONV_COMMON_VERSION;
 }
 
 /**
@@ -490,7 +490,7 @@ function convoca_remove_help_tab(): void {
  * Remove the submitdiv metabox from all managed CPTs.
  */
 function convoca_remove_submitdiv(): void {
-	$cpts = array( 'miembro', 'actividad', 'inscripcion', 'pago', 'centro_turno', 'bdv_evaluacion', 'proyecto', 'registro_hora', 'bdv_documento' );
+	$cpts = array( 'miembro', 'actividad', 'inscripcion', 'pago', 'centro_turno', 'conv_evaluacion', 'proyecto', 'registro_hora', 'conv_documento' );
 	foreach ( $cpts as $cpt ) {
 		remove_meta_box( 'submitdiv', $cpt, 'side' );
 	}
@@ -511,7 +511,7 @@ function convoca_customize_new_menu( \WP_Admin_Bar $wp_admin_bar ): void {
 		'new-centro_turno'  => admin_url( 'edit.php?post_type=centro_turno&page=cst_turno_rapido' ),
 	);
 
-	$remove_nodes = array( 'new-inscripcion', 'new-pago', 'new-bdv_evaluacion', 'new-bdv_documento' );
+	$remove_nodes = array( 'new-inscripcion', 'new-pago', 'new-conv_evaluacion', 'new-conv_documento' );
 
 	foreach ( $custom_links as $node_id => $url ) {
 		$node = $wp_admin_bar->get_node( $node_id );
@@ -763,7 +763,7 @@ function convoca_dashboard_page(): void {
 		<h1>📊 <?php esc_html_e( 'Panel de Control Biodevas', 'convoca-core' ); ?></h1>
 		<p>
 			<a href="<?php echo esc_url( add_query_arg( 'refresh', '1' ) ); ?>" class="convoca-btn convoca-btn-outline">🔄 <?php esc_html_e( 'Actualizar datos', 'convoca-core' ); ?></a>
-			<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=bdv_generate_memory' ), 'bdv_generate_memory' ) ); ?>" class="convoca-btn convoca-btn-primary" style="margin-left:8px;">📄 <?php esc_html_e( 'Generar memoria PDF', 'convoca-core' ); ?></a>
+			<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=conv_generate_memory' ), 'conv_generate_memory' ) ); ?>" class="convoca-btn convoca-btn-primary" style="margin-left:8px;">📄 <?php esc_html_e( 'Generar memoria PDF', 'convoca-core' ); ?></a>
 		</p>
 
 		<div class="bdv-analytics-cards">
@@ -950,7 +950,7 @@ function convoca_build_metrics(): array {
 					'fields'         => 'ids',
 					'meta_query'     => array(
 						array(
-							'key'   => '_bdv_estado_miembro',
+							'key'   => '_conv_estado_miembro',
 							'value' => $slug,
 						),
 					),
@@ -1033,7 +1033,7 @@ add_action(
 );
 
 function convoca_rest_metrics(): \WP_REST_Response {
-	$cache_key = 'bdv_rest_metrics';
+	$cache_key = 'conv_rest_metrics';
 	$data      = get_transient( $cache_key );
 
 	if ( ! $data ) {

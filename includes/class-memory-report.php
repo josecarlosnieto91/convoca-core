@@ -22,9 +22,9 @@ class Memory_Report {
 	 */
 	public static function init(): void {
 		// Weekly cron: auto-generate monthly report.
-		add_action( 'bdv_weekly_event', array( __CLASS__, 'auto_generate' ) );
+		add_action( 'conv_weekly_event', array( __CLASS__, 'auto_generate' ) );
 		// Admin: manual generation.
-		add_action( 'admin_post_bdv_generate_memory', array( __CLASS__, 'handle_admin_generate' ) );
+		add_action( 'admin_post_conv_generate_memory', array( __CLASS__, 'handle_admin_generate' ) );
 	}
 
 	/**
@@ -40,7 +40,7 @@ class Memory_Report {
 		$label      = wp_date( 'F Y', $last_month );
 
 		// Check if already generated this month.
-		$cache_key = 'bdv_memory_' . wp_date( 'Y_m', $last_month );
+		$cache_key = 'conv_memory_' . wp_date( 'Y_m', $last_month );
 		if ( get_transient( $cache_key ) ) {
 			return;
 		}
@@ -49,7 +49,7 @@ class Memory_Report {
 		if ( $pdf ) {
 			// Store for admin download.
 			$upload_dir = wp_upload_dir();
-			$dir        = $upload_dir['basedir'] . '/biodevas-memorias';
+			$dir        = $upload_dir['basedir'] . '/convoca-memorias';
 			if ( ! is_dir( $dir ) ) {
 				wp_mkdir_p( $dir );
 			}
@@ -72,7 +72,7 @@ class Memory_Report {
 	 * Handle admin manual generation.
 	 */
 	public static function handle_admin_generate(): void {
-		if ( ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'bdv_generate_memory' ) ) {
+		if ( ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'conv_generate_memory' ) ) {
 			wp_die( 'Nonce inválido.' );
 		}
 		if ( ! current_user_can( 'manage_options' ) ) {

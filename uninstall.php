@@ -11,12 +11,12 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 // Clean up options.
 $options = array(
-	'bdv_common_db_version',
-	'bdv_db_version',
-	'bdv_webhooks',
-	'bdv_settings',
-	'bdv_persistent_salt',
-	'bdv_template_version',
+	'conv_common_db_version',
+	'conv_db_version',
+	'conv_webhooks',
+	'conv_settings',
+	'conv_persistent_salt',
+	'conv_template_version',
 );
 
 foreach ( $options as $option ) {
@@ -24,22 +24,22 @@ foreach ( $options as $option ) {
 }
 
 // Clean up cron jobs.
-wp_clear_scheduled_hook( 'bdv_log_cleanup' );
-wp_clear_scheduled_hook( 'bdv_log_purge' );
+wp_clear_scheduled_hook( 'conv_log_cleanup' );
+wp_clear_scheduled_hook( 'conv_log_purge' );
 
 // Clean up transients.
 global $wpdb;
-$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_bdv_%'" );
-$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_bdv_%'" );
+$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_conv_%'" );
+$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_conv_%'" );
 
 // Clean up custom tables.
-$tables_biodevas = array( 'biodevas_logs', 'biodevas_webhook_retries', 'biodevas_locks' );
-foreach ( $tables_biodevas as $table ) {
+$tables_convoca = array( 'convoca_logs', 'convoca_webhook_retries', 'convoca_locks' );
+foreach ( $tables_convoca as $table ) {
 	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}{$table}" );
 }
 
-// Also clean legacy bdv_ prefixed tables.
-$tables_legacy = array( 'bdv_logs', 'bdv_webhook_retries', 'bdv_locks' );
+// Also clean legacy conv_ prefixed tables.
+$tables_legacy = array( 'conv_logs', 'conv_webhook_retries', 'conv_locks' );
 foreach ( $tables_legacy as $table ) {
 	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}{$table}" );
 }
