@@ -12,12 +12,12 @@
 $wp_tests_dir = getenv('WP_TESTS_DIR');
 
 if (!$wp_tests_dir) {
-    // Attempt common locations
+    // Attempt common locations.
     $candidates = [
-        '/var/www/html/wp-content/plugins/../..', // Devstack
+        '/var/www/html/wp-content/plugins/../..', // Devstack.
         getenv('WP_DEVELOP_DIR') . '/tests/phpunit',
         '/tmp/wordpress-tests-lib',
-        '../../../../tests/phpunit', // Relative from plugin
+        '../../../../tests/phpunit', // Relative from plugin.
     ];
     foreach ($candidates as $candidate) {
         if ($candidate && file_exists($candidate . '/includes/functions.php')) {
@@ -72,7 +72,7 @@ if ($wp_tests_dir && file_exists($wp_tests_dir . '/includes/functions.php')) {
     // Load the plugin's spl_autoload_register.
     $plugin_main = dirname(__DIR__) . '/convoca-core.php';
     if (file_exists($plugin_main)) {
-        // Extract just the autoloader portion (skip WP-specific hooks)
+        // Extract just the autoloader portion (skip WP-specific hooks).
         require_once dirname(__DIR__) . '/includes/class-utils.php';
         require_once dirname(__DIR__) . '/includes/class-logger.php';
         require_once dirname(__DIR__) . '/includes/class-installer.php';

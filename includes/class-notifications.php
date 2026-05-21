@@ -22,12 +22,12 @@ class Notifications {
 	 * Initialize hooks.
 	 */
 	public static function init(): void {
-		// Admin bar bell icon
+		// Admin bar bell icon.
 		add_action( 'admin_bar_menu', array( __CLASS__, 'admin_bar_bell' ), 100 );
 		add_action( 'wp_ajax_bdv_notifications_mark_read', array( __CLASS__, 'ajax_mark_read' ) );
 		add_action( 'wp_ajax_bdv_notifications_dismiss', array( __CLASS__, 'ajax_dismiss' ) );
 
-		// Event hooks
+		// Event hooks.
 		add_action( 'bdv_member_created', array( __CLASS__, 'on_member_created' ), 10, 2 );
 		add_action( 'biodevas_payment_failed', array( __CLASS__, 'on_payment_failed' ), 10, 2 );
 		add_action( 'biodevas_hours_submitted', array( __CLASS__, 'on_hours_submitted' ), 10, 2 );
@@ -35,7 +35,7 @@ class Notifications {
 		add_action( 'bdv_voluntario_pendiente', array( __CLASS__, 'on_voluntario_pendiente' ), 10 );
 		add_action( 'biodevas_members_unsubscribe_request', array( __CLASS__, 'on_unsubscribe_request' ), 10 );
 
-		// Enhanced hooks: push + member notifications
+		// Enhanced hooks: push + member notifications.
 		add_action( 'bdv_voluntario_aprobado', array( __CLASS__, 'on_voluntario_aprobado' ), 10 );
 	}
 
@@ -63,7 +63,7 @@ class Notifications {
 		foreach ( $admins as $user_id ) {
 			$notifications = get_user_meta( $user_id, self::META_KEY, true ) ?: array();
 			array_unshift( $notifications, $notification );
-			// Keep max 50 per user
+			// Keep max 50 per user.
 			$notifications = array_slice( $notifications, 0, 50 );
 			update_user_meta( $user_id, self::META_KEY, $notifications );
 		}
@@ -86,7 +86,7 @@ class Notifications {
 
 		$notifications = get_post_meta( $member_id, self::META_KEY, true ) ?: array();
 		array_unshift( $notifications, $notification );
-		// Keep max 50 per member
+		// Keep max 50 per member.
 		$notifications = array_slice( $notifications, 0, 50 );
 		update_post_meta( $member_id, self::META_KEY, $notifications );
 	}
@@ -170,7 +170,7 @@ class Notifications {
 			)
 		);
 
-		// Dropdown
+		// Dropdown.
 		$wp_admin_bar->add_node(
 			array(
 				'id'     => 'bdv-notifications-list',
@@ -179,7 +179,7 @@ class Notifications {
 			)
 		);
 
-		// Enqueue CSS
+		// Enqueue CSS.
 		add_action( 'wp_head', array( __CLASS__, 'enqueue_styles' ) );
 		add_action( 'admin_head', array( __CLASS__, 'enqueue_styles' ) );
 	}
@@ -256,7 +256,7 @@ class Notifications {
 		<script>
 		(function() {
 			document.addEventListener('click', function(e) {
-				// Mark as read on link click
+				// Mark as read on link click.
 				var link = e.target.closest('.bdv-notif-link');
 				if (link) {
 					var item = link.closest('.bdv-notif-item');
@@ -270,7 +270,7 @@ class Notifications {
 						item.classList.remove('bdv-notif-unread');
 					}
 				}
-				// Dismiss single
+				// Dismiss single.
 				var dismiss = e.target.closest('.bdv-notif-dismiss');
 				if (dismiss) {
 					e.preventDefault();
@@ -284,7 +284,7 @@ class Notifications {
 						fetch(ajaxurl, { method: 'POST', body: fd }).then(function() { item.remove(); });
 					}
 				}
-				// Mark all read
+				// Mark all read.
 				var markAll = e.target.closest('.bdv-notif-mark-all');
 				if (markAll) {
 					e.preventDefault();
@@ -357,7 +357,7 @@ class Notifications {
 		self::add( $title, $url, 'error' );
 		self::push( __( 'Pago fallido', 'convoca-core' ), $title, 'urgent', array( 'warning' ) );
 
-		// Also notify the member if we can find the member ID from the pago
+		// Also notify the member if we can find the member ID from the pago.
 		$member_id = get_post_meta( $pago_id, '_bdg_origin_id', true );
 		if ( $member_id ) {
 			self::add_member(
@@ -384,7 +384,7 @@ class Notifications {
 		self::add( $title, $url, 'warning' );
 		self::push( __( 'Pago pendiente', 'convoca-core' ), $title, 'high', array( 'warning' ) );
 
-		// Try to find the member related to this inscription
+		// Try to find the member related to this inscription.
 		$email = get_post_meta( $inscripcion_id, '_bde_email', true );
 		if ( $email ) {
 			$members = get_posts(
@@ -447,7 +447,7 @@ class Notifications {
 			return;
 		}
 
-		// Try to find the member by email
+		// Try to find the member by email.
 		$members = get_posts(
 			array(
 				'post_type'      => 'miembro',

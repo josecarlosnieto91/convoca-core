@@ -64,7 +64,7 @@ class Webhook_Manager {
 	public function __construct() {
 		$this->register_hooks();
 
-		// Register cron hook for webhook retries
+		// Register cron hook for webhook retries.
 		add_action( 'bdv_webhook_retry', array( __CLASS__, 'process_retries' ) );
 	}
 
@@ -72,22 +72,22 @@ class Webhook_Manager {
 	 * Register WordPress hooks that trigger webhook dispatches.
 	 */
 	private function register_hooks(): void {
-		// Member events
+		// Member events.
 		add_action( 'convoca_members_estado_changed', array( $this, 'on_member_state_change' ), 20, 3 );
 		add_action( 'convoca_members_created', array( $this, 'on_member_created' ), 20, 1 );
 		add_action( 'convoca_members_membership_expired', array( $this, 'on_member_expired' ), 20, 1 );
 
-		// Payment events
+		// Payment events.
 		add_action( 'convoca_gateway_payment_completed', array( $this, 'on_payment_completed' ), 20, 4 );
 		add_action( 'convoca_gateway_payment_failed', array( $this, 'on_payment_failed' ), 20, 2 );
 		add_action( 'convoca_members_payment_reminder_sent', array( $this, 'on_payment_reminder' ), 20, 3 );
 
-		// Enrollment events
+		// Enrollment events.
 		add_action( 'convoca_enroll_inscripcion_nueva', array( $this, 'on_enrollment_created' ), 20, 2 );
 		add_action( 'convoca_enroll_inscripcion_cancelada', array( $this, 'on_enrollment_cancelled' ), 20, 2 );
 		add_action( 'convoca_enroll_asistencia_cambiada', array( $this, 'on_enrollment_checkin' ), 20, 2 );
 
-		// Volunteer events
+		// Volunteer events.
 		add_action( 'convoca_members_hours_submitted', array( $this, 'on_volunteer_hours_logged' ), 20, 2 );
 		add_action( 'convoca_members_hora_aprobada', array( $this, 'on_volunteer_hours_approved' ), 20, 2 );
 		add_action( 'convoca_members_hora_rechazada', array( $this, 'on_volunteer_hours_rejected' ), 20, 2 );
@@ -118,7 +118,7 @@ class Webhook_Manager {
 			return;
 		}
 
-		// Special case: if previously suspended and now active => renewal
+		// Special case: if previously suspended and now active => renewal.
 		if ( $old === 'suspendido' && $new === 'activo' ) {
 			$event = 'member.renewed';
 		}
@@ -259,7 +259,7 @@ class Webhook_Manager {
 			return;
 		}
 
-		// Dedup: prevent duplicate notifications for the same event+payload within 10 seconds
+		// Dedup: prevent duplicate notifications for the same event+payload within 10 seconds.
 		$dedup_key = 'bdv_webhook_dedup_' . $event . '_' . md5( wp_json_encode( $payload ) );
 		if ( get_transient( $dedup_key ) ) {
 			Logger::debug( "Webhook $event omitido (dedup dentro de 10s)", 'Common/Webhook' );
@@ -275,12 +275,12 @@ class Webhook_Manager {
 		);
 
 		foreach ( $webhooks as $webhook ) {
-			// Check if this webhook is subscribed to this event
+			// Check if this webhook is subscribed to this event.
 			if ( ! empty( $webhook['events'] ) && ! in_array( $event, $webhook['events'], true ) ) {
 				continue;
 			}
 
-			// Check if webhook is active
+			// Check if webhook is active.
 			if ( isset( $webhook['active'] ) && ! $webhook['active'] ) {
 				continue;
 			}
@@ -301,7 +301,7 @@ class Webhook_Manager {
 			return false;
 		}
 
-		// Add HMAC signature if secret is configured
+		// Add HMAC signature if secret is configured.
 		$body        = wp_json_encode( $payload );
 		$delivery_id = wp_generate_uuid4();
 		$headers     = array(
@@ -314,7 +314,7 @@ class Webhook_Manager {
 			$headers['X-Assoc-Signature'] = hash_hmac( 'sha256', $body, $webhook['secret'] );
 		}
 
-		// Use blocking mode with short timeout to detect actual delivery status
+		// Use blocking mode with short timeout to detect actual delivery status.
 		$response = wp_remote_post(
 			$url,
 			array(
@@ -327,7 +327,7 @@ class Webhook_Manager {
 			)
 		);
 
-		// Check for HTTP errors
+		// Check for HTTP errors.
 		$success     = false;
 		$status_code = 0;
 		if ( ! is_wp_error( $response ) ) {
@@ -346,10 +346,10 @@ class Webhook_Manager {
 		$log_level = $success ? 'info' : 'warning';
 		Logger::log( $log_msg, $log_level, 'Common/Webhook' );
 
-		// Store delivery log
+		// Store delivery log.
 		self::log_delivery( $webhook['id'] ?? '', $payload['event'], $success, $log_msg );
 
-		// Schedule retry with exponential backoff on failure
+		// Schedule retry with exponential backoff on failure.
 		if ( ! $success && $attempt < self::MAX_RETRIES ) {
 			$delay = self::BACKOFF_BASE * pow( 2, $attempt - 1 ); // 60s, 120s, 240s
 			$this->schedule_retry( $webhook, $payload, $attempt + 1, $delay );
@@ -370,7 +370,7 @@ class Webhook_Manager {
 
 		$table_name = self::get_retry_table_name();
 
-		// Verify table exists before inserting; attempt to create if missing
+		// Verify table exists before inserting; attempt to create if missing.
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) !== $table_name ) {
 			$charset_collate = $wpdb->get_charset_collate();
 			$sql             = "CREATE TABLE IF NOT EXISTS $table_name (
@@ -407,7 +407,7 @@ class Webhook_Manager {
 			)
 		);
 
-		// Schedule cron job if not already scheduled
+		// Schedule cron job if not already scheduled.
 		if ( ! wp_next_scheduled( 'bdv_webhook_retry' ) ) {
 			wp_schedule_event( time(), 'hourly', 'bdv_webhook_retry' );
 		}
@@ -423,14 +423,14 @@ class Webhook_Manager {
 		global $wpdb;
 		$table_name = self::get_retry_table_name();
 
-		// Acquire lock to prevent concurrent runs
+		// Acquire lock to prevent concurrent runs.
 		if ( get_transient( 'bdv_webhook_retry_lock' ) ) {
 			return;
 		}
 		set_transient( 'bdv_webhook_retry_lock', true, 10 * MINUTE_IN_SECONDS );
 
 		try {
-			// Get retries that are due
+			// Get retries that are due.
 			$retries = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT * FROM $table_name WHERE scheduled_at <= %s ORDER BY created_at ASC LIMIT 50",
@@ -443,14 +443,14 @@ class Webhook_Manager {
 			}
 
 			foreach ( $retries as $retry ) {
-				// Mark as processing to prevent data loss on crash
+				// Mark as processing to prevent data loss on crash.
 				$wpdb->update(
 					$table_name,
 					array( 'status' => 'processing' ),
 					array( 'id' => $retry->id )
 				);
 
-				// Attempt delivery
+				// Attempt delivery.
 				$manager = new self();
 				$webhook = array(
 					'id'     => $retry->webhook_id,
@@ -464,13 +464,13 @@ class Webhook_Manager {
 					$success = $manager->deliver( $webhook, $payload, (int) $retry->attempt );
 				}
 
-				// Delete on success, update retry count on failure
+				// Delete on success, update retry count on failure.
 				if ( $success ) {
 					$wpdb->delete( $table_name, array( 'id' => $retry->id ) );
 				} else {
 					$next_attempt = (int) $retry->attempt + 1;
 
-					// Si supera los reintentos máximos, eliminar y loguear agotamiento
+					// Si supera los reintentos máximos, eliminar y loguear agotamiento.
 					if ( $next_attempt > self::MAX_RETRIES ) {
 						$wpdb->delete( $table_name, array( 'id' => $retry->id ) );
 						Logger::warning(
@@ -679,12 +679,12 @@ class Webhook_Manager {
 			'time'    => current_time( 'mysql' ),
 		);
 
-		// Keep only last 50 entries
+		// Keep only last 50 entries.
 		if ( count( $logs ) > 50 ) {
 			$logs = array_slice( $logs, -50 );
 		}
 
-		// Use autoload=no to avoid loading these on every page
+		// Use autoload=no to avoid loading these on every page.
 		update_option( $log_key, $logs, false );
 	}
 

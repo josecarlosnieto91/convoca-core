@@ -52,17 +52,17 @@ abstract class Upgrade_Manager {
 			return;
 		}
 
-		// If versions differ, skip cache and upgrade immediately
+		// If versions differ, skip cache and upgrade immediately.
 		if ( $saved !== $current ) {
 			$this->clear_cache();
 		} elseif ( $this->is_cached() ) {
 			return;
 		}
 
-		// Atomic lock using dedicated table, with try/finally to prevent stuck locks
+		// Atomic lock using dedicated table, with try/finally to prevent stuck locks.
 		$lock_key = 'upgrade_' . $this->get_transient_prefix();
 
-		// Register shutdown handler to release lock if a Fatal Error kills the process
+		// Register shutdown handler to release lock if a Fatal Error kills the process.
 		$shutdown_release = function () use ( $lock_key ) {
 			$error = error_get_last();
 			if ( $error && in_array( $error['type'], array( E_ERROR, E_USER_ERROR, E_COMPILE_ERROR, E_PARSE ) ) ) {
@@ -82,7 +82,7 @@ abstract class Upgrade_Manager {
 		} finally {
 			\Convoca\Core\Utils::release_lock( $lock_key );
 		}
-		// Remove the shutdown handler since the finally block already released the lock
+		// Remove the shutdown handler since the finally block already released the lock.
 		// (it will fire harmlessly later, but release_lock is idempotent)
 	}
 
@@ -116,12 +116,12 @@ abstract class Upgrade_Manager {
 						"Upgrade $version failed in {$this->get_transient_prefix()}: " . $e->getMessage(),
 						'System'
 					);
-					// Only update DB version to the last successful migration
-					// to allow retrying the failed one
+					// Only update DB version to the last successful migration.
+					// to allow retrying the failed one.
 					if ( version_compare( $last_successful, $this->get_saved_version(), '>' ) ) {
 						update_option( $this->get_option_name(), $last_successful );
 					}
-					throw $e; // Re-throw to be caught by maybe_upgrade's finally
+					throw $e; // Re-throw to be caught by maybe_upgrade's finally.
 				}
 			}
 		}

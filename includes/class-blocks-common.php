@@ -47,7 +47,7 @@ class Blocks_Common {
 			),
 		);
 
-		// Filter out duplicates by slug
+		// Filter out duplicates by slug.
 		$existing_slugs = array_column( $categories, 'slug' );
 		$filtered       = array_filter(
 			$new_categories,
@@ -82,7 +82,7 @@ class Blocks_Common {
 					),
 					'type'      => array(
 						'type'    => 'string',
-						'default' => 'text', // text, date, price, number
+						'default' => 'text', // text, date, price, number.
 					),
 				),
 				'render_callback' => array( __CLASS__, 'render_post_meta_field' ),

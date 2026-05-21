@@ -22,8 +22,8 @@ class BDV_Signature {
 	protected $last_error = '';
 
 	public function __construct() {
-		// Dompdf must be installed in biodevas-common via Composer:
-		// cd biodevas-common && composer require dompdf/dompdf
+		// Dompdf must be installed in biodevas-common via Composer:.
+		// cd biodevas-common && composer require dompdf/dompdf.
 		if ( file_exists( BDV_COMMON_DIR . 'vendor/autoload.php' ) ) {
 			require_once BDV_COMMON_DIR . 'vendor/autoload.php';
 		}
@@ -54,7 +54,7 @@ class BDV_Signature {
 			return false;
 		}
 
-		// List of keys that should be treated as raw HTML (not escaped)
+		// List of keys that should be treated as raw HTML (not escaped).
 		$html_safe_keys = apply_filters(
 			'bdv_pdf_html_safe_keys',
 			array(
@@ -68,7 +68,7 @@ class BDV_Signature {
 			)
 		);
 
-		// Allowed HTML tags for PDF-safe content
+		// Allowed HTML tags for PDF-safe content.
 		$pdf_allowed_html = apply_filters(
 			'bdv_pdf_allowed_html',
 			array(
@@ -116,14 +116,14 @@ class BDV_Signature {
 			)
 		);
 
-		// Replace placeholders {{key}} with values
+		// Replace placeholders {{key}} with values.
 		foreach ( $data as $key => $value ) {
 			$value_str = (string) $value;
-			// Only escape if not in the safe list
+			// Only escape if not in the safe list.
 			if ( ! in_array( $key, $html_safe_keys, true ) ) {
 				$value_str = htmlspecialchars( $value_str );
 			} else {
-				// Sanitize HTML-safe keys with PDF-allowed tags
+				// Sanitize HTML-safe keys with PDF-allowed tags.
 				$value_str = wp_kses( $value_str, $pdf_allowed_html );
 			}
 			$template_content = str_replace( '{{' . $key . '}}', $value_str, $template_content );
@@ -132,8 +132,8 @@ class BDV_Signature {
 		try {
 			$dompdf_options = new Options();
 			$dompdf_options->set( 'defaultFont', 'Helvetica' );
-			// Disable remote resources by default for security (SSRF protection)
-			// Only enable if explicitly needed via $options['isRemoteEnabled']
+			// Disable remote resources by default for security (SSRF protection).
+			// Only enable if explicitly needed via $options['isRemoteEnabled'].
 			$dompdf_options->set( 'isRemoteEnabled', ! empty( $options['isRemoteEnabled'] ) );
 			$dompdf_options->set( 'isPhpEnabled', false );
 			$dompdf_options->set( 'isJavascriptEnabled', false );
@@ -153,11 +153,11 @@ class BDV_Signature {
 				return false;
 			}
 
-			// Ensure directory exists
+			// Ensure directory exists.
 			$dir      = dirname( $output_path );
 			$filename = basename( $output_path );
 
-			// Ensure filename is safe for the filesystem
+			// Ensure filename is safe for the filesystem.
 			$safe_filename = function_exists( 'sanitize_file_name' ) ? sanitize_file_name( $filename ) : preg_replace( '/[^a-zA-Z0-9._-]/', '_', $filename );
 			$output_path   = $dir . DIRECTORY_SEPARATOR . $safe_filename;
 
@@ -173,9 +173,9 @@ class BDV_Signature {
 				return false;
 			}
 
-			// Secure the directory
+			// Secure the directory.
 			if ( ! $this->ensure_upload_protection( $dir ) ) {
-				// error is already set in ensure_upload_protection
+				// error is already set in ensure_upload_protection.
 				return false;
 			}
 
@@ -210,11 +210,11 @@ class BDV_Signature {
 		// A better approach is to provide the stamp HTML to be added during `generate_pdf`.
 		// However, I will implement a basic "hash" signature in the file metadata if possible, or just log it.
 
-		// For the sake of the API requested:
+		// For the sake of the API requested:.
 		$date       = wp_date( 'Y-m-d H:i:s', $timestamp );
 		$stamp_text = "Firmado digitalmente por: $acceptor_name\nIP: $ip\nFecha: $date";
 
-		// We could append it as PDF metadata or just create a .sig file
+		// We could append it as PDF metadata or just create a .sig file.
 		$sig_path = $pdf_path . '.sig';
 		file_put_contents( $sig_path, $stamp_text );
 
@@ -269,6 +269,7 @@ class BDV_Signature {
 
 		if ( ! file_exists( $index_file ) ) {
 			if ( @file_put_contents( $index_file, "<?php\n// Silence is golden.\n" ) === false ) {
+				.
 				$this->last_error = sprintf( __( 'No se pudo crear el archivo de protección index.php en %s.', 'convoca-core' ), $dir );
 				return false;
 			}

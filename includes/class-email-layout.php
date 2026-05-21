@@ -47,12 +47,12 @@ class Email_Layout {
 
 		$logo_html = Utils::get_branding_html( 'email', '', 'max-width:180px;height:auto;display:block;margin:0 auto;' );
 
-		// Convert plain text line breaks to <p> if body has no HTML tags
+		// Convert plain text line breaks to <p> if body has no HTML tags.
 		if ( $body === strip_tags( $body ) ) {
 			$body = nl2br( esc_html( $body ) );
 		}
 
-		// Fade variation of accent for buttons (slightly darker on hover)
+		// Fade variation of accent for buttons (slightly darker on hover).
 		$accent_dark = self::darken_hex( $accent_color, 15 );
 
 		ob_start();
@@ -131,10 +131,10 @@ img{display:block;border:0;height:auto;line-height:100%;outline:none;text-decora
 <!--[if mso]><table role="presentation" width="600" cellpadding="0" cellspacing="0" align="center"><tr><td><![endif]-->
 <table role="presentation" class="email-wrapper" width="100%" cellpadding="0" cellspacing="0">
 <tr><td class="email-header">
-		<?php echo $logo_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — already escaped inside get_branding_html ?>
+		<?php echo $logo_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — already escaped inside get_branding_html ?>.
 </td></tr>
 <tr><td class="email-body">
-		<?php echo $body; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — already sanitized by caller ?>
+		<?php echo $body; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — already sanitized by caller ?>.
 		<?php if ( $button_url && $button_text ) : ?>
 <p style="text-align:center;margin:24px 0 0">
 <a href="<?php echo esc_url( $button_url ); ?>" class="email-btn"><?php echo esc_html( $button_text ); ?></a>

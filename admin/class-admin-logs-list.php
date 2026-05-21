@@ -105,7 +105,7 @@ class Admin_Logs_List extends \WP_List_Table {
 		$where = array( '1=1' );
 		$args  = array();
 
-		// Filters
+		// Filters.
 		$filter_context   = sanitize_text_field( $_GET['filter_context'] ?? '' );
 		$filter_level     = sanitize_text_field( $_GET['filter_level'] ?? '' );
 		$filter_date_from = sanitize_text_field( $_GET['filter_date_from'] ?? '' );
@@ -133,7 +133,7 @@ class Admin_Logs_List extends \WP_List_Table {
 		$where_clause = implode( ' AND ', $where );
 		$offset       = ( $page - 1 ) * $per_page;
 
-		// Optimization: approximate count from information_schema when no filters
+		// Optimization: approximate count from information_schema when no filters.
 		$total = 0;
 		if ( empty( $args ) ) {
 			$approx             = $wpdb->get_var( "SELECT TABLE_ROWS FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '$table'" );
@@ -151,7 +151,7 @@ class Admin_Logs_List extends \WP_List_Table {
 		$results     = $wpdb->get_results( $wpdb->prepare( $sql, $full_args ) );
 		$this->items = is_array( $results ) ? $results : array();
 
-		// Ajustar paginación cuando approx_total da un valor inflado
+		// Ajustar paginación cuando approx_total da un valor inflado.
 		// (information_schema.TABLE_ROWS es aproximado en InnoDB)
 		$actual_count = count( $this->items );
 		if ( $this->approx_total && $actual_count < $per_page && $page === 1 ) {

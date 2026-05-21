@@ -74,7 +74,7 @@ class Admin_Analytics {
 
 		$campo = "{$wpdb->posts}.post_type = 'miembro' AND {$wpdb->posts}.post_status = 'publish'";
 
-		// Active
+		// Active.
 		$counts = $wpdb->get_row(
 			"SELECT
                 SUM(IF(pm.meta_value = 'activo', 1, 0)) AS activos,
@@ -156,13 +156,13 @@ class Admin_Analytics {
                AND p.post_status = 'publish'"
 		);
 
-		// Active activities
+		// Active activities.
 		$actividades = (int) $wpdb->get_var(
 			"SELECT COUNT(*) FROM {$wpdb->posts}
              WHERE post_type = 'actividad' AND post_status = 'publish'"
 		);
 
-		// Upcoming activities (future)
+		// Upcoming activities (future).
 		$proximas = (int) $wpdb->get_var(
 			"SELECT COUNT(*) FROM {$wpdb->posts} p
              JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_bde_fecha_inicio'
@@ -213,7 +213,7 @@ class Admin_Analytics {
 		$mes_inicio = strtotime( 'first day of this month' );
 		$hoy_inicio = strtotime( 'today' );
 
-		// Paid payments this month
+		// Paid payments this month.
 		$pagos = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT p.ID, pm2.meta_value AS amount, pm3.meta_value AS method, pm4.meta_value AS paid_at
@@ -359,7 +359,7 @@ class Admin_Analytics {
 			$labels[] = $m['label'];
 			$ym       = $m['year_month'];
 
-			// Members created that month
+			// Members created that month.
 			$members_trend[] = (int) $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(*) FROM {$wpdb->posts}
@@ -369,7 +369,7 @@ class Admin_Analytics {
 				)
 			);
 
-			// Inscriptions created that month
+			// Inscriptions created that month.
 			$inscriptions_trend[] = (int) $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(*) FROM {$wpdb->posts}
@@ -379,7 +379,7 @@ class Admin_Analytics {
 				)
 			);
 
-			// Payment amount that month
+			// Payment amount that month.
 			$payments_trend[] = (float) $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COALESCE(SUM(CAST(pm.meta_value AS UNSIGNED)), 0) / 100
@@ -417,7 +417,7 @@ class Admin_Analytics {
 		if ( wp_script_is( 'chart-js', 'registered' ) ) {
 			return;
 		}
-		wp_enqueue_script( 'chart-js', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '4.4.1', true );
+		wp_enqueue_script( 'chart-js', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '4.4.1', true ); .
 	}
 
 	/**

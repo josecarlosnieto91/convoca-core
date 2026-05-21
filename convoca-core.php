@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name: Convoca Core
- * Plugin URI: https://example.com
+ * Plugin URI: https://example.com.
  * Description: Common functions, validation, and logging.
  * Author: Jose Carlos Nieto Ramos
- * Author URI: https://example.com
+ * Author URI: https://example.com.
  * Version: 2.1.2
  */
 
@@ -56,7 +56,7 @@ spl_autoload_register(
 		if ( file_exists( $file ) ) {
 			require_once $file;
 		} else {
-			// Also check admin directory for admin classes
+			// Also check admin directory for admin classes.
 			$admin_file = BDV_COMMON_DIR . 'admin/class-' . $relative . '.php';
 			if ( file_exists( $admin_file ) ) {
 				require_once $admin_file;
@@ -73,7 +73,7 @@ register_activation_hook(
 		Installer::db_init();
 		add_option( 'bdv_common_db_version', BDV_COMMON_DB_VERSION, '', false );
 
-		// Ensure new granular capabilities are assigned to admin role
+		// Ensure new granular capabilities are assigned to admin role.
 		$admin_role = get_role( 'administrator' );
 		if ( $admin_role ) {
 			if ( ! $admin_role->has_cap( 'manage_convoca_templates' ) ) {
@@ -95,13 +95,13 @@ register_deactivation_hook(
 	}
 );
 
-// Cron: log cleanup (90-day retention)
+// Cron: log cleanup (90-day retention).
 add_action( 'bdv_log_cleanup', array( '\Convoca\Core\Installer', 'run_cleanup' ) );
 
-// Cron: log purge (60-day retention)
+// Cron: log purge (60-day retention).
 add_action( 'bdv_log_purge', array( '\Convoca\Core\Installer', 'run_purge' ) );
 
-// Cron: continue access code generation if interrupted during activation
+// Cron: continue access code generation if interrupted during activation.
 add_action(
 	'bdv_continue_access_codes',
 	function () {
@@ -119,7 +119,7 @@ add_action(
 		// Initialize Upgrade Manager (checks for DB version upgrades).
 		new Common_Upgrade_Manager();
 
-		// Ensure granular capabilities exist on admin roles (handles upgrades without re-activation)
+		// Ensure granular capabilities exist on admin roles (handles upgrades without re-activation).
 		Capabilities::ensure();
 
 		if ( is_admin() ) {
@@ -142,16 +142,16 @@ add_action(
 			add_action( 'admin_bar_menu', 'Convoca\Core\convoca_add_wizard_link', 999 );
 		}
 
-		// Initialize common blocks
+		// Initialize common blocks.
 		Blocks_Common::init();
 
-		// Initialize notifications
+		// Initialize notifications.
 		Notifications::init();
 
-		// Initialize memory report generator
+		// Initialize memory report generator.
 		Memory_Report::init();
 
-		// Initialize license manager
+		// Initialize license manager.
 		License_Manager::init();
 	}
 );
@@ -333,7 +333,7 @@ function convoca_health_page(): void {
 	echo '</div>';
 }
 
-// Notifications list page
+// Notifications list page.
 add_action( 'admin_menu', 'Convoca\Core\convoca_notifications_menu' );
 function convoca_notifications_menu(): void {
 	add_submenu_page(
@@ -400,7 +400,7 @@ endif;
 	<?php
 }
 
-// Enqueue common assets (Public)
+// Enqueue common assets (Public).
 function convoca_common_enqueue_assets(): void {
 	wp_enqueue_style(
 		'convoca-core',
@@ -419,9 +419,9 @@ function convoca_common_enqueue_assets(): void {
 }
 add_action( 'wp_enqueue_scripts', 'Convoca\\Core\\convoca_common_enqueue_assets' );
 
-// Enqueue common assets (Admin)
+// Enqueue common assets (Admin).
 function convoca_common_enqueue_admin_assets(): void {
-	// Also load the CSS on admin
+	// Also load the CSS on admin.
 	convoca_common_enqueue_assets();
 
 	wp_enqueue_script(
@@ -456,7 +456,8 @@ function convoca_admin_footer( string $text ): string {
 	return sprintf(
 		'© %d <a href="%s" target="_blank">Biodevas</a> — %s',
 		wp_date( 'Y' ),
-		'https://getconvoca.app',
+		'https://getconvoca.app', 
+		.
 		__( 'Plataforma de gestión de la asociación.', 'convoca-core' )
 	);
 }
@@ -937,7 +938,7 @@ function convoca_build_metrics(): array {
 	global $wpdb;
 	$metrics = array();
 
-	// Members
+	// Members.
 	if ( class_exists( '\Convoca\Members\CPT_Miembro' ) && class_exists( '\Convoca\Members\Estados' ) ) {
 		$counts = array();
 		foreach ( \Convoca\Members\Estados::LABELS as $slug => $label ) {

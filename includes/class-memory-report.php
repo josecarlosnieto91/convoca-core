@@ -21,9 +21,9 @@ class Memory_Report {
 	 * Initialize hooks.
 	 */
 	public static function init(): void {
-		// Weekly cron: auto-generate monthly report
+		// Weekly cron: auto-generate monthly report.
 		add_action( 'bdv_weekly_event', array( __CLASS__, 'auto_generate' ) );
-		// Admin: manual generation
+		// Admin: manual generation.
 		add_action( 'admin_post_bdv_generate_memory', array( __CLASS__, 'handle_admin_generate' ) );
 	}
 
@@ -33,13 +33,13 @@ class Memory_Report {
 	public static function auto_generate(): void {
 		$today = (int) wp_date( 'j' );
 		if ( $today > 7 ) {
-			return; // Only run during the first week
+			return; // Only run during the first week.
 		}
 
 		$last_month = strtotime( 'first day of last month' );
 		$label      = wp_date( 'F Y', $last_month );
 
-		// Check if already generated this month
+		// Check if already generated this month.
 		$cache_key = 'bdv_memory_' . wp_date( 'Y_m', $last_month );
 		if ( get_transient( $cache_key ) ) {
 			return;
@@ -47,7 +47,7 @@ class Memory_Report {
 
 		$pdf = self::generate_pdf( $last_month );
 		if ( $pdf ) {
-			// Store for admin download
+			// Store for admin download.
 			$upload_dir = wp_upload_dir();
 			$dir        = $upload_dir['basedir'] . '/biodevas-memorias';
 			if ( ! is_dir( $dir ) ) {
@@ -56,7 +56,7 @@ class Memory_Report {
 			$path = $dir . '/memoria-' . sanitize_file_name( $label ) . '.pdf';
 			file_put_contents( $path, $pdf );
 
-			// Notify admin
+			// Notify admin.
 			$admin_email = get_option( 'admin_email' );
 			$subject     = '📊 Memoria mensual de actividades — ' . $label;
 			$body        = 'La memoria mensual de ' . $label . ' ha sido generada automáticamente.';
@@ -113,7 +113,7 @@ class Memory_Report {
 		$month_start = $timestamp;
 		$month_end   = strtotime( 'last day of this month', $timestamp );
 
-		// Fetch data
+		// Fetch data.
 		$analytics = Admin_Analytics::get_all( true );
 		$m         = $analytics['members'];
 		$i         = $analytics['inscriptions'];
@@ -121,7 +121,7 @@ class Memory_Report {
 		$t         = $analytics['turnos'];
 		$trend     = $analytics['trends'];
 
-		// Monthly-specific queries
+		// Monthly-specific queries.
 		global $wpdb;
 		$altas_mes    = (int) $wpdb->get_var(
 			$wpdb->prepare(

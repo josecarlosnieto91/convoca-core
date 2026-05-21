@@ -31,7 +31,7 @@ class Utils {
 	 * @return bool True if valid, false otherwise.
 	 */
 	public static function validate_dni( string $dni ): bool {
-		// Normalize to uppercase and remove separators. This ensures the regex
+		// Normalize to uppercase and remove separators. This ensures the regex.
 		// below always receives uppercase letters, even if input was lowercase.
 		$dni = strtoupper( trim( $dni ) );
 		$dni = str_replace( array( ' ', '-' ), '', $dni );
@@ -40,7 +40,7 @@ class Utils {
 			return false;
 		}
 
-		// Standard regex for DNI (8 numbers + 1 letter) or NIE (X/Y/Z + 7 numbers + 1 letter)
+		// Standard regex for DNI (8 numbers + 1 letter) or NIE (X/Y/Z + 7 numbers + 1 letter).
 		if ( ! preg_match( '/^([0-9]{8}|[XYZ][0-9]{7})[A-Z]$/', $dni ) ) {
 			return false;
 		}
@@ -48,7 +48,7 @@ class Utils {
 		$letra   = substr( $dni, -1 );
 		$numeros = substr( $dni, 0, -1 );
 
-		// NIE handling: map prefixes to numbers (X=0, Y=1, Z=2)
+		// NIE handling: map prefixes to numbers (X=0, Y=1, Z=2).
 		$numeros = str_replace( array( 'X', 'Y', 'Z' ), array( '0', '1', '2' ), $numeros );
 
 		$letras_validas = 'TRWAGMYFPDXBNJZSQVHLCKE';
@@ -140,7 +140,7 @@ class Utils {
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
 
-		$out = fopen( 'php://output', 'w' );
+		$out = fopen( 'php://output', 'w' ); .
 		// BOM for Excel.
 		fprintf( $out, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) );
 		fclose( $out );
@@ -166,7 +166,7 @@ class Utils {
 				}
 			}
 
-			// Check uniqueness in database
+			// Check uniqueness in database.
 			$exists = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT pm.post_id FROM {$wpdb->postmeta} pm 
@@ -238,7 +238,7 @@ class Utils {
 		$ip        = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 		$cache_key = 'bdv_rl_' . $action . '_' . md5( $ip );
 
-		// Try object cache first
+		// Try object cache first.
 		$cached = wp_cache_get( $cache_key, 'biodevas_rate_limits' );
 		if ( $cached !== false ) {
 			return $cached > 0;
@@ -262,18 +262,18 @@ class Utils {
                      ELSE option_value + 1
                  END",
 					$option_name,
-					( $expires << 20 ) | 1,  // High bits = expiry, low bits = count
+					( $expires << 20 ) | 1,  // High bits = expiry, low bits = count.
 					$now,
 					$expires
 				)
 			);
 
-			// If the query failed entirely, allow the request (fail open)
+			// If the query failed entirely, allow the request (fail open).
 			if ( $result === false ) {
 				return true;
 			}
 
-			// Read back the packed value
+			// Read back the packed value.
 			$current = (int) $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
@@ -284,7 +284,7 @@ class Utils {
 			$stored_expires = $current >> 20;
 			$attempts       = $current & 0xFFFFF;
 
-			// If within window, check limit
+			// If within window, check limit.
 			if ( $stored_expires > $now && $attempts > $max ) {
 				wp_cache_set( $cache_key, 0, 'biodevas_rate_limits', $stored_expires - $now );
 				Logger::warning( "Rate limit exceeded for $action from IP $ip", 'Common/Security' );
@@ -319,12 +319,12 @@ class Utils {
 		$lock_key = 'bdv_lock_' . $key;
 		$expires  = time() + $ttl;
 
-		// Try dedicated locks table first
+		// Try dedicated locks table first.
 		$locks_table  = self::locks_table();
 		$table_exists = $wpdb->get_var( "SHOW TABLES LIKE '$locks_table'" ) === $locks_table;
 
 		if ( $table_exists ) {
-			// Clean expired locks first
+			// Clean expired locks first.
 			$wpdb->query( "DELETE FROM $locks_table WHERE expires < " . time() );
 
 			$result = $wpdb->query(
@@ -346,7 +346,7 @@ class Utils {
 				return false;
 			}
 
-			// Verify we got the lock
+			// Verify we got the lock.
 			$current = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT expires FROM $locks_table WHERE lock_key = %s",
@@ -357,7 +357,7 @@ class Utils {
 			return (int) $current === $expires;
 		}
 
-		// Fallback: wp_options
+		// Fallback: wp_options.
 		$result = $wpdb->query(
 			$wpdb->prepare(
 				"INSERT INTO $wpdb->options (option_name, option_value, autoload) 
@@ -693,7 +693,7 @@ class Utils {
 			'members' => '\\Convoca\\Members\\CPT_Miembro',
 			'enroll'  => '\\Convoca\\Enroll\\CPT_Inscripcion',
 			'gateway' => '\\Convoca\\Gateway\\CPT_Pago',
-			'turnos'  => '\\Convoca\\Gateway\\Redsys_Client', // Downs: Gateway has Redsys
+			'turnos'  => '\\Convoca\\Gateway\\Redsys_Client', // Downs: Gateway has Redsys.
 		);
 		$class = $map[ $feature ] ?? '';
 		return $class && class_exists( $class );

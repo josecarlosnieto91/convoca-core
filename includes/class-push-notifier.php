@@ -37,11 +37,11 @@ class Push_Notifier {
 			return false;
 		}
 
-		$server = untrailingslashit( $config['server'] ?? 'https://ntfy.sh' );
+		$server = untrailingslashit( $config['server'] ?? 'https://ntfy.sh' );.
 		$topic  = ! empty( $topic ) ? $topic : ( $config['topic'] ?? 'biodevas_alerts' );
 		$url    = $server . '/' . $topic;
 
-		// Validate priority
+		// Validate priority.
 		$valid_priorities = array( 'default', 'low', 'high', 'urgent', 'min', 'max' );
 		if ( ! in_array( $priority, $valid_priorities, true ) ) {
 			$priority = 'default';
@@ -119,7 +119,7 @@ class Push_Notifier {
 		return array(
 			'enabled' => false,
 			'topic'   => 'biodevas_alerts',
-			'server'  => 'https://ntfy.sh',
+			'server'  => 'https://ntfy.sh',.
 		);
 	}
 

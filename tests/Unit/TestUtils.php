@@ -166,9 +166,9 @@ class TestUtils extends TestCase
      */
     public function test_validar_dni_invalid(): void
     {
-        $this->assertFalse(Utils::validar_dni('1234567')); // Too short
-        $this->assertFalse(Utils::validar_dni('ABCDEFGH')); // No digit part
-        $this->assertFalse(Utils::validar_dni(''));         // Empty
+        $this->assertFalse(Utils::validar_dni('1234567')); // Too short.
+        $this->assertFalse(Utils::validar_dni('ABCDEFGH')); // No digit part.
+        $this->assertFalse(Utils::validar_dni(''));         // Empty.
     }
 
     /**
@@ -178,7 +178,7 @@ class TestUtils extends TestCase
      */
     public function test_validar_dni_valid_nie(): void
     {
-        // Valid NIE: X followed by 7 digits + letter
+        // Valid NIE: X followed by 7 digits + letter.
         $this->assertTrue(Utils::validar_dni('X1234567L'));
         $this->assertTrue(Utils::validar_dni('Y1234567X'));
         $this->assertTrue(Utils::validar_dni('Z1234567R'));

@@ -43,13 +43,13 @@ class Installer {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( $sql_logs );
 
-		// Ensure composite index for filtered queries (context + level + created_at)
+		// Ensure composite index for filtered queries (context + level + created_at).
 		$index_check = $wpdb->get_results( "SHOW INDEX FROM $table_logs WHERE Key_name = 'context_level_created'" );
 		if ( empty( $index_check ) ) {
 			$wpdb->query( "ALTER TABLE $table_logs ADD INDEX context_level_created (context, level, created_at)" );
 		}
 
-		// Verify table was created
+		// Verify table was created.
 		$table_exists = $wpdb->get_var(
 			$wpdb->prepare( 'SHOW TABLES LIKE %s', $table_logs )
 		);
@@ -61,7 +61,7 @@ class Installer {
 				Logger::error( 'Failed to create convoca_logs table: unknown error', 'System' );
 			}
 		} else {
-			// Invalidate logger cache now that the table exists
+			// Invalidate logger cache now that the table exists.
 			delete_transient( 'bdv_logger_table_exists' );
 		}
 
@@ -85,7 +85,7 @@ class Installer {
             KEY status (status)
         ) $charset_collate;";
 		dbDelta( $sql_retries );
-		// Ensure index exists for existing installations
+		// Ensure index exists for existing installations.
 		$wpdb->query( "ALTER TABLE $table_retries ADD INDEX status (status)" );
 
 		// 3. Locks table (wp_convoca_locks).
@@ -109,11 +109,11 @@ class Installer {
         ) $charset_collate;";
 		dbDelta( $sql_seq );
 
-		// Schedule daily log cleanup
+		// Schedule daily log cleanup.
 		if ( ! wp_next_scheduled( 'bdv_log_cleanup' ) ) {
 			wp_schedule_event( time(), 'daily', 'bdv_log_cleanup' );
 		}
-		// Schedule daily log purge (60-day retention)
+		// Schedule daily log purge (60-day retention).
 		if ( ! wp_next_scheduled( 'bdv_log_purge' ) ) {
 			wp_schedule_event( time(), 'daily', 'bdv_log_purge' );
 		}
@@ -147,7 +147,7 @@ class Installer {
 		$start_time = time();
 		$max_time   = 25;
 
-		// Acquire lock to prevent concurrent runs
+		// Acquire lock to prevent concurrent runs.
 		if ( ! Utils::acquire_lock( 'bdv_access_code_generation', 300 ) ) {
 			return;
 		}
@@ -172,7 +172,7 @@ class Installer {
 				}
 
 				if ( ! empty( $values ) ) {
-					// Use INSERT IGNORE to handle race conditions gracefully
+					// Use INSERT IGNORE to handle race conditions gracefully.
 					$wpdb->query(
 						"INSERT IGNORE INTO {$wpdb->postmeta} (post_id, meta_key, meta_value) VALUES " . implode( ',', $values )
 					);
@@ -197,7 +197,7 @@ class Installer {
 	public static function continue_access_codes(): void {
 		self::ensure_member_access_codes();
 
-		// If all done, clear the cron
+		// If all done, clear the cron.
 		global $wpdb;
 		$remaining = (int) $wpdb->get_var(
 			"SELECT COUNT(*) FROM {$wpdb->posts} p

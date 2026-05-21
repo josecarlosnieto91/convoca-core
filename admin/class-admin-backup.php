@@ -151,8 +151,8 @@ class Admin_Backup {
 		}
 
 		$add_csv = function ( $name, $headers, $rows ) use ( $zip ) {
-			$handle = fopen( 'php://temp', 'r+' );
-			fwrite( $handle, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) ); // BOM for UTF-8
+			$handle = fopen( 'php://temp', 'r+' ); .
+			fwrite( $handle, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) ); // BOM for UTF-8.
 			fputcsv( $handle, $headers, ',', '"' );
 			foreach ( $rows as $row ) {
 				fputcsv( $handle, $row, ',', '"' );
@@ -164,7 +164,7 @@ class Admin_Backup {
 
 		$batch_size = 500;
 
-		// Helper to export all posts of a type in batches
+		// Helper to export all posts of a type in batches.
 		$export_all = function ( $post_type, $headers, $fields_fn ) use ( $zip, $add_csv, $batch_size ) {
 			$all_rows = array();
 			$page     = 1;
@@ -192,7 +192,7 @@ class Admin_Backup {
 			$add_csv( $post_type, $headers, $all_rows );
 		};
 
-		// Members
+		// Members.
 		$export_all(
 			'miembro',
 			array( 'ID', 'Nombre', 'Email', 'DNI', 'Plan', 'Estado', 'Vencimiento' ),
@@ -209,7 +209,7 @@ class Admin_Backup {
 			}
 		);
 
-		// Inscriptions
+		// Inscriptions.
 		$export_all(
 			'inscripcion',
 			array( 'ID', 'Nombre', 'Email', 'Estado', 'Actividad ID' ),
@@ -224,7 +224,7 @@ class Admin_Backup {
 			}
 		);
 
-		// Projects
+		// Projects.
 		$export_all(
 			'proyecto',
 			array( 'ID', 'Título', 'Inicio', 'Fin', 'Activo' ),
@@ -239,7 +239,7 @@ class Admin_Backup {
 			}
 		);
 
-		// Centro Social Turnos
+		// Centro Social Turnos.
 		$export_all(
 			'centro_turno',
 			array( 'ID', 'Título', 'Responsable', 'Estado', 'Hora Fin' ),
@@ -255,7 +255,7 @@ class Admin_Backup {
 			}
 		);
 
-		// Settings (Whitelist based)
+		// Settings (Whitelist based).
 		$settings        = array();
 		$allowed_options = array( 'bdg_settings', 'bdv_members_settings', 'bdv_members_plans', 'bde_settings', 'cst_hora_apertura', 'cst_hora_cierre', 'cst_calendar_page_url' );
 		foreach ( $allowed_options as $k ) {
@@ -307,7 +307,7 @@ class Admin_Backup {
 			wp_die( 'No se pudo abrir el ZIP.' );
 		}
 
-		// Robust validation
+		// Robust validation.
 		$entities       = array();
 		$valid_entities = array( 'miembros', 'inscripciones', 'proyectos', 'turnos' );
 		foreach ( $valid_entities as $name ) {
@@ -338,7 +338,7 @@ class Admin_Backup {
 
 		$zip->close();
 
-		// Save to temp folder with security token
+		// Save to temp folder with security token.
 		$upload_dir = wp_upload_dir();
 		$import_dir = $upload_dir['basedir'] . '/' . self::IMPORT_DIR;
 		wp_mkdir_p( $import_dir );
@@ -346,7 +346,7 @@ class Admin_Backup {
 			file_put_contents( $import_dir . '/.htaccess', "Deny from all\n" );
 		}
 		if ( ! file_exists( $import_dir . '/index.php' ) ) {
-			file_put_contents( $import_dir . '/index.php', "<?php\n// Silence is golden.\n" );
+			file_put_contents( $import_dir . '/index.php', "<?php\n// Silence is golden.\n" ); .
 		}
 
 		$token  = wp_generate_password( 24, false );
@@ -411,7 +411,7 @@ class Admin_Backup {
 		$results        = array( 'total' => 0 );
 		$imported_posts = array();
 
-		// Prevent concurrent imports
+		// Prevent concurrent imports.
 		if ( ! \Convoca\Core\Utils::acquire_lock( 'bdv_backup_import', 300 ) ) {
 			wp_die( 'Otra importación está en curso. Espera a que termine.' );
 		}
@@ -471,7 +471,7 @@ class Admin_Backup {
 					}
 
 					$imported_posts[] = $new_id;
-					// Store old ID as meta instead of keeping a RAM dict
+					// Store old ID as meta instead of keeping a RAM dict.
 					if ( $old_id ) {
 						update_post_meta( $new_id, '_bdv_old_import_id', $old_id );
 					}
@@ -575,7 +575,7 @@ class Admin_Backup {
 				continue;
 			}
 
-			// Backup before overwrite
+			// Backup before overwrite.
 			$current = get_option( $key );
 			if ( $current ) {
 				update_option( $key . '_backup_' . wp_date( 'Y-m-d-His' ), $current, false );

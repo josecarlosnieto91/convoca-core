@@ -23,7 +23,7 @@ class Capabilities {
 	 */
 	public static function get_all(): array {
 		return array(
-			// Centro Social Turnos
+			// Centro Social Turnos.
 			'cst_manage_turnos'      => array(
 				'description' => __( 'Gestionar turnos del calendario (crear, editar)', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
@@ -37,7 +37,7 @@ class Capabilities {
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
 
-			// Biodevas Enroll
+			// Biodevas Enroll.
 			'bde_manage_checkin'     => array(
 				'description' => __( 'Hacer check-in de asistentes', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
@@ -51,7 +51,7 @@ class Capabilities {
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
 
-			// Biodevas Members
+			// Biodevas Members.
 			'bdv_manage_hours'       => array(
 				'description' => __( 'Gestionar horas de voluntarios (aprobar)', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
@@ -65,7 +65,7 @@ class Capabilities {
 				'roles'       => array( 'administrator' ),
 			),
 
-			// Biodevas Gateway
+			// Biodevas Gateway.
 			'bdg_view_payments'      => array(
 				'description' => __( 'Ver pagos y dashboard', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
@@ -75,7 +75,7 @@ class Capabilities {
 				'roles'       => array( 'administrator' ),
 			),
 
-			// Common
+			// Common.
 			'common_view_logs'       => array(
 				'description' => __( 'Ver logs del sistema', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),

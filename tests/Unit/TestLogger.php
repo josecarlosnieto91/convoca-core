@@ -40,7 +40,7 @@ class TestLogger extends TestCase
         Logger::warning('Warning message', 'Test', 2);
         Logger::error('Error message', 'Test', 3);
 
-        // Base log method
+        // Base log method.
         Logger::log('Direct log', 'debug', 'Test', 4);
 
         // If we got here without exceptions, the method signature is solid.
@@ -134,11 +134,11 @@ class TestLogger extends TestCase
      */
     public function test_get_logs_invalid_limit(): void
     {
-        // Limit of 0 should fall back to default
+        // Limit of 0 should fall back to default.
         $logs = Logger::get_logs(['limit' => 0]);
         $this->assertIsArray($logs);
 
-        // Very large limit should be capped
+        // Very large limit should be capped.
         $logs = Logger::get_logs(['limit' => 99999]);
         $this->assertIsArray($logs);
     }

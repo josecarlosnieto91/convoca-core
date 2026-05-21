@@ -41,13 +41,13 @@ class Admin_Templates {
 			return;
 		}
 
-		// Restore Defaults
+		// Restore Defaults.
 		if ( isset( $_POST['bdv_restore_templates'] ) && check_admin_referer( 'bdv_restore_templates_nonce' ) ) {
 			self::restore_default_templates();
 			\Convoca\Core\Utils::set_admin_notice( __( 'Plantillas restauradas a sus valores por defecto.', 'convoca-core' ), 'success' );
 		}
 
-		// Save Custom Templates
+		// Save Custom Templates.
 		if ( isset( $_POST['bdv_save_templates'] ) && check_admin_referer( 'bdv_save_templates_nonce' ) ) {
 			$templates = self::get_templates();
 			$changed   = false;
@@ -56,12 +56,12 @@ class Admin_Templates {
 				if ( isset( $_POST['template'][ $key ] ) ) {
 					$content = wp_unslash( $_POST['template'][ $key ] );
 
-					// Sanitize if not unfiltered_html
+					// Sanitize if not unfiltered_html.
 					if ( ! current_user_can( 'unfiltered_html' ) ) {
 						$content = self::sanitize_pdf_template( $content );
 					}
 
-					// Atomic validation
+					// Atomic validation.
 					if ( ! empty( $content ) && ! self::validate_template( $content ) ) {
 						$template_name = $data['name'] ?? $key;
 						\Convoca\Core\Utils::set_admin_notice(
@@ -97,7 +97,7 @@ class Admin_Templates {
 
 		$backups = get_option( self::$option_name . '_versions', array() );
 
-		// Add current to front
+		// Add current to front.
 		array_unshift(
 			$backups,
 			array(
@@ -107,7 +107,7 @@ class Admin_Templates {
 			)
 		);
 
-		// Keep only 5
+		// Keep only 5.
 		$backups = array_slice( $backups, 0, 5 );
 		update_option( self::$option_name . '_versions', $backups, false );
 	}
@@ -122,7 +122,7 @@ class Admin_Templates {
 
 		$allowed = wp_kses_allowed_html( 'post' );
 
-		// Specialized tags for Dompdf document structure
+		// Specialized tags for Dompdf document structure.
 		$pdf_structural = array(
 			'html'       => array(
 				'xmlns' => true,
@@ -147,10 +147,10 @@ class Admin_Templates {
 				'style' => true,
 			),
 			'center'     => array(),
-			'page_break' => array( 'style' => true ), // Common custom tag/class
+			'page_break' => array( 'style' => true ), // Common custom tag/class.
 		);
 
-		// Ensure table attributes are allowed
+		// Ensure table attributes are allowed.
 		$pdf_structural['table'] = array_merge(
 			$allowed['table'] ?? array(),
 			array(
@@ -165,10 +165,10 @@ class Admin_Templates {
 
 		$allowed = array_merge( $allowed, $pdf_structural );
 
-		// Sanitize with custom allowed list
+		// Sanitize with custom allowed list.
 		$sanitized = wp_kses( $content, $allowed );
 
-		// Remove dangerous JS or URL schemes that KSES might miss in style attributes
+		// Remove dangerous JS or URL schemes that KSES might miss in style attributes.
 		return self::sanitize_styles( $sanitized );
 	}
 
@@ -180,7 +180,7 @@ class Admin_Templates {
 	 * @return bool True if valid, false otherwise.
 	 */
 	private static function validate_template( string $content, bool $render_test = false ): bool {
-		// Always validate structural limits regardless of Dompdf availability
+		// Always validate structural limits regardless of Dompdf availability.
 		$max_size = 500000;
 		if ( strlen( $content ) > $max_size ) {
 			error_log( 'BDV Template Validation Error: Content exceeds max size of ' . $max_size . ' bytes' );
@@ -203,14 +203,14 @@ class Admin_Templates {
 			return true;
 		}
 
-		// Size limit: 500KB
+		// Size limit: 500KB.
 		$max_size = 500000;
 		if ( strlen( $content ) > $max_size ) {
 			error_log( 'BDV Template Validation Error: Content exceeds max size of ' . $max_size . ' bytes' );
 			return false;
 		}
 
-		// Tag count limit
+		// Tag count limit.
 		$max_iterations = 10000;
 		$open_tags      = substr_count( $content, '<' );
 		$close_tags     = substr_count( $content, '>' );
@@ -219,7 +219,7 @@ class Admin_Templates {
 			return false;
 		}
 
-		// DOM depth limit (approximate via stack)
+		// DOM depth limit (approximate via stack).
 		$depth     = 0;
 		$max_depth = 0;
 		$tags      = array();
@@ -237,7 +237,7 @@ class Admin_Templates {
 			return false;
 		}
 
-		// Detect data URIs and large base64
+		// Detect data URIs and large base64.
 		if ( preg_match_all( '/data:([^;]{0,40});base64,([a-zA-Z0-9\/+]{100,})/i', $content, $b64_matches ) ) {
 			foreach ( $b64_matches[2] as $b64 ) {
 				if ( strlen( $b64 ) > 50000 ) {
@@ -247,14 +247,14 @@ class Admin_Templates {
 			}
 		}
 
-		// Limit inline SVG embeds
+		// Limit inline SVG embeds.
 		$svg_count = substr_count( $content, '<svg' );
 		if ( $svg_count > 5 ) {
 			error_log( 'BDV Template Validation Error: Too many SVG elements' );
 			return false;
 		}
 
-		// Check attribute length (individual)
+		// Check attribute length (individual).
 		if ( preg_match_all( '/\s[a-zA-Z-]+\s*=\s*"[^"]{500,}"/', $content, $long_attrs ) ) {
 			error_log( 'BDV Template Validation Error: Attribute exceeds 500 chars' );
 			return false;
@@ -273,13 +273,13 @@ class Admin_Templates {
 			$rendered_content = str_replace( '{{' . $key . '}}', $value, $rendered_content );
 		}
 
-		// Detect pathological CSS patterns before rendering
+		// Detect pathological CSS patterns before rendering.
 		$css_patterns = array(
-			'/\{[^}]*\{\{/',                    // Nested braces
-			'/@import/i',                       // External imports
-			'/calc\s*\([^)]+\)/i',             // calc() complex
-			'/expression\s*\(/i',               // IE expressions
-			'/url\s*\(/i',                       // url() references
+			'/\{[^}]*\{\{/',                    // Nested braces.
+			'/@import/i',                       // External imports.
+			'/calc\s*\([^)]+\)/i',             // calc() complex.
+			'/expression\s*\(/i',               // IE expressions.
+			'/url\s*\(/i',                       // url() references.
 		);
 		foreach ( $css_patterns as $pattern ) {
 			if ( preg_match( $pattern, $rendered_content ) ) {
@@ -288,14 +288,14 @@ class Admin_Templates {
 			}
 		}
 
-		// Limit inline style blocks count
+		// Limit inline style blocks count.
 		$style_blocks = substr_count( $rendered_content, '<style' );
 		if ( $style_blocks > 10 ) {
 			error_log( 'BDV Template Validation: Too many style blocks' );
 			return false;
 		}
 
-		// Detect deeply nested tables (performance killer)
+		// Detect deeply nested tables (performance killer).
 		$table_nesting = substr_count( $rendered_content, '<table' );
 		$tr_count      = substr_count( $rendered_content, '<tr' );
 		if ( $table_nesting > 5 || $tr_count > 500 ) {
@@ -330,7 +330,7 @@ class Admin_Templates {
 	 * Remove dangerous CSS properties from style attributes.
 	 */
 	private static function sanitize_styles( $html ): string {
-		// CSS properties that could be dangerous in PDFs
+		// CSS properties that could be dangerous in PDFs.
 		$dangerous = array(
 			'url(',
 			'expression(',
@@ -348,7 +348,7 @@ class Admin_Templates {
 				foreach ( $dangerous as $bad ) {
 					$style = str_ireplace( $bad, '', $style );
 				}
-				// Clean up any resulting double semicolons or empty styles
+				// Clean up any resulting double semicolons or empty styles.
 				$style = preg_replace( '/;+/', ';', $style );
 				$style = trim( $style, ';' );
 				return $style ? 'style="' . esc_attr( $style ) . '"' : '';
@@ -360,15 +360,15 @@ class Admin_Templates {
 	public static function get_templates() {
 		$raw = get_option( self::$option_name, null );
 
-		// Option doesn't exist → first run, create defaults
+		// Option doesn't exist → first run, create defaults.
 		if ( $raw === null ) {
 			self::restore_default_templates();
 			$raw = get_option( self::$option_name, array() );
 		}
 
-		// Validate structure: must be non-empty array
+		// Validate structure: must be non-empty array.
 		if ( ! is_array( $raw ) || empty( $raw ) ) {
-			// Back up corrupted data before restoring
+			// Back up corrupted data before restoring.
 			self::backup_corrupted( $raw );
 			self::restore_default_templates();
 			$raw = get_option( self::$option_name, array() );
@@ -381,7 +381,7 @@ class Admin_Templates {
 			);
 		}
 
-		// Validate each template has required 'name' key
+		// Validate each template has required 'name' key.
 		$corrupted = false;
 		foreach ( $raw as $key => $data ) {
 			if ( ! is_array( $data ) || ! isset( $data['name'] ) ) {
@@ -520,19 +520,19 @@ class Admin_Templates {
 			function bdvSwitchTab(event, tabId) {
 				event.preventDefault();
 				
-				// Hide all contents
+				// Hide all contents.
 				var contents = document.querySelectorAll('.bdv-tab-content');
 				contents.forEach(function(content) {
 					content.style.display = 'none';
 				});
 				
-				// Remove active class from all tabs
+				// Remove active class from all tabs.
 				var tabs = document.querySelectorAll('.nav-tab');
 				tabs.forEach(function(tab) {
 					tab.classList.remove('nav-tab-active');
 				});
 				
-				// Show selected content
+				// Show selected content.
 				document.getElementById('tab-' + tabId).style.display = 'block';
 				event.target.classList.add('nav-tab-active');
 			}

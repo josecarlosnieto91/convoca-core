@@ -43,12 +43,12 @@ class Logger {
 	 * @param int|null $object_id Optional object ID related to this log entry.
 	 */
 	public static function log( string $message, string $level = 'info', string $context = 'General', ?int $object_id = null ): void {
-		// Prevent recursion
+		// Prevent recursion.
 		if ( self::$log_depth >= self::MAX_LOG_DEPTH ) {
 			return;
 		}
 
-		// Rate limiting
+		// Rate limiting.
 		$now                  = time();
 		self::$log_timestamps = array_filter(
 			self::$log_timestamps,
@@ -89,7 +89,7 @@ class Logger {
 			if ( $result === false && ! empty( $wpdb->last_error ) ) {
 				error_log( '[BIODEVAS DB ERROR] ' . $wpdb->last_error . ' - Message: ' . $message );
 				$logged_to_file = true;
-				// Table may have been dropped — invalidate cache so next call rechecks
+				// Table may have been dropped — invalidate cache so next call rechecks.
 				self::clear_table_cache();
 			}
 
@@ -188,7 +188,7 @@ class Logger {
 		$batch_size    = 1000;
 		$total_deleted = 0;
 
-		// Delete old info/warning logs (90 days) in batches
+		// Delete old info/warning logs (90 days) in batches.
 		do {
 			$batch_size = max( 1, $batch_size );
 			$affected   = $wpdb->query(
@@ -206,7 +206,7 @@ class Logger {
 			}
 		} while ( $affected !== false && $affected > 0 && $affected >= $batch_size );
 
-		// Delete old error logs (1 year) in batches
+		// Delete old error logs (1 year) in batches.
 		do {
 			$affected = $wpdb->query(
 				$wpdb->prepare(
@@ -289,7 +289,7 @@ class Logger {
 			ARRAY_A
 		);
 
-		// Estimate table size
+		// Estimate table size.
 		$size = $wpdb->get_var(
 			"
             SELECT ROUND((data_length + index_length) / 1024, 2) 
@@ -321,7 +321,7 @@ class Logger {
 			return true;
 		}
 
-		// Verify table existence against the database
+		// Verify table existence against the database.
 		$table_name = $wpdb->prefix . 'biodevas_logs';
 		$exists     = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name );
 

@@ -73,7 +73,7 @@ class TestWebhookManager extends TestCase
         }
 
         $id = Webhook_Manager::add_webhook([
-            'url'    => 'https://example.com/webhook',
+            'url'    => 'https://example.com/webhook',.
             'secret' => 'test-secret-123',
             'events' => ['member.created', 'payment.completed'],
             'label'  => 'Test Webhook',
@@ -84,7 +84,7 @@ class TestWebhookManager extends TestCase
         // Verify it was stored.
         $webhook = Webhook_Manager::get_webhook($id);
         $this->assertNotNull($webhook);
-        $this->assertEquals('https://example.com/webhook', $webhook['url']);
+        $this->assertEquals('https://example.com/webhook', $webhook['url']);.
         $this->assertEquals('test-secret-123', $webhook['secret']);
         $this->assertContains('member.created', $webhook['events']);
         $this->assertEquals('Test Webhook', $webhook['label']);
@@ -103,7 +103,7 @@ class TestWebhookManager extends TestCase
         }
 
         $id = Webhook_Manager::add_webhook([
-            'url'   => 'https://example.com/minimal',
+            'url'   => 'https://example.com/minimal',.
             'label' => 'Minimal Webhook',
         ]);
 
@@ -111,7 +111,7 @@ class TestWebhookManager extends TestCase
 
         $webhook = Webhook_Manager::get_webhook($id);
         $this->assertNotNull($webhook);
-        $this->assertEquals('https://example.com/minimal', $webhook['url']);
+        $this->assertEquals('https://example.com/minimal', $webhook['url']);.
         $this->assertEmpty($webhook['secret']);
         $this->assertEmpty($webhook['events']);
         $this->assertTrue($webhook['active']);
@@ -129,7 +129,7 @@ class TestWebhookManager extends TestCase
         }
 
         $id = Webhook_Manager::add_webhook([
-            'url'    => 'https://example.com/all-events',
+            'url'    => 'https://example.com/all-events',.
             'label'  => 'All Events',
             'events' => [],
         ]);
@@ -175,14 +175,14 @@ class TestWebhookManager extends TestCase
         }
 
         $id = Webhook_Manager::add_webhook([
-            'url'    => 'https://example.com/original',
+            'url'    => 'https://example.com/original',.
             'secret' => 'original-secret',
             'events' => ['member.created'],
             'label'  => 'Original',
         ]);
 
         $updated = Webhook_Manager::update_webhook($id, [
-            'url'    => 'https://example.com/updated',
+            'url'    => 'https://example.com/updated',.
             'secret' => 'updated-secret',
             'events' => ['payment.completed', 'enrollment.created'],
             'label'  => 'Updated',
@@ -192,7 +192,7 @@ class TestWebhookManager extends TestCase
         $this->assertTrue($updated);
 
         $webhook = Webhook_Manager::get_webhook($id);
-        $this->assertEquals('https://example.com/updated', $webhook['url']);
+        $this->assertEquals('https://example.com/updated', $webhook['url']);.
         $this->assertEquals('updated-secret', $webhook['secret']);
         $this->assertContains('payment.completed', $webhook['events']);
         $this->assertEquals('Updated', $webhook['label']);
@@ -207,7 +207,7 @@ class TestWebhookManager extends TestCase
     public function test_update_nonexistent_webhook(): void
     {
         $result = Webhook_Manager::update_webhook('non-existent-id', [
-            'url' => 'https://example.com/new',
+            'url' => 'https://example.com/new',.
         ]);
         $this->assertFalse($result);
     }
@@ -224,7 +224,7 @@ class TestWebhookManager extends TestCase
         }
 
         $id = Webhook_Manager::add_webhook([
-            'url'   => 'https://example.com/delete-me',
+            'url'   => 'https://example.com/delete-me',.
             'label' => 'To Delete',
         ]);
 

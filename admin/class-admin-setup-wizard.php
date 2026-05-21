@@ -69,19 +69,19 @@ class Admin_Setup_Wizard {
 			return;
 		}
 
-		// Session-level guard to avoid infinite annoyance
+		// Session-level guard to avoid infinite annoyance.
 		$user_id = get_current_user_id();
 		if ( get_transient( self::SEEN_OPTION . '_' . $user_id ) ) {
 			return;
 		}
 
-		// If configuration is already verified complete, auto-mark and stop
+		// If configuration is already verified complete, auto-mark and stop.
 		if ( $this->is_config_complete() ) {
 			update_option( self::COMPLETED_OPTION, 1 );
 			return;
 		}
 
-		// Only redirect from dashboard or plugins page to be less intrusive
+		// Only redirect from dashboard or plugins page to be less intrusive.
 		if ( ! in_array( $pagenow, array( 'index.php', 'plugins.php' ), true ) ) {
 			return;
 		}

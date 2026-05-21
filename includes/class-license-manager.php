@@ -38,7 +38,7 @@ class License_Manager {
 	 * API endpoint for license validation.
 	 * Override via filter 'convoca_license_api_url'.
 	 */
-	const API_URL = 'https://convoca.app/api/license';
+	const API_URL = 'https://convoca.app/api/license'; .
 
 	/**
 	 * Initialize hooks.
@@ -49,7 +49,7 @@ class License_Manager {
 		add_action( 'admin_post_convoca_deactivate_license', array( __CLASS__, 'handle_deactivate' ) );
 		add_action( 'admin_notices', array( __CLASS__, 'admin_notice' ) );
 
-		// Weekly cron validation
+		// Weekly cron validation.
 		add_action( 'convoca_license_validate', array( __CLASS__, 'validate_remote' ) );
 	}
 
@@ -62,17 +62,17 @@ class License_Manager {
 	public static function has_pro( string $feature ): bool {
 		$license = self::get_license();
 
-		// No license key = FREE mode
+		// No license key = FREE mode.
 		if ( empty( $license['key'] ) ) {
 			return false;
 		}
 
-		// Expired license
+		// Expired license.
 		if ( ! empty( $license['expires'] ) && strtotime( $license['expires'] ) < time() ) {
 			return false;
 		}
 
-		// Unlimited or specific feature
+		// Unlimited or specific feature.
 		if ( $license['type'] === 'unlimited' ) {
 			return true;
 		}
@@ -140,12 +140,12 @@ class License_Manager {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			// Fallback: validate locally (cached)
+			// Fallback: validate locally (cached).
 			$cached = get_transient( 'convoca_license_check_' . md5( $key ) );
 			if ( $cached ) {
 				return $cached;
 			}
-			// Store pending validation
+			// Store pending validation.
 			update_option(
 				self::OPTION_KEY,
 				array_merge(
@@ -172,10 +172,10 @@ class License_Manager {
 			);
 		}
 
-		// Cache locally
+		// Cache locally.
 		set_transient( 'convoca_license_check_' . md5( $key ), $body, self::CACHE_TTL );
 
-		// Save to options
+		// Save to options.
 		update_option(
 			self::OPTION_KEY,
 			array(
@@ -334,7 +334,7 @@ class License_Manager {
 						</form>
 						<p style="margin-top:20px;font-size:13px;color:#64748b;">
 							<?php esc_html_e( '¿Sin licencia?', 'convoca-core' ); ?>
-							<a href="https://convoca.app/pricing" target="_blank"><?php esc_html_e( 'Adquiere una aquí', 'convoca-core' ); ?></a>
+							<a href="https://convoca.app/pricing" target="_blank"><?php esc_html_e( 'Adquiere una aquí', 'convoca-core' ); ?></a>.
 						</p>
 					<?php endif; ?>
 				</div>
