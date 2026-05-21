@@ -45,7 +45,7 @@ jobs:
         with:
           dependency-versions: highest
 
-      - run: vendor/bin/phpstan analyse --configuration=phpstan.neon.dist --memory-limit=1G
+      - run: vendor/bin/phpstan analyse --configuration=phpstan.neon.dist --memory-limit=4G
 
   test:
     name: PHPUnit ${{ matrix.php }}
