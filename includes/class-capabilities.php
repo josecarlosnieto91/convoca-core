@@ -10,120 +10,117 @@
 
 namespace Convoca\Core;
 
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
-class Capabilities
-{
-    /**
-     * Get all custom capabilities with descriptions.
-     *
-     * @return array<string, array{description: string, roles: string[]}>
-     */
-    public static function get_all(): array
-    {
-        return [
-            // Centro Social Turnos
-            'cst_manage_turnos' => [
-                'description' => __('Gestionar turnos del calendario (crear, editar)', 'convoca-core'),
-                'roles'       => ['administrator', 'monitor_actividad'],
-            ],
-            'cst_view_stats' => [
-                'description' => __('Ver estadísticas de turnos', 'convoca-core'),
-                'roles'       => ['administrator', 'monitor_actividad'],
-            ],
-            'cst_audit_hours' => [
-                'description' => __('Auditoría de horas de voluntarios', 'convoca-core'),
-                'roles'       => ['administrator', 'monitor_actividad'],
-            ],
+class Capabilities {
 
-            // Biodevas Enroll
-            'bde_manage_checkin' => [
-                'description' => __('Hacer check-in de asistentes', 'convoca-core'),
-                'roles'       => ['administrator', 'monitor_actividad'],
-            ],
-            'bde_manage_evaluations' => [
-                'description' => __('Gestionar evaluaciones', 'convoca-core'),
-                'roles'       => ['administrator', 'monitor_actividad'],
-            ],
-            'bde_view_reports' => [
-                'description' => __('Ver informes de actividades', 'convoca-core'),
-                'roles'       => ['administrator', 'monitor_actividad'],
-            ],
+	/**
+	 * Get all custom capabilities with descriptions.
+	 *
+	 * @return array<string, array{description: string, roles: string[]}>
+	 */
+	public static function get_all(): array {
+		return array(
+			// Centro Social Turnos
+			'cst_manage_turnos'      => array(
+				'description' => __( 'Gestionar turnos del calendario (crear, editar)', 'convoca-core' ),
+				'roles'       => array( 'administrator', 'monitor_actividad' ),
+			),
+			'cst_view_stats'         => array(
+				'description' => __( 'Ver estadísticas de turnos', 'convoca-core' ),
+				'roles'       => array( 'administrator', 'monitor_actividad' ),
+			),
+			'cst_audit_hours'        => array(
+				'description' => __( 'Auditoría de horas de voluntarios', 'convoca-core' ),
+				'roles'       => array( 'administrator', 'monitor_actividad' ),
+			),
 
-            // Biodevas Members
-            'bdv_manage_hours' => [
-                'description' => __('Gestionar horas de voluntarios (aprobar)', 'convoca-core'),
-                'roles'       => ['administrator', 'monitor_actividad'],
-            ],
-            'bdv_export_members' => [
-                'description' => __('Exportar listado de socios', 'convoca-core'),
-                'roles'       => ['administrator'],
-            ],
-            'bdv_manage_webhooks' => [
-                'description' => __('Gestionar webhooks', 'convoca-core'),
-                'roles'       => ['administrator'],
-            ],
+			// Biodevas Enroll
+			'bde_manage_checkin'     => array(
+				'description' => __( 'Hacer check-in de asistentes', 'convoca-core' ),
+				'roles'       => array( 'administrator', 'monitor_actividad' ),
+			),
+			'bde_manage_evaluations' => array(
+				'description' => __( 'Gestionar evaluaciones', 'convoca-core' ),
+				'roles'       => array( 'administrator', 'monitor_actividad' ),
+			),
+			'bde_view_reports'       => array(
+				'description' => __( 'Ver informes de actividades', 'convoca-core' ),
+				'roles'       => array( 'administrator', 'monitor_actividad' ),
+			),
 
-            // Biodevas Gateway
-            'bdg_view_payments' => [
-                'description' => __('Ver pagos y dashboard', 'convoca-core'),
-                'roles'       => ['administrator'],
-            ],
-            'bdg_manage_payments' => [
-                'description' => __('Gestionar pagos manualmente', 'convoca-core'),
-                'roles'       => ['administrator'],
-            ],
+			// Biodevas Members
+			'bdv_manage_hours'       => array(
+				'description' => __( 'Gestionar horas de voluntarios (aprobar)', 'convoca-core' ),
+				'roles'       => array( 'administrator', 'monitor_actividad' ),
+			),
+			'bdv_export_members'     => array(
+				'description' => __( 'Exportar listado de socios', 'convoca-core' ),
+				'roles'       => array( 'administrator' ),
+			),
+			'bdv_manage_webhooks'    => array(
+				'description' => __( 'Gestionar webhooks', 'convoca-core' ),
+				'roles'       => array( 'administrator' ),
+			),
 
-            // Common
-            'common_view_logs' => [
-                'description' => __('Ver logs del sistema', 'convoca-core'),
-                'roles'       => ['administrator'],
-            ],
-            'common_manage_backup' => [
-                'description' => __('Gestionar copias de seguridad', 'convoca-core'),
-                'roles'       => ['administrator'],
-            ],
-        ];
-    }
+			// Biodevas Gateway
+			'bdg_view_payments'      => array(
+				'description' => __( 'Ver pagos y dashboard', 'convoca-core' ),
+				'roles'       => array( 'administrator' ),
+			),
+			'bdg_manage_payments'    => array(
+				'description' => __( 'Gestionar pagos manualmente', 'convoca-core' ),
+				'roles'       => array( 'administrator' ),
+			),
 
-    /**
-     * Register (add) capabilities to their assigned roles.
-     *
-     * Safe to call multiple times; will not duplicate existing caps.
-     */
-    public static function register(): void
-    {
-        $caps = self::get_all();
+			// Common
+			'common_view_logs'       => array(
+				'description' => __( 'Ver logs del sistema', 'convoca-core' ),
+				'roles'       => array( 'administrator' ),
+			),
+			'common_manage_backup'   => array(
+				'description' => __( 'Gestionar copias de seguridad', 'convoca-core' ),
+				'roles'       => array( 'administrator' ),
+			),
+		);
+	}
 
-        foreach ($caps as $cap => $config) {
-            foreach ($config['roles'] as $role_name) {
-                $role = get_role($role_name);
-                if ($role && !$role->has_cap($cap)) {
-                    $role->add_cap($cap);
-                }
-            }
-        }
-    }
+	/**
+	 * Register (add) capabilities to their assigned roles.
+	 *
+	 * Safe to call multiple times; will not duplicate existing caps.
+	 */
+	public static function register(): void {
+		$caps = self::get_all();
 
-    /**
-     * Ensure all granular capabilities exist on all roles.
-     *
-     * Call on plugins_loaded to handle upgrades without re-activation.
-     */
-    public static function ensure(): void
-    {
-        if (!is_admin()) {
-            return;
-        }
+		foreach ( $caps as $cap => $config ) {
+			foreach ( $config['roles'] as $role_name ) {
+				$role = get_role( $role_name );
+				if ( $role && ! $role->has_cap( $cap ) ) {
+					$role->add_cap( $cap );
+				}
+			}
+		}
+	}
 
-        $version_hash = md5('biodevas_caps_v1');
-        if (get_option('bdv_capabilities_hash') === $version_hash) {
-            return;
-        }
+	/**
+	 * Ensure all granular capabilities exist on all roles.
+	 *
+	 * Call on plugins_loaded to handle upgrades without re-activation.
+	 */
+	public static function ensure(): void {
+		if ( ! is_admin() ) {
+			return;
+		}
 
-        self::register();
-        update_option('bdv_capabilities_hash', $version_hash, false);
-    }
+		$version_hash = md5( 'biodevas_caps_v1' );
+		if ( get_option( 'bdv_capabilities_hash' ) === $version_hash ) {
+			return;
+		}
+
+		self::register();
+		update_option( 'bdv_capabilities_hash', $version_hash, false );
+	}
 }

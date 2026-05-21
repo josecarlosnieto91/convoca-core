@@ -10,140 +10,135 @@
 
 namespace Convoca\Core;
 
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
-class Push_Notifier
-{
-    /**
-     * Option key for ntfy configuration.
-     */
-    const CONFIG_OPTION = 'bdv_ntfy_config';
+class Push_Notifier {
 
-    /**
-     * Send a push notification.
-     *
-     * @param string $topic   The ntfy.sh topic/channel name.
-     * @param string $title   Notification title.
-     * @param string $message Notification message body.
-     * @param string $priority Priority: 'default', 'low', 'high', 'urgent', 'min', 'max'.
-     * @param array  $tags    Optional tags/emojis (e.g., ['warning', 'bell']).
-     * @return bool True on success.
-     */
-    public static function send(string $topic, string $title, string $message, string $priority = 'default', array $tags = []): bool
-    {
-        $config = get_option(self::CONFIG_OPTION, []);
-        if (empty($config['enabled'])) {
-            return false;
-        }
+	/**
+	 * Option key for ntfy configuration.
+	 */
+	const CONFIG_OPTION = 'bdv_ntfy_config';
 
-        $server = untrailingslashit($config['server'] ?? 'https://ntfy.sh');
-        $topic = !empty($topic) ? $topic : ($config['topic'] ?? 'biodevas_alerts');
-        $url = $server . '/' . $topic;
+	/**
+	 * Send a push notification.
+	 *
+	 * @param string $topic   The ntfy.sh topic/channel name.
+	 * @param string $title   Notification title.
+	 * @param string $message Notification message body.
+	 * @param string $priority Priority: 'default', 'low', 'high', 'urgent', 'min', 'max'.
+	 * @param array  $tags    Optional tags/emojis (e.g., ['warning', 'bell']).
+	 * @return bool True on success.
+	 */
+	public static function send( string $topic, string $title, string $message, string $priority = 'default', array $tags = array() ): bool {
+		$config = get_option( self::CONFIG_OPTION, array() );
+		if ( empty( $config['enabled'] ) ) {
+			return false;
+		}
 
-        // Validate priority
-        $valid_priorities = ['default', 'low', 'high', 'urgent', 'min', 'max'];
-        if (!in_array($priority, $valid_priorities, true)) {
-            $priority = 'default';
-        }
+		$server = untrailingslashit( $config['server'] ?? 'https://ntfy.sh' );
+		$topic  = ! empty( $topic ) ? $topic : ( $config['topic'] ?? 'biodevas_alerts' );
+		$url    = $server . '/' . $topic;
 
-        $payload = [
-            'topic'    => $topic,
-            'title'    => $title,
-            'message'  => $message,
-            'priority' => $priority,
-        ];
+		// Validate priority
+		$valid_priorities = array( 'default', 'low', 'high', 'urgent', 'min', 'max' );
+		if ( ! in_array( $priority, $valid_priorities, true ) ) {
+			$priority = 'default';
+		}
 
-        if (!empty($tags)) {
-            $payload['tags'] = $tags;
-        }
+		$payload = array(
+			'topic'    => $topic,
+			'title'    => $title,
+			'message'  => $message,
+			'priority' => $priority,
+		);
 
-        $args = [
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ],
-            'body'    => wp_json_encode($payload),
-            'timeout' => 10,
-        ];
+		if ( ! empty( $tags ) ) {
+			$payload['tags'] = $tags;
+		}
 
-        $response = wp_remote_post($url, $args);
+		$args = array(
+			'headers' => array(
+				'Content-Type' => 'application/json',
+			),
+			'body'    => wp_json_encode( $payload ),
+			'timeout' => 10,
+		);
 
-        if (is_wp_error($response)) {
-            Logger::warning(
-                sprintf(__('Push notification error: %s', 'convoca-core'), $response->get_error_message()),
-                'Common/Push'
-            );
-            return false;
-        }
+		$response = wp_remote_post( $url, $args );
 
-        $code = wp_remote_retrieve_response_code($response);
-        if ($code >= 200 && $code < 300) {
-            Logger::debug(
-                sprintf(__('Push notification sent: %s', 'convoca-core'), $title),
-                'Common/Push'
-            );
-            return true;
-        }
+		if ( is_wp_error( $response ) ) {
+			Logger::warning(
+				sprintf( __( 'Push notification error: %s', 'convoca-core' ), $response->get_error_message() ),
+				'Common/Push'
+			);
+			return false;
+		}
 
-        Logger::warning(
-            sprintf(__('Push notification HTTP %d: %s', 'convoca-core'), $code, wp_remote_retrieve_body($response)),
-            'Common/Push'
-        );
-        return false;
-    }
+		$code = wp_remote_retrieve_response_code( $response );
+		if ( $code >= 200 && $code < 300 ) {
+			Logger::debug(
+				sprintf( __( 'Push notification sent: %s', 'convoca-core' ), $title ),
+				'Common/Push'
+			);
+			return true;
+		}
 
-    /**
-     * Convenience: send to the default configured topic.
-     *
-     * @param string $title    Notification title.
-     * @param string $message  Notification body.
-     * @param string $priority Priority level.
-     * @param array  $tags     Optional tags.
-     * @return bool True on success.
-     */
-    public static function notify_admins(string $title, string $message, string $priority = 'default', array $tags = []): bool
-    {
-        $config = get_option(self::CONFIG_OPTION, []);
-        $topic = $config['topic'] ?? 'biodevas_alerts';
+		Logger::warning(
+			sprintf( __( 'Push notification HTTP %1$d: %2$s', 'convoca-core' ), $code, wp_remote_retrieve_body( $response ) ),
+			'Common/Push'
+		);
+		return false;
+	}
 
-        if (empty($topic)) {
-            return false;
-        }
+	/**
+	 * Convenience: send to the default configured topic.
+	 *
+	 * @param string $title    Notification title.
+	 * @param string $message  Notification body.
+	 * @param string $priority Priority level.
+	 * @param array  $tags     Optional tags.
+	 * @return bool True on success.
+	 */
+	public static function notify_admins( string $title, string $message, string $priority = 'default', array $tags = array() ): bool {
+		$config = get_option( self::CONFIG_OPTION, array() );
+		$topic  = $config['topic'] ?? 'biodevas_alerts';
 
-        return self::send($topic, '[Admin] ' . $title, $message, $priority, $tags);
-    }
+		if ( empty( $topic ) ) {
+			return false;
+		}
 
-    /**
-     * Get the default config values.
-     */
-    public static function get_defaults(): array
-    {
-        return [
-            'enabled' => false,
-            'topic'   => 'biodevas_alerts',
-            'server'  => 'https://ntfy.sh',
-        ];
-    }
+		return self::send( $topic, '[Admin] ' . $title, $message, $priority, $tags );
+	}
 
-    /**
-     * Get current config.
-     */
-    public static function get_config(): array
-    {
-        $config = get_option(self::CONFIG_OPTION, []);
-        return array_merge(self::get_defaults(), $config);
-    }
+	/**
+	 * Get the default config values.
+	 */
+	public static function get_defaults(): array {
+		return array(
+			'enabled' => false,
+			'topic'   => 'biodevas_alerts',
+			'server'  => 'https://ntfy.sh',
+		);
+	}
 
-    /**
-     * Save config.
-     */
-    public static function save_config(array $config): void
-    {
-        $config = wp_parse_args($config, self::get_defaults());
-        $config['enabled'] = !empty($config['enabled']);
-        $config['topic'] = sanitize_text_field($config['topic']);
-        $config['server'] = esc_url_raw($config['server']);
-        update_option(self::CONFIG_OPTION, $config);
-    }
+	/**
+	 * Get current config.
+	 */
+	public static function get_config(): array {
+		$config = get_option( self::CONFIG_OPTION, array() );
+		return array_merge( self::get_defaults(), $config );
+	}
+
+	/**
+	 * Save config.
+	 */
+	public static function save_config( array $config ): void {
+		$config            = wp_parse_args( $config, self::get_defaults() );
+		$config['enabled'] = ! empty( $config['enabled'] );
+		$config['topic']   = sanitize_text_field( $config['topic'] );
+		$config['server']  = esc_url_raw( $config['server'] );
+		update_option( self::CONFIG_OPTION, $config );
+	}
 }
