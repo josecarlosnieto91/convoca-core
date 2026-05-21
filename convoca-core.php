@@ -1031,6 +1031,16 @@ add_action(
 	}
 );
 
+/** Build metrics data for REST response. */
+function assoc_build_metrics(): array {
+	$metrics = array(
+		"timestamp" => current_time("mysql"),
+		"php_version" => PHP_VERSION,
+		"wp_version" => get_bloginfo("version"),
+	);
+	return $metrics;
+}
+
 function convoca_rest_metrics(): \WP_REST_Response {
 	$cache_key = 'conv_rest_metrics';
 	$data      = get_transient( $cache_key );

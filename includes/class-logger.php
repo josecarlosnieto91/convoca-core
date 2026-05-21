@@ -43,6 +43,10 @@ class Logger {
 	 * @param int|null $object_id Optional object ID related to this log entry.
 	 */
 	public static function log( string $message, string $level = 'info', string $context = 'General', ?int $object_id = null ): void {
+	public static function debug( string $message, string $context = "General" ): void {
+		self::log( $message, "debug", $context );
+	}
+
 		// Prevent recursion.
 		if ( self::$log_depth >= self::MAX_LOG_DEPTH ) {
 			return;
