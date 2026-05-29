@@ -352,7 +352,7 @@ class Admin_Setup_Wizard {
 	/* ── Step 4: Redsys ── */
 
 	private function step_redsys(): void {
-		$settings = get_option( 'bdg_settings', array() );
+		$settings = get_option( 'conv_gateway_settings', array() );
 		?>
 		<h2><?php esc_html_e( '4. Configuración de Redsys', 'convoca-core' ); ?></h2>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
@@ -410,10 +410,10 @@ class Admin_Setup_Wizard {
 		check_admin_referer( 'conv_wizard_save' );
 		$step = (int) $_POST['wizard_step'];
 		if ( $step === 4 ) {
-			$settings                  = get_option( 'bdg_settings', array() );
+			$settings                  = get_option( 'conv_gateway_settings', array() );
 			$settings['merchant_code'] = sanitize_text_field( $_POST['merchant_code'] );
 			$settings['secret_key']    = sanitize_text_field( $_POST['secret_key'] );
-			update_option( 'bdg_settings', $settings );
+			update_option( 'conv_gateway_settings', $settings );
 		}
 		if ( $step === 5 ) {
 			update_option( 'cst_hora_apertura', sanitize_text_field( $_POST['cst_apertura'] ) );

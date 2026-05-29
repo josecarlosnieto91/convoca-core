@@ -20,14 +20,14 @@ class ActivityFactory
      * @var array<string, mixed>
      */
     private const DEFAULT_META = [
-        '_bde_fecha_inicio'      => '',
-        '_bde_fecha_fin'         => '',
-        '_bde_plazas_totales'    => 30,
-        '_bde_plazas_disponibles' => 30,
-        '_bde_precio_socio'      => 0,
-        '_bde_ubicacion'         => 'Test Location',
-        '_bde_requiere_pago'     => 0,
-        '_bde_actividad_lugg'    => 0,
+        '_conv_fecha_inicio'      => '',
+        '_conv_fecha_fin'         => '',
+        '_conv_plazas_totales'    => 30,
+        '_conv_plazas_disponibles' => 30,
+        '_conv_precio_socio'      => 0,
+        '_conv_ubicacion'         => 'Test Location',
+        '_conv_requiere_pago'     => 0,
+        '_conv_actividad_lugg'    => 0,
     ];
 
     /**
@@ -40,7 +40,7 @@ class ActivityFactory
     {
         $meta_overrides = [];
         foreach ($overrides as $key => $value) {
-            if (str_starts_with((string) $key, '_bde_')) {
+            if (str_starts_with((string) $key, '_conv_')) {
                 $meta_overrides[$key] = $value;
                 unset($overrides[$key]);
             }
@@ -87,13 +87,13 @@ class ActivityFactory
 
         return self::create([
             'post_title'               => 'Full Test Activity',
-            '_bde_fecha_inicio'        => $start,
-            '_bde_fecha_fin'           => $end,
-            '_bde_plazas_totales'      => $total_slots,
-            '_bde_plazas_disponibles'  => $total_slots,
-            '_bde_precio_socio'        => $member_price,
-            '_bde_ubicacion'           => 'Test Venue',
-            '_bde_requiere_pago'       => 1,
+            '_conv_fecha_inicio'        => $start,
+            '_conv_fecha_fin'           => $end,
+            '_conv_plazas_totales'      => $total_slots,
+            '_conv_plazas_disponibles'  => $total_slots,
+            '_conv_precio_socio'        => $member_price,
+            '_conv_ubicacion'           => 'Test Venue',
+            '_conv_requiere_pago'       => 1,
         ]);
     }
 
@@ -108,8 +108,8 @@ class ActivityFactory
 
         return self::create([
             'post_title'        => 'Past Test Activity',
-            '_bde_fecha_inicio' => $start,
-            '_bde_fecha_fin'    => date('Y-m-d H:i:s', strtotime('-7 days + 3 hours')),
+            '_conv_fecha_inicio' => $start,
+            '_conv_fecha_fin'    => date('Y-m-d H:i:s', strtotime('-7 days + 3 hours')),
         ]);
     }
 
@@ -122,8 +122,8 @@ class ActivityFactory
     {
         return self::create([
             'post_title'               => 'Full Capacity Activity',
-            '_bde_plazas_totales'      => 0,
-            '_bde_plazas_disponibles'  => 0,
+            '_conv_plazas_totales'      => 0,
+            '_conv_plazas_disponibles'  => 0,
         ]);
     }
 

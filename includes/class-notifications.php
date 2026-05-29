@@ -358,7 +358,7 @@ class Notifications {
 		self::push( __( 'Pago fallido', 'convoca-core' ), $title, 'urgent', array( 'warning' ) );
 
 		// Also notify the member if we can find the member ID from the pago.
-		$member_id = get_post_meta( $pago_id, '_bdg_origin_id', true );
+		$member_id = get_post_meta( $pago_id, '_conv_origin_id', true );
 		if ( $member_id ) {
 			self::add_member(
 				(int) $member_id,
@@ -385,7 +385,7 @@ class Notifications {
 		self::push( __( 'Pago pendiente', 'convoca-core' ), $title, 'high', array( 'warning' ) );
 
 		// Try to find the member related to this inscription.
-		$email = get_post_meta( $inscripcion_id, '_bde_email', true );
+		$email = get_post_meta( $inscripcion_id, '_conv_email', true );
 		if ( $email ) {
 			$members = get_posts(
 				array(

@@ -38,15 +38,15 @@ class Capabilities {
 			),
 
 			// Biodevas Enroll.
-			'bde_manage_checkin'     => array(
+			'conv_manage_checkin'     => array(
 				'description' => __( 'Hacer check-in de asistentes', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'bde_manage_evaluations' => array(
+			'conv_manage_evaluations' => array(
 				'description' => __( 'Gestionar evaluaciones', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'bde_view_reports'       => array(
+			'conv_view_reports'       => array(
 				'description' => __( 'Ver informes de actividades', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
@@ -66,11 +66,11 @@ class Capabilities {
 			),
 
 			// Biodevas Gateway.
-			'bdg_view_payments'      => array(
+			'conv_view_payments'      => array(
 				'description' => __( 'Ver pagos y dashboard', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
-			'bdg_manage_payments'    => array(
+			'conv_manage_payments'    => array(
 				'description' => __( 'Gestionar pagos manualmente', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),

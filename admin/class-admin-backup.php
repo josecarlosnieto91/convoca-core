@@ -216,10 +216,10 @@ class Admin_Backup {
 			function ( $id ) {
 				return array(
 					$id,
-					get_post_meta( $id, '_bde_nombre', true ),
-					get_post_meta( $id, '_bde_email', true ),
-					get_post_meta( $id, '_bde_estado', true ),
-					get_post_meta( $id, '_bde_actividad_id', true ),
+					get_post_meta( $id, '_conv_nombre', true ),
+					get_post_meta( $id, '_conv_email', true ),
+					get_post_meta( $id, '_conv_estado', true ),
+					get_post_meta( $id, '_conv_actividad_id', true ),
 				);
 			}
 		);
@@ -257,7 +257,7 @@ class Admin_Backup {
 
 		// Settings (Whitelist based).
 		$settings        = array();
-		$allowed_options = array( 'bdg_settings', 'conv_members_settings', 'conv_members_plans', 'bde_settings', 'cst_hora_apertura', 'cst_hora_cierre', 'cst_calendar_page_url' );
+		$allowed_options = array( 'conv_gateway_settings', 'conv_members_settings', 'conv_members_plans', 'conv_enroll_settings', 'cst_hora_apertura', 'cst_hora_cierre', 'cst_calendar_page_url' );
 		foreach ( $allowed_options as $k ) {
 			$settings[ $k ] = get_option( $k );
 		}
@@ -521,9 +521,9 @@ class Admin_Backup {
 				update_post_meta( $id, '_conv_activo', sanitize_text_field( $data[4] ?? '1' ) );
 				break;
 			case 'inscripciones':
-				update_post_meta( $id, '_bde_nombre', sanitize_text_field( $data[1] ?? '' ) );
-				update_post_meta( $id, '_bde_email', sanitize_email( $data[2] ?? '' ) );
-				update_post_meta( $id, '_bde_estado', sanitize_text_field( $data[3] ?? 'pendiente' ) );
+				update_post_meta( $id, '_conv_nombre', sanitize_text_field( $data[1] ?? '' ) );
+				update_post_meta( $id, '_conv_email', sanitize_email( $data[2] ?? '' ) );
+				update_post_meta( $id, '_conv_estado', sanitize_text_field( $data[3] ?? 'pendiente' ) );
 
 				$old_pid = (int) ( $data[4] ?? 0 );
 				$new_pid = $old_pid;
@@ -542,7 +542,7 @@ class Admin_Backup {
 						$new_pid = (int) $mapped[0];
 					}
 				}
-				update_post_meta( $id, '_bde_actividad_id', $new_pid );
+				update_post_meta( $id, '_conv_actividad_id', $new_pid );
 				break;
 			case 'turnos':
 				update_post_meta( $id, '_estado_real', sanitize_text_field( $data[3] ?? 'pendiente' ) );
@@ -568,7 +568,7 @@ class Admin_Backup {
 			return;
 		}
 
-		$allowed = array( 'bdg_settings', 'conv_members_settings', 'conv_members_plans', 'bde_settings', 'cst_hora_apertura', 'cst_hora_cierre', 'cst_calendar_page_url' );
+		$allowed = array( 'conv_gateway_settings', 'conv_members_settings', 'conv_members_plans', 'conv_enroll_settings', 'cst_hora_apertura', 'cst_hora_cierre', 'cst_calendar_page_url' );
 
 		foreach ( $allowed as $key ) {
 			if ( ! isset( $data[ $key ] ) ) {

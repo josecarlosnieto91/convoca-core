@@ -610,9 +610,9 @@ function convoca_export_pdf( string $title, array $headers, array $rows, string 
  * Admin POST handler: Export payments as PDF.
  */
 add_action(
-	'admin_post_bdg_export_payments_pdf',
+	'admin_post_conv_export_payments_pdf',
 	function () {
-		if ( ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'bdg_export_payments_pdf' ) ) {
+		if ( ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'conv_gateway_export_payments_pdf' ) ) {
 			wp_die( __( 'Nonce inválido.', 'convoca-core' ) );
 		}
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -976,7 +976,7 @@ function convoca_build_metrics(): array {
 				'fields'         => 'ids',
 				'meta_query'     => array(
 					array(
-						'key'   => '_bde_estado',
+						'key'   => '_conv_estado',
 						'value' => 'pendiente_pago',
 					),
 				),
@@ -991,7 +991,7 @@ function convoca_build_metrics(): array {
 			$wpdb->prepare(
 				"SELECT SUM(meta_value + 0) FROM {$wpdb->postmeta} pm 
              JOIN {$wpdb->posts} p ON p.ID = pm.post_id 
-             WHERE pm.meta_key = '_bdg_amount_cents' AND p.post_type = 'pago' 
+             WHERE pm.meta_key = '_conv_amount_cents' AND p.post_type = 'pago' 
              AND MONTH(p.post_date) = MONTH(NOW()) AND YEAR(p.post_date) = YEAR(NOW())"
 			)
 		) / 100;
