@@ -741,4 +741,35 @@ class Utils {
 	public static function rest_cache_invalidate( string $key ): void {
 		delete_transient( 'conv_rest_' . md5( $key ) );
 	}
+
+
+	/**
+	 * Get human-readable label for donation/contribution type.
+	 *
+	 * @param string $context singular|plural|socio|trasgu|sugerida_socio|sugerida_trasgu
+	 * @return string
+	 */
+	public static function get_aportacion_label( string $context = 'singular' ): string {
+		$label = __( 'Aportación', 'convoca-enroll' );
+
+		switch ( $context ) {
+			case 'plural':
+				$label = __x( 'Aportaciones', 'plural', 'convoca-enroll' );
+				break;
+			case 'socio':
+				$label = __( 'Aportación', 'convoca-enroll' );
+				break;
+			case 'trasgu':
+				$label = __x( 'Aportación Trasgu', 'trasgu', 'convoca-enroll' );
+				break;
+			case 'sugerida_socio':
+				$label = __x( 'Aportación sugerida para socios', 'socio', 'convoca-enroll' );
+				break;
+			case 'sugerida_trasgu':
+				$label = __x( 'Aportación sugerida para no socios', 'no-socio', 'convoca-enroll' );
+				break;
+		}
+
+		return $label;
+	}
 }
