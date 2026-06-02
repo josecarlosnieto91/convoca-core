@@ -14,11 +14,6 @@
       <directory suffix="Test.php">./tests/Integration</directory>
     </testsuite>
   </testsuites>
-  <groups>
-    <include>
-      <group>integration</group>
-    </include>
-  </groups>
   <coverage>
     <include>
       <directory suffix=".php">./includes</directory>

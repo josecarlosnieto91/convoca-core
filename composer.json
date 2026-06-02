@@ -23,7 +23,11 @@
         "phpcbf": "phpcbf --standard=dev-tools/phpcs.xml.dist",
         "phpstan": "phpstan analyse --configuration=dev-tools/phpstan.neon.dist --memory-limit=4G",
         "phpunit": "phpunit",
-        "test": ["@phpcs", "@phpstan", "@phpunit"]
+        "test": [
+            "@phpcs",
+            "@phpstan",
+            "@phpunit"
+        ]
     },
     "config": {
         "allow-plugins": {
