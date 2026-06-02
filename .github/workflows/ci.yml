@@ -25,7 +25,7 @@ jobs:
         with:
           dependency-versions: highest
 
-      - run: vendor/bin/phpcs --standard=.phpcs.xml.dist --runtime-set ignore_warnings_on_exit 1 || true
+      - run: vendor/bin/phpcs --standard=dev-tools/phpcs.xml.dist --runtime-set ignore_warnings_on_exit 1 || true
 
   phpstan:
     name: PHPStan
@@ -45,7 +45,7 @@ jobs:
         with:
           dependency-versions: highest
 
-      - run: vendor/bin/phpstan analyse --configuration=phpstan.neon.dist --memory-limit=4G
+      - run: vendor/bin/phpstan analyse --configuration=dev-tools/phpstan.neon.dist --memory-limit=4G
 
   test:
     name: PHPUnit ${{ matrix.php }}
