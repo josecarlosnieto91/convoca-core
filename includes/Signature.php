@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class CONV_Signature {
+class Signature {
 
 	protected $last_error = '';
 
@@ -50,7 +50,7 @@ class CONV_Signature {
 
 		if ( ! class_exists( 'Dompdf\Dompdf' ) ) {
 			$this->last_error = __( 'La librería Dompdf no está instalada. Por favor, contacta con el administrador.', 'convoca-core' );
-			error_log( 'CONV_Signature Error: Dompdf class not found. Run composer require dompdf/dompdf.' );
+			error_log( 'Signature Error: Dompdf class not found. Run composer require dompdf/dompdf.' );
 			return false;
 		}
 

@@ -69,15 +69,11 @@ if ($wp_tests_dir && file_exists($wp_tests_dir . '/includes/functions.php')) {
         require_once $autoload;
     }
 
-    // Load the plugin's spl_autoload_register.
+    // Load the plugin main file (registers autoloader via convoca-core.php).
     $plugin_main = dirname(__DIR__) . '/convoca-core.php';
     if (file_exists($plugin_main)) {
-        // Extract just the autoloader portion (skip WP-specific hooks).
-        require_once dirname(__DIR__) . '/includes/class-utils.php';
-        require_once dirname(__DIR__) . '/includes/class-logger.php';
-        require_once dirname(__DIR__) . '/includes/class-installer.php';
-        require_once dirname(__DIR__) . '/includes/class-capabilities.php';
-        require_once dirname(__DIR__) . '/includes/class-webhook-manager.php';
+        // PSR-4 autoloader handles Convoca\\Core\\ classes from includes/.
+        require_once $plugin_main;
     }
 }
 

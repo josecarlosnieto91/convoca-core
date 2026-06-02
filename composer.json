@@ -14,9 +14,9 @@
         "phpunit/phpunit": "^10.5"
     },
     "autoload": {
-        "classmap": [
-            "includes/"
-        ]
+        "psr-4": {
+            "Convoca\\Core\\": "includes/"
+        }
     },
     "scripts": {
         "phpcs": "phpcs --standard=dev-tools/phpcs.xml.dist --runtime-set ignore_warnings_on_exit 1",

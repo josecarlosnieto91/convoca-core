@@ -36,26 +36,31 @@ $composer_autoload = __DIR__ . '/vendor/autoload.php';
 if ( file_exists( $composer_autoload ) ) {
 	require_once $composer_autoload;
 }
+
 /**
- * Basic Autoloader fallback.
- * Supports Convoca\Core\ClassName mapped to includes/ClassName.php
- * (PSR-4 naming). Composer autoloader handles primary resolution.
+ * Basic Autoloader.
+ * Maps Convoca\Core\Class_Name to includes/class-class-name.php.
  */
 spl_autoload_register(
 	function ( string $class ): void {
-		$prefix = 'Convoca\Core\\';
+		$prefix = 'Convoca\\Core\\';
 		if ( ! str_starts_with( $class, $prefix ) ) {
 			return;
 		}
 
 		$relative = substr( $class, strlen( $prefix ) );
-		// PSR-4: Convoca\Core\ClassName -> includes/ClassName.php
-		$relative = str_replace( array( '\\', '_' ), array( '/', '-' ), $relative );
+		$relative = strtolower( str_replace( array( '\\', '_' ), array( '/', '-' ), $relative ) );
 
-		$file = CONV_COMMON_DIR . 'includes/' . $relative . '.php';
+		$file = CONV_COMMON_DIR . 'includes/class-' . $relative . '.php';
 
 		if ( file_exists( $file ) ) {
 			require_once $file;
+		} else {
+			// Also check admin directory for admin classes.
+			$admin_file = CONV_COMMON_DIR . 'admin/class-' . $relative . '.php';
+			if ( file_exists( $admin_file ) ) {
+				require_once $admin_file;
+			}
 		}
 	}
 );
@@ -648,7 +653,7 @@ function convoca_logs_page(): void {
 	if ( ! current_user_can( 'manage_convoca_logs' ) && ! current_user_can( 'manage_options' ) ) {
 		wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
 	}
-	// [PSR-4] Admin_Logs_List is autoloaded from includes/Admin_Logs_List.php
+	require_once __DIR__ . '/admin/class-admin-logs-list.php';
 	$table = new \Convoca\Core\Admin_Logs_List();
 	$table->prepare_items();
 	?>
