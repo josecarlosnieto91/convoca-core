@@ -123,8 +123,8 @@ class Logger {
 	 * @param array $args Filter arguments (context, object_id, level, limit).
 	 * @return array
 	 */
-	public static function debug( string $message, string $context = "General" ): void {
-		self::log( $message, "debug", $context );
+	public static function debug( string $message, string $context = 'General' ): void {
+		self::log( $message, 'debug', $context );
 	}
 
 	public static function get_logs( array $args = array() ): array {

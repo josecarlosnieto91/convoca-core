@@ -750,23 +750,23 @@ class Utils {
 	 * @return string
 	 */
 	public static function get_aportacion_label( string $context = 'singular' ): string {
-		$label = __( 'Aportación', 'convoca-enroll' );
+		$label = __( 'Aportación', 'convoca-core' );
 
 		switch ( $context ) {
 			case 'plural':
-				$label = __x( 'Aportaciones', 'plural', 'convoca-enroll' );
+				$label = _x( 'Aportaciones', 'plural', 'convoca-core' );
 				break;
 			case 'socio':
-				$label = __( 'Aportación', 'convoca-enroll' );
+				$label = __( 'Aportación', 'convoca-core' );
 				break;
 			case 'trasgu':
-				$label = __x( 'Aportación Trasgu', 'trasgu', 'convoca-enroll' );
+				$label = _x( 'Aportación Trasgu', 'trasgu', 'convoca-core' );
 				break;
 			case 'sugerida_socio':
-				$label = __x( 'Aportación sugerida para socios', 'socio', 'convoca-enroll' );
+				$label = _x( 'Aportación sugerida para socios', 'socio', 'convoca-core' );
 				break;
 			case 'sugerida_trasgu':
-				$label = __x( 'Aportación sugerida para no socios', 'no-socio', 'convoca-enroll' );
+				$label = _x( 'Aportación sugerida para no socios', 'no-socio', 'convoca-core' );
 				break;
 		}
 

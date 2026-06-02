@@ -5,7 +5,7 @@
  * Description: Common functions, validation, and logging.
  * Author: Jose Carlos Nieto Ramos
  * Author URI: https://example.com.
-  * Version: 2.1.3
+ * Version: 2.1.3
  */
 
 
@@ -1034,9 +1034,9 @@ add_action(
 /** Build metrics data for REST response. */
 function assoc_build_metrics(): array {
 	$metrics = array(
-		"timestamp" => current_time("mysql"),
-		"php_version" => PHP_VERSION,
-		"wp_version" => get_bloginfo("version"),
+		'timestamp'   => current_time( 'mysql' ),
+		'php_version' => PHP_VERSION,
+		'wp_version'  => get_bloginfo( 'version' ),
 	);
 	return $metrics;
 }
