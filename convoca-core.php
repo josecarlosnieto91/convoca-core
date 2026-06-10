@@ -6,10 +6,17 @@
  * Author: Jose Carlos Nieto Ramos
  * Author URI: https://example.com.
  * Version: 2.1.3
+ * Text Domain: convoca-core
+ * Domain Path: /languages
  */
 
 
 namespace Convoca\Core;
+
+// Load translations.
+add_action( 'init', function () {
+	load_plugin_textdomain( 'convoca-core', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+} );
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
