@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Signature {
+class CONV_Signature {
 
 	protected $last_error = '';
 

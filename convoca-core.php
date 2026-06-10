@@ -57,7 +57,7 @@ spl_autoload_register(
 
 		$relative = substr( $class, strlen( $prefix ) );
 		// PSR-4: Convoca\Core\ClassName -> includes/ClassName.php
-		$relative = str_replace( array( '\\', '_' ), array( '/', '-' ), $relative );
+		$relative = str_replace( '\\', '/', $relative );
 
 		$file = CONV_COMMON_DIR . 'includes/' . $relative . '.php';
 
