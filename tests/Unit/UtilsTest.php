@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
  * @covers ::format_date
  * @covers ::sanitize_phone
  */
-class TestUtils extends TestCase
+class UtilsTest extends TestCase
 {
     /**
      * Test sanitize_email_list removes invalid emails.

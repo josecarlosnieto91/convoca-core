@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  * @covers ::register
  * @covers ::ensure
  */
-class TestCapabilities extends TestCase
+class CapabilitiesTest extends TestCase
 {
     /**
      * Test that get_all returns the expected structure.

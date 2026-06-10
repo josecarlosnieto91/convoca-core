@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
  * @covers ::dispatch
  * @covers ::test_webhook
  */
-class TestWebhookManager extends TestCase
+class WebhookManagerTest extends TestCase
 {
     /**
      * Clean up test webhooks after each test.

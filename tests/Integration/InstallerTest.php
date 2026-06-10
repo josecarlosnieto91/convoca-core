@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
  * @requires extension pdo_mysql
  * @requires function dbDelta
  */
-class TestInstaller extends TestCase
+class InstallerTest extends TestCase
 {
     /**
      * Test that db_init creates required tables.

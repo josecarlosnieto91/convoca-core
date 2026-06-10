@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
  * @covers ::get_stats
  * @covers ::cleanup
  */
-class TestLogger extends TestCase
+class LoggerTest extends TestCase
 {
     /**
      * Test that log method accepts various severity levels.
