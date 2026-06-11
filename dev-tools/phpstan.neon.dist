@@ -3,9 +3,7 @@ parameters:
 	paths:
 		- .
 	excludePaths:
-		- vendor/
+		- vendor/ (?)
 		- node_modules (?)
 		- tests (?)
-		- dev-tools/
-scanFiles:
-	- vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+		- dev-tools/ (?)
