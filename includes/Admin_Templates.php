@@ -24,7 +24,7 @@ class Admin_Templates {
 
 	public static function add_menu_page() {
 		add_options_page(
-			__( 'Plantillas PDF (Biodevas)', 'convoca-core' ),
+			__( 'Plantillas PDF (Convoca)', 'convoca-core' ),
 			__( 'Plantillas PDF', 'convoca-core' ),
 			'manage_convoca_templates',
 			'bdv-pdf-templates',
@@ -466,7 +466,7 @@ class Admin_Templates {
 			</div>
 			<?php \Convoca\Core\Utils::render_stored_notices(); ?>
 
-			<p><?php echo esc_html__( 'Aquí puedes modificar el diseño HTML de los documentos generados por el sistema de firmas (Biodevas Common).', 'convoca-core' ); ?></p>
+			<p><?php echo esc_html__( 'Aquí puedes modificar el diseño HTML de los documentos generados por el sistema de firmas (Convoca Common).', 'convoca-core' ); ?></p>
 			<p><?php printf( esc_html__( 'Utiliza etiquetas como %1$s, %2$s, %3$s para que se rellenen automáticamente según el contexto.', 'convoca-core' ), '<code>{{nombre}}</code>', '<code>{{dni}}</code>', '<code>{{fecha}}</code>' ); ?></p>
 
 			<form method="post" action="">

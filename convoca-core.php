@@ -162,8 +162,8 @@ add_action(
 add_action( 'admin_menu', 'Convoca\Core\convoca_register_global_menu' );
 function convoca_register_global_menu(): void {
 	add_menu_page(
-		'Biodevas',
-		'Biodevas',
+		'Convoca',
+		'Convoca',
 		'manage_options',
 		'convoca-core',
 		'Convoca\Core\convoca_health_page',
@@ -212,7 +212,7 @@ function convoca_health_page(): void {
 	$force = isset( $_GET['force'] ) && $_GET['force'] === '1';
 
 	echo '<div class="wrap">';
-	echo '<h1>🔍 ' . esc_html__( 'Salud del Sistema Biodevas', 'convoca-core' ) . '</h1>';
+	echo '<h1>🔍 ' . esc_html__( 'Salud del Sistema Convoca', 'convoca-core' ) . '</h1>';
 	echo '<p>' . esc_html__( 'Diagnóstico consolidado de todos los plugins del ecosistema.', 'convoca-core' ) . '</p>';
 	echo '<p><a href="' . esc_url( add_query_arg( 'force', '1' ) ) . '" class="convoca-btn convoca-btn-outline">🔄 ' . esc_html__( 'Forzar comprobación', 'convoca-core' ) . '</a></p>';
 	echo '<hr>';
@@ -229,18 +229,18 @@ function convoca_health_page(): void {
 			$checks   = $ref->invoke( $settings, $force );
 			if ( is_array( $checks ) ) {
 				$all_checks              = array_merge( $all_checks, $checks );
-				$plugin_names['members'] = __( 'Biodevas Members', 'convoca-core' );
+				$plugin_names['members'] = __( 'Convoca Members', 'convoca-core' );
 			}
 		} catch ( \Exception $e ) {
 			$all_checks[] = array(
-				'title'   => 'Biodevas Members',
+				'title'   => 'Convoca Members',
 				'status'  => 'error',
 				'message' => $e->getMessage(),
 			);
 		}
 	} else {
 		$all_checks[] = array(
-			'title'   => 'Biodevas Members',
+			'title'   => 'Convoca Members',
 			'status'  => 'warning',
 			'message' => __( 'Plugin no activo.', 'convoca-core' ),
 		);
@@ -254,18 +254,18 @@ function convoca_health_page(): void {
 			$checks = $ref->invoke( null, $force );
 			if ( is_array( $checks ) ) {
 				$all_checks             = array_merge( $all_checks, $checks );
-				$plugin_names['enroll'] = __( 'Biodevas Enroll', 'convoca-core' );
+				$plugin_names['enroll'] = __( 'Convoca Enroll', 'convoca-core' );
 			}
 		} catch ( \Exception $e ) {
 			$all_checks[] = array(
-				'title'   => 'Biodevas Enroll',
+				'title'   => 'Convoca Enroll',
 				'status'  => 'error',
 				'message' => $e->getMessage(),
 			);
 		}
 	} else {
 		$all_checks[] = array(
-			'title'   => 'Biodevas Enroll',
+			'title'   => 'Convoca Enroll',
 			'status'  => 'warning',
 			'message' => __( 'Plugin no activo.', 'convoca-core' ),
 		);
@@ -282,10 +282,10 @@ function convoca_health_page(): void {
 				'fix'     => $r['fix'] ?? '',
 			);
 		}
-		$plugin_names['gateway'] = __( 'Biodevas Gateway', 'convoca-core' );
+		$plugin_names['gateway'] = __( 'Convoca Gateway', 'convoca-core' );
 	} else {
 		$all_checks[] = array(
-			'title'   => 'Biodevas Gateway',
+			'title'   => 'Convoca Gateway',
 			'status'  => 'warning',
 			'message' => __( 'Plugin no activo.', 'convoca-core' ),
 		);
@@ -315,7 +315,7 @@ function convoca_health_page(): void {
 
 	// ── Common self-check ──
 	$all_checks[] = array(
-		'title'   => 'Biodevas Common — Versión',
+		'title'   => 'Convoca Common — Versión',
 		'status'  => 'ok',
 		'message' => 'v' . CONV_COMMON_VERSION,
 	);
@@ -326,7 +326,7 @@ function convoca_health_page(): void {
 		$all_checks[] = array(
 			'title'   => sprintf( __( 'Tabla %s', 'convoca-core' ), $t ),
 			'status'  => $exists ? 'ok' : 'error',
-			'message' => $exists ? __( 'OK', 'convoca-core' ) : __( 'No encontrada. Desactiva y reactiva Biodevas Common.', 'convoca-core' ),
+			'message' => $exists ? __( 'OK', 'convoca-core' ) : __( 'No encontrada. Desactiva y reactiva Convoca Common.', 'convoca-core' ),
 		);
 	}
 
@@ -537,7 +537,7 @@ function convoca_add_wizard_link( \WP_Admin_Bar $wp_admin_bar ): void {
 	$wp_admin_bar->add_node(
 		array(
 			'id'     => 'bdv-wizard',
-			'title'  => '🔧 ' . __( 'Asistente Biodevas', 'convoca-core' ),
+			'title'  => '🔧 ' . __( 'Asistente Convoca', 'convoca-core' ),
 			'href'   => admin_url( 'admin.php?page=bdv-setup-wizard' ),
 			'parent' => 'top-secondary',
 		)
@@ -761,7 +761,7 @@ function convoca_dashboard_page(): void {
 	);
 	?>
 	<div class="wrap">
-		<h1>📊 <?php esc_html_e( 'Panel de Control Biodevas', 'convoca-core' ); ?></h1>
+		<h1>📊 <?php esc_html_e( 'Panel de Control Convoca', 'convoca-core' ); ?></h1>
 		<p>
 			<a href="<?php echo esc_url( add_query_arg( 'refresh', '1' ) ); ?>" class="convoca-btn convoca-btn-outline">🔄 <?php esc_html_e( 'Actualizar datos', 'convoca-core' ); ?></a>
 			<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=conv_generate_memory' ), 'conv_generate_memory' ) ); ?>" class="convoca-btn convoca-btn-primary" style="margin-left:8px;">📄 <?php esc_html_e( 'Generar memoria PDF', 'convoca-core' ); ?></a>

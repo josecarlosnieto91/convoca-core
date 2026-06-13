@@ -1,6 +1,6 @@
 <?php
 /**
- * Base Upgrade Manager for Biodevas plugins.
+ * Base Upgrade Manager for Convoca plugins.
  *
  * Manages database versioning and upgrade routines across plugin updates.
  * Each plugin extends this class and defines its own version constant,

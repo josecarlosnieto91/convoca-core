@@ -1,5 +1,5 @@
 /**
- * Biodevas Monitor — Live polling dashboard metrics.
+ * Convoca Monitor — Live polling dashboard metrics.
  * Vanilla JS, no jQuery dependencies.
  *
  * @package Biodevas\Common

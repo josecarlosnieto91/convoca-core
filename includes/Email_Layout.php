@@ -1,6 +1,6 @@
 <?php
 /**
- * Email Layout — Biodevas premium HTML email template.
+ * Email Layout — Convoca premium HTML email template.
  *
  * Proporciona un layout HTML responsivo con la identidad visual de Biodevas
  * (naranja #FF8700 + violeta #320028) para todos los emails del ecosistema.

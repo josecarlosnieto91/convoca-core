@@ -1,5 +1,5 @@
 /**
- * Biodevas Common Admin JS Library
+ * Convoca Common Admin JS Library
  * Version 1.2.0
  */
 window.convocaAdmin = window.convocaAdmin || {};
@@ -68,7 +68,7 @@ window.convocaAdmin = window.convocaAdmin || {};
           }
       })
       .catch(err => {
-          console.error('Biodevas JS.ajaxPost Admin Fetch Error:', err);
+          console.error("Convoca JS.ajaxPost Admin Fetch Error:', err);
           if (onError) onError({ success: false, data: 'Error HTTP Fetch al portal wp-admin /admin-ajax.php' });
       });
   };
@@ -83,14 +83,14 @@ window.convocaAdmin = window.convocaAdmin || {};
     navigator.clipboard.writeText(text).then(() => {
       if (onSuccess) onSuccess();
     }).catch(err => {
-      console.error('Biodevas JS.copyToClipboard Admin Error:', err);
+      console.error("Convoca JS.copyToClipboard Admin Error:', err);
     });
   };
 
 })(window.convocaAdmin);
 
 /**
- * Biodevas Bulk Action Confirmation
+ * Convoca Bulk Action Confirmation
  * Applies to all WP_List_Table forms with [name="action"] selects.
  */
 (function () {
@@ -127,7 +127,7 @@ window.convocaAdmin = window.convocaAdmin || {};
   });
 
   /**
-   * Show a Biodevas notification at the top of the page.
+   * Show a Convoca notification at the top of the page.
    */
   window.convocaNotify = function (message, type) {
     type = type || 'success';
@@ -173,7 +173,7 @@ window.convocaAdmin = window.convocaAdmin || {};
 })();
 
 /**
- * Biodevas Live Email Preview
+ * Convoca Live Email Preview
  * Attaches to .bdv-email-preview-init containers and binds real-time preview.
  */
 (function () {
@@ -370,7 +370,7 @@ window.convocaAdmin = window.convocaAdmin || {};
 })();
 
 /**
- * Biodevas Chips Component
+ * Convoca Chips Component
  * Enhances a <select multiple> by converting it into a searchable chips UI.
  * Usage: convocaChips(document.getElementById('my-select'), '/wp-json/.../search?term=');
  */

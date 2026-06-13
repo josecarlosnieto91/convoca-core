@@ -1,6 +1,6 @@
 <?php
 /**
- * Upgrade Manager for Biodevas Common.
+ * Upgrade Manager for Convoca Common.
  *
  * Handles database structure upgrades for the common plugin.
  *

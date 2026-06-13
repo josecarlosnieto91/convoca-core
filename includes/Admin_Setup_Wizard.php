@@ -1,6 +1,6 @@
 <?php
 /**
- * Biodevas Setup Wizard — First-run configuration assistant.
+ * Convoca Setup Wizard — First-run configuration assistant.
  *
  * Guides the admin through required setup steps for the whole ecosystem.
  *
@@ -199,7 +199,7 @@ class Admin_Setup_Wizard {
 		global $wpdb;
 		$checks = array();
 
-		$checks[] = $this->check_item( __( 'Biodevas Common', 'convoca-core' ), class_exists( '\\Convoca\\Core\\Utils' ), __( 'Plugin activo.', 'convoca-core' ), __( 'Activa Biodevas Common.', 'convoca-core' ) );
+		$checks[] = $this->check_item( __( 'Convoca Common', 'convoca-core' ), class_exists( '\\Convoca\\Core\\Utils' ), __( 'Plugin activo.', 'convoca-core' ), __( 'Activa Convoca Common.', 'convoca-core' ) );
 
 		foreach ( array( 'convoca_logs', 'convoca_locks' ) as $t ) {
 			$exists   = $wpdb->get_var( "SHOW TABLES LIKE '{$wpdb->prefix}{$t}'" ) === $wpdb->prefix . $t;

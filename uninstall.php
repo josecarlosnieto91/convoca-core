@@ -1,6 +1,6 @@
 <?php
 /**
- * Uninstall handler for Biodevas Common Utilities.
+ * Uninstall handler for Convoca Common Utilities.
  *
  * @package Convoca\Core
  */

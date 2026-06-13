@@ -1,6 +1,6 @@
 <?php
 /**
- * Biodevas Internal Notifications System.
+ * Convoca Internal Notifications System.
  *
  * Stores notifications per user and displays a bell icon
  * in the admin bar with a dropdown of unread items.

@@ -1,6 +1,6 @@
 <?php
 /**
- * Common Block renderers for Biodevas.
+ * Common Block renderers for Convoca.
  *
  * @package Convoca\Core
  */
