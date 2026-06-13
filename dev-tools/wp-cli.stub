@@ -1,0 +1,5 @@
+<?php
+/**
+ * WP-CLI stubs for PHPStan.
+ */
+class WP_CLI_Command {}
