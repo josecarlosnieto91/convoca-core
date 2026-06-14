@@ -160,7 +160,7 @@ window.convoca = window.convoca || {};
          }
      })
      .catch(err => {
-         console.error("Convoca JS.ajaxPost Fetch Error:', err);
+         console.error('Convoca JS.ajaxPost Fetch Error:', err);
          if (onError) onError({ success: false, data: 'Error HTTP Fetch al portal wp-admin /admin-ajax.php' });
      });
   };
@@ -367,11 +367,11 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
          if (successful && onSuccess) {
            onSuccess();
          } else if (!successful) {
-           console.error("Convoca JS.copyToClipboard: execCommand copy failed');
+           console.error('Convoca JS.copyToClipboard: execCommand copy failed');
          }
        } catch (err) {
          document.body.removeChild(textarea);
-         console.error("Convoca JS.copyToClipboard Fallback Error:', err);
+         console.error('Convoca JS.copyToClipboard Fallback Error:', err);
        }
      };
      
@@ -379,7 +379,7 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
        navigator.clipboard.writeText(text).then(function() {
          if (onSuccess) onSuccess();
        }).catch(function(err) {
-         console.error("Convoca JS.copyToClipboard Error:', err);
+         console.error('Convoca JS.copyToClipboard Error:', err);
          copyFallback();
        });
      } else {
