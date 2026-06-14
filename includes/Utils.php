@@ -496,7 +496,7 @@ class Utils {
 	}
 
 	/**
-	 * Get a persistent salt for the Biodevas ecosystem.
+	 * Get a persistent salt for the Convoca ecosystem.
 	 * Unlike wp_salt(), this is stored in the database and remains consistent
 	 * even if WordPress salts are regenerated.
 	 *

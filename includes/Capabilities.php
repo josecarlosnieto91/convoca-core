@@ -37,7 +37,7 @@ class Capabilities {
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
 
-			// Biodevas Enroll.
+			// Convoca Enroll.
 			'conv_manage_checkin'     => array(
 				'description' => __( 'Hacer check-in de asistentes', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
@@ -51,7 +51,7 @@ class Capabilities {
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
 
-			// Biodevas Members.
+			// Convoca Members.
 			'conv_manage_hours'       => array(
 				'description' => __( 'Gestionar horas de voluntarios (aprobar)', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
@@ -65,7 +65,7 @@ class Capabilities {
 				'roles'       => array( 'administrator' ),
 			),
 
-			// Biodevas Gateway.
+			// Convoca Gateway.
 			'conv_view_payments'      => array(
 				'description' => __( 'Ver pagos y dashboard', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),

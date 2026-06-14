@@ -2,7 +2,7 @@
 /**
  * Class CONV_Signature
  *
- * Reusable PDF signature class for Biodevas.
+ * Reusable PDF signature class for Convoca.
  * Uses Dompdf (must be installed via Composer).
  *
  * @package Convoca\Core

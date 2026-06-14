@@ -376,7 +376,7 @@ class Admin_Templates {
 			add_action(
 				'admin_notices',
 				function () {
-					echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__( 'Biodevas: Las plantillas PDF se han restaurado a sus valores por defecto debido a datos corruptos. Se ha guardado una copia de seguridad.', 'convoca-core' ) . '</p></div>';
+					echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__( 'Convoca: Las plantillas PDF se han restaurado a sus valores por defecto debido a datos corruptos. Se ha guardado una copia de seguridad.', 'convoca-core' ) . '</p></div>';
 				}
 			);
 		}
@@ -398,7 +398,7 @@ class Admin_Templates {
 			add_action(
 				'admin_notices',
 				function () {
-					echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__( 'Biodevas: Algunas plantillas PDF estaban corruptas. Se han restaurado a sus valores por defecto. Se ha guardado una copia de seguridad.', 'convoca-core' ) . '</p></div>';
+					echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__( 'Convoca: Algunas plantillas PDF estaban corruptas. Se han restaurado a sus valores por defecto. Se ha guardado una copia de seguridad.', 'convoca-core' ) . '</p></div>';
 				}
 			);
 		}
@@ -436,7 +436,7 @@ class Admin_Templates {
 				if ( $loaded !== false ) {
 					$content = $loaded;
 				} else {
-					error_log( 'Biodevas: Failed to read template file: ' . $file_path );
+					error_log( 'Convoca: Failed to read template file: ' . $file_path );
 				}
 			}
 

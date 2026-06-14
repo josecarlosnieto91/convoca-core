@@ -27,6 +27,21 @@ Plugin base del ecosistema Convoca. Proporciona funcionalidades compartidas para
 * Capacidades centralizadas — Constantes para todas las capabilities de Convoca
 * Generación de PDF — Integración con Dompdf para certificados y memorias
 
+= Privacidad =
+
+Este plugin es el núcleo técnico del ecosistema Convoca y proporciona funcionalidades de infraestructura. No recopila datos personales de forma directa, pero su sistema de logging centralizado puede registrar acciones de usuarios y administradores que incluyan datos personales de forma indirecta (direcciones IP, marcas de tiempo, acciones realizadas, contenido de peticiones). El sistema de rate limiting almacena direcciones IP temporalmente para prevenir abusos.
+
+Los logs se almacenan en la base de datos local de WordPress (tabla wp_convoca_logs) y se purgan automáticamente según la configuración de retención del plugin (por defecto 30 días). Los datos de rate limiting se limpian automáticamente al expirar las ventanas de tiempo.
+
+Los webhooks gestionados por este plugin pueden enviar datos a URLs configuradas externamente; es responsabilidad del administrador del sitio revisar qué datos se incluyen en los webhooks y asegurar el cumplimiento normativo.
+
+No se comparten datos personales con terceros por parte de este plugin.
+
+Los usuarios tienen derecho a:
+* Solicitar acceso a los logs que les conciernan
+* Solicitar la eliminación de logs personales (sujeto a retenciones de seguridad)
+Para ejercer estos derechos, contacte con el administrador del sitio.
+
 == Installation ==
 
 1. Sube la carpeta convoca-core a /wp-content/plugins/

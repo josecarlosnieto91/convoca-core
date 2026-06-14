@@ -3,7 +3,7 @@
  * Webhook Manager for external integrations.
  *
  * Allows registering outbound webhook URLs that receive JSON payloads
- * when specific events occur across the Biodevas ecosystem.
+ * when specific events occur across the Convoca ecosystem.
  *
  * Webhooks are stored in wp_options and dispatched asynchronously via wp_remote_post.
  *
@@ -653,7 +653,7 @@ class Webhook_Manager {
 				'timestamp' => current_time( 'c' ),
 				'site_url'  => home_url(),
 				'data'      => array(
-					'message'    => 'Test ping from Biodevas',
+					'message'    => 'Test ping from ' . get_bloginfo('name'),
 					'webhook_id' => $id,
 				),
 			)

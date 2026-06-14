@@ -102,7 +102,7 @@ window.convoca = window.convoca || {};
   };
 
   /**
-   * Centralizes Biodevas fetch logic via AJAX/WordPress handling safely.
+   * Centralizes Convoca fetch logic via AJAX/WordPress handling safely.
    * @param {string} action - WordPress API / Admin-ajax action name.
    * @param {FormData|Object} data - Context data. Form keys and values.
    * @param {string} nonce - The WP Nonce key verifying the request.

@@ -60,7 +60,7 @@ class Memory_Report {
 			$admin_email = get_option( 'admin_email' );
 			$subject     = '📊 Memoria mensual de actividades — ' . $label;
 			$body        = 'La memoria mensual de ' . $label . ' ha sido generada automáticamente.';
-			$body       .= "\n\nPuedes descargarla en el Panel de Control de Biodevas.";
+			$body       .= "\n\nPuedes descargarla en el Panel de Control de " . esc_html(get_bloginfo("name")) . ".";
 			wp_mail( $admin_email, $subject, $body );
 
 			set_transient( $cache_key, true, MONTH_IN_SECONDS );
@@ -155,7 +155,7 @@ class Memory_Report {
 		);
 
 		$logo_url  = Utils::get_logo_url( 'memory' );
-		$logo_html = $logo_url ? '<img src="' . $logo_url . '" style="height:50px;" alt="Biodevas" />' : '';
+		$logo_html = $logo_url ? '<img src="' . $logo_url . '" style="height:50px;" alt="' . esc_attr(get_bloginfo('name')) . '" />' : '';
 
 		$html = '
         <!DOCTYPE html>
@@ -235,8 +235,8 @@ class Memory_Report {
             </div>
 
             <div class="footer">
-                <p>Generado automáticamente por Biodevas Ecosystem — ' . wp_date( 'd/m/Y H:i' ) . '</p>
-                <p>Biodevas — Asociación de Bioética y Desarrollo Sostenible</p>
+                <p>Generado automáticamente por " . esc_html(get_bloginfo("name")) . " — ' . wp_date( 'd/m/Y H:i' ) . '</p>
+                <p>" . esc_html(get_bloginfo("name")) . "</p>
             </div>
         </body>
         </html>';

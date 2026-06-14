@@ -1,913 +1,931 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the convoca-core package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# Copyright (C) 2026 Jose Carlos Nieto Ramos
+# This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: convoca-core 1.0\n"
-"Report-Msgid-Bugs-To: dev@getconvoca.app\n"
-"POT-Creation-Date: 2026-06-14 13:31+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Project-Id-Version: Convoca Core 2.1.3\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-core\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-06-14T13:48:49+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: convoca-core\n"
 
-#: convoca-core/includes/Admin_Backup.php:22
-msgid "Copia de Seguridad"
+#. Plugin Name of the plugin
+#: convoca-core.php
+msgid "Convoca Core"
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:27
-#: convoca-core/includes/Admin_Setup_Wizard.php:131
-#: convoca-core/convoca-core.php:214 convoca-core/convoca-core.php:626
-#: convoca-core/convoca-core.php:661 convoca-core/convoca-core.php:710
-msgid "No tienes permisos."
+#. Plugin URI of the plugin
+#: convoca-core.php
+msgid "https://getconvoca.app."
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:35
-msgid "Copia de Seguridad y Mantenimiento"
+#. Description of the plugin
+#: convoca-core.php
+msgid "Common functions, validation, and logging."
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:36
-msgid "Gestión de datos masivos e infraestructura."
+#. Author of the plugin
+#: convoca-core.php
+msgid "Jose Carlos Nieto Ramos"
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:49
-msgid "Exportar Datos"
+#. Author URI of the plugin
+#: convoca-core.php
+msgid "https://josecarlosnietoramos.com."
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:50
-msgid ""
-"Genera un archivo ZIP con CSVs de todas las entidades y un JSON con la "
-"configuración."
+#: convoca-core.php:181
+#: convoca-core.php:182
+msgid "Salud del Sistema"
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:52
-msgid "Descargar ZIP de Seguridad"
+#: convoca-core.php:191
+#: convoca-core.php:192
+msgid "Panel de Control"
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:57
-msgid "Importar Datos"
+#: convoca-core.php:200
+#: convoca-core.php:668
+msgid "Registros del Sistema"
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:58
-msgid "Restaura entidades o configuraciones desde un archivo ZIP oficial."
-msgstr ""
-
-#: convoca-core/includes/Admin_Backup.php:67
-msgid "Validar archivo y previsualizar"
-msgstr ""
-
-#: convoca-core/includes/Admin_Backup.php:76
-msgid "Modo de Importación Atómica:"
-msgstr ""
-
-#: convoca-core/includes/Admin_Backup.php:76
-msgid ""
-"Se crearán nuevos registros. Los IDs originales se perderán y se generarán "
-"nuevos. El sistema intentará remapear las relaciones internas."
-msgstr ""
-
-#: convoca-core/includes/Admin_Backup.php:84
-msgid "Contenido Detectado"
-msgstr ""
-
-#: convoca-core/includes/Admin_Backup.php:86
-msgid "Entidad"
-msgstr ""
-
-#: convoca-core/includes/Admin_Backup.php:86 convoca-core/convoca-core.php:201
+#: convoca-core.php:201
+#: includes/Admin_Backup.php:86
 msgid "Registros"
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:99
-msgid "Ejecutar Importación"
+#: convoca-core.php:214
+#: convoca-core.php:626
+#: convoca-core.php:661
+#: convoca-core.php:710
+#: includes/Admin_Backup.php:27
+#: includes/Admin_Setup_Wizard.php:131
+msgid "No tienes permisos."
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:100
-msgid "Cancelar y borrar temporal"
+#: convoca-core.php:220
+msgid "Salud del Sistema Convoca"
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:329
-msgid "Configuración del Sistema"
+#: convoca-core.php:221
+msgid "Diagnóstico consolidado de todos los plugins del ecosistema."
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:464
-msgid "Importado"
+#: convoca-core.php:222
+msgid "Forzar comprobación"
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:504
-#, php-format
-msgid "Importación finalizada. %d registros procesados."
+#: convoca-core.php:237
+msgid "Convoca Members"
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:594
-msgid "Miembros / Socios"
+#: convoca-core.php:250
+#: convoca-core.php:275
+#: convoca-core.php:295
+msgid "Plugin no activo."
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:595
-msgid "Inscripciones a Actividades"
+#: convoca-core.php:262
+msgid "Convoca Enroll"
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:596
-msgid "Proyectos y Actividades"
+#: convoca-core.php:290
+msgid "Convoca Gateway"
 msgstr ""
 
-#: convoca-core/includes/Admin_Backup.php:597
-msgid "Turnos Centro Social"
+#: convoca-core.php:311
+msgid "Centro Social Turnos"
 msgstr ""
 
-#: convoca-core/includes/Admin_Logs_List.php:36
-#: convoca-core/convoca-core.php:370 convoca-core/convoca-core.php:636
-msgid "Fecha"
+#: convoca-core.php:317
+msgid "Plugin no activo o sin función de diagnóstico."
 msgstr ""
 
-#: convoca-core/includes/Admin_Logs_List.php:37
-msgid "Nivel"
-msgstr ""
-
-#: convoca-core/includes/Admin_Logs_List.php:38
-msgid "Plugin"
-msgstr ""
-
-#: convoca-core/includes/Admin_Logs_List.php:39
-#: convoca-core/convoca-core.php:370
-msgid "Mensaje"
-msgstr ""
-
-#: convoca-core/includes/Admin_Logs_List.php:40
-msgid "Usuario"
-msgstr ""
-
-#: convoca-core/includes/Admin_Logs_List.php:41
-msgid "ID Objeto"
-msgstr ""
-
-#: convoca-core/includes/Admin_Logs_List.php:72
-msgid "ver más"
-msgstr ""
-
-#: convoca-core/includes/Admin_Logs_List.php:91
-msgid "Eliminar seleccionados"
-msgstr ""
-
-#: convoca-core/includes/Admin_Logs_List.php:92
-msgid "Purgar > 30 días"
-msgstr ""
-
-#: convoca-core/includes/Admin_Logs_List.php:199
-msgid "La vista de logs requiere el panel de administración."
-msgstr ""
-
-#: convoca-core/includes/Admin_Logs_List.php:223
-msgid "Todos los plugins"
-msgstr ""
-
-#: convoca-core/includes/Admin_Logs_List.php:229
-msgid "Todos los niveles"
-msgstr ""
-
-#: convoca-core/includes/Admin_Logs_List.php:236
-msgid "Filtrar"
-msgstr ""
-
-#: convoca-core/includes/Capabilities.php:28
-msgid "Gestionar turnos del calendario (crear, editar)"
-msgstr ""
-
-#: convoca-core/includes/Capabilities.php:32
-msgid "Ver estadísticas de turnos"
-msgstr ""
-
-#: convoca-core/includes/Capabilities.php:36
-msgid "Auditoría de horas de voluntarios"
-msgstr ""
-
-#: convoca-core/includes/Capabilities.php:42
-msgid "Hacer check-in de asistentes"
-msgstr ""
-
-#: convoca-core/includes/Capabilities.php:46
-msgid "Gestionar evaluaciones"
-msgstr ""
-
-#: convoca-core/includes/Capabilities.php:50
-msgid "Ver informes de actividades"
-msgstr ""
-
-#: convoca-core/includes/Capabilities.php:56
-msgid "Gestionar horas de voluntarios (aprobar)"
-msgstr ""
-
-#: convoca-core/includes/Capabilities.php:60
-msgid "Exportar listado de socios"
-msgstr ""
-
-#: convoca-core/includes/Capabilities.php:64
-msgid "Gestionar webhooks"
-msgstr ""
-
-#: convoca-core/includes/Capabilities.php:70
-msgid "Ver pagos y dashboard"
-msgstr ""
-
-#: convoca-core/includes/Capabilities.php:74
-msgid "Gestionar pagos manualmente"
-msgstr ""
-
-#: convoca-core/includes/Capabilities.php:80
-msgid "Ver logs del sistema"
-msgstr ""
-
-#: convoca-core/includes/Capabilities.php:84
-msgid "Gestionar copias de seguridad"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:115
-msgid "Activa"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:116
-msgid "Expirada"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:117
-msgid "Invalida"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:118
-msgid "Inactiva"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:255
-#: convoca-core/includes/License_Manager.php:276
-msgid "Licencia Convoca"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:256
-msgid "Licencia"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:281
-msgid "Estado de la licencia"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:284
-#: convoca-core/convoca-core.php:370 convoca-core/convoca-core.php:636
-msgid "Estado"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:294
-msgid "Clave"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:300
-msgid "Válida hasta"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:306
-#: convoca-core/convoca-core.php:370
-msgid "Tipo"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:316
-msgid "Licencia activa"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:317
-msgid "Tu licencia está activa. Puedes desactivarla para moverla a otro sitio."
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:322
-msgid "Desactivar licencia"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:326
-#: convoca-core/includes/License_Manager.php:337
-msgid "Activar licencia"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:327
-msgid "Introduce tu clave de licencia para activar las funcionalidades PRO."
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:341
-msgid "¿Sin licencia?"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:342
-msgid "Adquiere una aquí"
-msgstr ""
-
-#: convoca-core/includes/License_Manager.php:350
-msgid "Funcionalidades"
-msgstr ""
-
-#: convoca-core/includes/Push_Notifier.php:73
-#, php-format
-msgid "Push notification error: %s"
-msgstr ""
-
-#: convoca-core/includes/Push_Notifier.php:82
-#, php-format
-msgid "Push notification sent: %s"
-msgstr ""
-
-#: convoca-core/includes/Push_Notifier.php:89
-#, php-format
-msgid "Push notification HTTP %1$d: %2$s"
-msgstr ""
-
-#: convoca-core/includes/Utils.php:527
-msgid "Se han detectado problemas críticos que impediment el funcionamiento."
-msgstr ""
-
-#: convoca-core/includes/Utils.php:528
-msgid "Estado: Errores detectados"
-msgstr ""
-
-#: convoca-core/includes/Utils.php:532
-msgid "Hay advertencias que podrían afectar el funcionamiento."
-msgstr ""
-
-#: convoca-core/includes/Utils.php:533
-msgid "Estado: Advertencias"
-msgstr ""
-
-#: convoca-core/includes/Utils.php:537
-msgid "Todos los componentes están configurados correctamente."
-msgstr ""
-
-#: convoca-core/includes/Utils.php:538
-msgid "Estado: Todo correcto"
-msgstr ""
-
-#: convoca-core/includes/Utils.php:753 convoca-core/includes/Utils.php:760
-msgid "Aportación"
-msgstr ""
-
-#: convoca-core/includes/Utils.php:757
-msgctxt "plural"
-msgid "Aportaciones"
-msgstr ""
-
-#: convoca-core/includes/Utils.php:763
-msgctxt "trasgu"
-msgid "Aportación Trasgu"
-msgstr ""
-
-#: convoca-core/includes/Utils.php:766
-msgctxt "socio"
-msgid "Aportación sugerida para socios"
-msgstr ""
-
-#: convoca-core/includes/Utils.php:769
-msgctxt "no-socio"
-msgid "Aportación sugerida para no socios"
-msgstr ""
-
-#: convoca-core/includes/CONV_Signature.php:52
-msgid ""
-"La librería Dompdf no está instalada. Por favor, contacta con el "
-"administrador."
-msgstr ""
-
-#: convoca-core/includes/CONV_Signature.php:152
-msgid "Error al renderizar el PDF (salida vacía)."
-msgstr ""
-
-#: convoca-core/includes/CONV_Signature.php:166
-#, php-format
-msgid ""
-"No se pudo crear el directorio %s. Comprueba los permisos de escritura del "
-"servidor."
-msgstr ""
-
-#: convoca-core/includes/CONV_Signature.php:172
-#, php-format
-msgid "El directorio %s no tiene permisos de escritura."
-msgstr ""
-
-#: convoca-core/includes/CONV_Signature.php:183
-#, php-format
-msgid ""
-"No se pudo escribir el archivo PDF en %s. Comprueba los permisos de "
-"escritura."
-msgstr ""
-
-#: convoca-core/includes/CONV_Signature.php:189
-msgid "Excepción durante la generación del PDF: "
-msgstr ""
-
-#: convoca-core/includes/CONV_Signature.php:265
-#, php-format
-msgid "No se pudo crear el archivo de protección .htaccess en %s."
-msgstr ""
-
-#: convoca-core/includes/CONV_Signature.php:272
-#, php-format
-msgid "No se pudo crear el archivo de protección index.php en %s."
-msgstr ""
-
-#: convoca-core/includes/Blocks_Common.php:67
-msgid "Metadato de Post"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:190
-#, php-format
-msgid "Notificaciones (%d)"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:192
-msgid "Marcar todas leídas"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:198
-#: convoca-core/convoca-core.php:373
-msgid "No hay notificaciones."
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:212
-msgid "atrás"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:214
-msgid "Descartar"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:221
-msgid "Ver todas"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:346
-#, php-format
-msgid "Nuevo socio pendiente: %s"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:350
-msgid "Nuevo socio"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:354
-#, php-format
-msgid "Pago fallido: %s"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:358
-msgid "Pago fallido"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:365
-#, php-format
-msgid "❌ Tu pago (%s) no pudo procesarse. Revisa tu método de pago."
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:373
-#, php-format
-msgid "Horas pendientes de aprobar: %s"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:377
-msgid "Horas voluntariado"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:381
-#, php-format
-msgid "Inscripción pendiente de pago: %s"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:385
-msgid "Pago pendiente"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:406
-msgid ""
-"⚠️ Tienes una inscripción pendiente de pago. Revisa tu panel para completarla."
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:420
-#, php-format
-msgid "Nueva solicitud de voluntariado: %s"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:424
-msgid "Voluntariado"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:433
-#, php-format
-msgid "Solicitud de baja: %s"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:437
-msgid "Solicitud de baja"
-msgstr ""
-
-#: convoca-core/includes/Notifications.php:468
-msgid ""
-"🎉 ¡Tu solicitud de voluntariado ha sido aprobada! Bienvenido/a al equipo."
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:35
-msgid "Asistente de Configuración Biodevas"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:36
-msgid "Asistente"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:141
-msgid "Configuración del Ecosistema"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:142
-msgid "Sigue los pasos para asegurar que tu plataforma Biodevas esté lista."
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:163
-msgid "Omitir asistente y configurar manualmente"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:172
-msgid "Infraestructura"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:173
-msgid "Páginas"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:174
-msgid "Membresía"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:175
-msgid "Pagos"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:176
-msgid "Turnos"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:177
-msgid "Finalización"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:202
-msgid "Convoca Common"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:202
-msgid "Plugin activo."
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:202
-msgid "Activa Convoca Common."
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:206
-#: convoca-core/convoca-core.php:332
+#: convoca-core.php:332
+#: includes/Admin_Setup_Wizard.php:206
 #, php-format
 msgid "Tabla %s"
 msgstr ""
 
-#: convoca-core/includes/Admin_Setup_Wizard.php:206
-msgid "Correcto."
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:206
-msgid "No encontrada."
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:210
-msgid "1. Infraestructura y Base de Datos"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:237
-msgid "2. Páginas del Sistema"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:271
-msgid "Crear páginas faltantes"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:336
-msgid "3. Planes de Membresía"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:338
-msgid "No se han detectado planes. Configúralos en Ajustes → Miembros."
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:340
-msgid "Planes detectados:"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:357
-msgid "4. Configuración de Redsys"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:364
-#: convoca-core/includes/Admin_Setup_Wizard.php:381
-msgid "Guardar"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:374
-msgid "5. Centro Social Turnos"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:392
-msgid "6. Finalización"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:397
-msgid "Finalizar configuración"
-msgstr ""
-
-#: convoca-core/includes/Admin_Setup_Wizard.php:400
-msgid "Faltan requisitos obligatorios."
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:27
-msgid "Plantillas PDF (Convoca)"
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:28
-msgid "Plantillas PDF"
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:47
-msgid "Plantillas restauradas a sus valores por defecto."
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:68
-#, php-format
-msgid "Error: La plantilla \"%s\" contiene HTML inválido o peligroso."
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:84
-msgid "Plantillas actualizadas correctamente."
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:379
-msgid ""
-"Biodevas: Las plantillas PDF se han restaurado a sus valores por defecto "
-"debido a datos corruptos. Se ha guardado una copia de seguridad."
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:401
-msgid ""
-"Biodevas: Algunas plantillas PDF estaban corruptas. Se han restaurado a sus "
-"valores por defecto. Se ha guardado una copia de seguridad."
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:423
-msgid "Acuerdo de Incorporación"
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:424
-msgid "Anexo de Voluntariado"
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:425
-msgid "Certificado"
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:426
-msgid "Acuerdo de Desvinculación"
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:463
-msgid "Plantillas de Documentos (PDF)"
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:464
-msgid "Utilidades comunes e infraestructura de documentos"
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:469
-msgid ""
-"Aquí puedes modificar el diseño HTML de los documentos generados por el "
-"sistema de firmas (Convoca Common)."
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:470
-#, php-format
-msgid ""
-"Utiliza etiquetas como %1$s, %2$s, %3$s para que se rellenen automáticamente "
-"según el contexto."
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:495
-msgid "Código HTML:"
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:505
-msgid "Guardar Cambios"
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:511
-msgid ""
-"¿Estás seguro de que deseas restaurar las plantillas por defecto? Perderás "
-"cualquier cambio que hayas hecho en el HTML."
-msgstr ""
-
-#: convoca-core/includes/Admin_Templates.php:514
-msgid "Restaurar Plantillas por Defecto"
-msgstr ""
-
-#: convoca-core/convoca-core.php:181 convoca-core/convoca-core.php:182
-msgid "Salud del Sistema"
-msgstr ""
-
-#: convoca-core/convoca-core.php:191 convoca-core/convoca-core.php:192
-msgid "Panel de Control"
-msgstr ""
-
-#: convoca-core/convoca-core.php:200 convoca-core/convoca-core.php:668
-msgid "Registros del Sistema"
-msgstr ""
-
-#: convoca-core/convoca-core.php:220
-msgid "Salud del Sistema Convoca"
-msgstr ""
-
-#: convoca-core/convoca-core.php:221
-msgid "Diagnóstico consolidado de todos los plugins del ecosistema."
-msgstr ""
-
-#: convoca-core/convoca-core.php:222
-msgid "Forzar comprobación"
-msgstr ""
-
-#: convoca-core/convoca-core.php:237
-msgid "Convoca Members"
-msgstr ""
-
-#: convoca-core/convoca-core.php:250 convoca-core/convoca-core.php:275
-#: convoca-core/convoca-core.php:295
-msgid "Plugin no activo."
-msgstr ""
-
-#: convoca-core/convoca-core.php:262
-msgid "Convoca Enroll"
-msgstr ""
-
-#: convoca-core/convoca-core.php:290
-msgid "Convoca Gateway"
-msgstr ""
-
-#: convoca-core/convoca-core.php:311
-msgid "Centro Social Turnos"
-msgstr ""
-
-#: convoca-core/convoca-core.php:317
-msgid "Plugin no activo o sin función de diagnóstico."
-msgstr ""
-
-#: convoca-core/convoca-core.php:334
+#: convoca-core.php:334
 msgid "OK"
 msgstr ""
 
-#: convoca-core/convoca-core.php:334
+#: convoca-core.php:334
 msgid "No encontrada. Desactiva y reactiva Convoca Common."
 msgstr ""
 
-#: convoca-core/convoca-core.php:338
+#: convoca-core.php:338
 msgid "Diagnóstico completo del ecosistema"
 msgstr ""
 
-#: convoca-core/convoca-core.php:348 convoca-core/convoca-core.php:349
-#: convoca-core/convoca-core.php:367
+#: convoca-core.php:348
+#: convoca-core.php:349
+#: convoca-core.php:367
 msgid "Notificaciones"
 msgstr ""
 
-#: convoca-core/convoca-core.php:368
+#: convoca-core.php:368
 #, php-format
 msgid "Total: %d notificaciones"
 msgstr ""
 
-#: convoca-core/convoca-core.php:384
+#: convoca-core.php:370
+#: includes/License_Manager.php:306
+msgid "Tipo"
+msgstr ""
+
+#: convoca-core.php:370
+#: includes/Admin_Logs_List.php:39
+msgid "Mensaje"
+msgstr ""
+
+#: convoca-core.php:370
+#: convoca-core.php:636
+#: includes/Admin_Logs_List.php:36
+msgid "Fecha"
+msgstr ""
+
+#: convoca-core.php:370
+#: convoca-core.php:636
+#: includes/License_Manager.php:284
+msgid "Estado"
+msgstr ""
+
+#: convoca-core.php:373
+#: includes/Notifications.php:198
+msgid "No hay notificaciones."
+msgstr ""
+
+#: convoca-core.php:384
 msgid "No leída"
 msgstr ""
 
-#: convoca-core/convoca-core.php:384
+#: convoca-core.php:384
 msgid "Leída"
 msgstr ""
 
-#: convoca-core/convoca-core.php:467
+#: convoca-core.php:467
 msgid "Plataforma de gestión de la asociación."
 msgstr ""
 
-#: convoca-core/convoca-core.php:545
+#: convoca-core.php:545
 msgid "Asistente Convoca"
 msgstr ""
 
-#: convoca-core/convoca-core.php:562
+#: convoca-core.php:562
 msgid "La librería Dompdf no está instalada. Contacta con el administrador."
 msgstr ""
 
-#: convoca-core/convoca-core.php:576
+#: convoca-core.php:576
 msgid "Generado el"
 msgstr ""
 
-#: convoca-core/convoca-core.php:606
+#: convoca-core.php:606
 msgid "Error al generar el PDF. Contacta con el administrador."
 msgstr ""
 
-#: convoca-core/convoca-core.php:623
+#: convoca-core.php:623
 msgid "Nonce inválido."
 msgstr ""
 
-#: convoca-core/convoca-core.php:636
+#: convoca-core.php:636
 msgid "Order ID"
 msgstr ""
 
-#: convoca-core/convoca-core.php:636
+#: convoca-core.php:636
 msgid "Importe"
 msgstr ""
 
-#: convoca-core/convoca-core.php:636
+#: convoca-core.php:636
 msgid "Método"
 msgstr ""
 
-#: convoca-core/convoca-core.php:652
+#: convoca-core.php:652
 msgid "Listado de Pagos"
 msgstr ""
 
-#: convoca-core/convoca-core.php:670
-msgid ""
-"⚠️ El contador de registros es aproximado para tablas grandes (>10.000 "
-"filas). Usa filtros para obtener un recuento exacto."
+#: convoca-core.php:670
+msgid "⚠️ El contador de registros es aproximado para tablas grandes (>10.000 filas). Usa filtros para obtener un recuento exacto."
 msgstr ""
 
-#: convoca-core/convoca-core.php:674
+#: convoca-core.php:674
 msgid "Buscar en logs"
 msgstr ""
 
-#: convoca-core/convoca-core.php:680
+#: convoca-core.php:680
 msgid "Detalle del Log"
 msgstr ""
 
-#: convoca-core/convoca-core.php:682
+#: convoca-core.php:682
 msgid "Cerrar"
 msgstr ""
 
-#: convoca-core/convoca-core.php:726
+#: convoca-core.php:726
 msgid "Socios activos"
 msgstr ""
 
-#: convoca-core/convoca-core.php:733
+#: convoca-core.php:733
 msgid "Altas este mes"
 msgstr ""
 
-#: convoca-core/convoca-core.php:740
+#: convoca-core.php:740
 msgid "Inscripciones confirmadas"
 msgstr ""
 
-#: convoca-core/convoca-core.php:747
+#: convoca-core.php:747
 msgid "En lista de espera"
 msgstr ""
 
-#: convoca-core/convoca-core.php:754
+#: convoca-core.php:754
 msgid "Ingresos este mes"
 msgstr ""
 
-#: convoca-core/convoca-core.php:761
+#: convoca-core.php:761
 msgid "Turnos sin cubrir"
 msgstr ""
 
-#: convoca-core/convoca-core.php:769
+#: convoca-core.php:769
 msgid "Panel de Control Convoca"
 msgstr ""
 
-#: convoca-core/convoca-core.php:771
+#: convoca-core.php:771
 msgid "Actualizar datos"
 msgstr ""
 
-#: convoca-core/convoca-core.php:772
+#: convoca-core.php:772
 msgid "Generar memoria PDF"
 msgstr ""
 
-#: convoca-core/convoca-core.php:791
+#: convoca-core.php:791
 msgid "Tendencia (6 meses)"
 msgstr ""
 
-#: convoca-core/convoca-core.php:815
+#: convoca-core.php:815
 msgid "Ingresos mensuales"
 msgstr ""
 
-#: convoca-core/convoca-core.php:833
+#: convoca-core.php:833
 msgid "Inscripciones por estado"
 msgstr ""
 
-#: convoca-core/convoca-core.php:850
+#: convoca-core.php:850
 msgid "Métodos de pago (mes)"
 msgstr ""
 
-#: convoca-core/convoca-core.php:867
+#: convoca-core.php:867
 msgid "Últimos 7 días — Pagos"
+msgstr ""
+
+#: includes/Admin_Backup.php:22
+msgid "Copia de Seguridad"
+msgstr ""
+
+#: includes/Admin_Backup.php:35
+msgid "Copia de Seguridad y Mantenimiento"
+msgstr ""
+
+#: includes/Admin_Backup.php:36
+msgid "Gestión de datos masivos e infraestructura."
+msgstr ""
+
+#: includes/Admin_Backup.php:49
+msgid "Exportar Datos"
+msgstr ""
+
+#: includes/Admin_Backup.php:50
+msgid "Genera un archivo ZIP con CSVs de todas las entidades y un JSON con la configuración."
+msgstr ""
+
+#: includes/Admin_Backup.php:52
+msgid "Descargar ZIP de Seguridad"
+msgstr ""
+
+#: includes/Admin_Backup.php:57
+msgid "Importar Datos"
+msgstr ""
+
+#: includes/Admin_Backup.php:58
+msgid "Restaura entidades o configuraciones desde un archivo ZIP oficial."
+msgstr ""
+
+#: includes/Admin_Backup.php:67
+msgid "Validar archivo y previsualizar"
+msgstr ""
+
+#: includes/Admin_Backup.php:76
+msgid "Modo de Importación Atómica:"
+msgstr ""
+
+#: includes/Admin_Backup.php:76
+msgid "Se crearán nuevos registros. Los IDs originales se perderán y se generarán nuevos. El sistema intentará remapear las relaciones internas."
+msgstr ""
+
+#: includes/Admin_Backup.php:84
+msgid "Contenido Detectado"
+msgstr ""
+
+#: includes/Admin_Backup.php:86
+msgid "Entidad"
+msgstr ""
+
+#: includes/Admin_Backup.php:99
+msgid "Ejecutar Importación"
+msgstr ""
+
+#: includes/Admin_Backup.php:100
+msgid "Cancelar y borrar temporal"
+msgstr ""
+
+#: includes/Admin_Backup.php:329
+msgid "Configuración del Sistema"
+msgstr ""
+
+#: includes/Admin_Backup.php:464
+msgid "Importado"
+msgstr ""
+
+#: includes/Admin_Backup.php:504
+#, php-format
+msgid "Importación finalizada. %d registros procesados."
+msgstr ""
+
+#: includes/Admin_Backup.php:594
+msgid "Miembros / Socios"
+msgstr ""
+
+#: includes/Admin_Backup.php:595
+msgid "Inscripciones a Actividades"
+msgstr ""
+
+#: includes/Admin_Backup.php:596
+msgid "Proyectos y Actividades"
+msgstr ""
+
+#: includes/Admin_Backup.php:597
+msgid "Turnos Centro Social"
+msgstr ""
+
+#: includes/Admin_Logs_List.php:37
+msgid "Nivel"
+msgstr ""
+
+#: includes/Admin_Logs_List.php:38
+msgid "Plugin"
+msgstr ""
+
+#: includes/Admin_Logs_List.php:40
+msgid "Usuario"
+msgstr ""
+
+#: includes/Admin_Logs_List.php:41
+msgid "ID Objeto"
+msgstr ""
+
+#: includes/Admin_Logs_List.php:72
+msgid "ver más"
+msgstr ""
+
+#: includes/Admin_Logs_List.php:91
+msgid "Eliminar seleccionados"
+msgstr ""
+
+#: includes/Admin_Logs_List.php:92
+msgid "Purgar > 30 días"
+msgstr ""
+
+#: includes/Admin_Logs_List.php:199
+msgid "La vista de logs requiere el panel de administración."
+msgstr ""
+
+#: includes/Admin_Logs_List.php:223
+msgid "Todos los plugins"
+msgstr ""
+
+#: includes/Admin_Logs_List.php:229
+msgid "Todos los niveles"
+msgstr ""
+
+#: includes/Admin_Logs_List.php:236
+msgid "Filtrar"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:35
+msgid "Asistente de Configuración Convoca"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:36
+msgid "Asistente"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:141
+msgid "Configuración del Ecosistema"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:142
+msgid "Sigue los pasos para asegurar que tu plataforma Convoca esté lista."
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:163
+msgid "Omitir asistente y configurar manualmente"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:172
+msgid "Infraestructura"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:173
+msgid "Páginas"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:174
+msgid "Membresía"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:175
+#: includes/Blocks_Common.php:40
+msgid "Pagos"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:176
+#: includes/Blocks_Common.php:35
+msgid "Turnos"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:177
+msgid "Finalización"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:202
+msgid "Convoca Common"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:202
+msgid "Plugin activo."
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:202
+msgid "Activa Convoca Common."
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:206
+msgid "Correcto."
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:206
+msgid "No encontrada."
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:210
+msgid "1. Infraestructura y Base de Datos"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:237
+msgid "2. Páginas del Sistema"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:271
+msgid "Crear páginas faltantes"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:336
+msgid "3. Planes de Membresía"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:338
+msgid "No se han detectado planes. Configúralos en Ajustes → Miembros."
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:340
+msgid "Planes detectados:"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:357
+msgid "4. Configuración de Redsys"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:364
+#: includes/Admin_Setup_Wizard.php:381
+msgid "Guardar"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:374
+msgid "5. Centro Social Turnos"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:392
+msgid "6. Finalización"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:397
+msgid "Finalizar configuración"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:400
+msgid "Faltan requisitos obligatorios."
+msgstr ""
+
+#: includes/Admin_Templates.php:27
+msgid "Plantillas PDF (Convoca)"
+msgstr ""
+
+#: includes/Admin_Templates.php:28
+msgid "Plantillas PDF"
+msgstr ""
+
+#: includes/Admin_Templates.php:47
+msgid "Plantillas restauradas a sus valores por defecto."
+msgstr ""
+
+#: includes/Admin_Templates.php:84
+msgid "Plantillas actualizadas correctamente."
+msgstr ""
+
+#: includes/Admin_Templates.php:379
+msgid "Convoca: Las plantillas PDF se han restaurado a sus valores por defecto debido a datos corruptos. Se ha guardado una copia de seguridad."
+msgstr ""
+
+#: includes/Admin_Templates.php:401
+msgid "Convoca: Algunas plantillas PDF estaban corruptas. Se han restaurado a sus valores por defecto. Se ha guardado una copia de seguridad."
+msgstr ""
+
+#: includes/Admin_Templates.php:423
+msgid "Acuerdo de Incorporación"
+msgstr ""
+
+#: includes/Admin_Templates.php:424
+msgid "Anexo de Voluntariado"
+msgstr ""
+
+#: includes/Admin_Templates.php:425
+msgid "Certificado"
+msgstr ""
+
+#: includes/Admin_Templates.php:426
+msgid "Acuerdo de Desvinculación"
+msgstr ""
+
+#: includes/Admin_Templates.php:463
+msgid "Plantillas de Documentos (PDF)"
+msgstr ""
+
+#: includes/Admin_Templates.php:464
+msgid "Utilidades comunes e infraestructura de documentos"
+msgstr ""
+
+#: includes/Admin_Templates.php:469
+msgid "Aquí puedes modificar el diseño HTML de los documentos generados por el sistema de firmas (Convoca Common)."
+msgstr ""
+
+#: includes/Admin_Templates.php:470
+#, php-format
+msgid "Utiliza etiquetas como %1$s, %2$s, %3$s para que se rellenen automáticamente según el contexto."
+msgstr ""
+
+#: includes/Admin_Templates.php:495
+msgid "Código HTML:"
+msgstr ""
+
+#: includes/Admin_Templates.php:505
+msgid "Guardar Cambios"
+msgstr ""
+
+#: includes/Admin_Templates.php:511
+msgid "¿Estás seguro de que deseas restaurar las plantillas por defecto? Perderás cualquier cambio que hayas hecho en el HTML."
+msgstr ""
+
+#: includes/Admin_Templates.php:514
+msgid "Restaurar Plantillas por Defecto"
+msgstr ""
+
+#: includes/Blocks_Common.php:25
+msgid "Inscripciones"
+msgstr ""
+
+#: includes/Blocks_Common.php:30
+msgid "Socios"
+msgstr ""
+
+#: includes/Blocks_Common.php:45
+msgid "General"
+msgstr ""
+
+#: includes/Blocks_Common.php:67
+msgid "Metadato de Post"
+msgstr ""
+
+#: includes/Capabilities.php:28
+msgid "Gestionar turnos del calendario (crear, editar)"
+msgstr ""
+
+#: includes/Capabilities.php:32
+msgid "Ver estadísticas de turnos"
+msgstr ""
+
+#: includes/Capabilities.php:36
+msgid "Auditoría de horas de voluntarios"
+msgstr ""
+
+#: includes/Capabilities.php:42
+msgid "Hacer check-in de asistentes"
+msgstr ""
+
+#: includes/Capabilities.php:46
+msgid "Gestionar evaluaciones"
+msgstr ""
+
+#: includes/Capabilities.php:50
+msgid "Ver informes de actividades"
+msgstr ""
+
+#: includes/Capabilities.php:56
+msgid "Gestionar horas de voluntarios (aprobar)"
+msgstr ""
+
+#: includes/Capabilities.php:60
+msgid "Exportar listado de socios"
+msgstr ""
+
+#: includes/Capabilities.php:64
+msgid "Gestionar webhooks"
+msgstr ""
+
+#: includes/Capabilities.php:70
+msgid "Ver pagos y dashboard"
+msgstr ""
+
+#: includes/Capabilities.php:74
+msgid "Gestionar pagos manualmente"
+msgstr ""
+
+#: includes/Capabilities.php:80
+msgid "Ver logs del sistema"
+msgstr ""
+
+#: includes/Capabilities.php:84
+msgid "Gestionar copias de seguridad"
+msgstr ""
+
+#: includes/CONV_Signature.php:52
+msgid "La librería Dompdf no está instalada. Por favor, contacta con el administrador."
+msgstr ""
+
+#: includes/CONV_Signature.php:152
+msgid "Error al renderizar el PDF (salida vacía)."
+msgstr ""
+
+#: includes/CONV_Signature.php:166
+#, php-format
+msgid "No se pudo crear el directorio %s. Comprueba los permisos de escritura del servidor."
+msgstr ""
+
+#: includes/CONV_Signature.php:172
+#, php-format
+msgid "El directorio %s no tiene permisos de escritura."
+msgstr ""
+
+#: includes/CONV_Signature.php:183
+#, php-format
+msgid "No se pudo escribir el archivo PDF en %s. Comprueba los permisos de escritura."
+msgstr ""
+
+#: includes/CONV_Signature.php:189
+msgid "Excepción durante la generación del PDF: "
+msgstr ""
+
+#: includes/CONV_Signature.php:265
+#, php-format
+msgid "No se pudo crear el archivo de protección .htaccess en %s."
+msgstr ""
+
+#: includes/CONV_Signature.php:272
+#, php-format
+msgid "No se pudo crear el archivo de protección index.php en %s."
+msgstr ""
+
+#: includes/License_Manager.php:115
+msgid "Activa"
+msgstr ""
+
+#: includes/License_Manager.php:116
+msgid "Expirada"
+msgstr ""
+
+#: includes/License_Manager.php:117
+msgid "Invalida"
+msgstr ""
+
+#: includes/License_Manager.php:118
+msgid "Inactiva"
+msgstr ""
+
+#: includes/License_Manager.php:255
+#: includes/License_Manager.php:276
+msgid "Licencia Convoca"
+msgstr ""
+
+#: includes/License_Manager.php:256
+msgid "Licencia"
+msgstr ""
+
+#: includes/License_Manager.php:281
+msgid "Estado de la licencia"
+msgstr ""
+
+#: includes/License_Manager.php:294
+msgid "Clave"
+msgstr ""
+
+#: includes/License_Manager.php:300
+msgid "Válida hasta"
+msgstr ""
+
+#: includes/License_Manager.php:316
+msgid "Licencia activa"
+msgstr ""
+
+#: includes/License_Manager.php:317
+msgid "Tu licencia está activa. Puedes desactivarla para moverla a otro sitio."
+msgstr ""
+
+#: includes/License_Manager.php:322
+msgid "Desactivar licencia"
+msgstr ""
+
+#: includes/License_Manager.php:326
+#: includes/License_Manager.php:337
+msgid "Activar licencia"
+msgstr ""
+
+#: includes/License_Manager.php:327
+msgid "Introduce tu clave de licencia para activar las funcionalidades PRO."
+msgstr ""
+
+#: includes/License_Manager.php:341
+msgid "¿Sin licencia?"
+msgstr ""
+
+#: includes/License_Manager.php:342
+msgid "Adquiere una aquí"
+msgstr ""
+
+#: includes/License_Manager.php:350
+msgid "Funcionalidades"
+msgstr ""
+
+#: includes/Notifications.php:190
+#, php-format
+msgid "Notificaciones (%d)"
+msgstr ""
+
+#: includes/Notifications.php:192
+msgid "Marcar todas leídas"
+msgstr ""
+
+#: includes/Notifications.php:212
+msgid "atrás"
+msgstr ""
+
+#: includes/Notifications.php:214
+msgid "Descartar"
+msgstr ""
+
+#: includes/Notifications.php:221
+msgid "Ver todas"
+msgstr ""
+
+#: includes/Notifications.php:346
+#, php-format
+msgid "Nuevo socio pendiente: %s"
+msgstr ""
+
+#: includes/Notifications.php:350
+msgid "Nuevo socio"
+msgstr ""
+
+#: includes/Notifications.php:354
+#, php-format
+msgid "Pago fallido: %s"
+msgstr ""
+
+#: includes/Notifications.php:358
+msgid "Pago fallido"
+msgstr ""
+
+#: includes/Notifications.php:365
+#, php-format
+msgid "❌ Tu pago (%s) no pudo procesarse. Revisa tu método de pago."
+msgstr ""
+
+#: includes/Notifications.php:373
+#, php-format
+msgid "Horas pendientes de aprobar: %s"
+msgstr ""
+
+#: includes/Notifications.php:377
+msgid "Horas voluntariado"
+msgstr ""
+
+#: includes/Notifications.php:381
+#, php-format
+msgid "Inscripción pendiente de pago: %s"
+msgstr ""
+
+#: includes/Notifications.php:385
+msgid "Pago pendiente"
+msgstr ""
+
+#: includes/Notifications.php:406
+msgid "⚠️ Tienes una inscripción pendiente de pago. Revisa tu panel para completarla."
+msgstr ""
+
+#: includes/Notifications.php:420
+#, php-format
+msgid "Nueva solicitud de voluntariado: %s"
+msgstr ""
+
+#: includes/Notifications.php:424
+msgid "Voluntariado"
+msgstr ""
+
+#: includes/Notifications.php:433
+#, php-format
+msgid "Solicitud de baja: %s"
+msgstr ""
+
+#: includes/Notifications.php:437
+msgid "Solicitud de baja"
+msgstr ""
+
+#: includes/Notifications.php:468
+msgid "🎉 ¡Tu solicitud de voluntariado ha sido aprobada! Bienvenido/a al equipo."
+msgstr ""
+
+#: includes/Push_Notifier.php:73
+#, php-format
+msgid "Push notification error: %s"
+msgstr ""
+
+#: includes/Push_Notifier.php:82
+#, php-format
+msgid "Push notification sent: %s"
+msgstr ""
+
+#: includes/Push_Notifier.php:89
+#, php-format
+msgid "Push notification HTTP %1$d: %2$s"
+msgstr ""
+
+#: includes/Utils.php:527
+msgid "Se han detectado problemas críticos que impediment el funcionamiento."
+msgstr ""
+
+#: includes/Utils.php:528
+msgid "Estado: Errores detectados"
+msgstr ""
+
+#: includes/Utils.php:532
+msgid "Hay advertencias que podrían afectar el funcionamiento."
+msgstr ""
+
+#: includes/Utils.php:533
+msgid "Estado: Advertencias"
+msgstr ""
+
+#: includes/Utils.php:537
+msgid "Todos los componentes están configurados correctamente."
+msgstr ""
+
+#: includes/Utils.php:538
+msgid "Estado: Todo correcto"
+msgstr ""
+
+#: includes/Utils.php:753
+#: includes/Utils.php:760
+msgid "Aportación"
+msgstr ""
+
+#: includes/Utils.php:757
+msgctxt "plural"
+msgid "Aportaciones"
+msgstr ""
+
+#: includes/Utils.php:763
+msgctxt "trasgu"
+msgid "Aportación Trasgu"
+msgstr ""
+
+#: includes/Utils.php:766
+msgctxt "socio"
+msgid "Aportación sugerida para socios"
+msgstr ""
+
+#: includes/Utils.php:769
+msgctxt "no-socio"
+msgid "Aportación sugerida para no socios"
 msgstr ""

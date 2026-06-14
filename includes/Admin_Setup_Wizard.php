@@ -32,7 +32,7 @@ class Admin_Setup_Wizard {
 	public function register_page(): void {
 		add_submenu_page(
 			null,
-			__( 'Asistente de Configuración Biodevas', 'convoca-core' ),
+			__( 'Asistente de Configuración Convoca', 'convoca-core' ),
 			__( 'Asistente', 'convoca-core' ),
 			'manage_options',
 			'bdv-setup-wizard',
@@ -139,7 +139,7 @@ class Admin_Setup_Wizard {
 			<div style="text-align:center;margin-bottom:30px;">
 				<img src="<?php echo esc_url( CONVOCA_IMAGES_URL . 'logo.png' ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" style="width:80px;height:80px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
 				<h1 style="margin:15px 0 5px;"><?php esc_html_e( 'Configuración del Ecosistema', 'convoca-core' ); ?></h1>
-				<p style="color:#666;font-size:1.1em;"><?php esc_html_e( 'Sigue los pasos para asegurar que tu plataforma Biodevas esté lista.', 'convoca-core' ); ?></p>
+				<p style="color:#666;font-size:1.1em;"><?php esc_html_e( 'Sigue los pasos para asegurar que tu plataforma Convoca esté lista.', 'convoca-core' ); ?></p>
 			</div>
 
 			<?php $this->render_steps( $step ); ?>

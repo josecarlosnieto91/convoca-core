@@ -95,10 +95,10 @@ class Logger {
 			}
 
 			if ( ! $logged_to_file && ( 'error' === $level || ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ) ) {
-				error_log( sprintf( '[BIODEVAS] [%s] [%s] %s', strtoupper( $level ), $context, $message ) );
+				error_log( sprintf( '[CONVOCA] [%s] [%s] %s', strtoupper( $level ), $context, $message ) );
 			}
 		} catch ( \Throwable $e ) {
-			error_log( '[BIODEVAS LOGGER EXCEPTION] ' . $e->getMessage() );
+			error_log( '[CONVOCA LOGGER EXCEPTION] ' . $e->getMessage() );
 		} finally {
 			--self::$log_depth;
 		}

@@ -2,7 +2,7 @@
 /**
  * Email Layout — Convoca premium HTML email template.
  *
- * Proporciona un layout HTML responsivo con la identidad visual de Biodevas
+ * Proporciona un layout HTML responsivo con la identidad visual de Convoca
  * (naranja #FF8700 + violeta #320028) para todos los emails del ecosistema.
  *
  * Uso:
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Email_Layout {
 
 	/**
-	 * Render a complete HTML email with Biodevas branding.
+	 * Render a complete HTML email with Convoca branding.
 	 *
 	 * @param string $body        Inner HTML content.
 	 * @param string $subject     Email subject (used in <title>).

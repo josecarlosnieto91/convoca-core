@@ -7,7 +7,7 @@ namespace Convoca\Core;
 /**
  * Class Features
  *
- * Centralizes feature detection across the Biodevas ecosystem to avoid
+ * Centralizes feature detection across the Convoca ecosystem to avoid
  * scattered class_exists or function_exists checks that make refactoring hard.
  */
 class Features {

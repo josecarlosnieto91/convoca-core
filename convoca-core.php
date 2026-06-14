@@ -163,7 +163,7 @@ add_action(
 	}
 );
 
-/* ── Global Biodevas menu ────────────────────── */
+/* ── Global Convoca menu ────────────────────── */
 add_action( 'admin_menu', 'Convoca\Core\convoca_register_global_menu' );
 function convoca_register_global_menu(): void {
 	add_menu_page(
@@ -444,7 +444,7 @@ add_action( 'admin_enqueue_scripts', 'Convoca\\Core\\convoca_common_enqueue_admi
 /* ── Admin Appearance (Prompts 19, 20) ────────────────── */
 
 /**
- * Hide Screen Options tab on Biodevas custom admin pages.
+ * Hide Screen Options tab on Convoca custom admin pages.
  */
 function convoca_hide_screen_options( bool $show_screen, \WP_Screen $screen ): bool {
 	$convoca_slugs = array( 'bdv-', 'bde-', 'bdg-', 'cst-' );
@@ -461,7 +461,7 @@ function convoca_hide_screen_options( bool $show_screen, \WP_Screen $screen ): b
  */
 function convoca_admin_footer( string $text ): string {
 	return sprintf(
-		'© %d <a href="%s" target="_blank">Biodevas</a> — %s',
+		'© %d <a href="%s" target="_blank">' . get_bloginfo('name') . '</a> — %s',
 		wp_date( 'Y' ),
 		'https://getconvoca.app', 
 		__( 'Plataforma de gestión de la asociación.', 'convoca-core' )
@@ -469,14 +469,14 @@ function convoca_admin_footer( string $text ): string {
 }
 
 /**
- * Replace WP version in footer with Biodevas version.
+ * Replace WP version in footer with Convoca version.
  */
 function convoca_admin_footer_version( string $version ): string {
-	return 'Biodevas v' . CONV_COMMON_VERSION;
+	return 'Convoca v' . CONV_COMMON_VERSION;
 }
 
 /**
- * Remove the Help tab on Biodevas admin pages.
+ * Remove the Help tab on Convoca admin pages.
  */
 function convoca_remove_help_tab(): void {
 	$screen = get_current_screen();
@@ -587,7 +587,7 @@ function convoca_export_pdf( string $title, array $headers, array $rows, string 
 		$html .= '</tr>';
 	}
 	$html .= '</tbody></table>';
-	$html .= '<div class="footer">' . get_bloginfo( 'name' ) . ' — Biodevas — ' . wp_date( 'Y' ) . '</div>';
+	$html .= '<div class="footer">' . get_bloginfo( 'name' ) . ' — ' . get_bloginfo('name') . ' — ' . wp_date( 'Y' ) . '</div>';
 	$html .= '</body></html>';
 
 	$dompdf_options = new \Dompdf\Options();

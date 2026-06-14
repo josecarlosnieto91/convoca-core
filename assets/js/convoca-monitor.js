@@ -2,7 +2,7 @@
  * Convoca Monitor — Live polling dashboard metrics.
  * Vanilla JS, no jQuery dependencies.
  *
- * @package Biodevas\Common
+ * @package Convoca\Core
  * @version 1.0.0
  */
 
