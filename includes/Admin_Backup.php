@@ -333,7 +333,7 @@ class Admin_Backup {
 
 		if ( empty( $entities ) ) {
 			$zip->close();
-			wp_die( 'El archivo ZIP no contiene datos compatibles de Biodevas.' );
+			wp_die( 'El archivo ZIP no contiene datos compatibles de Convoca.' );
 		}
 
 		$zip->close();

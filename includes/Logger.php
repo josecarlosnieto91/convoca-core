@@ -88,7 +88,7 @@ class Logger {
 			$logged_to_file = false;
 
 			if ( $result === false && ! empty( $wpdb->last_error ) ) {
-				error_log( '[BIODEVAS DB ERROR] ' . $wpdb->last_error . ' - Message: ' . $message );
+				error_log( '[CONVOCA DB ERROR] ' . $wpdb->last_error . ' - Message: ' . $message );
 				$logged_to_file = true;
 				// Table may have been dropped — invalidate cache so next call rechecks.
 				self::clear_table_cache();

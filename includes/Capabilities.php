@@ -2,7 +2,7 @@
 /**
  * Centralized Granular Capabilities Manager.
  *
- * Defines all custom capabilities across the Biodevas ecosystem
+ * Defines all custom capabilities across the Convoca ecosystem
  * and ensures they are assigned to the appropriate roles.
  *
  * @package Convoca\Core
