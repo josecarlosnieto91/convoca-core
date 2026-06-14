@@ -10,7 +10,7 @@
  */
 window.convoca = window.convoca || {};
 
-(function (bdv) {
+(function (conv) {
   'use strict';
 
   // Shorthand array DOM Selectors
