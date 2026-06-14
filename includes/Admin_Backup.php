@@ -19,7 +19,7 @@ class Admin_Backup {
 	}
 
 	public function register_page(): void {
-		add_submenu_page( 'convoca-core', __( 'Copia de Seguridad', 'convoca-core' ), __( 'Copia de Seguridad', 'convoca-core' ), 'common_manage_backup', 'bdv-backup', array( $this, 'render' ) );
+		add_submenu_page( 'convoca-core', __( 'Copia de Seguridad', 'convoca-core' ), __( 'Copia de Seguridad', 'convoca-core' ), 'common_manage_backup', 'conv-backup', array( $this, 'render' ) );
 	}
 
 	public function render(): void {
@@ -29,7 +29,7 @@ class Admin_Backup {
 		$preview = get_transient( 'conv_import_preview_' . get_current_user_id() );
 		?>
 		<div class="wrap" style="max-width:900px;">
-			<div class="bdv-admin-header" style="display:flex;align-items:center;gap:20px;margin-bottom:20px;">
+			<div class="conv-admin-header" style="display:flex;align-items:center;gap:20px;margin-bottom:20px;">
 				<img src="<?php echo esc_url( CONVOCA_IMAGES_URL . 'logo.png' ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" style="width:70px;height:70px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.1);">
 				<div>
 					<h1 style="margin:0;"><?php esc_html_e( 'Copia de Seguridad y Mantenimiento', 'convoca-core' ); ?></h1>
@@ -97,7 +97,7 @@ class Admin_Backup {
 
 					<div style="margin-top:30px;display:flex;gap:15px;align-items:center;">
 						<button type="submit" class="convoca-btn convoca-btn--danger" style="padding:12px 30px;" onclick="return confirm('¿Confirmas la importación de los datos seleccionados?');">✅ <?php esc_html_e( 'Ejecutar Importación', 'convoca-core' ); ?></button>
-						<a href="<?php echo esc_url( admin_url( 'admin.php?page=bdv-backup' ) ); ?>" style="color:#64748b;text-decoration:none;font-weight:500;"><?php esc_html_e( 'Cancelar y borrar temporal', 'convoca-core' ); ?></a>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=conv-backup' ) ); ?>" style="color:#64748b;text-decoration:none;font-weight:500;"><?php esc_html_e( 'Cancelar y borrar temporal', 'convoca-core' ); ?></a>
 					</div>
 				</form>
 			</div>
@@ -128,7 +128,7 @@ class Admin_Backup {
 		@set_time_limit( 300 );
 		@ini_set( 'memory_limit', '512M' );
 
-		$temp_dir = get_temp_dir() . 'bdv-export-' . wp_generate_password( 16, false ) . '/';
+		$temp_dir = get_temp_dir() . 'conv-export-' . wp_generate_password( 16, false ) . '/';
 		wp_mkdir_p( $temp_dir );
 		$tmp_file = $temp_dir . 'convoca-backup.zip';
 		$cleanup  = function () use ( $temp_dir ) {
@@ -364,7 +364,7 @@ class Admin_Backup {
 			self::PREVIEW_TTL
 		);
 
-		wp_safe_redirect( admin_url( 'admin.php?page=bdv-backup' ) );
+		wp_safe_redirect( admin_url( 'admin.php?page=conv-backup' ) );
 		exit;
 	}
 
@@ -489,7 +489,7 @@ class Admin_Backup {
 			unlink( $filepath );
 			delete_transient( 'conv_import_preview_' . get_current_user_id() );
 			\Convoca\Core\Logger::error( 'Importación masiva fallida: ' . $e->getMessage(), 'System' );
-			wp_safe_redirect( admin_url( 'admin.php?page=bdv-backup&import_result=' . urlencode( 'Error: ' . $e->getMessage() ) ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=conv-backup&import_result=' . urlencode( 'Error: ' . $e->getMessage() ) ) );
 			exit;
 		}
 
@@ -502,7 +502,7 @@ class Admin_Backup {
 		\Convoca\Core\Logger::info( sprintf( 'Importación masiva completada: %d registros.', $results['total'] ), 'System' );
 
 		$msg = sprintf( __( 'Importación finalizada. %d registros procesados.', 'convoca-core' ), $results['total'] );
-		wp_safe_redirect( admin_url( 'admin.php?page=bdv-backup&import_result=' . urlencode( $msg ) ) );
+		wp_safe_redirect( admin_url( 'admin.php?page=conv-backup&import_result=' . urlencode( $msg ) ) );
 		exit;
 	}
 

@@ -160,12 +160,12 @@ class Notifications {
 
 		$count  = self::count_unread();
 		$unread = self::get( 5, true );
-		$badge  = $count > 0 ? ' <span class="bdv-bell-count">' . $count . '</span>' : '';
+		$badge  = $count > 0 ? ' <span class="conv-bell-count">' . $count . '</span>' : '';
 
 		$wp_admin_bar->add_node(
 			array(
-				'id'     => 'bdv-notifications',
-				'title'  => '<span class="bdv-bell-icon' . ( $count > 0 ? ' bdv-bell-has-unread' : '' ) . '">🔔</span>' . $badge,
+				'id'     => 'conv-notifications',
+				'title'  => '<span class="conv-bell-icon' . ( $count > 0 ? ' conv-bell-has-unread' : '' ) . '">🔔</span>' . $badge,
 				'parent' => 'top-secondary',
 			)
 		);
@@ -173,8 +173,8 @@ class Notifications {
 		// Dropdown.
 		$wp_admin_bar->add_node(
 			array(
-				'id'     => 'bdv-notifications-list',
-				'parent' => 'bdv-notifications',
+				'id'     => 'conv-notifications-list',
+				'parent' => 'conv-notifications',
 				'title'  => self::render_dropdown( $unread, $count ),
 			)
 		);
@@ -185,20 +185,20 @@ class Notifications {
 	}
 
 	private static function render_dropdown( array $notifications, int $total ): string {
-		$html  = '<div class="bdv-notif-dropdown">';
-		$html .= '<div class="bdv-notif-header">';
+		$html  = '<div class="conv-notif-dropdown">';
+		$html .= '<div class="conv-notif-header">';
 		$html .= '<strong>' . sprintf( __( 'Notificaciones (%d)', 'convoca-core' ), $total ) . '</strong>';
 		if ( $total > 0 ) {
-			$html .= ' <a href="#" class="bdv-notif-mark-all" style="float:right;font-size:12px;">' . __( 'Marcar todas leídas', 'convoca-core' ) . '</a>';
+			$html .= ' <a href="#" class="conv-notif-mark-all" style="float:right;font-size:12px;">' . __( 'Marcar todas leídas', 'convoca-core' ) . '</a>';
 		}
 		$html .= '</div>';
-		$html .= '<div class="bdv-notif-list">';
+		$html .= '<div class="conv-notif-list">';
 
 		if ( empty( $notifications ) ) {
-			$html .= '<div class="bdv-notif-empty">' . __( 'No hay notificaciones.', 'convoca-core' ) . '</div>';
+			$html .= '<div class="conv-notif-empty">' . __( 'No hay notificaciones.', 'convoca-core' ) . '</div>';
 		} else {
 			foreach ( $notifications as $n ) {
-				$class = empty( $n['read'] ) ? 'bdv-notif-item bdv-notif-unread' : 'bdv-notif-item';
+				$class = empty( $n['read'] ) ? 'conv-notif-item conv-notif-unread' : 'conv-notif-item';
 				$icon  = match ( $n['type'] ?? 'info' ) {
 					'success' => '✅',
 					'warning' => '⚠️',
@@ -206,19 +206,19 @@ class Notifications {
 					default   => 'ℹ️',
 				};
 				$html .= '<div class="' . $class . '" data-id="' . esc_attr( $n['id'] ) . '">';
-				$html .= '<a href="' . esc_url( $n['url'] ) . '" class="bdv-notif-link">';
-				$html .= '<span class="bdv-notif-icon">' . $icon . '</span>';
-				$html .= '<span class="bdv-notif-title">' . esc_html( $n['title'] ) . '</span>';
-				$html .= '<span class="bdv-notif-time">' . human_time_diff( strtotime( $n['time'] ), current_time( 'timestamp' ) ) . ' ' . __( 'atrás', 'convoca-core' ) . '</span>';
+				$html .= '<a href="' . esc_url( $n['url'] ) . '" class="conv-notif-link">';
+				$html .= '<span class="conv-notif-icon">' . $icon . '</span>';
+				$html .= '<span class="conv-notif-title">' . esc_html( $n['title'] ) . '</span>';
+				$html .= '<span class="conv-notif-time">' . human_time_diff( strtotime( $n['time'] ), current_time( 'timestamp' ) ) . ' ' . __( 'atrás', 'convoca-core' ) . '</span>';
 				$html .= '</a>';
-				$html .= '<a href="#" class="bdv-notif-dismiss" title="' . __( 'Descartar', 'convoca-core' ) . '">✕</a>';
+				$html .= '<a href="#" class="conv-notif-dismiss" title="' . __( 'Descartar', 'convoca-core' ) . '">✕</a>';
 				$html .= '</div>';
 			}
 		}
 
 		$html .= '</div>';
-		$html .= '<div class="bdv-notif-footer">';
-		$html .= '<a href="' . esc_url( admin_url( 'admin.php?page=bdv-notificaciones' ) ) . '">' . __( 'Ver todas', 'convoca-core' ) . '</a>';
+		$html .= '<div class="conv-notif-footer">';
+		$html .= '<a href="' . esc_url( admin_url( 'admin.php?page=conv-notificaciones' ) ) . '">' . __( 'Ver todas', 'convoca-core' ) . '</a>';
 		$html .= '</div>';
 		$html .= '</div>';
 
@@ -228,53 +228,53 @@ class Notifications {
 	public static function enqueue_styles(): void {
 		?>
 		<style>
-		#wp-admin-bar-bdv-notifications .bdv-bell-icon { font-size: 18px; line-height: 26px; }
-		#wp-admin-bar-bdv-notifications .bdv-bell-has-unread { animation: bdv-bell-ring 0.5s ease 3; }
-		@keyframes bdv-bell-ring { 0%,100%{transform:rotate(0)} 25%{transform:rotate(15deg)} 75%{transform:rotate(-15deg)} }
-		#wp-admin-bar-bdv-notifications .bdv-bell-count {
+		#wp-admin-bar-conv-notifications .conv-bell-icon { font-size: 18px; line-height: 26px; }
+		#wp-admin-bar-conv-notifications .conv-bell-has-unread { animation: conv-bell-ring 0.5s ease 3; }
+		@keyframes conv-bell-ring { 0%,100%{transform:rotate(0)} 25%{transform:rotate(15deg)} 75%{transform:rotate(-15deg)} }
+		#wp-admin-bar-conv-notifications .conv-bell-count {
 			display: inline-block; background: #dc3232; color: #fff; border-radius: 50%;
 			padding: 1px 6px; font-size: 10px; font-weight: 700; line-height: 16px;
 			min-width: 16px; text-align: center; vertical-align: top; margin-left: -2px;
 		}
-		.bdv-notif-dropdown { width: 320px; max-height: 400px; overflow-y: auto; font-size: 13px; }
-		.bdv-notif-header { padding: 10px 12px; border-bottom: 1px solid #e0e0e0; background: #f8f9fa; }
-		.bdv-notif-header a { text-decoration: none; }
-		.bdv-notif-list { max-height: 300px; overflow-y: auto; }
-		.bdv-notif-empty { padding: 20px; text-align: center; color: #999; }
-		.bdv-notif-item { display: flex; align-items: center; border-bottom: 1px solid #f0f0f1; padding: 0; }
-		.bdv-notif-unread { background: #f0f7ff; }
-		.bdv-notif-link { display: flex; align-items: center; gap: 8px; padding: 10px 12px; text-decoration: none; flex: 1; color: #1d2327; }
-		.bdv-notif-link:hover { background: #f0f0f1; }
-		.bdv-notif-icon { flex-shrink: 0; font-size: 16px; }
-		.bdv-notif-title { flex: 1; font-size: 12px; line-height: 1.3; }
-		.bdv-notif-time { display: block; font-size: 10px; color: #999; margin-top: 2px; }
-		.bdv-notif-dismiss { padding: 10px; color: #999; text-decoration: none; cursor: pointer; }
-		.bdv-notif-dismiss:hover { color: #dc3232; }
-		.bdv-notif-footer { padding: 8px 12px; text-align: center; border-top: 1px solid #e0e0e0; background: #f8f9fa; }
-		.bdv-notif-footer a { text-decoration: none; font-weight: 600; }
+		.conv-notif-dropdown { width: 320px; max-height: 400px; overflow-y: auto; font-size: 13px; }
+		.conv-notif-header { padding: 10px 12px; border-bottom: 1px solid #e0e0e0; background: #f8f9fa; }
+		.conv-notif-header a { text-decoration: none; }
+		.conv-notif-list { max-height: 300px; overflow-y: auto; }
+		.conv-notif-empty { padding: 20px; text-align: center; color: #999; }
+		.conv-notif-item { display: flex; align-items: center; border-bottom: 1px solid #f0f0f1; padding: 0; }
+		.conv-notif-unread { background: #f0f7ff; }
+		.conv-notif-link { display: flex; align-items: center; gap: 8px; padding: 10px 12px; text-decoration: none; flex: 1; color: #1d2327; }
+		.conv-notif-link:hover { background: #f0f0f1; }
+		.conv-notif-icon { flex-shrink: 0; font-size: 16px; }
+		.conv-notif-title { flex: 1; font-size: 12px; line-height: 1.3; }
+		.conv-notif-time { display: block; font-size: 10px; color: #999; margin-top: 2px; }
+		.conv-notif-dismiss { padding: 10px; color: #999; text-decoration: none; cursor: pointer; }
+		.conv-notif-dismiss:hover { color: #dc3232; }
+		.conv-notif-footer { padding: 8px 12px; text-align: center; border-top: 1px solid #e0e0e0; background: #f8f9fa; }
+		.conv-notif-footer a { text-decoration: none; font-weight: 600; }
 		</style>
 		<script>
 		(function() {
 			document.addEventListener('click', function(e) {
 				// Mark as read on link click.
-				var link = e.target.closest('.bdv-notif-link');
+				var link = e.target.closest('.conv-notif-link');
 				if (link) {
-					var item = link.closest('.bdv-notif-item');
-					if (item && item.classList.contains('bdv-notif-unread')) {
+					var item = link.closest('.conv-notif-item');
+					if (item && item.classList.contains('conv-notif-unread')) {
 						var id = item.dataset.id;
 						var fd = new FormData();
 						fd.append('action', 'conv_notifications_mark_read');
 						fd.append('id', id);
 						fd.append('nonce', '<?php echo wp_create_nonce( 'conv_notifications_ajax' ); ?>');
 						fetch(ajaxurl, { method: 'POST', body: fd });
-						item.classList.remove('bdv-notif-unread');
+						item.classList.remove('conv-notif-unread');
 					}
 				}
 				// Dismiss single.
-				var dismiss = e.target.closest('.bdv-notif-dismiss');
+				var dismiss = e.target.closest('.conv-notif-dismiss');
 				if (dismiss) {
 					e.preventDefault();
-					var item = dismiss.closest('.bdv-notif-item');
+					var item = dismiss.closest('.conv-notif-item');
 					if (item) {
 						var id = item.dataset.id;
 						var fd = new FormData();
@@ -285,17 +285,17 @@ class Notifications {
 					}
 				}
 				// Mark all read.
-				var markAll = e.target.closest('.bdv-notif-mark-all');
+				var markAll = e.target.closest('.conv-notif-mark-all');
 				if (markAll) {
 					e.preventDefault();
-					document.querySelectorAll('.bdv-notif-item.bdv-notif-unread').forEach(function(item) {
+					document.querySelectorAll('.conv-notif-item.conv-notif-unread').forEach(function(item) {
 						var id = item.dataset.id;
 						var fd = new FormData();
 						fd.append('action', 'conv_notifications_mark_read');
 						fd.append('id', id);
 						fd.append('nonce', '<?php echo wp_create_nonce( 'conv_notifications_ajax' ); ?>');
 						fetch(ajaxurl, { method: 'POST', body: fd });
-						item.classList.remove('bdv-notif-unread');
+						item.classList.remove('conv-notif-unread');
 					});
 				}
 			});
@@ -344,7 +344,7 @@ class Notifications {
 
 	public static function on_member_created( int $member_id, array $data ): void {
 		$title = sprintf( __( 'Nuevo socio pendiente: %s', 'convoca-core' ), $data['nombre'] ?? '' );
-		$url   = admin_url( 'admin.php?page=bdv-members&member_id=' . $member_id );
+		$url   = admin_url( 'admin.php?page=conv-members&member_id=' . $member_id );
 
 		self::add( $title, $url, 'info' );
 		self::push( __( 'Nuevo socio', 'convoca-core' ), $title );
@@ -371,7 +371,7 @@ class Notifications {
 
 	public static function on_hours_submitted( int $record_id, string $member_name ): void {
 		$title = sprintf( __( 'Horas pendientes de aprobar: %s', 'convoca-core' ), $member_name );
-		$url   = admin_url( 'admin.php?page=bdv-volunteer-hours' );
+		$url   = admin_url( 'admin.php?page=conv-volunteer-hours' );
 
 		self::add( $title, $url, 'warning' );
 		self::push( __( 'Horas voluntariado', 'convoca-core' ), $title, 'default', array( 'clock' ) );
@@ -431,7 +431,7 @@ class Notifications {
 		}
 
 		$title = sprintf( __( 'Solicitud de baja: %s', 'convoca-core' ), $post->post_title );
-		$url   = admin_url( 'admin.php?page=bdv-members&id=' . $member_id );
+		$url   = admin_url( 'admin.php?page=conv-members&id=' . $member_id );
 
 		self::add( $title, $url, 'warning' );
 		self::push( __( 'Solicitud de baja', 'convoca-core' ), $title, 'high', array( 'warning' ) );

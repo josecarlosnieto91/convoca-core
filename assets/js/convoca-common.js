@@ -14,8 +14,8 @@ window.convoca = window.convoca || {};
   'use strict';
 
   // Shorthand array DOM Selectors
-  bdv.$ = function(sel, ctx) { ctx = ctx || document; return ctx.querySelector(sel); };
-  bdv.$$ = function(sel, ctx) { ctx = ctx || document; return ctx.querySelectorAll(sel) ? Array.prototype.slice.call(ctx.querySelectorAll(sel)) : []; };
+  conv.$ = function(sel, ctx) { ctx = ctx || document; return ctx.querySelector(sel); };
+  conv.$$ = function(sel, ctx) { ctx = ctx || document; return ctx.querySelectorAll(sel) ? Array.prototype.slice.call(ctx.querySelectorAll(sel)) : []; };
 
 /**
     * Displays a stylized alert message in the given block element.
@@ -23,7 +23,7 @@ window.convoca = window.convoca || {};
     * @param {string} message - HTML or simple text message.
     * @param {string} type - 'danger', 'success', or 'warning'. Defaults to 'danger'.
     */
-  bdv.showAlert = function (element, message, type) {
+  conv.showAlert = function (element, message, type) {
     if (!element) return;
     type = type || 'danger';
     if (type !== 'danger' && type !== 'success' && type !== 'warning') {
@@ -39,7 +39,7 @@ window.convoca = window.convoca || {};
    * Hides the active alert.
    * @param {HTMLElement} element - The alert container to hide.
    */
-  bdv.hideAlert = function (element) {
+  conv.hideAlert = function (element) {
     if (element) {
         element.style.display = 'none';
         element.innerHTML = '';
@@ -51,7 +51,7 @@ window.convoca = window.convoca || {};
    * @param {string} email - Raw email string.
    * @returns {boolean}
    */
-  bdv.validateEmail = function (email) {
+  conv.validateEmail = function (email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
   };
@@ -61,7 +61,7 @@ window.convoca = window.convoca || {};
    * @param {string} dni - Raw DNI/NIE sequence.
    * @returns {boolean}
    */
-  bdv.validateDNI = function (dni) {
+  conv.validateDNI = function (dni) {
     let raw = (dni || '').toUpperCase().trim();
     if (!/^[XYZ]?\d{7,8}[A-Z]$/.test(raw)) return false;
     raw = raw.replace(/^X/, '0').replace(/^Y/, '1').replace(/^Z/, '2');
@@ -76,7 +76,7 @@ window.convoca = window.convoca || {};
    * @param {string} name - URL param name to lookup.
    * @returns {string|null} - Parameter value or null.
    */
-  bdv.getUrlParameter = function (name) {
+  conv.getUrlParameter = function (name) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
   };
@@ -87,7 +87,7 @@ window.convoca = window.convoca || {};
    * @param {boolean} isLoading - Loading context status.
    * @param {string} [originalText] - String baseline to restore after loading.
    */
-  bdv.setLoading = function (button, isLoading, originalText = 'Continuar') {
+  conv.setLoading = function (button, isLoading, originalText = 'Continuar') {
     if (!button) return;
     if (isLoading) {
       if (!button.dataset.originalText) {
@@ -109,7 +109,7 @@ window.convoca = window.convoca || {};
    * @param {function} onSuccess - Callback on JSON success payload.
    * @param {function} onError - Callback gracefully intercepting payload or HTTP error limit.
    */
-  bdv.ajaxPost = function (action, data, nonce, onSuccess, onError) {
+  conv.ajaxPost = function (action, data, nonce, onSuccess, onError) {
      let fd = data instanceof FormData ? data : new FormData();
      if (!(data instanceof FormData)) {
          for (let key in data) {
@@ -173,12 +173,12 @@ window.convoca = window.convoca || {};
    *    <div id="pane-1" class="convoca-tab-content">...</div>
    * @param {string} containerSelector - The DOM CSS selector restricting tab search area.
    */
-  bdv.initTabs = function (containerSelector) {
-     const container = bdv.$(containerSelector);
+  conv.initTabs = function (containerSelector) {
+     const container = conv.$(containerSelector);
      if (!container) return;
 
-     const tabBtns = bdv.$$('.convoca-tab-btn', container);
-     const tabPanels = bdv.$$('.convoca-tab-content', container);
+     const tabBtns = conv.$$('.convoca-tab-btn', container);
+     const tabPanels = conv.$$('.convoca-tab-content', container);
 
      tabBtns.forEach(btn => {
          btn.addEventListener('click', (e) => {
@@ -189,7 +189,7 @@ window.convoca = window.convoca || {};
 
              // Display targeted state
              btn.classList.add('active');
-             const target = bdv.$('#' + btn.dataset.tabTarget, container);
+             const target = conv.$('#' + btn.dataset.tabTarget, container);
              if (target) target.style.display = 'block';
          });
      });
@@ -201,18 +201,18 @@ window.convoca = window.convoca || {};
      * @param {string} containerSelector - Main wrapper string ID or CSS path to watch.
      * @param {function} callback - Method triggered for every dynamically popped HTML Form. Example fn(formNode).
      */
-    bdv.observeDynamicForms = function (containerSelector, callback) {
-       var targetNode = bdv.$(containerSelector);
-if (!targetNode || targetNode.dataset.bdvObserved) return;
+    conv.observeDynamicForms = function (containerSelector, callback) {
+       var targetNode = conv.$(containerSelector);
+if (!targetNode || targetNode.dataset.convObserved) return;
         if (typeof targetNode.querySelectorAll !== 'function') return;
-        targetNode.dataset.bdvObserved = 'true';
+        targetNode.dataset.convObserved = 'true';
 
         var throttleTimeout = null;
         var THROTTLE_MS = 250;
 
        var safeCallback = function(frm) {
-          if (frm.dataset.bdvProcessed) return;
-          frm.dataset.bdvProcessed = 'true';
+          if (frm.dataset.convProcessed) return;
+          frm.dataset.convProcessed = 'true';
           callback(frm);
        };
 
@@ -226,7 +226,7 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
                      }
                      try {
                          if (typeof node.querySelectorAll === 'function') {
-                             var nestedForms = bdv.$$('form', node);
+                             var nestedForms = conv.$$('form', node);
                              if (nestedForms.length > 0) {
                                 addedForms.push.apply(addedForms, nestedForms);
                              }
@@ -257,7 +257,7 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
       targetNode._bdvFormObserver = observer;
       
       var runInitial = function() {
-         var initStatic = bdv.$$('form', targetNode);
+         var initStatic = conv.$$('form', targetNode);
          initStatic.forEach(function(frm) { safeCallback(frm); });
       };
 
@@ -273,12 +273,12 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
     * Call this when removing the container from DOM.
     * @param {string} containerSelector - Container selector to disconnect.
     */
-   bdv.disconnectDynamicForms = function (containerSelector) {
-      var targetNode = bdv.$(containerSelector);
+   conv.disconnectDynamicForms = function (containerSelector) {
+      var targetNode = conv.$(containerSelector);
       if (targetNode && targetNode._bdvFormObserver) {
          targetNode._bdvFormObserver.disconnect();
          delete targetNode._bdvFormObserver;
-         delete targetNode.dataset.bdvObserved;
+         delete targetNode.dataset.convObserved;
       }
    };
 
@@ -287,7 +287,7 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
     * Enhanced validation supporting all HTML5 field types.
     * Validates: input, textarea, select, checkbox groups, radios, email, pattern, min/max.
     */
-   bdv.form = {
+   conv.form = {
        validate: function (form) {
            let isOk = true;
            const fields = form.querySelectorAll('[required]');
@@ -351,7 +351,7 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
     * @param {string} text - The string to copy.
     * @param {function} [onSuccess] - Callback after success.
     */
-   bdv.copyToClipboard = function (text, onSuccess) {
+   conv.copyToClipboard = function (text, onSuccess) {
      if (!text) return;
      
      var copyFallback = function() {
@@ -390,7 +390,7 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
 /**
     * Safe localStorage wrapper with versioned schema
     */
-   bdv.storage = {
+   conv.storage = {
        VERSION_KEY: 'convoca_version',
        set: function(key, value) {
            try {
@@ -423,7 +423,7 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
    * @param {number} wait - Wait time in milliseconds
    * @param {boolean} [immediate] - Trigger immediately
    */
-  bdv.debounce = function(func, wait, immediate) {
+  conv.debounce = function(func, wait, immediate) {
       var timeout;
       return function() {
           var context = this, args = arguments;
@@ -443,7 +443,7 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
    * @param {string} phone
    * @returns {boolean}
    */
-  bdv.validatePhone = function (phone) {
+  conv.validatePhone = function (phone) {
     return /^\d{9}$/.test((phone || '').trim());
   };
 
@@ -452,7 +452,7 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
    * @param {HTMLElement} field - The .convoca-field wrapper.
    * @param {string} message - Error text to display.
    */
-  bdv.showFieldError = function (field, message) {
+  conv.showFieldError = function (field, message) {
     if (!field) return;
     field.classList.add('has-error');
     let msgEl = field.querySelector('.convoca-error-msg');
@@ -469,7 +469,7 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
    * Clears the inline error for a .convoca-field element.
    * @param {HTMLElement} field
    */
-  bdv.clearFieldError = function (field) {
+  conv.clearFieldError = function (field) {
     if (!field) return;
     field.classList.remove('has-error');
     const msgEl = field.querySelector('.convoca-error-msg');
@@ -484,7 +484,7 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
    * @param {HTMLElement} field - .convoca-field wrapper.
    * @returns {boolean}
    */
-  bdv.validateField = function (field) {
+  conv.validateField = function (field) {
     if (!field) return true;
     const input = field.querySelector('input, select, textarea');
     if (!input) return true;
@@ -492,13 +492,13 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
     const val = (input.value || '').trim();
 
     // Clear any existing error
-    bdv.clearFieldError(field);
+    conv.clearFieldError(field);
 
     // Required check
     if (required && !val) {
       const label = field.querySelector('label');
       const name = label ? label.textContent.trim() : input.name;
-      bdv.showFieldError(field, 'Este campo es obligatorio.');
+      conv.showFieldError(field, 'Este campo es obligatorio.');
       return false;
     }
 
@@ -508,20 +508,20 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
     const type = input.type || '';
     const name = input.name || '';
     if (type === 'email' || name === 'email') {
-      if (!bdv.validateEmail(val)) {
-        bdv.showFieldError(field, 'Introduce un email válido.');
+      if (!conv.validateEmail(val)) {
+        conv.showFieldError(field, 'Introduce un email válido.');
         return false;
       }
     }
     if (name === 'dni') {
-      if (!bdv.validateDNI(val)) {
-        bdv.showFieldError(field, 'El DNI/NIE no es válido. Revisa la letra.');
+      if (!conv.validateDNI(val)) {
+        conv.showFieldError(field, 'El DNI/NIE no es válido. Revisa la letra.');
         return false;
       }
     }
     if (name === 'telefono') {
-      if (!bdv.validatePhone(val)) {
-        bdv.showFieldError(field, 'Introduce un teléfono de 9 dígitos.');
+      if (!conv.validatePhone(val)) {
+        conv.showFieldError(field, 'Introduce un teléfono de 9 dígitos.');
         return false;
       }
     }
@@ -533,7 +533,7 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
    * Fallback for :has() CSS selector on rating stars.
    * Adds 'is-checked' class when radio is checked.
    */
-  bdv.initRatingStars = function () {
+  conv.initRatingStars = function () {
     document.querySelectorAll('.convoca-rating-stars').forEach(function (group) {
       group.querySelectorAll('input[type="radio"]').forEach(function (radio) {
         radio.addEventListener('change', function () {
@@ -555,9 +555,9 @@ if (!targetNode || targetNode.dataset.bdvObserved) return;
   };
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bdv.initRatingStars);
+    document.addEventListener('DOMContentLoaded', conv.initRatingStars);
   } else {
-    bdv.initRatingStars();
+    conv.initRatingStars();
   }
 
 })(window.convoca);

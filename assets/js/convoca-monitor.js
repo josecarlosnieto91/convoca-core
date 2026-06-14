@@ -20,25 +20,25 @@
     var consecutiveFailures = 0;
     var isBackingOff = false;
     var pollTimer = null;
-    var dotEl = document.getElementById('bdv-live-dot');
-    var labelEl = document.getElementById('bdv-monitor-label');
+    var dotEl = document.getElementById('conv-live-dot');
+    var labelEl = document.getElementById('conv-monitor-label');
 
     /* ── DOM helpers ─────────────────────────────── */
     function getMetricCard(key) {
-        return document.querySelector('.bdv-metric-card[data-metric="' + key + '"] .bdv-card-value');
+        return document.querySelector('.conv-metric-card[data-metric="' + key + '"] .conv-card-value');
     }
 
     function getMetricCardInner(key) {
-        return document.querySelector('.bdv-metric-card[data-metric="' + key + '"] .bdv-metric-card-inner');
+        return document.querySelector('.conv-metric-card[data-metric="' + key + '"] .conv-metric-card-inner');
     }
 
     function setStatus(connected) {
         if (!dotEl || !labelEl) return;
         if (connected) {
-            dotEl.className = 'bdv-live-dot bdv-live-dot--online';
+            dotEl.className = 'conv-live-dot conv-live-dot--online';
             labelEl.textContent = 'En vivo';
         } else {
-            dotEl.className = 'bdv-live-dot bdv-live-dot--offline';
+            dotEl.className = 'conv-live-dot conv-live-dot--offline';
             if (isBackingOff) {
                 labelEl.textContent = 'Reconectando en 60s…';
             } else {
@@ -51,15 +51,15 @@
         var inner = getMetricCardInner(key);
         if (!inner) return;
         if (hasError) {
-            inner.classList.add('bdv-card-error');
+            inner.classList.add('conv-card-error');
         } else {
-            inner.classList.remove('bdv-card-error');
+            inner.classList.remove('conv-card-error');
         }
     }
 
     function clearAllCardErrors() {
-        document.querySelectorAll('.bdv-metric-card-inner.bdv-card-error').forEach(function (el) {
-            el.classList.remove('bdv-card-error');
+        document.querySelectorAll('.conv-metric-card-inner.conv-card-error').forEach(function (el) {
+            el.classList.remove('conv-card-error');
         });
     }
 
@@ -95,24 +95,24 @@
         });
 
         // Update recent activity
-        var activityEl = document.getElementById('bdv-recent-activity');
+        var activityEl = document.getElementById('conv-recent-activity');
         if (activityEl && data.recent_activity && Array.isArray(data.recent_activity)) {
             if (data.recent_activity.length === 0) {
-                activityEl.innerHTML = '<li class="bdv-empty">No hay actividad reciente.</li>';
+                activityEl.innerHTML = '<li class="conv-empty">No hay actividad reciente.</li>';
             } else {
                 var html = '';
                 data.recent_activity.forEach(function (entry) {
                     var context = entry.context || '\u2014';
                     var message = (entry.message || '').substring(0, 80);
                     var time = entry.created_at || '';
-                    html += '<li><span class="bdv-activity-context">[' + escapeHtml(context) + ']</span> <span class="bdv-activity-msg">' + escapeHtml(message) + '</span> <span class="bdv-activity-time">' + escapeHtml(time) + '</span></li>';
+                    html += '<li><span class="conv-activity-context">[' + escapeHtml(context) + ']</span> <span class="conv-activity-msg">' + escapeHtml(message) + '</span> <span class="conv-activity-time">' + escapeHtml(time) + '</span></li>';
                 });
                 activityEl.innerHTML = html;
             }
         }
 
         // Update alerts
-        var alertsEl = document.getElementById('bdv-alerts-list');
+        var alertsEl = document.getElementById('conv-alerts-list');
         if (alertsEl) {
             // We don't fetch alerts from REST currently, but we could if needed
             // For now keep the server-rendered alerts
@@ -120,7 +120,7 @@
 
         // Update timestamp
         if (data.timestamp) {
-            var tsEl = document.querySelector('.bdv-monitor-header .bdv-monitor-status');
+            var tsEl = document.querySelector('.conv-monitor-header .conv-monitor-status');
             if (tsEl) {
                 // optional: could show last update time
             }
@@ -139,8 +139,8 @@
     function fetchMetrics() {
         if (isBackingOff) return;
 
-        var url = (window.bdvMonitor && window.bdvMonitor.restUrl) || '/wp-json/convoca/v1/admin/metrics';
-        var nonce = (window.bdvMonitor && window.bdvMonitor.nonce) || '';
+        var url = (window.convMonitor && window.convMonitor.restUrl) || '/wp-json/convoca/v1/admin/metrics';
+        var nonce = (window.convMonitor && window.convMonitor.nonce) || '';
         var controller = new AbortController();
         var timeoutId = setTimeout(function () {
             controller.abort();

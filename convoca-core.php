@@ -185,13 +185,13 @@ function convoca_register_global_menu(): void {
 		'Convoca\Core\convoca_health_page'
 	);
 
-	// El submenu 'bdv-setup-wizard' se registra desde Admin_Setup_Wizard.
+	// El submenu 'conv-setup-wizard' se registra desde Admin_Setup_Wizard.
 	add_submenu_page(
 		'convoca-core',
 		__( 'Panel de Control', 'convoca-core' ),
 		__( 'Panel de Control', 'convoca-core' ),
 		'manage_options',
-		'bdv-dashboard',
+		'conv-dashboard',
 		'Convoca\Core\convoca_dashboard_page'
 	);
 
@@ -200,7 +200,7 @@ function convoca_register_global_menu(): void {
 		__( 'Registros del Sistema', 'convoca-core' ),
 		__( 'Registros', 'convoca-core' ),
 		'common_view_logs',
-		'bdv-logs-central',
+		'conv-logs-central',
 		'Convoca\Core\convoca_logs_page'
 	);
 }
@@ -348,7 +348,7 @@ function convoca_notifications_menu(): void {
 		__( 'Notificaciones', 'convoca-core' ),
 		__( 'Notificaciones', 'convoca-core' ),
 		'manage_options',
-		'bdv-notificaciones',
+		'conv-notificaciones',
 		'Convoca\Core\convoca_notifications_page'
 	);
 }
@@ -447,7 +447,7 @@ add_action( 'admin_enqueue_scripts', 'Convoca\\Core\\convoca_common_enqueue_admi
  * Hide Screen Options tab on Convoca custom admin pages.
  */
 function convoca_hide_screen_options( bool $show_screen, \WP_Screen $screen ): bool {
-	$convoca_slugs = array( 'bdv-', 'bde-', 'bdg-', 'cst-' );
+	$convoca_slugs = array( 'conv-', 'bde-', 'bdg-', 'cst-' );
 	foreach ( $convoca_slugs as $prefix ) {
 		if ( str_contains( $screen->id, $prefix ) || str_contains( $screen->base ?? '', $prefix ) ) {
 			return false;
@@ -483,7 +483,7 @@ function convoca_remove_help_tab(): void {
 	if ( ! $screen ) {
 		return;
 	}
-	$convoca_slugs = array( 'bdv-', 'bde-', 'bdg-', 'cst-' );
+	$convoca_slugs = array( 'conv-', 'bde-', 'bdg-', 'cst-' );
 	foreach ( $convoca_slugs as $prefix ) {
 		if ( str_contains( $screen->id, $prefix ) || str_contains( $screen->base ?? '', $prefix ) ) {
 			$screen->remove_help_tabs();
@@ -510,10 +510,10 @@ add_action( 'admin_bar_menu', 'Convoca\\Core\\convoca_customize_new_menu', 999 )
 
 function convoca_customize_new_menu( \WP_Admin_Bar $wp_admin_bar ): void {
 	$custom_links = array(
-		'new-miembro'       => admin_url( 'admin.php?page=bdv-member-editor' ),
+		'new-miembro'       => admin_url( 'admin.php?page=conv-member-editor' ),
 		'new-actividad'     => admin_url( 'admin.php?page=bde-actividad-editor' ),
-		'new-proyecto'      => admin_url( 'admin.php?page=bdv-proyecto-editor' ),
-		'new-registro_hora' => admin_url( 'admin.php?page=bdv-horas-editor' ),
+		'new-proyecto'      => admin_url( 'admin.php?page=conv-proyecto-editor' ),
+		'new-registro_hora' => admin_url( 'admin.php?page=conv-horas-editor' ),
 		'new-centro_turno'  => admin_url( 'edit.php?post_type=centro_turno&page=convoca_shifts_turno_rapido' ),
 	);
 
@@ -541,9 +541,9 @@ function convoca_add_wizard_link( \WP_Admin_Bar $wp_admin_bar ): void {
 	}
 	$wp_admin_bar->add_node(
 		array(
-			'id'     => 'bdv-wizard',
+			'id'     => 'conv-wizard',
 			'title'  => '🔧 ' . __( 'Asistente Convoca', 'convoca-core' ),
-			'href'   => admin_url( 'admin.php?page=bdv-setup-wizard' ),
+			'href'   => admin_url( 'admin.php?page=conv-setup-wizard' ),
 			'parent' => 'top-secondary',
 		)
 	);
@@ -670,22 +670,22 @@ function convoca_logs_page(): void {
 			<p class="description"><?php esc_html_e( '⚠️ El contador de registros es aproximado para tablas grandes (>10.000 filas). Usa filtros para obtener un recuento exacto.', 'convoca-core' ); ?></p>
 		<?php endif; ?>
 		<form method="get">
-			<input type="hidden" name="page" value="bdv-logs-central">
+			<input type="hidden" name="page" value="conv-logs-central">
 			<?php $table->search_box( __( 'Buscar en logs', 'convoca-core' ), 'log_search' ); ?>
 			<?php $table->display(); ?>
 		</form>
 	</div>
-	<div id="bdv-log-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100000;align-items:center;justify-content:center;" onclick="this.style.display='none'">
+	<div id="conv-log-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100000;align-items:center;justify-content:center;" onclick="this.style.display='none'">
 		<div style="background:#fff;border-radius:8px;max-width:600px;width:90%;max-height:80vh;overflow:auto;padding:24px;box-shadow:0 4px 24px rgba(0,0,0,0.2);" onclick="event.stopPropagation()">
 			<h3 style="margin-top:0;"><?php esc_html_e( 'Detalle del Log', 'convoca-core' ); ?></h3>
-			<pre id="bdv-log-message-content" style="white-space:pre-wrap;word-break:break-word;background:#f8fafc;padding:12px;border-radius:4px;font-size:13px;line-height:1.5;"></pre>
-			<button style="margin-top:12px;" class="button" onclick="document.getElementById('bdv-log-modal').style.display='none'"><?php esc_html_e( 'Cerrar', 'convoca-core' ); ?></button>
+			<pre id="conv-log-message-content" style="white-space:pre-wrap;word-break:break-word;background:#f8fafc;padding:12px;border-radius:4px;font-size:13px;line-height:1.5;"></pre>
+			<button style="margin-top:12px;" class="button" onclick="document.getElementById('conv-log-modal').style.display='none'"><?php esc_html_e( 'Cerrar', 'convoca-core' ); ?></button>
 		</div>
 	</div>
 	<script>
 	(function(){
-		var modal = document.getElementById('bdv-log-modal');
-		var content = document.getElementById('bdv-log-message-content');
+		var modal = document.getElementById('conv-log-modal');
+		var content = document.getElementById('conv-log-message-content');
 		document.querySelectorAll('.view-log-detail').forEach(function(el){
 			el.style.color = '#3b82f6';
 			el.style.cursor = 'pointer';
@@ -726,14 +726,14 @@ function convoca_dashboard_page(): void {
 			'label' => __( 'Socios activos', 'convoca-core' ),
 			'value' => $m['activos'],
 			'total' => $m['total'],
-			'url'   => admin_url( 'admin.php?page=bdv-members' ),
+			'url'   => admin_url( 'admin.php?page=conv-members' ),
 		),
 		array(
 			'icon'  => '🆕',
 			'label' => __( 'Altas este mes', 'convoca-core' ),
 			'value' => $m['nuevos_mes'],
 			'total' => '',
-			'url'   => admin_url( 'admin.php?page=bdv-members' ),
+			'url'   => admin_url( 'admin.php?page=conv-members' ),
 		),
 		array(
 			'icon'  => '📝',
@@ -772,22 +772,22 @@ function convoca_dashboard_page(): void {
 			<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=conv_generate_memory' ), 'conv_generate_memory' ) ); ?>" class="convoca-btn convoca-btn-primary" style="margin-left:8px;">📄 <?php esc_html_e( 'Generar memoria PDF', 'convoca-core' ); ?></a>
 		</p>
 
-		<div class="bdv-analytics-cards">
+		<div class="conv-analytics-cards">
 			<?php foreach ( $cards as $card ) : ?>
-				<a href="<?php echo esc_url( $card['url'] ); ?>" class="bdv-analytics-card">
-					<div class="bdv-card-icon"><?php echo $card['icon']; ?></div>
-					<div class="bdv-card-value"><?php echo esc_html( $card['value'] ); ?></div>
+				<a href="<?php echo esc_url( $card['url'] ); ?>" class="conv-analytics-card">
+					<div class="conv-card-icon"><?php echo $card['icon']; ?></div>
+					<div class="conv-card-value"><?php echo esc_html( $card['value'] ); ?></div>
 					<?php
 					if ( $card['total'] ) :
 						?>
-						<div class="bdv-card-total">/ <?php echo esc_html( $card['total'] ); ?> total</div><?php endif; ?>
-					<div class="bdv-card-label"><?php echo esc_html( $card['label'] ); ?></div>
+						<div class="conv-card-total">/ <?php echo esc_html( $card['total'] ); ?> total</div><?php endif; ?>
+					<div class="conv-card-label"><?php echo esc_html( $card['label'] ); ?></div>
 				</a>
 			<?php endforeach; ?>
 		</div>
 
-		<div class="bdv-analytics-charts">
-			<div class="bdv-chart-card">
+		<div class="conv-analytics-charts">
+			<div class="conv-chart-card">
 				<h3>📈 <?php esc_html_e( 'Tendencia (6 meses)', 'convoca-core' ); ?></h3>
 				<?php
 				echo \Convoca\Core\Admin_Analytics::render_chart(
@@ -811,7 +811,7 @@ function convoca_dashboard_page(): void {
 				);
 				?>
 			</div>
-			<div class="bdv-chart-card">
+			<div class="conv-chart-card">
 				<h3>💰 <?php esc_html_e( 'Ingresos mensuales', 'convoca-core' ); ?></h3>
 				<?php
 				echo \Convoca\Core\Admin_Analytics::render_chart(
@@ -829,7 +829,7 @@ function convoca_dashboard_page(): void {
 				);
 				?>
 			</div>
-			<div class="bdv-chart-card">
+			<div class="conv-chart-card">
 				<h3>📊 <?php esc_html_e( 'Inscripciones por estado', 'convoca-core' ); ?></h3>
 				<?php
 				echo \Convoca\Core\Admin_Analytics::render_chart(
@@ -846,7 +846,7 @@ function convoca_dashboard_page(): void {
 				);
 				?>
 			</div>
-			<div class="bdv-chart-card">
+			<div class="conv-chart-card">
 				<h3>💳 <?php esc_html_e( 'Métodos de pago (mes)', 'convoca-core' ); ?></h3>
 				<?php
 				echo \Convoca\Core\Admin_Analytics::render_chart(
@@ -863,7 +863,7 @@ function convoca_dashboard_page(): void {
 				);
 				?>
 			</div>
-			<div class="bdv-chart-card bdv-chart-card--wide">
+			<div class="conv-chart-card conv-chart-card--wide">
 				<h3>📋 <?php esc_html_e( 'Últimos 7 días — Pagos', 'convoca-core' ); ?></h3>
 				<?php
 				echo \Convoca\Core\Admin_Analytics::render_chart(
@@ -886,13 +886,13 @@ function convoca_dashboard_page(): void {
 	</div>
 
 	<style>
-	.bdv-analytics-cards {
+	.conv-analytics-cards {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 		gap: 16px;
 		margin: 20px 0;
 	}
-	.bdv-analytics-card {
+	.conv-analytics-card {
 		display: block;
 		background: #fff;
 		border-radius: 12px;
@@ -902,39 +902,39 @@ function convoca_dashboard_page(): void {
 		text-decoration: none;
 		transition: transform .2s, box-shadow .2s;
 	}
-	.bdv-analytics-card:hover {
+	.conv-analytics-card:hover {
 		transform: translateY(-3px);
 		box-shadow: 0 6px 16px rgba(0,0,0,.1);
 	}
-	.bdv-card-icon { font-size: 28px; margin-bottom: 6px; }
-	.bdv-card-value { font-size: 26px; font-weight: 800; color: #320028; line-height: 1.2; }
-	.bdv-card-total { font-size: 13px; color: #94a3b8; }
-	.bdv-card-label { font-size: 12px; color: #64748b; margin-top: 4px; }
+	.conv-card-icon { font-size: 28px; margin-bottom: 6px; }
+	.conv-card-value { font-size: 26px; font-weight: 800; color: #320028; line-height: 1.2; }
+	.conv-card-total { font-size: 13px; color: #94a3b8; }
+	.conv-card-label { font-size: 12px; color: #64748b; margin-top: 4px; }
 
-	.bdv-analytics-charts {
+	.conv-analytics-charts {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
 		gap: 20px;
 		margin-top: 24px;
 	}
-	.bdv-chart-card {
+	.conv-chart-card {
 		background: #fff;
 		border-radius: 12px;
 		padding: 20px;
 		box-shadow: 0 2px 8px rgba(0,0,0,.06);
 		border: 1px solid #e2e8f0;
 	}
-	.bdv-chart-card h3 {
+	.conv-chart-card h3 {
 		margin: 0 0 16px;
 		font-size: 15px;
 		color: #320028;
 		border-bottom: 2px solid #FF8700;
 		padding-bottom: 8px;
 	}
-	.bdv-chart-card--wide { grid-column: 1 / -1; }
+	.conv-chart-card--wide { grid-column: 1 / -1; }
 	@media (max-width: 600px) {
-		.bdv-analytics-charts { grid-template-columns: 1fr; }
-		.bdv-analytics-cards { grid-template-columns: repeat(2, 1fr); }
+		.conv-analytics-charts { grid-template-columns: 1fr; }
+		.conv-analytics-cards { grid-template-columns: repeat(2, 1fr); }
 	}
 	</style>
 	<?php
@@ -965,7 +965,7 @@ function convoca_build_metrics(): array {
 		}
 		$metrics['members_total']   = array_sum( $counts );
 		$metrics['members_activos'] = $counts['activo'] ?? 0;
-		$metrics['members_url']     = admin_url( 'admin.php?page=bdv-members' );
+		$metrics['members_url']     = admin_url( 'admin.php?page=conv-members' );
 	}
 
 	$metrics['members_new_month'] = (int) $wpdb->get_var(

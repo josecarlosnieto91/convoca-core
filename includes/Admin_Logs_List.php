@@ -25,7 +25,7 @@ class Admin_Logs_List extends \WP_List_Table {
 				'singular' => 'log',
 				'plural'   => 'logs',
 				'ajax'     => false,
-				'screen'   => 'bdv-logs',
+				'screen'   => 'conv-logs',
 			)
 		);
 	}

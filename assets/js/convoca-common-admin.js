@@ -106,7 +106,7 @@ window.convocaAdmin = window.convocaAdmin || {};
     if (!action || action === '-1' || action === '') return;
 
     // Don't confirm if already confirmed (skip flag)
-    if (form.dataset.bdvConfirmed) return;
+    if (form.dataset.convConfirmed) return;
 
     const messages = {
       'trash': '¿Mover los elementos seleccionados a la papelera?',
@@ -123,7 +123,7 @@ window.convocaAdmin = window.convocaAdmin || {};
       return;
     }
 
-    form.dataset.bdvConfirmed = '1';
+    form.dataset.convConfirmed = '1';
   });
 
   /**
@@ -174,7 +174,7 @@ window.convocaAdmin = window.convocaAdmin || {};
 
 /**
  * Convoca Live Email Preview
- * Attaches to .bdv-email-preview-init containers and binds real-time preview.
+ * Attaches to .conv-email-preview-init containers and binds real-time preview.
  */
 (function () {
   'use strict';
@@ -214,8 +214,8 @@ window.convocaAdmin = window.convocaAdmin || {};
   function updatePreview(slug) {
     const subjectEl = document.querySelector('[name$="[' + slug + '][subject]"], [name="tpl_' + slug + '_subject"]');
     const bodyEl = document.querySelector('[name$="[' + slug + '][body]"], [name="tpl_' + slug + '_body"]');
-    const previewSubject = document.getElementById('bdv-preview-subject-' + slug);
-    const previewBody = document.getElementById('bdv-preview-body-' + slug);
+    const previewSubject = document.getElementById('conv-preview-subject-' + slug);
+    const previewBody = document.getElementById('conv-preview-body-' + slug);
 
     if (subjectEl && previewSubject) {
       previewSubject.textContent = replaceVariables(subjectEl.value);
@@ -231,7 +231,7 @@ window.convocaAdmin = window.convocaAdmin || {};
     if (!bodyEl) return;
 
     // Add preview container after the body textarea or after the card
-    const card = bodyEl.closest('.bdv-template-card, .bde-template-card');
+    const card = bodyEl.closest('.conv-template-card, .bde-template-card');
     if (!card) return;
 
     // Check if preview already exists
@@ -249,12 +249,12 @@ window.convocaAdmin = window.convocaAdmin || {};
 
     if (subjectEl) {
       const subjLine = document.createElement('p');
-      subjLine.innerHTML = '<strong>Asunto:</strong> <span id="bdv-preview-subject-' + slug + '">' + replaceVariables(subjectEl.value) + '</span>';
+      subjLine.innerHTML = '<strong>Asunto:</strong> <span id="conv-preview-subject-' + slug + '">' + replaceVariables(subjectEl.value) + '</span>';
       previewCol.appendChild(subjLine);
     }
 
     const frame = document.createElement('div');
-    frame.id = 'bdv-preview-body-' + slug;
+    frame.id = 'conv-preview-body-' + slug;
     frame.className = 'convoca-email-preview-frame';
     frame.innerHTML = replaceVariables(bodyEl.value);
     previewCol.appendChild(frame);
@@ -314,7 +314,7 @@ window.convocaAdmin = window.convocaAdmin || {};
 
   // Auto-init on DOM ready and observe dynamic content
   function initAll() {
-    document.querySelectorAll('.bdv-template-card, .bde-template-card').forEach(function (card) {
+    document.querySelectorAll('.conv-template-card, .bde-template-card').forEach(function (card) {
       const bodyEl = card.querySelector('textarea[name*="body"]');
       if (!bodyEl) return;
       // Extract slug from name attribute
@@ -349,7 +349,7 @@ window.convocaAdmin = window.convocaAdmin || {};
   // Close modals with Escape
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
-      document.querySelectorAll('.cst-modal.is-active, .bdv-modal.is-active, .convoca-modal.is-active').forEach(function (modal) {
+      document.querySelectorAll('.cst-modal.is-active, .conv-modal.is-active, .convoca-modal.is-active').forEach(function (modal) {
         modal.classList.remove('is-active');
         modal.setAttribute('aria-hidden', 'true');
       });
@@ -378,18 +378,18 @@ function convocaChips(select, searchUrl) {
   if (!select || select.tagName !== 'SELECT' || !select.multiple) return;
 
   var container = document.createElement('div');
-  container.className = 'bdv-chips-container';
+  container.className = 'conv-chips-container';
   container.setAttribute('role', 'listbox');
   container.setAttribute('aria-label', select.getAttribute('aria-label') || select.getAttribute('name'));
 
   var input = document.createElement('input');
   input.type = 'text';
-  input.className = 'bdv-chips-input';
+  input.className = 'conv-chips-input';
   input.placeholder = select.getAttribute('data-placeholder') || 'Buscar...';
   container.appendChild(input);
 
   var dropdown = document.createElement('div');
-  dropdown.className = 'bdv-chips-dropdown';
+  dropdown.className = 'conv-chips-dropdown';
 
   var wrapper = document.createElement('div');
   wrapper.style.position = 'relative';
@@ -399,13 +399,13 @@ function convocaChips(select, searchUrl) {
   select.style.display = 'none';
 
   function renderChips() {
-    var chips = container.querySelectorAll('.bdv-chip');
+    var chips = container.querySelectorAll('.conv-chip');
     chips.forEach(function (c) { c.remove(); });
     Array.from(select.options).forEach(function (opt) {
       if (opt.selected) {
         var chip = document.createElement('span');
-        chip.className = 'bdv-chip';
-        chip.innerHTML = opt.text + ' <span class="bdv-chip-remove" data-value="' + opt.value + '">✕</span>';
+        chip.className = 'conv-chip';
+        chip.innerHTML = opt.text + ' <span class="conv-chip-remove" data-value="' + opt.value + '">✕</span>';
         container.insertBefore(chip, input);
       }
     });
@@ -420,7 +420,7 @@ function convocaChips(select, searchUrl) {
 
   // Remove chip on click
   container.addEventListener('click', function (e) {
-    if (e.target.classList.contains('bdv-chip-remove')) {
+    if (e.target.classList.contains('conv-chip-remove')) {
       var val = e.target.dataset.value;
       var opt = select.querySelector('option[value="' + val + '"]');
       if (opt) { opt.selected = false; renderChips(); }
@@ -445,7 +445,7 @@ function convocaChips(select, searchUrl) {
             var opt = select.querySelector('option[value="' + item.id + '"]');
             if (opt && opt.selected) return;
             var el = document.createElement('div');
-            el.className = 'bdv-chips-dropdown-item';
+            el.className = 'conv-chips-dropdown-item';
             el.textContent = item.name + (item.email ? ' (' + item.email + ')' : '');
             el.addEventListener('click', function () {
               var opt = select.querySelector('option[value="' + item.id + '"]');

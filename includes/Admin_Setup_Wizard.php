@@ -35,7 +35,7 @@ class Admin_Setup_Wizard {
 			__( 'Asistente de Configuración Convoca', 'convoca-core' ),
 			__( 'Asistente', 'convoca-core' ),
 			'manage_options',
-			'bdv-setup-wizard',
+			'conv-setup-wizard',
 			array( $this, 'render' )
 		);
 	}
@@ -65,7 +65,7 @@ class Admin_Setup_Wizard {
 		if ( $pagenow === 'admin-ajax.php' ) {
 			return;
 		}
-		if ( isset( $_GET['page'] ) && $_GET['page'] === 'bdv-setup-wizard' ) {
+		if ( isset( $_GET['page'] ) && $_GET['page'] === 'conv-setup-wizard' ) {
 			return;
 		}
 
@@ -87,7 +87,7 @@ class Admin_Setup_Wizard {
 		}
 
 		set_transient( self::SEEN_OPTION . '_' . $user_id, 1, 6 * HOUR_IN_SECONDS );
-		wp_safe_redirect( admin_url( 'admin.php?page=bdv-setup-wizard' ) );
+		wp_safe_redirect( admin_url( 'admin.php?page=conv-setup-wizard' ) );
 		exit;
 	}
 
@@ -324,7 +324,7 @@ class Admin_Setup_Wizard {
 			\Convoca\Core\Utils::release_lock( 'conv_wizard_create_pages' );
 		}
 
-		wp_safe_redirect( admin_url( 'admin.php?page=bdv-setup-wizard&step=2' ) );
+		wp_safe_redirect( admin_url( 'admin.php?page=conv-setup-wizard&step=2' ) );
 		exit;
 	}
 
@@ -420,7 +420,7 @@ class Admin_Setup_Wizard {
 			update_option( 'convoca_shifts_hora_cierre', sanitize_text_field( $_POST['cst_cierre'] ) );
 		}
 		update_option( self::PROGRESS_OPTION, $step + 1 );
-		wp_safe_redirect( admin_url( 'admin.php?page=bdv-setup-wizard&step=' . ( $step + 1 ) ) );
+		wp_safe_redirect( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $step + 1 ) ) );
 		exit;
 	}
 
@@ -435,12 +435,12 @@ class Admin_Setup_Wizard {
 	private function step_nav( int $current, bool $can_continue ): void {
 		echo '<div style="margin-top:35px;display:flex;justify-content:space-between;">';
 		if ( $current > 1 ) {
-			echo '<a href="' . esc_url( admin_url( 'admin.php?page=bdv-setup-wizard&step=' . ( $current - 1 ) ) ) . '" class="convoca-btn convoca-btn-outline">Anterior</a>';
+			echo '<a href="' . esc_url( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $current - 1 ) ) ) . '" class="convoca-btn convoca-btn-outline">Anterior</a>';
 		} else {
 			echo '<div></div>';
 		}
 		if ( $can_continue && $current < 6 ) {
-			echo '<a href="' . esc_url( admin_url( 'admin.php?page=bdv-setup-wizard&step=' . ( $current + 1 ) ) ) . '" class="convoca-btn convoca-btn-primary">Siguiente</a>';
+			echo '<a href="' . esc_url( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $current + 1 ) ) ) . '" class="convoca-btn convoca-btn-primary">Siguiente</a>';
 		}
 		echo '</div>';
 	}

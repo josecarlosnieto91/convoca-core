@@ -503,42 +503,42 @@
 }
 
 /* ── Chips Component ─────────────────────────── */
-.bdv-chips-container {
+.conv-chips-container {
     display: flex; flex-wrap: wrap; gap: 6px; padding: 8px;
     border: 2px solid var(--wp--preset--color--gris-medio, #e0e0e0);
     border-radius: var(--wp--custom--radius--small, 8px);
     min-height: 42px; cursor: text; background: #fff;
 }
-.bdv-chips-container:focus-within {
+.conv-chips-container:focus-within {
     border-color: var(--wp--preset--color--naranja, #ff8700);
     box-shadow: 0 0 0 4px rgba(255,135,0,0.12);
 }
-.bdv-chip {
+.conv-chip {
     display: inline-flex; align-items: center; gap: 4px;
     background: var(--wp--preset--color--violeta, #320028);
     color: #fff; padding: 4px 10px; border-radius: 20px;
     font-size: 12px; font-weight: 600; line-height: 1.4;
 }
-.bdv-chip-remove {
+.conv-chip-remove {
     cursor: pointer; font-size: 14px; line-height: 1;
     opacity: 0.7; transition: opacity 0.15s;
 }
-.bdv-chip-remove:hover { opacity: 1; }
-.bdv-chips-input {
+.conv-chip-remove:hover { opacity: 1; }
+.conv-chips-input {
     border: none; outline: none; flex: 1; min-width: 120px;
     font-size: 13px; padding: 2px; background: transparent;
 }
-.bdv-chips-dropdown {
+.conv-chips-dropdown {
     position: absolute; z-index: 9999; background: #fff;
     border: 1px solid #e0e0e0; border-radius: 8px;
     max-height: 200px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     display: none; width: 100%;
 }
-.bdv-chips-dropdown-item {
+.conv-chips-dropdown-item {
     padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f0f0f1;
     font-size: 13px;
 }
-.bdv-chips-dropdown-item:hover { background: #f0f7ff; }
+.conv-chips-dropdown-item:hover { background: #f0f7ff; }
 
 /* ── Print & Accessibility ────────────────────── */
 @media print {

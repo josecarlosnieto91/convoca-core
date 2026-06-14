@@ -27,13 +27,13 @@ class Admin_Templates {
 			__( 'Plantillas PDF (Convoca)', 'convoca-core' ),
 			__( 'Plantillas PDF', 'convoca-core' ),
 			'manage_convoca_templates',
-			'bdv-pdf-templates',
+			'conv-pdf-templates',
 			array( self::class, 'render_page' )
 		);
 	}
 
 	public static function handle_actions() {
-		if ( ! isset( $_GET['page'] ) || $_GET['page'] !== 'bdv-pdf-templates' ) {
+		if ( ! isset( $_GET['page'] ) || $_GET['page'] !== 'conv-pdf-templates' ) {
 			return;
 		}
 
@@ -456,8 +456,8 @@ class Admin_Templates {
 
 		$templates = self::get_templates();
 		?>
-		<div class="wrap bdv-common-settings-wrap">
-			<div class="bdv-admin-header" style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
+		<div class="wrap conv-common-settings-wrap">
+			<div class="conv-admin-header" style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
 				<img src="<?php echo esc_url( CONVOCA_IMAGES_URL . 'logo.png' ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" style="width: 80px; height: 80px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
 				<div>
 					<h1 style="margin: 0; padding: 0;"><?php echo esc_html__( 'Plantillas de Documentos (PDF)', 'convoca-core' ); ?></h1>
@@ -491,7 +491,7 @@ class Admin_Templates {
 					$first = true;
 					foreach ( $templates as $key => $data ) :
 						?>
-						<div id="tab-<?php echo esc_attr( $key ); ?>" class="bdv-tab-content" style="<?php echo $first ? '' : 'display:none;'; ?> margin-top:20px;">
+						<div id="tab-<?php echo esc_attr( $key ); ?>" class="conv-tab-content" style="<?php echo $first ? '' : 'display:none;'; ?> margin-top:20px;">
 							<label for="template_<?php echo esc_attr( $key ); ?>"><strong><?php echo esc_html__( 'Código HTML:', 'convoca-core' ); ?></strong></label><br><br>
 							<textarea id="template_<?php echo esc_attr( $key ); ?>" name="template[<?php echo esc_attr( $key ); ?>]" rows="25" class="large-text code" style="font-family: monospace; background: #fcfcfc;"><?php echo htmlspecialchars( $data['content'], ENT_QUOTES, 'UTF-8', false ); ?></textarea>
 						</div>
@@ -521,7 +521,7 @@ class Admin_Templates {
 				event.preventDefault();
 				
 				// Hide all contents.
-				var contents = document.querySelectorAll('.bdv-tab-content');
+				var contents = document.querySelectorAll('.conv-tab-content');
 				contents.forEach(function(content) {
 					content.style.display = 'none';
 				});
