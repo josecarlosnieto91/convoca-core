@@ -1,6 +1,6 @@
-# Biodevas Common Utilities
+# Convoca Core Utilities
 
-Plugin base del ecosistema Biodevas. Proporciona utilidades compartidas, logging centralizado, webhooks, dashboard, backup/restore, y gestión de capacidades.
+Plugin base del ecosistema Convoca. Proporciona utilidades compartidas, logging centralizado, webhooks, dashboard, backup/restore, y gestión de capacidades.
 
 ## Requirements
 
@@ -14,11 +14,11 @@ Plugin base del ecosistema Biodevas. Proporciona utilidades compartidas, logging
 - Webhook manager with retries + dedup
 - Atomic lock system
 - Rate limiter
-- Unified Dashboard (Biodevas > Panel)
-- Centralized Log Viewer (Biodevas > Logs)
-- Setup Wizard (Biodevas > Asistente)
-- Backup/Restore (Biodevas > Backup)
-- System Health (Biodevas > Salud)
+- Unified Dashboard (Convoca > Panel)
+- Centralized Log Viewer (Convoca > Logs)
+- Setup Wizard (Convoca > Asistente)
+- Backup/Restore (Convoca > Backup)
+- System Health (Convoca > Salud)
 - Upgrade Manager
 - REST API
 
@@ -28,7 +28,7 @@ WordPress 6.4+, PHP 8.1+
 
 ## Webhook Manager
 
-Register and manage webhooks from **Biodevas > Webhooks**.
+Register and manage webhooks from **Convoca > Webhooks**.
 
 ### Available events
 
@@ -50,12 +50,12 @@ Register and manage webhooks from **Biodevas > Webhooks**.
 
 ### HMAC signature
 
-If a secret is configured, each request includes `X-Biodevas-Signature` header
+If a secret is configured, each request includes `X-Convoca-Signature` header
 with `hash_hmac('sha256', $body, $secret)`. Verify on your endpoint:
 
 ```php
 $computed = hash_hmac('sha256', file_get_contents('php://input'), $secret);
-if (hash_equals($computed, $_SERVER['HTTP_X_BIODEVAS_SIGNATURE'])) {
+if (hash_equals($computed, $_SERVER['HTTP_X_CONVOCA_SIGNATURE'])) {
     // valid
 }
 ```
@@ -64,7 +64,7 @@ if (hash_equals($computed, $_SERVER['HTTP_X_BIODEVAS_SIGNATURE'])) {
 
 - Blocking mode, 15s timeout.
 - Deduplication via transient (10s TTL, md5 payload hash).
-- Each delivery gets a unique `X-Biodevas-Delivery` UUID.
+- Each delivery gets a unique `X-Convoca-Delivery` UUID.
 - Retries with exponential backoff: 60s, 120s, 240s (max 3 attempts).
 - Delivery logs: last 50 entries per webhook.
 

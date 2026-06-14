@@ -1,10 +1,10 @@
-# Biodevas Hooks Documentation
+# Convoca Hooks Documentation
 
-Este documento lista los ganchos (hooks) de acción y filtro disponibles en el ecosistema de plugins de Biodevas. Se recomienda usar los nombres con prefijo `biodevas_` para nuevas integraciones, aunque se mantienen los nombres antiguos por compatibilidad cuando se indica.
+Este documento lista los ganchos (hooks) de acción y filtro disponibles en el ecosistema de plugins de Convoca. Se recomienda usar los nombres con prefijo `convoca_` para nuevas integraciones, aunque se mantienen los nombres antiguos por compatibilidad cuando se indica.
 
 ---
 
-## Biodevas Members
+## Convoca Members
 
 Maneja el ciclo de vida de los socios, planes y voluntariado.
 
@@ -34,7 +34,7 @@ Maneja el ciclo de vida de los socios, planes y voluntariado.
 
 ---
 
-## Biodevas Enroll
+## Convoca Enroll
 
 Gestión de inscripciones a actividades y control de asistencia.
 
@@ -58,7 +58,7 @@ Gestión de inscripciones a actividades y control de asistencia.
 
 ---
 
-## Biodevas Gateway
+## Convoca Gateway
 
 Pasarela de pagos centralizada (Redsys/Bizum/Efectivo).
 
@@ -93,7 +93,7 @@ Gestión de turnos y disponibilidad del local.
 
 ---
 
-## Biodevas Common
+## Convoca Core
 
 Utilidades y lógica compartida.
 

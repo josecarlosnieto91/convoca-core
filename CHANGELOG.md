@@ -1,4 +1,4 @@
-# Changelog - Biodevas Common Utilities
+# Changelog - Convoca Core Utilities
 
 ## 2.1.3
 - **Fix:** Plugin header metadata actualizado (Requires at least, Tested up to, Requires PHP).
@@ -12,18 +12,18 @@
 - **Mantenimiento:** Limpieza de webhook retries stale en BD.
 
 ## 2.1.0
-- Nuevo: Dashboard centralizado con métricas (Biodevas > Panel)
+- Nuevo: Dashboard centralizado con métricas (Convoca > Panel)
 - Nuevo: Visor de logs con WP_List_Table, filtros (contexto/nivel/fecha/búsqueda) y purge
 - Nuevo: Asistente de Configuración en 6 pasos (Setup Wizard)
 - Nuevo: Backup/Restore con exportación ZIP y previsualización de importación
 - Nuevo: Página de Salud del Sistema
-- Nuevo: Sistema de locks atómico (tabla biodevas_locks + fallback wp_options)
+- Nuevo: Sistema de locks atómico (tabla convoca_locks + fallback wp_options)
 - Nuevo: Rate limiting con UPSERT atómico y almacenamiento empaquetado
 - Nuevo: Capacidades centralizadas como constantes en Utils
 - Nuevo: Webhook dedup por payload hash (transient 10s)
-- Nuevo: Cabecera X-Biodevas-Delivery UUID para idempotencia
+- Nuevo: Cabecera X-Convoca-Delivery UUID para idempotencia
 - Nuevo: Tabla bdv_member_sequence para asignación atómica de números de socio
-- Actualización: Columna 'whatsapp_reminder_sent' añadida a la tabla biodevas_logs (upgrade 1.0.1)
+- Actualización: Columna 'whatsapp_reminder_sent' añadida a la tabla convoca_logs (upgrade 1.0.1)
 - Seguridad: Bloqueo CRUD en webhooks con acquire_lock/release_lock
 - Seguridad: .htaccess + index.php en directorio de importaciones
 - Seguridad: TOCTOU eliminado en handle_export (tempnam+unlink → temp dir + random name)

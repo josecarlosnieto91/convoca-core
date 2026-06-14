@@ -74,7 +74,7 @@ Sí, para la generación de PDF con Dompdf.
 * Nuevo: Sistema de locks atómico, rate limiting y webhook dedup
 
 = 2.0.0 =
-* Primera versión del plugin Convoca Core (refactorizado desde Biodevas Common)
+* Primera versión del plugin Convoca Core (refactorizado desde Convoca Core)
 
 == Upgrade Notice ==
 

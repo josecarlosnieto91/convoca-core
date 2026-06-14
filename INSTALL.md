@@ -1,10 +1,10 @@
-# Manual de Instalación y Puesta en Marcha: Biodevas Common
+# Manual de Instalación y Puesta en Marcha: Convoca Core
 
-Este documento es la guía técnica para instalar la base del ecosistema Biodevas. **Este plugin debe ser el primero en instalarse y activarse.**
+Este documento es la guía técnica para instalar la base del ecosistema Convoca. **Este plugin debe ser el primero en instalarse y activarse.**
 
 ## 📥 1. Instalación del Plugin
 
-1. Sube la carpeta `biodevas-common` al directorio `/wp-content/plugins/` de tu WordPress.
+1. Sube la carpeta `convoca-core` al directorio `/wp-content/plugins/` de tu WordPress.
 2. Activa el plugin desde el panel de **Plugins**.
    - *Nota:* Al activarse, se creará automáticamente la tabla `{prefix}bdv_logs` en la base de datos para el registro centralizado de eventos.
 
@@ -28,8 +28,8 @@ Antes de instalar los plugins de Socios o Inscripciones, realiza las siguientes 
 
 - [ ] **Activación sin errores:** El plugin se activa correctamente sin generar "Fatal Errors" o avisos de cabeceras ya enviadas.
 - [ ] **Tabla de base de datos:** Verifica (vía phpMyAdmin o similar) que la tabla `wp_bdv_logs` (o tu prefijo correspondiente) ha sido creada.
-- [ ] **Accesibilidad del Logger:** (Solo para técnicos) Al ejecutar `Biodevas\Common\Logger::info('Test', 'System')` en un entorno de pruebas, el registro debe aparecer en la base de datos.
-- [ ] **Dependencia detectada:** Intenta activar `biodevas-members` sin activar `biodevas-common`. Debes ver un aviso de administración indicando que la librería base es necesaria.
+- [ ] **Accesibilidad del Logger:** (Solo para técnicos) Al ejecutar `Convoca\Core\Logger::info('Test', 'System')` en un entorno de pruebas, el registro debe aparecer en la base de datos.
+- [ ] **Dependencia detectada:** Intenta activar `convoca-members` sin activar `convoca-core`. Debes ver un aviso de administración indicando que la librería base es necesaria.
 - [ ] **Compatibilidad PHP:** Asegúrate de que el servidor corre PHP 8.1 o superior, ya que el uso de Namespaces y Tipado estricto lo requiere.
 
 ¡Base lista! Ahora puedes proceder con la instalación de los módulos funcionales.

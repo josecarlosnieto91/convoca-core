@@ -1,4 +1,4 @@
-# Matriz de Capacidades — Biodevas Ecosystem
+# Matriz de Capacidades — Convoca Ecosystem
 
 ## Capacidades personalizadas
 
@@ -9,9 +9,9 @@
 | `gestionar_documentos_voluntariado` | Ver/generar documentos PDF (acuerdos, certificados) | admin, shop_manager, monitor_actividad |
 | `gestionar_mis_turnos` | Gestionar turnos propios (frontend voluntarios) | voluntario_aprobado |
 | `view_reports` | Ver informes y logs | admin, monitor_actividad, shop_manager |
-| `manage_biodevas_templates` | Gestionar plantillas PDF | admin |
-| `manage_biodevas_logs` | Acceder al visor centralizado de logs | admin |
-| `manage_biodevas_gateway` | Configurar pasarela de pago | admin |
+| `manage_convoca_templates` | Gestionar plantillas PDF | admin |
+| `manage_convoca_logs` | Acceder al visor centralizado de logs | admin |
+| `manage_convoca_gateway` | Configurar pasarela de pago | admin |
 | `cst_manage_turnos` | Gestionar turnos y voluntarios del centro social | admin, monitor_actividad |
 | `cst_audit_hours` | Auditoría de horas de voluntariado | admin, monitor_actividad |
 
@@ -30,7 +30,7 @@
 
 | Página | Slug | Capacidad |
 |--------|------|-----------|
-| Inscripciones (lista) | `biodevas-enroll` | `gestionar_miembros` |
+| Inscripciones (lista) | `convoca-enroll` | `gestionar_miembros` |
 | Añadir inscripción | `bde-nueva-inscripcion` | `manage_inscripciones` |
 | Check-in | `bde-checkin` | `manage_inscripciones` |
 | Actividades (lista) | `bde-actividades` | `gestionar_miembros` |
@@ -82,12 +82,12 @@
 | Página | Slug | Capacidad |
 |--------|------|-----------|
 | Panel (Dashboard) | `bdv-dashboard` | `manage_options` |
-| Logs centralizados | `bdv-logs-central` | `manage_biodevas_logs` |
+| Logs centralizados | `bdv-logs-central` | `manage_convoca_logs` |
 | Webhooks | `bdv-webhooks-common` | `manage_options` |
 | Backup | `bdv-backup` | `manage_options` |
 | Salud del Sistema | `bdv-health` | `manage_options` |
 | Asistente | `bdv-setup-wizard` | `manage_options` |
-| Plantillas PDF | `bdv-pdf-templates` | `manage_biodevas_templates` |
+| Plantillas PDF | `bdv-pdf-templates` | `manage_convoca_templates` |
 
 ## Notas importantes
 

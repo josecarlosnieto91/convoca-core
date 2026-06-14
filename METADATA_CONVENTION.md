@@ -1,16 +1,16 @@
-# Convenciones de Metadatos - Ecosistema Biodevas
+# Convenciones de Metadatos - Ecosistema Convoca
 
-Este documento establece las convenciones de nomenclatura para los metadatos (postmeta) utilizados en los plugins del ecosistema Biodevas.
+Este documento establece las convenciones de nomenclatura para los metadatos (postmeta) utilizados en los plugins del ecosistema Convoca.
 
 ## Prefijos por Plugin
 
 | Prefijo | Plugin | Uso Principal |
 |---------|--------|---------------|
-| `_bdv_` | biodevas-members | Datos de socios/miembros |
-| `_bde_` | biodevas-enroll | Inscripciones a actividades |
-| `_bdg_` | biodevas-gateway | Pagos y transacciones |
+| `_bdv_` | convoca-members | Datos de socios/miembros |
+| `_bde_` | convoca-enroll | Inscripciones a actividades |
+| `_bdg_` | convoca-gateway | Pagos y transacciones |
 
-## biodevas-members (prefijos: `_bdv_`)
+## convoca-members (prefijos: `_bdv_`)
 
 ### Miembro (post_type: `miembro`)
 - `_bdv_email` - Email del socio
@@ -29,7 +29,7 @@ Este documento establece las convenciones de nomenclatura para los metadatos (po
 - `_bdv_horas_voluntariado` - Horas acumuladas de voluntariado
 - `_bdv_access_code` - Código de acceso único
 
-## biodevas-enroll (prefijos: `_bde_`)
+## convoca-enroll (prefijos: `_bde_`)
 
 ### Inscripción (post_type: `inscripcion`)
 - `_bde_actividad_id` - ID de la actividad
@@ -57,7 +57,7 @@ Este documento establece las convenciones de nomenclatura para los metadatos (po
 - `_bde_edad_maxima` - Edad máxima para participar
 - `_bde_inscripcion_abierta` - Inscripción abierta/cerrada
 
-## biodevas-gateway (prefijos: `_bdg_`)
+## convoca-gateway (prefijos: `_bdg_`)
 
 ### Pago (post_type: `pago`)
 - `_bdg_origen` - Origen del pago (members, enroll, etc.)
