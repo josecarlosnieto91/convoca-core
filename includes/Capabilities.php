@@ -24,6 +24,10 @@ class Capabilities {
 	public static function get_all(): array {
 		return array(
 			// Convoca Shifts.
+			'gestionar_mis_turnos'              => array(
+				'description' => __( 'Gestionar mis turnos (voluntarios)', 'convoca-core' ),
+				'roles'       => array( 'administrator', 'monitor_actividad', 'voluntario_aprobado' ),
+			),
 			'convoca_shifts_manage_turnos'       => array(
 				'description' => __( 'Gestionar turnos del calendario (crear, editar)', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
