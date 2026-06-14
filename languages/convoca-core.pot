@@ -99,7 +99,7 @@ msgid "Convoca Gateway"
 msgstr ""
 
 #: convoca-core.php:311
-msgid "Centro Social Turnos"
+msgid "Convoca Shifts"
 msgstr ""
 
 #: convoca-core.php:317
@@ -515,7 +515,7 @@ msgid "Guardar"
 msgstr ""
 
 #: includes/Admin_Setup_Wizard.php:374
-msgid "5. Centro Social Turnos"
+msgid "5. Convoca Shifts"
 msgstr ""
 
 #: includes/Admin_Setup_Wizard.php:392

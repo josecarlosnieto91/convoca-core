@@ -74,7 +74,7 @@ Pasarela de pagos centralizada (Redsys/Bizum/Efectivo).
 
 ---
 
-## Centro Social Turnos
+## Convoca Shifts
 
 Gestión de turnos y disponibilidad del local.
 
@@ -88,7 +88,7 @@ Gestión de turnos y disponibilidad del local.
 
 | Filtro | Parámetros | Descripción |
 | :--- | :--- | :--- |
-| `cst_confirm_signup` | `$confirm` | Permite desactivar la confirmación manual al apuntarse a un turno. |
+| `convoca_shifts_confirm_signup` | `$confirm` | Permite desactivar la confirmación manual al apuntarse a un turno. |
 | `bdv_voluntario_aprobado_attachments` | `$attachments`, `$user_id` | Permite añadir archivos (ej. PDFs) al email de aprobación de voluntario. |
 
 ---

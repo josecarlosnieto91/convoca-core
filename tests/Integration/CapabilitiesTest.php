@@ -35,7 +35,7 @@ class CapabilitiesTest extends TestCase
         $this->assertNotEmpty($caps);
 
         // Verify a few known capabilities exist.
-        $this->assertArrayHasKey('cst_manage_turnos', $caps);
+        $this->assertArrayHasKey('convoca_shifts_manage_turnos', $caps);
         $this->assertArrayHasKey('conv_manage_checkin', $caps);
         $this->assertArrayHasKey('conv_manage_hours', $caps);
         $this->assertArrayHasKey('conv_view_payments', $caps);
@@ -86,7 +86,7 @@ class CapabilitiesTest extends TestCase
         // Verify admin has at least one custom cap.
         $admin = get_role('administrator');
         if ($admin) {
-            $this->assertTrue($admin->has_cap('cst_manage_turnos'));
+            $this->assertTrue($admin->has_cap('convoca_shifts_manage_turnos'));
         }
 
         $this->assertTrue(true);
@@ -125,7 +125,7 @@ class CapabilitiesTest extends TestCase
 
         $admin = get_role('administrator');
         if ($admin) {
-            $this->assertTrue($admin->has_cap('cst_manage_turnos'));
+            $this->assertTrue($admin->has_cap('convoca_shifts_manage_turnos'));
         }
 
         $this->assertTrue(true);
@@ -150,7 +150,7 @@ class CapabilitiesTest extends TestCase
         }
 
         $this->assertTrue($monitor->has_cap('manage_inscripciones'));
-        $this->assertTrue($monitor->has_cap('cst_manage_turnos'));
+        $this->assertTrue($monitor->has_cap('convoca_shifts_manage_turnos'));
         $this->assertTrue($monitor->has_cap('conv_manage_checkin'));
         $this->assertTrue($monitor->has_cap('conv_manage_hours'));
 

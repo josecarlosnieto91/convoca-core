@@ -17,9 +17,9 @@ class Settings_Helper {
 	 * Format: 'legacy_key' => 'standard_key'
 	 */
 	private const ALIASES = array(
-		'cst_hora_apertura'     => 'conv_centro_hora_apertura',
-		'cst_hora_cierre'       => 'conv_centro_hora_cierre',
-		'cst_calendar_page_url' => 'conv_centro_calendar_page_url',
+		'convoca_shifts_hora_apertura'     => 'conv_centro_hora_apertura',
+		'convoca_shifts_hora_cierre'       => 'conv_centro_hora_cierre',
+		'convoca_shifts_calendar_page_url' => 'conv_centro_calendar_page_url',
 		'conv_gateway_settings' => 'conv_gateway_settings',
 		'conv_enroll_settings'  => 'conv_enroll_settings',
 	);

@@ -418,7 +418,7 @@ class Notifications {
 		}
 
 		$title = sprintf( __( 'Nueva solicitud de voluntariado: %s', 'convoca-core' ), $user->display_name );
-		$url   = admin_url( 'edit.php?post_type=centro_turno&page=cst_voluntarios_pendientes' );
+		$url   = admin_url( 'edit.php?post_type=centro_turno&page=convoca_shifts_voluntarios_pendientes' );
 
 		self::add( $title, $url, 'info' );
 		self::push( __( 'Voluntariado', 'convoca-core' ), $title, 'high', array( 'raising_hand' ) );

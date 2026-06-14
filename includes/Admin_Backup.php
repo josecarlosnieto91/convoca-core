@@ -239,7 +239,7 @@ class Admin_Backup {
 			}
 		);
 
-		// Centro Social Turnos.
+		// Convoca Shifts.
 		$export_all(
 			'centro_turno',
 			array( 'ID', 'Título', 'Responsable', 'Estado', 'Hora Fin' ),
@@ -257,7 +257,7 @@ class Admin_Backup {
 
 		// Settings (Whitelist based).
 		$settings        = array();
-		$allowed_options = array( 'conv_gateway_settings', 'conv_members_settings', 'conv_members_plans', 'conv_enroll_settings', 'cst_hora_apertura', 'cst_hora_cierre', 'cst_calendar_page_url' );
+		$allowed_options = array( 'conv_gateway_settings', 'conv_members_settings', 'conv_members_plans', 'conv_enroll_settings', 'convoca_shifts_hora_apertura', 'convoca_shifts_hora_cierre', 'convoca_shifts_calendar_page_url' );
 		foreach ( $allowed_options as $k ) {
 			$settings[ $k ] = get_option( $k );
 		}
@@ -388,7 +388,7 @@ class Admin_Backup {
 			'proyectos'     => 'manage_inscripciones',
 			'miembros'      => 'gestionar_miembros',
 			'inscripciones' => 'manage_inscripciones',
-			'turnos'        => 'cst_manage_turnos',
+			'turnos'        => 'convoca_shifts_manage_turnos',
 		);
 		foreach ( $selected as $entity ) {
 			if ( isset( $cap_checks[ $entity ] ) && ! current_user_can( $cap_checks[ $entity ] ) ) {
@@ -568,7 +568,7 @@ class Admin_Backup {
 			return;
 		}
 
-		$allowed = array( 'conv_gateway_settings', 'conv_members_settings', 'conv_members_plans', 'conv_enroll_settings', 'cst_hora_apertura', 'cst_hora_cierre', 'cst_calendar_page_url' );
+		$allowed = array( 'conv_gateway_settings', 'conv_members_settings', 'conv_members_plans', 'conv_enroll_settings', 'convoca_shifts_hora_apertura', 'convoca_shifts_hora_cierre', 'convoca_shifts_calendar_page_url' );
 
 		foreach ( $allowed as $key ) {
 			if ( ! isset( $data[ $key ] ) ) {

@@ -297,8 +297,8 @@ function convoca_health_page(): void {
 	}
 
 	// ── Turnos ──
-	if ( function_exists( 'cst_get_system_checks' ) ) {
-		$checks = cst_get_system_checks( $force );
+	if ( function_exists( 'convoca_shifts_get_system_checks' ) ) {
+		$checks = convoca_shifts_get_system_checks( $force );
 		if ( is_array( $checks ) ) {
 			foreach ( $checks as $c ) {
 				$all_checks[] = array(
@@ -308,11 +308,11 @@ function convoca_health_page(): void {
 					'fix'     => $c['fix'] ?? '',
 				);
 			}
-			$plugin_names['turnos'] = __( 'Centro Social Turnos', 'convoca-core' );
+			$plugin_names['turnos'] = __( 'Convoca Shifts', 'convoca-core' );
 		}
 	} else {
 		$all_checks[] = array(
-			'title'   => 'Centro Social Turnos',
+			'title'   => 'Convoca Shifts',
 			'status'  => 'warning',
 			'message' => __( 'Plugin no activo o sin función de diagnóstico.', 'convoca-core' ),
 		);
@@ -514,7 +514,7 @@ function convoca_customize_new_menu( \WP_Admin_Bar $wp_admin_bar ): void {
 		'new-actividad'     => admin_url( 'admin.php?page=bde-actividad-editor' ),
 		'new-proyecto'      => admin_url( 'admin.php?page=bdv-proyecto-editor' ),
 		'new-registro_hora' => admin_url( 'admin.php?page=bdv-horas-editor' ),
-		'new-centro_turno'  => admin_url( 'edit.php?post_type=centro_turno&page=cst_turno_rapido' ),
+		'new-centro_turno'  => admin_url( 'edit.php?post_type=centro_turno&page=convoca_shifts_turno_rapido' ),
 	);
 
 	$remove_nodes = array( 'new-inscripcion', 'new-pago', 'new-conv_evaluacion', 'new-conv_documento' );

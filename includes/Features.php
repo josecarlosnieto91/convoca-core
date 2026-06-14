@@ -13,10 +13,10 @@ namespace Convoca\Core;
 class Features {
 
 	/**
-	 * Comprueba si el plugin Centro Social Turnos está activo.
+	 * Comprueba si el plugin Convoca Shifts está activo.
 	 */
-	public static function is_cst_active(): bool {
-		return function_exists( 'cst_log_activity' ) || defined( 'CST_PLUGIN_VERSION' );
+	public static function is_convoca_shifts_active(): bool {
+		return function_exists( 'convoca_shifts_log_activity' ) || defined( 'CONVOCA_SHIFTS_VERSION' );
 	}
 
 	/**

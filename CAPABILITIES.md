@@ -12,8 +12,8 @@
 | `manage_convoca_templates` | Gestionar plantillas PDF | admin |
 | `manage_convoca_logs` | Acceder al visor centralizado de logs | admin |
 | `manage_convoca_gateway` | Configurar pasarela de pago | admin |
-| `cst_manage_turnos` | Gestionar turnos y voluntarios del centro social | admin, monitor_actividad |
-| `cst_audit_hours` | Auditoría de horas de voluntariado | admin, monitor_actividad |
+| `convoca_shifts_manage_turnos` | Gestionar turnos y voluntarios del centro social | admin, monitor_actividad |
+| `convoca_shifts_audit_hours` | Auditoría de horas de voluntariado | admin, monitor_actividad |
 
 ## Roles existentes
 
@@ -70,12 +70,12 @@
 | Página | Slug | Capacidad |
 |--------|------|-----------|
 | Todos los Turnos | `cst-turnos-list` | `manage_options` |
-| Añadir Turno Rápido | `cst_turno_rapido` | `manage_options` |
-| Generar Turnos | `cst_generar_turnos` | `manage_options` |
-| Gestionar Voluntarios | `cst_voluntarios_pendientes` | `manage_options` |
-| Estadísticas | `cst_estadisticas` | `manage_options` |
-| Ajustes | `cst_settings` | `manage_inscripciones` |
-| Estado | `cst_status` | `manage_options` |
+| Añadir Turno Rápido | `convoca_shifts_turno_rapido` | `manage_options` |
+| Generar Turnos | `convoca_shifts_generar_turnos` | `manage_options` |
+| Gestionar Voluntarios | `convoca_shifts_voluntarios_pendientes` | `manage_options` |
+| Estadísticas | `convoca_shifts_estadisticas` | `manage_options` |
+| Ajustes | `convoca_shifts_settings` | `manage_inscripciones` |
+| Estado | `convoca_shifts_status` | `manage_options` |
 
 ### Common
 

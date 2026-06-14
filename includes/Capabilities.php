@@ -23,16 +23,16 @@ class Capabilities {
 	 */
 	public static function get_all(): array {
 		return array(
-			// Centro Social Turnos.
-			'cst_manage_turnos'       => array(
+			// Convoca Shifts.
+			'convoca_shifts_manage_turnos'       => array(
 				'description' => __( 'Gestionar turnos del calendario (crear, editar)', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'cst_view_stats'          => array(
+			'convoca_shifts_view_stats'          => array(
 				'description' => __( 'Ver estadísticas de turnos', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'cst_audit_hours'         => array(
+			'convoca_shifts_audit_hours'         => array(
 				'description' => __( 'Auditoría de horas de voluntarios', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
