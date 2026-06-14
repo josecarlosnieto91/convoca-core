@@ -1,5 +1,8 @@
 # Changelog - Biodevas Common Utilities
 
+## 2.1.3
+- **Fix:** Plugin header metadata actualizado (Requires at least, Tested up to, Requires PHP).
+
 ## 2.1.2
 - **Fix:** Logo en get_branding_html() ahora aplica inline style cuando se usa imagen, permitiendo controlar tamaño desde las llamadas (ej: tarjeta socio).
 

@@ -51,6 +51,11 @@ class License_Manager {
 
 		// Weekly cron validation.
 		add_action( 'convoca_license_validate', array( __CLASS__, 'validate_remote' ) );
+
+		// Schedule weekly validation if not already scheduled.
+		if ( ! wp_next_scheduled( 'convoca_license_validate' ) ) {
+			wp_schedule_event( time(), 'weekly', 'convoca_license_validate' );
+		}
 	}
 
 	/**

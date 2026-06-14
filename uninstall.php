@@ -9,6 +9,13 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
+// ─── Keep data mode ───
+// Define CONVOCA_KEEP_DATA_ON_UNINSTALL in wp-config.php to preserve all data
+// when uninstalling. Useful for temporary deactivation + reactivation.
+if ( defined( 'CONVOCA_KEEP_DATA_ON_UNINSTALL' ) && CONVOCA_KEEP_DATA_ON_UNINSTALL ) {
+	return;
+}
+
 // Clean up options.
 $options = array(
 	'conv_common_db_version',
@@ -17,6 +24,9 @@ $options = array(
 	'conv_settings',
 	'conv_persistent_salt',
 	'conv_template_version',
+	'conv_capabilities_hash',
+	'conv_webhook_retry_limit',
+	'conv_auto_cleanup_days',
 );
 
 foreach ( $options as $option ) {
@@ -26,6 +36,7 @@ foreach ( $options as $option ) {
 // Clean up cron jobs.
 wp_clear_scheduled_hook( 'conv_log_cleanup' );
 wp_clear_scheduled_hook( 'conv_log_purge' );
+wp_clear_scheduled_hook( 'conv_webhook_retry' );
 
 // Clean up transients.
 global $wpdb;

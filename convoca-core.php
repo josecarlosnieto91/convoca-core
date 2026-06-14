@@ -1,11 +1,16 @@
 <?php
 /**
  * Plugin Name: Convoca Core
- * Plugin URI: https://example.com.
+ * Plugin URI: https://getconvoca.app.
  * Description: Common functions, validation, and logging.
  * Author: Jose Carlos Nieto Ramos
- * Author URI: https://example.com.
+ * Author URI: https://josecarlosnietoramos.com.
  * Version: 2.1.3
+ * License: GPL-2.0-or-later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Requires at least: 6.4
+ * Requires PHP: 8.1
+ * Tested up to: 7.0
  * Text Domain: convoca-core
  * Domain Path: /languages
  */
