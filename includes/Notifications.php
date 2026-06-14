@@ -352,7 +352,7 @@ class Notifications {
 
 	public static function on_payment_failed( int $pago_id, string $order_id ): void {
 		$title = sprintf( __( 'Pago fallido: %s', 'convoca-core' ), $order_id );
-		$url   = admin_url( 'admin.php?page=bdg-payments-detail&id=' . $pago_id );
+		$url   = admin_url( 'admin.php?page=conv-gateway-payments-detail&id=' . $pago_id );
 
 		self::add( $title, $url, 'error' );
 		self::push( __( 'Pago fallido', 'convoca-core' ), $title, 'urgent', array( 'warning' ) );

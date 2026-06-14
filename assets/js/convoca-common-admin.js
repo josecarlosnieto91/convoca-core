@@ -231,7 +231,7 @@ window.convocaAdmin = window.convocaAdmin || {};
     if (!bodyEl) return;
 
     // Add preview container after the body textarea or after the card
-    const card = bodyEl.closest('.conv-template-card, .bde-template-card');
+    const card = bodyEl.closest('.conv-template-card, .convoca-template-card');
     if (!card) return;
 
     // Check if preview already exists
@@ -292,7 +292,7 @@ window.convocaAdmin = window.convocaAdmin || {};
     editorCol.appendChild(bodyEl.parentNode);
 
     // Fix: move the attachment row if present
-    const attachRow = card.querySelector('.bde-attachment-row');
+    const attachRow = card.querySelector('.convoca-attachment-row');
     if (attachRow) {
       editorCol.appendChild(attachRow);
     }
@@ -314,7 +314,7 @@ window.convocaAdmin = window.convocaAdmin || {};
 
   // Auto-init on DOM ready and observe dynamic content
   function initAll() {
-    document.querySelectorAll('.conv-template-card, .bde-template-card').forEach(function (card) {
+    document.querySelectorAll('.conv-template-card, .convoca-template-card').forEach(function (card) {
       const bodyEl = card.querySelector('textarea[name*="body"]');
       if (!bodyEl) return;
       // Extract slug from name attribute
@@ -349,7 +349,7 @@ window.convocaAdmin = window.convocaAdmin || {};
   // Close modals with Escape
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
-      document.querySelectorAll('.cst-modal.is-active, .conv-modal.is-active, .convoca-modal.is-active').forEach(function (modal) {
+      document.querySelectorAll('.convoca-modal.is-active, .conv-modal.is-active, .convoca-modal.is-active').forEach(function (modal) {
         modal.classList.remove('is-active');
         modal.setAttribute('aria-hidden', 'true');
       });

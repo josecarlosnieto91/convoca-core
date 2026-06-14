@@ -447,7 +447,7 @@ add_action( 'admin_enqueue_scripts', 'Convoca\\Core\\convoca_common_enqueue_admi
  * Hide Screen Options tab on Convoca custom admin pages.
  */
 function convoca_hide_screen_options( bool $show_screen, \WP_Screen $screen ): bool {
-	$convoca_slugs = array( 'conv-', 'bde-', 'bdg-', 'cst-' );
+	$convoca_slugs = array( 'conv-', 'convoca-' );
 	foreach ( $convoca_slugs as $prefix ) {
 		if ( str_contains( $screen->id, $prefix ) || str_contains( $screen->base ?? '', $prefix ) ) {
 			return false;
@@ -483,7 +483,7 @@ function convoca_remove_help_tab(): void {
 	if ( ! $screen ) {
 		return;
 	}
-	$convoca_slugs = array( 'conv-', 'bde-', 'bdg-', 'cst-' );
+	$convoca_slugs = array( 'conv-', 'convoca-' );
 	foreach ( $convoca_slugs as $prefix ) {
 		if ( str_contains( $screen->id, $prefix ) || str_contains( $screen->base ?? '', $prefix ) ) {
 			$screen->remove_help_tabs();
@@ -511,7 +511,7 @@ add_action( 'admin_bar_menu', 'Convoca\\Core\\convoca_customize_new_menu', 999 )
 function convoca_customize_new_menu( \WP_Admin_Bar $wp_admin_bar ): void {
 	$custom_links = array(
 		'new-miembro'       => admin_url( 'admin.php?page=conv-member-editor' ),
-		'new-actividad'     => admin_url( 'admin.php?page=bde-actividad-editor' ),
+		'new-actividad'     => admin_url( 'admin.php?page=convoca-actividad-editor' ),
 		'new-proyecto'      => admin_url( 'admin.php?page=conv-proyecto-editor' ),
 		'new-registro_hora' => admin_url( 'admin.php?page=conv-horas-editor' ),
 		'new-centro_turno'  => admin_url( 'edit.php?post_type=centro_turno&page=convoca_shifts_turno_rapido' ),
@@ -740,14 +740,14 @@ function convoca_dashboard_page(): void {
 			'label' => __( 'Inscripciones confirmadas', 'convoca-core' ),
 			'value' => $i['confirmadas'],
 			'total' => $i['total'],
-			'url'   => admin_url( 'admin.php?page=bde-inscripciones' ),
+			'url'   => admin_url( 'admin.php?page=convoca-enroll-inscripciones' ),
 		),
 		array(
 			'icon'  => '⏳',
 			'label' => __( 'En lista de espera', 'convoca-core' ),
 			'value' => $i['lista_espera'],
 			'total' => '',
-			'url'   => admin_url( 'admin.php?page=bde-inscripciones' ),
+			'url'   => admin_url( 'admin.php?page=convoca-enroll-inscripciones' ),
 		),
 		array(
 			'icon'  => '💰',
@@ -1002,7 +1002,7 @@ function convoca_build_metrics(): array {
              AND MONTH(p.post_date) = MONTH(NOW()) AND YEAR(p.post_date) = YEAR(NOW())"
 			)
 		) / 100;
-		$metrics['payments_url']   = admin_url( 'admin.php?page=bdg-payments' );
+		$metrics['payments_url']   = admin_url( 'admin.php?page=conv-gateway-payments' );
 	}
 
 	$metrics['turnos_sin_cubrir'] = (int) $wpdb->get_var(
@@ -1014,7 +1014,7 @@ function convoca_build_metrics(): array {
          AND p.post_date >= NOW()"
 		)
 	);
-	$metrics['turnos_url']        = admin_url( 'edit.php?post_type=centro_turno&page=cst-turnos-list' );
+	$metrics['turnos_url']        = admin_url( 'edit.php?post_type=centro_turno&page=convoca-shifts-turnos-list' );
 
 	return $metrics;
 }
