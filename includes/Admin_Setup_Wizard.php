@@ -376,8 +376,8 @@ class Admin_Setup_Wizard {
 			<?php wp_nonce_field( 'conv_wizard_save' ); ?>
 			<input type="hidden" name="action" value="conv_wizard_save">
 			<input type="hidden" name="wizard_step" value="5">
-			<p><label>Hora Apertura:</label><input type="time" name="cst_apertura" value="<?php echo esc_attr( get_option( 'convoca_shifts_hora_apertura', '09:00' ) ); ?>"></p>
-			<p><label>Hora Cierre:</label><input type="time" name="cst_cierre" value="<?php echo esc_attr( get_option( 'convoca_shifts_hora_cierre', '22:00' ) ); ?>"></p>
+			<p><label>Hora Apertura:</label><input type="time" name="conv_apertura" value="<?php echo esc_attr( get_option( 'convoca_shifts_hora_apertura', '09:00' ) ); ?>"></p>
+			<p><label>Hora Cierre:</label><input type="time" name="conv_cierre" value="<?php echo esc_attr( get_option( 'convoca_shifts_hora_cierre', '22:00' ) ); ?>"></p>
 			<button type="submit" class="convoca-btn convoca-btn-primary"><?php esc_html_e( 'Guardar', 'convoca-core' ); ?></button>
 		</form>
 		<?php
@@ -416,8 +416,8 @@ class Admin_Setup_Wizard {
 			update_option( 'conv_gateway_settings', $settings );
 		}
 		if ( $step === 5 ) {
-			update_option( 'convoca_shifts_hora_apertura', sanitize_text_field( $_POST['cst_apertura'] ) );
-			update_option( 'convoca_shifts_hora_cierre', sanitize_text_field( $_POST['cst_cierre'] ) );
+			update_option( 'convoca_shifts_hora_apertura', sanitize_text_field( $_POST['conv_apertura'] ) );
+			update_option( 'convoca_shifts_hora_cierre', sanitize_text_field( $_POST['conv_cierre'] ) );
 		}
 		update_option( self::PROGRESS_OPTION, $step + 1 );
 		wp_safe_redirect( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $step + 1 ) ) );

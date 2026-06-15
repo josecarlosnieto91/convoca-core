@@ -477,7 +477,7 @@ class Admin_Templates {
 					$first = true;
 					foreach ( $templates as $key => $data ) :
 						?>
-						<a href="#tab-<?php echo esc_attr( $key ); ?>" class="nav-tab <?php echo $first ? 'nav-tab-active' : ''; ?>" onclick="bdvSwitchTab(event, '<?php echo esc_attr( $key ); ?>')">
+						<a href="#tab-<?php echo esc_attr( $key ); ?>" class="nav-tab <?php echo $first ? 'nav-tab-active' : ''; ?>" onclick="convSwitchTab(event, '<?php echo esc_attr( $key ); ?>')">
 							<?php echo esc_html( $data['name'] ); ?>
 						</a>
 						<?php
@@ -517,7 +517,7 @@ class Admin_Templates {
 		</div>
 
 		<script>
-			function bdvSwitchTab(event, tabId) {
+			function convSwitchTab(event, tabId) {
 				event.preventDefault();
 				
 				// Hide all contents.

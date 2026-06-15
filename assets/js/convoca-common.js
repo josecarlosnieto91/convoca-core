@@ -254,7 +254,7 @@ if (!targetNode || targetNode.dataset.convObserved) return;
        observer.observe(targetNode, { childList: true, subtree: true });
        
       // Store observer reference for potential cleanup
-      targetNode._bdvFormObserver = observer;
+      targetNode._convFormObserver = observer;
       
       var runInitial = function() {
          var initStatic = conv.$$('form', targetNode);
@@ -275,9 +275,9 @@ if (!targetNode || targetNode.dataset.convObserved) return;
     */
    conv.disconnectDynamicForms = function (containerSelector) {
       var targetNode = conv.$(containerSelector);
-      if (targetNode && targetNode._bdvFormObserver) {
-         targetNode._bdvFormObserver.disconnect();
-         delete targetNode._bdvFormObserver;
+      if (targetNode && targetNode._convFormObserver) {
+         targetNode._convFormObserver.disconnect();
+         delete targetNode._convFormObserver;
          delete targetNode.dataset.convObserved;
       }
    };

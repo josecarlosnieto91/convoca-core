@@ -4,14 +4,14 @@
  */
 window.convocaAdmin = window.convocaAdmin || {};
 
-(function (bdvAdmin) {
+(function (convAdmin) {
   'use strict';
   
   /**
    * Helper DOM Selector
    */
-  bdvAdmin.$ = (sel, ctx = document) => ctx.querySelector(sel);
-  bdvAdmin.$$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
+  convAdmin.$ = (sel, ctx = document) => ctx.querySelector(sel);
+  convAdmin.$$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
   /**
    * Simplifies making an Admin WP Ajax request efficiently.
@@ -22,7 +22,7 @@ window.convocaAdmin = window.convocaAdmin || {};
    * @param {function} onSuccess - Fires containing parsed JSON data object.
    * @param {function} onError - Fires on fail.
    */
-  bdvAdmin.ajaxPost = function (action, data, nonce, onSuccess, onError) {
+  convAdmin.ajaxPost = function (action, data, nonce, onSuccess, onError) {
       const url = window.ajaxurl || '/wp-admin/admin-ajax.php';
       
       let fd = data instanceof FormData ? data : new FormData();
@@ -78,7 +78,7 @@ window.convocaAdmin = window.convocaAdmin || {};
    * @param {string} text - The string to copy.
    * @param {function} [onSuccess] - Callback after success.
    */
-  bdvAdmin.copyToClipboard = function (text, onSuccess) {
+  convAdmin.copyToClipboard = function (text, onSuccess) {
     if (!text) return;
     navigator.clipboard.writeText(text).then(() => {
       if (onSuccess) onSuccess();

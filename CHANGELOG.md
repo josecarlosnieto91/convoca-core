@@ -22,7 +22,7 @@
 - Nuevo: Capacidades centralizadas como constantes en Utils
 - Nuevo: Webhook dedup por payload hash (transient 10s)
 - Nuevo: Cabecera X-Convoca-Delivery UUID para idempotencia
-- Nuevo: Tabla bdv_member_sequence para asignación atómica de números de socio
+- Nuevo: Tabla conv_member_sequence para asignación atómica de números de socio
 - Actualización: Columna 'whatsapp_reminder_sent' añadida a la tabla convoca_logs (upgrade 1.0.1)
 - Seguridad: Bloqueo CRUD en webhooks con acquire_lock/release_lock
 - Seguridad: .htaccess + index.php en directorio de importaciones
@@ -32,7 +32,7 @@
 - Seguridad: $cap_checks corregido (proyectos → manage_inscripciones, no gestionar_miembros)
 - Seguridad: wp_date() en purge_30 logs (timezone consistente)
 - Rendimiento: update_meta_cache en handle_export (elimina N+1 queries)
-- Rendimiento: ID map reemplazado por _bdv_old_import_id postmeta (ahorra RAM)
+- Rendimiento: ID map reemplazado por _conv_old_import_id postmeta (ahorra RAM)
 - Rendimiento: COUNT logs desde information_schema (sin filtros)
 - Corrección: Fechas date() → wp_date() en purge
 - Corrección: acquire_lock CASE WHEN invertido en fallback wp_options

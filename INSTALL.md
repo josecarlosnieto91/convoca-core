@@ -6,7 +6,7 @@ Este documento es la guía técnica para instalar la base del ecosistema Convoca
 
 1. Sube la carpeta `convoca-core` al directorio `/wp-content/plugins/` de tu WordPress.
 2. Activa el plugin desde el panel de **Plugins**.
-   - *Nota:* Al activarse, se creará automáticamente la tabla `{prefix}bdv_logs` en la base de datos para el registro centralizado de eventos.
+   - *Nota:* Al activarse, se creará automáticamente la tabla `{prefix}conv_logs` en la base de datos para el registro centralizado de eventos.
 
 ## 🛠 2. Configuración y Utilidades
 
@@ -17,7 +17,7 @@ Este plugin no tiene una interfaz de usuario extensa, ya que actúa como una lib
 
 ## ⚙️ 3. Tareas de Mantenimiento
 
-- **Revisión de Logs:** Es recomendable limpiar la tabla `{prefix}bdv_logs` periódicamente si el volumen de actividad es muy alto, aunque el plugin está optimizado para no penalizar el rendimiento.
+- **Revisión de Logs:** Es recomendable limpiar la tabla `{prefix}conv_logs` periódicamente si el volumen de actividad es muy alto, aunque el plugin está optimizado para no penalizar el rendimiento.
 - **Webhooks:** Si se integran servicios externos, asegúrate de configurar los *secrets* para que la firma HMAC-SHA256 sea válida.
 
 ---
@@ -27,7 +27,7 @@ Este plugin no tiene una interfaz de usuario extensa, ya que actúa como una lib
 Antes de instalar los plugins de Socios o Inscripciones, realiza las siguientes comprobaciones:
 
 - [ ] **Activación sin errores:** El plugin se activa correctamente sin generar "Fatal Errors" o avisos de cabeceras ya enviadas.
-- [ ] **Tabla de base de datos:** Verifica (vía phpMyAdmin o similar) que la tabla `wp_bdv_logs` (o tu prefijo correspondiente) ha sido creada.
+- [ ] **Tabla de base de datos:** Verifica (vía phpMyAdmin o similar) que la tabla `wp_conv_logs` (o tu prefijo correspondiente) ha sido creada.
 - [ ] **Accesibilidad del Logger:** (Solo para técnicos) Al ejecutar `Convoca\Core\Logger::info('Test', 'System')` en un entorno de pruebas, el registro debe aparecer en la base de datos.
 - [ ] **Dependencia detectada:** Intenta activar `convoca-members` sin activar `convoca-core`. Debes ver un aviso de administración indicando que la librería base es necesaria.
 - [ ] **Compatibilidad PHP:** Asegúrate de que el servidor corre PHP 8.1 o superior, ya que el uso de Namespaces y Tipado estricto lo requiere.

@@ -31,45 +31,45 @@
 | Página | Slug | Capacidad |
 |--------|------|-----------|
 | Inscripciones (lista) | `convoca-enroll` | `gestionar_miembros` |
-| Añadir inscripción | `bde-nueva-inscripcion` | `manage_inscripciones` |
-| Check-in | `bde-checkin` | `manage_inscripciones` |
-| Actividades (lista) | `bde-actividades` | `gestionar_miembros` |
-| Editor actividad | `bde-actividad-editor` | `gestionar_miembros` |
-| Informes | `bde-informes` | `manage_options` |
-| Logs | `bde-logs` | `manage_options` |
-| Configuración | `bde-ajustes` | `manage_options` |
-| CRM Monitores | `bde-monitor-crm` | `manage_inscripciones` |
-| Evaluaciones | `bde-evaluaciones` | `gestionar_miembros` |
+| Añadir inscripción | `conv-nueva-inscripcion` | `manage_inscripciones` |
+| Check-in | `conv-checkin` | `manage_inscripciones` |
+| Actividades (lista) | `conv-actividades` | `gestionar_miembros` |
+| Editor actividad | `conv-actividad-editor` | `gestionar_miembros` |
+| Informes | `conv-informes` | `manage_options` |
+| Logs | `conv-logs` | `manage_options` |
+| Configuración | `conv-ajustes` | `manage_options` |
+| CRM Monitores | `conv-monitor-crm` | `manage_inscripciones` |
+| Evaluaciones | `conv-evaluaciones` | `gestionar_miembros` |
 
 ### Members
 
 | Página | Slug | Capacidad |
 |--------|------|-----------|
-| Lista de Miembros | `bdv-members` | `gestionar_miembros` |
-| Editor miembro | `bdv-member-editor` | `gestionar_miembros` |
-| Proyectos | `bdv-proyectos` | `gestionar_miembros` |
-| Editor proyecto | `bdv-proyecto-editor` | `gestionar_miembros` |
-| Horas voluntariado | `bdv-volunteer-hours` | `gestionar_miembros` |
-| Editor horas | `bdv-horas-editor` | `gestionar_miembros` |
-| Importar CSV | `bdv-import-csv` | `manage_options` |
-| Logs | `bdv-members-logs` | `manage_options` |
-| Ajustes | `bdv-members-settings` | `manage_options` |
-| Webhooks | `bdv-webhooks` | `manage_options` |
-| Estado | `bdv-members-status` | `manage_options` |
+| Lista de Miembros | `conv-members` | `gestionar_miembros` |
+| Editor miembro | `conv-member-editor` | `gestionar_miembros` |
+| Proyectos | `conv-proyectos` | `gestionar_miembros` |
+| Editor proyecto | `conv-proyecto-editor` | `gestionar_miembros` |
+| Horas voluntariado | `conv-volunteer-hours` | `gestionar_miembros` |
+| Editor horas | `conv-horas-editor` | `gestionar_miembros` |
+| Importar CSV | `conv-import-csv` | `manage_options` |
+| Logs | `conv-members-logs` | `manage_options` |
+| Ajustes | `conv-members-settings` | `manage_options` |
+| Webhooks | `conv-webhooks` | `manage_options` |
+| Estado | `conv-members-status` | `manage_options` |
 
 ### Gateway
 
 | Página | Slug | Capacidad |
 |--------|------|-----------|
-| Pagos (lista) | `bdg-payments` | `manage_options` |
-| Generar enlace | `bdg-generador` | `manage_options` |
-| Ajustes | `bdg-settings` | `manage_options` |
+| Pagos (lista) | `conv-payments` | `manage_options` |
+| Generar enlace | `conv-generador` | `manage_options` |
+| Ajustes | `conv-settings` | `manage_options` |
 
 ### Turnos (Centro Social)
 
 | Página | Slug | Capacidad |
 |--------|------|-----------|
-| Todos los Turnos | `cst-turnos-list` | `manage_options` |
+| Todos los Turnos | `conv-turnos-list` | `manage_options` |
 | Añadir Turno Rápido | `convoca_shifts_turno_rapido` | `manage_options` |
 | Generar Turnos | `convoca_shifts_generar_turnos` | `manage_options` |
 | Gestionar Voluntarios | `convoca_shifts_voluntarios_pendientes` | `manage_options` |
@@ -81,13 +81,13 @@
 
 | Página | Slug | Capacidad |
 |--------|------|-----------|
-| Panel (Dashboard) | `bdv-dashboard` | `manage_options` |
-| Logs centralizados | `bdv-logs-central` | `manage_convoca_logs` |
-| Webhooks | `bdv-webhooks-common` | `manage_options` |
-| Backup | `bdv-backup` | `manage_options` |
-| Salud del Sistema | `bdv-health` | `manage_options` |
-| Asistente | `bdv-setup-wizard` | `manage_options` |
-| Plantillas PDF | `bdv-pdf-templates` | `manage_convoca_templates` |
+| Panel (Dashboard) | `conv-dashboard` | `manage_options` |
+| Logs centralizados | `conv-logs-central` | `manage_convoca_logs` |
+| Webhooks | `conv-webhooks-common` | `manage_options` |
+| Backup | `conv-backup` | `manage_options` |
+| Salud del Sistema | `conv-health` | `manage_options` |
+| Asistente | `conv-setup-wizard` | `manage_options` |
+| Plantillas PDF | `conv-pdf-templates` | `manage_convoca_templates` |
 
 ## Notas importantes
 
