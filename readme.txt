@@ -4,7 +4,7 @@ Tags: common, utilities, logging, validation, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 2.1.3
+Stable tag: 2.1.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,6 +60,10 @@ Sí, para la generación de PDF con Dompdf.
 
 == Changelog ==
 
+
+= 2.1.4 =
+* Added: MANUAL_USUARIO.md with complete admin guide
+* Dev: Added phpstan.neon for static analysis
 = 2.1.3 =
 * Fix: Logo en get_branding_html() ahora aplica inline style
 
@@ -78,5 +82,9 @@ Sí, para la generación de PDF con Dompdf.
 
 == Upgrade Notice ==
 
+
+= 2.1.4 =
+* Added: MANUAL_USUARIO.md with complete admin guide
+* Dev: Added phpstan.neon for static analysis
 = 2.1.3 =
 Actualización de mantenimiento.
