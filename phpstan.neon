@@ -1,0 +1,14 @@
+parameters:
+    level: 5
+    paths:
+        - ./
+    excludePaths:
+        - vendor/
+        - tests/
+        - node_modules/
+    scanFiles:
+        - vendor/wp-phpunit/wp-phpunit/includes/functions.php
+    bootstrapFiles:
+        - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false

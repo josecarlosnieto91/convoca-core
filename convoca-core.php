@@ -5,7 +5,7 @@
  * Description: Common functions, validation, and logging.
  * Author: Jose Carlos Nieto Ramos
  * Author URI: https://josecarlosnietoramos.com.
- * Version: 2.1.3
+ * Version: 2.1.4
  * License: GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Requires at least: 6.4
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'CONV_COMMON_VERSION' ) ) {
-	define( 'CONV_COMMON_VERSION', '2.1.3' );
+	define( 'CONV_COMMON_VERSION', '2.1.4' );
 }
 if ( ! defined( 'CONV_COMMON_DB_VERSION' ) ) {
 	define( 'CONV_COMMON_DB_VERSION', '1.1.0' );
