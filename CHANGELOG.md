@@ -1,5 +1,9 @@
 # Changelog - Convoca Core Utilities
 
+### 2.1.4
+- docs: add MANUAL_USUARIO.md with full admin guide
+- dev: add phpstan.neon (level 5) for static analysis
+
 ## 2.1.3
 - **Fix:** Plugin header metadata actualizado (Requires at least, Tested up to, Requires PHP).
 
