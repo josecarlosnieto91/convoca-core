@@ -53,24 +53,7 @@ if ( file_exists( $composer_autoload ) ) {
  * Supports Convoca\Core\ClassName mapped to includes/ClassName.php
  * (PSR-4 naming). Composer autoloader handles primary resolution.
  */
-spl_autoload_register(
-	function ( string $class ): void {
-		$prefix = 'Convoca\Core\\';
-		if ( ! str_starts_with( $class, $prefix ) ) {
-			return;
-		}
-
-		$relative = substr( $class, strlen( $prefix ) );
-		// PSR-4: Convoca\Core\ClassName -> includes/ClassName.php
-		$relative = str_replace( '\\', '/', $relative );
-
-		$file = CONV_COMMON_DIR . 'includes/' . $relative . '.php';
-
-		if ( file_exists( $file ) ) {
-			require_once $file;
-		}
-	}
-);
+// PSR-4 autoloading handled by Composer (vendor/autoload.php)
 
 /** ── Activation / Deactivation ────────────────────────────── */
 
