@@ -36,9 +36,39 @@ class License_Manager {
 
 	/**
 	 * API endpoint for license validation.
-	 * Override via filter 'convoca_license_api_url '
 	 */
-	const API_URL = 'https://convoca.app/api/license';
+	const API_URL = 'https://getconvoca.app/api/license.php';
+
+	/**
+	 * Shared secret for API request signing (HMAC-SHA256).
+	 * Must match server-side CONVOCA_NONCE_SECRET.
+	 * Override via define('CONVOCA_LICENSE_NONCE_SECRET', '...') in wp-config.php
+	 * or filter 'convoca_license_nonce_secret'.
+	 */
+	const NONCE_SECRET = '';
+
+	/**
+	 * Build a signed API request body with nonce + timestamp (V-6 anti-replay).
+	 */
+	private static function build_signed_body( string $action, ?string $key_override = null ): array {
+		$site_url  = home_url();
+		$timestamp = time();
+		$key       = $key_override ?? self::get_license()['key'];
+
+		$secret = defined( 'CONVOCA_LICENSE_NONCE_SECRET' )
+			? CONVOCA_LICENSE_NONCE_SECRET
+			: apply_filters( 'convoca_license_nonce_secret', self::NONCE_SECRET );
+
+		$nonce = hash_hmac( 'sha256', "$key|$site_url|$action|$timestamp", $secret );
+
+		return array(
+			'license_key' => $key,
+			'site_url'    => $site_url,
+			'action'      => $action,
+			'nonce'       => $nonce,
+			'timestamp'   => $timestamp,
+		);
+	}
 
 	/**
 	 * Initialize hooks.
@@ -52,7 +82,9 @@ class License_Manager {
 		// Weekly cron validation.
 		add_action( 'convoca_license_validate', array( __CLASS__, 'validate_remote' ) );
 
-		// Schedule weekly validation if not already scheduled.
+		// V-5: Domain verification endpoint
+		add_action( 'rest_api_init', array( __CLASS__, 'register_verify_route' ) );
+
 		if ( ! wp_next_scheduled( 'convoca_license_validate' ) ) {
 			wp_schedule_event( time(), 'weekly', 'convoca_license_validate' );
 		}
@@ -60,24 +92,18 @@ class License_Manager {
 
 	/**
 	 * Check if a PRO feature is available.
-	 *
-	 * @param string $feature Feature key (e.g. 'members', 'enroll', 'gateway').
-	 * @return bool
 	 */
 	public static function has_pro( string $feature ): bool {
 		$license = self::get_license();
 
-		// No license key = FREE mode.
 		if ( empty( $license['key'] ) ) {
 			return false;
 		}
 
-		// Expired license.
 		if ( ! empty( $license['expires'] ) && strtotime( $license['expires'] ) < time() ) {
 			return false;
 		}
 
-		// Unlimited or specific feature.
 		if ( $license['type'] === 'unlimited' ) {
 			return true;
 		}
@@ -87,8 +113,6 @@ class License_Manager {
 
 	/**
 	 * Get stored license data.
-	 *
-	 * @return array
 	 */
 	public static function get_license(): array {
 		return get_option(
@@ -120,37 +144,25 @@ class License_Manager {
 	}
 
 	/**
-	 * Validate license key against remote API.
-	 *
-	 * @param string $key License key.
-	 * @return array{success: bool, message: string, data?: array}
+	 * Validate license key against remote API (with nonce signing).
 	 */
 	public static function validate_key( string $key ): array {
-		$site_url = home_url();
-		$api_url  = apply_filters( 'convoca_license_api_url', self::API_URL );
+		$api_url = apply_filters( 'convoca_license_api_url', self::API_URL );
 
 		$response = wp_remote_post(
 			$api_url,
 			array(
 				'timeout' => 15,
 				'headers' => array( 'Content-Type' => 'application/json' ),
-				'body'    => json_encode(
-					array(
-						'license_key' => $key,
-						'site_url'    => $site_url,
-						'action'      => 'activate',
-					)
-				),
+				'body'    => json_encode( self::build_signed_body( 'activate', $key ) ),
 			)
 		);
 
 		if ( is_wp_error( $response ) ) {
-			// Fallback: validate locally (cached).
 			$cached = get_transient( 'convoca_license_check_' . md5( $key ) );
 			if ( $cached ) {
 				return $cached;
 			}
-			// Store pending validation.
 			update_option(
 				self::OPTION_KEY,
 				array_merge(
@@ -164,7 +176,7 @@ class License_Manager {
 			);
 			return array(
 				'success' => true,
-				'message' => 'Licencia guardada. La validación remota se realizará cuando el servidor esté disponible.',
+				'message' => __( 'Licencia guardada. La validación remota se realizará cuando el servidor esté disponible.', 'convoca-core' ),
 			);
 		}
 
@@ -173,12 +185,17 @@ class License_Manager {
 		if ( ! $body || empty( $body['success'] ) ) {
 			return array(
 				'success' => false,
-				'message' => $body['message'] ?? 'Error de validación con el servidor.',
+				'message' => $body['message'] ?? __( 'Error de validación con el servidor.', 'convoca-core' ),
 			);
 		}
 
 		// Cache locally.
 		set_transient( 'convoca_license_check_' . md5( $key ), $body, self::CACHE_TTL );
+
+		// V-5: Store domain challenge token for verification
+		if ( ! empty( $body['data']['challenge_token'] ) ) {
+			update_option( 'convoca_license_challenge_token', $body['data']['challenge_token'] );
+		}
 
 		// Save to options.
 		update_option(
@@ -208,14 +225,14 @@ class License_Manager {
 	}
 
 	/**
-	 * Deactivate license remotely.
+	 * Deactivate license remotely (with nonce signing).
 	 */
 	public static function deactivate(): array {
 		$license = self::get_license();
 		if ( empty( $license['key'] ) ) {
 			return array(
 				'success' => true,
-				'message' => 'Sin licencia activa.',
+				'message' => __( 'Sin licencia activa.', 'convoca-core' ),
 			);
 		}
 
@@ -225,13 +242,7 @@ class License_Manager {
 			array(
 				'timeout' => 10,
 				'headers' => array( 'Content-Type' => 'application/json' ),
-				'body'    => json_encode(
-					array(
-						'license_key' => $license['key'],
-						'site_url'    => home_url(),
-						'action'      => 'deactivate',
-					)
-				),
+				'body'    => json_encode( self::build_signed_body( 'deactivate' ) ),
 			)
 		);
 
@@ -240,15 +251,38 @@ class License_Manager {
 
 		return array(
 			'success' => true,
-			'message' => 'Licencia desactivada.',
+			'message' => __( 'Licencia desactivada.', 'convoca-core' ),
 		);
+	}
+
+	/**
+	 * V-5: Register REST route for domain verification challenge.
+	 */
+	public static function register_verify_route(): void {
+		register_rest_route(
+			'convoca/v1',
+			'/verify-challenge',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( __CLASS__, 'serve_challenge' ),
+				'permission_callback' => '__return_true',
+			)
+		);
+	}
+
+	/**
+	 * V-5: Serve domain verification challenge token.
+	 */
+	public static function serve_challenge(): \WP_REST_Response {
+		$token = get_option( 'convoca_license_challenge_token', '' );
+		if ( empty( $token ) ) {
+			return new \WP_REST_Response( 'No pending challenge', 404 );
+		}
+		return new \WP_REST_Response( $token, 200, array( 'Content-Type' => 'text/plain' ) );
 	}
 
 	/* ── Admin ──────────────────────────────────── */
 
-	/**
-	 * Add license admin page.
-	 */
 	public static function add_admin_page(): void {
 		add_submenu_page(
 			'convoca-core',
@@ -260,9 +294,6 @@ class License_Manager {
 		);
 	}
 
-	/**
-	 * Render license page.
-	 */
 	public static function render_page(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
@@ -339,20 +370,17 @@ class License_Manager {
 						</form>
 						<p style="margin-top:20px;font-size:13px;color:#64748b;">
 							<?php esc_html_e( '¿Sin licencia?', 'convoca-core' ); ?>
-							<a href="https://convoca.app/pricing" target="_blank"><?php esc_html_e( 'Adquiere una aquí', 'convoca-core' ); ?></a>.
+							<a href="https://getconvoca.app/pricing" target="_blank"><?php esc_html_e( 'Adquiere una aquí', 'convoca-core' ); ?></a>.
 						</p>
 					<?php endif; ?>
 				</div>
 			</div>
 
-			<!-- Features grid -->
 			<div style="margin-top:30px;">
 				<h2>✨ <?php esc_html_e( 'Funcionalidades', 'convoca-core' ); ?></h2>
 				<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:15px;">
-					<?php
-					foreach ( $features as $key => $label ) :
-						$available = $has_pro && self::has_pro( $key );
-						?>
+					<?php foreach ( $features as $key => $label ) :
+						$available = $has_pro && self::has_pro( $key ); ?>
 					<div style="background:#fff;border-radius:8px;padding:15px;border:1px solid <?php echo $available ? '#bbf7d0' : '#e2e8f0'; ?>;<?php echo $available ? 'background:#f0fdf4;' : 'opacity:0.6;'; ?>">
 						<span style="font-size:1.2rem;"><?php echo $available ? '✅' : '🔒'; ?></span>
 						<span style="font-weight:600;margin-left:8px;"><?php echo esc_html( $label ); ?></span>
@@ -367,9 +395,6 @@ class License_Manager {
 		<?php
 	}
 
-	/**
-	 * Handle license activation.
-	 */
 	public static function handle_activate(): void {
 		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'convoca_activate' ) ) {
 			wp_die( __( 'Nonce inválido.', 'convoca-core' ) );
@@ -391,9 +416,6 @@ class License_Manager {
 		exit;
 	}
 
-	/**
-	 * Handle license deactivation.
-	 */
 	public static function handle_deactivate(): void {
 		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'convoca_deactivate' ) ) {
 			wp_die( __( 'Nonce inválido.', 'convoca-core' ) );
@@ -403,15 +425,12 @@ class License_Manager {
 		}
 
 		self::deactivate();
-		set_transient( 'convoca_license_message', 'Licencia desactivada.', 30 );
+		set_transient( 'convoca_license_message', __( 'Licencia desactivada.', 'convoca-core' ), 30 );
 
 		wp_redirect( wp_get_referer() );
 		exit;
 	}
 
-	/**
-	 * Admin notices for license messages.
-	 */
 	public static function admin_notice(): void {
 		$message = get_transient( 'convoca_license_message' );
 		if ( ! $message ) {
