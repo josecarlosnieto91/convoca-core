@@ -129,3 +129,24 @@ PDF. Se solicita confirmación antes de proceder.
 ### 1.4.0
 - Added BDV_Signature for PDF generation
 - Added backward-compat hooks (do_action/apply_filters dual dispatch)
+## 🧪 Demo
+
+Prueba Convoca sin instalar nada:
+
+👉 **[demo.getconvoca.app](https://demo.getconvoca.app)**
+
+## 📸 Capturas
+
+| Socios | Actividades | Turnos | Inscripciones |
+|--------|-------------|--------|---------------|
+| ![Socios](https://getconvoca.app/wp-content/uploads/2026/06/convoca-miembros-v4.png) | ![Actividades](https://getconvoca.app/wp-content/uploads/2026/06/convoca-actividades-v4.png) | ![Turnos](https://getconvoca.app/wp-content/uploads/2026/06/convoca-turnos-v4.png) | ![Inscripciones](https://getconvoca.app/wp-content/uploads/2026/06/convoca-inscripciones-v4.png) |
+
+## 🔗 Ecosistema
+
+- [Convoca Core](https://github.com/josecarlosnieto91/convoca-core)
+- [Convoca Members](https://github.com/josecarlosnieto91/convoca-members)
+- [Convoca Enroll](https://github.com/josecarlosnieto91/convoca-enroll)
+- [Convoca Gateway](https://github.com/josecarlosnieto91/convoca-gateway)
+- [Convoca Shifts](https://github.com/josecarlosnieto91/convoca-shifts)
+- [Convoca Publisher](https://github.com/josecarlosnieto91/convoca-publisher)
+
