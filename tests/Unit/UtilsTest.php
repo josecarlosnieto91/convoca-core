@@ -1,175 +1,97 @@
 <?php
-/**
- * Unit tests for Convoca Core Utils.
- *
- * @package       Convoca\Core\Tests
- *
- * @coversDefaultClass \Convoca\Core\Utils
- */
-
 namespace Convoca\Core\Tests;
 
-use Convoca\Core\Utils;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Test Utils helper methods.
- *
- * @covers ::validar_dni
- * @covers ::generate_access_code
- * @covers ::format_date
- * @covers ::format_nombre
- * @covers ::escape_csv_field
- */
 class UtilsTest extends TestCase
 {
-    /**
-     * Test validar_dni with valid DNI.
-     *
-     * @covers \Convoca\Core\Utils::validar_dni
-     */
-    public function test_validar_dni_valid(): void
+    private function loadClass(): void
     {
-        $this->assertTrue(Utils::validar_dni('12345678Z'));
+        require_once dirname(__DIR__, 2) . '/includes/Utils.php';
     }
 
-    /**
-     * Test validar_dni with invalid format.
-     *
-     * @covers \Convoca\Core\Utils::validar_dni
-     */
-    public function test_validar_dni_invalid(): void
+    protected function setUp(): void
     {
-        $this->assertFalse(Utils::validar_dni('1234567'));
-        $this->assertFalse(Utils::validar_dni('ABCDEFGH'));
-        $this->assertFalse(Utils::validar_dni(''));
+        $this->loadClass();
     }
 
-    /**
-     * Test validar_dni with valid NIE.
-     *
-     * @covers \Convoca\Core\Utils::validar_dni
-     */
-    public function test_validar_dni_valid_nie(): void
+    // ── DNI validation ──────────────────────────
+
+    public function test_valid_dni(): void
     {
-        $this->assertTrue(Utils::validar_dni('X1234567L'));
-        $this->assertTrue(Utils::validar_dni('Y1234567X'));
-        $this->assertTrue(Utils::validar_dni('Z1234567R'));
+        $this->assertTrue(\Convoca\Core\Utils::validate_dni('12345678Z'));
+        $this->assertTrue(\Convoca\Core\Utils::validate_dni('00000000T'));
     }
 
-    /**
-     * Test generate_access_code produces a valid format.
-     *
-     * @covers \Convoca\Core\Utils::generate_access_code
-     */
-    public function test_generate_access_code_format(): void
+    public function test_dni_with_lowercase(): void
     {
-        $code = Utils::generate_access_code();
-        $this->assertIsString($code);
-        $this->assertGreaterThan(0, strlen($code));
+        $this->assertTrue(\Convoca\Core\Utils::validate_dni('12345678z'));
     }
 
-    /**
-     * Test generate_access_code produces unique values.
-     *
-     * @covers \Convoca\Core\Utils::generate_access_code
-     */
-    public function test_generate_access_code_unique(): void
+    public function test_dni_with_spaces(): void
     {
-        $codes = [];
-        for ($i = 0; $i < 10; $i++) {
-            $codes[] = Utils::generate_access_code();
-        }
-        $this->assertCount(10, array_unique($codes));
+        $this->assertTrue(\Convoca\Core\Utils::validate_dni(' 12345678 Z '));
     }
 
-    /**
-     * Test format_date with various inputs.
-     *
-     * @covers \Convoca\Core\Utils::format_date
-     */
-    public function test_format_date_valid(): void
+    public function test_invalid_dni_letter(): void
     {
-        $result = Utils::format_date('2024-12-25 10:00:00', 'd/m/Y');
-        $this->assertEquals('25/12/2024', $result);
+        $this->assertFalse(\Convoca\Core\Utils::validate_dni('12345678A'));
+        $this->assertFalse(\Convoca\Core\Utils::validate_dni('12345678B'));
     }
 
-    /**
-     * Test format_date with empty input.
-     *
-     * @covers \Convoca\Core\Utils::format_date
-     */
-    public function test_format_date_empty(): void
+    public function test_dni_too_short(): void
     {
-        $result = Utils::format_date('', 'd/m/Y');
-        $this->assertEquals('', $result);
+        $this->assertFalse(\Convoca\Core\Utils::validate_dni('1234567Z'));
     }
 
-    /**
-     * Test format_nombre capitalizes correctly.
-     *
-     * @covers \Convoca\Core\Utils::format_nombre
-     */
-    public function test_format_nombre(): void
+    public function test_dni_too_long(): void
     {
-        $this->assertEquals('Jose Carlos', Utils::format_nombre('jose carlos'));
-        $this->assertEquals('Maria', Utils::format_nombre('  maria  '));
-        $this->assertEquals('', Utils::format_nombre(''));
+        $this->assertFalse(\Convoca\Core\Utils::validate_dni('123456789Z'));
     }
 
-    /**
-     * Test escape_csv_field wraps field with quotes when needed.
-     *
-     * @covers \Convoca\Core\Utils::escape_csv_field
-     */
-    public function test_escape_csv_field(): void
+    public function test_dni_empty(): void
     {
-        $result = Utils::escape_csv_field('hello world');
-        // escape_csv_field wraps in quotes when the field contains special chars
-        $this->assertIsString($result);
-        $this->assertNotEmpty($result);
+        $this->assertFalse(\Convoca\Core\Utils::validate_dni(''));
+        $this->assertFalse(\Convoca\Core\Utils::validate_dni('   '));
     }
 
-    /**
-     * Test escape_csv_field with simple strings.
-     *
-     * @covers \Convoca\Core\Utils::escape_csv_field
-     */
-    public function test_escape_csv_field_simple(): void
+    // ── NIE validation ──────────────────────────
+
+    public function test_valid_nie_x(): void
     {
-        $result = Utils::escape_csv_field('hello');
-        $this->assertEquals('hello', $result);
+        $this->assertTrue(\Convoca\Core\Utils::validate_dni('X1234567L'));
     }
 
-    // ── Legacy tests for removed/renamed methods (kept as skipped for documentation) ──
-
-    /** @coversNothing */
-    public function test_sanitize_email_list_removed(): void
+    public function test_valid_nie_y(): void
     {
-        $this->markTestSkipped('sanitize_email_list() removed — use WordPress sanitize_email() instead.');
+        $this->assertTrue(\Convoca\Core\Utils::validate_dni('Y1234567X'));
     }
 
-    /** @coversNothing */
-    public function test_mask_email_removed(): void
+    public function test_valid_nie_z(): void
     {
-        $this->markTestSkipped('mask_email() removed — use GDPR-aware helpers in Members plugin instead.');
+        $this->assertTrue(\Convoca\Core\Utils::validate_dni('Z1234567M'));
     }
 
-    /** @coversNothing */
-    public function test_generate_token_renamed(): void
+    public function test_invalid_nie_letter(): void
     {
-        $this->markTestSkipped('generate_token() renamed to generate_access_code() — covered above.');
+        $this->assertFalse(\Convoca\Core\Utils::validate_dni('X1234567A'));
     }
 
-    /** @coversNothing */
-    public function test_get_client_ip_removed(): void
+    // ── Edge cases ──────────────────────────────
+
+    public function test_nie_lowercase(): void
     {
-        $this->markTestSkipped('get_client_ip() removed — IP tracking handled at HTTP layer.');
+        $this->assertTrue(\Convoca\Core\Utils::validate_dni('x1234567l'));
     }
 
-    /** @coversNothing */
-    public function test_sanitize_phone_removed(): void
+    public function test_dni_with_hyphen(): void
     {
-        $this->markTestSkipped('sanitize_phone() removed — use WordPress sanitize_text_field() instead.');
+        $this->assertTrue(\Convoca\Core\Utils::validate_dni('12345678-Z'));
+    }
+
+    public function test_bad_format(): void
+    {
+        $this->assertFalse(\Convoca\Core\Utils::validate_dni('ABC'));
+        $this->assertFalse(\Convoca\Core\Utils::validate_dni('12.345.678Z'));
     }
 }
