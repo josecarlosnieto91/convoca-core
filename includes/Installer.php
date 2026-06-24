@@ -142,7 +142,7 @@ class Installer {
 	 */
 	public static function ensure_member_access_codes(): void {
 		global $wpdb;
-		$meta_key   = '_conv_access_code';
+		$meta_key   = '_convoca_access_code';
 		$batch_size = 100;
 		$start_time = time();
 		$max_time   = 25;
@@ -201,7 +201,7 @@ class Installer {
 		global $wpdb;
 		$remaining = (int) $wpdb->get_var(
 			"SELECT COUNT(*) FROM {$wpdb->posts} p
-             LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_conv_access_code'
+             LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_convoca_access_code'
              WHERE p.post_type = 'miembro' AND pm.meta_id IS NULL"
 		);
 		if ( $remaining === 0 ) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Class CONV_Signature
+ * Class Signature
  *
  * Reusable PDF signature class for Convoca.
  * Uses Dompdf (must be installed via Composer).
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class CONV_Signature {
+class Signature {
 
 	protected $last_error = '';
 
@@ -187,7 +187,7 @@ class CONV_Signature {
 			return $output_path;
 		} catch ( \Exception $e ) {
 			$this->last_error = __( 'Excepción durante la generación del PDF: ', 'convoca-core' ) . $e->getMessage();
-			error_log( 'CONV_Signature Exception: ' . $e->getMessage() );
+			error_log( 'Signature Exception: ' . $e->getMessage() );
 			return false;
 		}
 	}

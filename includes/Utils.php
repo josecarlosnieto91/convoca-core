@@ -171,7 +171,7 @@ class Utils {
 				$wpdb->prepare(
 					"SELECT pm.post_id FROM {$wpdb->postmeta} pm 
                  INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id 
-                 WHERE pm.meta_key = '_conv_access_code' AND pm.meta_value = %s 
+                 WHERE pm.meta_key = '_convoca_access_code' AND pm.meta_value = %s 
                  AND p.post_type = 'miembro' LIMIT 1",
 					$code
 				)

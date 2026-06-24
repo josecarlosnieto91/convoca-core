@@ -516,7 +516,7 @@ function convoca_build_metrics(): array {
 					'fields'         => 'ids',
 					'meta_query'     => array(
 						array(
-							'key'   => '_conv_estado_miembro',
+							'key'   => '_convoca_estado_miembro',
 							'value' => $slug,
 						),
 					),
@@ -543,7 +543,7 @@ function convoca_build_metrics(): array {
 				'fields'         => 'ids',
 				'meta_query'     => array(
 					array(
-						'key'   => '_conv_estado',
+						'key'   => '_convoca_estado',
 						'value' => 'pendiente_pago',
 					),
 				),
@@ -558,7 +558,7 @@ function convoca_build_metrics(): array {
 			$wpdb->prepare(
 				"SELECT SUM(meta_value + 0) FROM {$wpdb->postmeta} pm 
              JOIN {$wpdb->posts} p ON p.ID = pm.post_id 
-             WHERE pm.meta_key = '_conv_amount_cents' AND p.post_type = 'pago' 
+             WHERE pm.meta_key = '_convoca_amount_cents' AND p.post_type = 'pago' 
              AND MONTH(p.post_date) = MONTH(NOW()) AND YEAR(p.post_date) = YEAR(NOW())"
 			)
 		) / 100;

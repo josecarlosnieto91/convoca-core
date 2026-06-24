@@ -82,7 +82,7 @@ class Admin_Analytics {
                 SUM(IF(pm.meta_value = 'pendiente_documentacion', 1, 0)) AS pendientes_doc
              FROM {$wpdb->postmeta} pm
              JOIN {$wpdb->posts} ON {$wpdb->posts}.ID = pm.post_id AND $campo
-             WHERE pm.meta_key = '_conv_estado_miembro"
+             WHERE pm.meta_key = '_convoca_estado_miembro"
 		);
 
 		$total = (int) $wpdb->get_var(
@@ -100,8 +100,8 @@ class Admin_Analytics {
 		$vencen_7d = (int) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$wpdb->posts} p
-             JOIN {$wpdb->postmeta} pe ON p.ID = pe.post_id AND pe.meta_key = '_conv_estado_miembro' AND pe.meta_value = 'activo'
-             JOIN {$wpdb->postmeta} pr ON p.ID = pr.post_id AND pr.meta_key = '_conv_fecha_renovacion'
+             JOIN {$wpdb->postmeta} pe ON p.ID = pe.post_id AND pe.meta_key = '_convoca_estado_miembro' AND pe.meta_value = 'activo'
+             JOIN {$wpdb->postmeta} pr ON p.ID = pr.post_id AND pr.meta_key = '_convoca_fecha_renovacion'
              WHERE p.post_type = 'miembro' AND p.post_status = 'publish'
              AND CAST(pr.meta_value AS DATE) BETWEEN %s AND %s",
 				$hoy,
@@ -151,7 +151,7 @@ class Admin_Analytics {
                 SUM(IF(pm.meta_value = 'cancelada', 1, 0)) AS canceladas
              FROM {$wpdb->postmeta} pm
              JOIN {$wpdb->posts} p ON p.ID = pm.post_id
-             WHERE pm.meta_key = '_conv_estado'
+             WHERE pm.meta_key = '_convoca_estado'
                AND p.post_type = 'inscripcion'
                AND p.post_status = 'publish'"
 		);
@@ -165,7 +165,7 @@ class Admin_Analytics {
 		// Upcoming activities (future).
 		$proximas = (int) $wpdb->get_var(
 			"SELECT COUNT(*) FROM {$wpdb->posts} p
-             JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_conv_fecha_inicio'
+             JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_convoca_fecha_inicio'
              WHERE p.post_type = 'actividad' AND p.post_status IN ('publish','future')
              AND pm.meta_value > NOW()"
 		);
@@ -218,10 +218,10 @@ class Admin_Analytics {
 			$wpdb->prepare(
 				"SELECT p.ID, pm2.meta_value AS amount, pm3.meta_value AS method, pm4.meta_value AS paid_at
              FROM {$wpdb->posts} p
-             JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_conv_status' AND pm1.meta_value = 'paid'
-             JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_conv_amount_cents'
-             LEFT JOIN {$wpdb->postmeta} pm3 ON p.ID = pm3.post_id AND pm3.meta_key = '_conv_method'
-             LEFT JOIN {$wpdb->postmeta} pm4 ON p.ID = pm4.post_id AND pm4.meta_key = '_conv_paid_at'
+             JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_convoca_status' AND pm1.meta_value = 'paid'
+             JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_convoca_amount_cents'
+             LEFT JOIN {$wpdb->postmeta} pm3 ON p.ID = pm3.post_id AND pm3.meta_key = '_convoca_method'
+             LEFT JOIN {$wpdb->postmeta} pm4 ON p.ID = pm4.post_id AND pm4.meta_key = '_convoca_paid_at'
              WHERE p.post_type = 'pago' AND p.post_status = 'publish'
                AND p.post_date >= %s",
 				wp_date( 'Y-m-d H:i:s', $mes_inicio )
@@ -267,8 +267,8 @@ class Admin_Analytics {
                     COUNT(*) AS cnt,
                     COALESCE(SUM(CAST(pm.meta_value AS UNSIGNED)), 0) AS total
              FROM {$wpdb->posts} p
-             JOIN {$wpdb->postmeta} ms ON p.ID = ms.post_id AND ms.meta_key = '_conv_status' AND ms.meta_value = 'paid'
-             JOIN {$wpdb->postmeta} ma ON p.ID = ma.post_id AND ma.meta_key = '_conv_amount_cents'
+             JOIN {$wpdb->postmeta} ms ON p.ID = ms.post_id AND ms.meta_key = '_convoca_status' AND ms.meta_value = 'paid'
+             JOIN {$wpdb->postmeta} ma ON p.ID = ma.post_id AND ma.meta_key = '_convoca_amount_cents'
              WHERE p.post_type = 'pago' AND p.post_status = 'publish'
                AND p.post_date >= %s
              GROUP BY DATE(p.post_date) ORDER BY day ASC",
@@ -384,8 +384,8 @@ class Admin_Analytics {
 				$wpdb->prepare(
 					"SELECT COALESCE(SUM(CAST(pm.meta_value AS UNSIGNED)), 0) / 100
                  FROM {$wpdb->posts} p
-                 JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_conv_amount_cents'
-                 JOIN {$wpdb->postmeta} ps ON p.ID = ps.post_id AND ps.meta_key = '_conv_status' AND ps.meta_value = 'paid'
+                 JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_convoca_amount_cents'
+                 JOIN {$wpdb->postmeta} ps ON p.ID = ps.post_id AND ps.meta_key = '_convoca_status' AND ps.meta_value = 'paid'
                  WHERE p.post_type = 'pago' AND p.post_status = 'publish'
                  AND DATE_FORMAT(p.post_date, '%%Y-%%m') = %s",
 					$ym

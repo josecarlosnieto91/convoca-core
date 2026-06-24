@@ -200,11 +200,11 @@ class Admin_Backup {
 				return array(
 					$id,
 					$title,
-					get_post_meta( $id, '_conv_email', true ),
-					get_post_meta( $id, '_conv_dni', true ),
-					get_post_meta( $id, '_conv_plan', true ),
-					get_post_meta( $id, '_conv_estado_miembro', true ),
-					get_post_meta( $id, '_conv_vencimiento', true ),
+					get_post_meta( $id, '_convoca_email', true ),
+					get_post_meta( $id, '_convoca_dni', true ),
+					get_post_meta( $id, '_convoca_plan', true ),
+					get_post_meta( $id, '_convoca_estado_miembro', true ),
+					get_post_meta( $id, '_convoca_vencimiento', true ),
 				);
 			}
 		);
@@ -216,10 +216,10 @@ class Admin_Backup {
 			function ( $id ) {
 				return array(
 					$id,
-					get_post_meta( $id, '_conv_nombre', true ),
-					get_post_meta( $id, '_conv_email', true ),
-					get_post_meta( $id, '_conv_estado', true ),
-					get_post_meta( $id, '_conv_actividad_id', true ),
+					get_post_meta( $id, '_convoca_nombre', true ),
+					get_post_meta( $id, '_convoca_email', true ),
+					get_post_meta( $id, '_convoca_estado', true ),
+					get_post_meta( $id, '_convoca_actividad_id', true ),
 				);
 			}
 		);
@@ -232,9 +232,9 @@ class Admin_Backup {
 				return array(
 					$id,
 					get_the_title( $id ),
-					get_post_meta( $id, '_conv_fecha_inicio', true ),
-					get_post_meta( $id, '_conv_fecha_fin', true ),
-					get_post_meta( $id, '_conv_activo', true ),
+					get_post_meta( $id, '_convoca_fecha_inicio', true ),
+					get_post_meta( $id, '_convoca_fecha_fin', true ),
+					get_post_meta( $id, '_convoca_activo', true ),
 				);
 			}
 		);
@@ -473,7 +473,7 @@ class Admin_Backup {
 					$imported_posts[] = $new_id;
 					// Store old ID as meta instead of keeping a RAM dict.
 					if ( $old_id ) {
-						update_post_meta( $new_id, '_conv_old_import_id', $old_id );
+						update_post_meta( $new_id, '_convoca_old_import_id', $old_id );
 					}
 					$this->apply_meta( $entity, $new_id, $data );
 					++$results['total'];
@@ -509,21 +509,21 @@ class Admin_Backup {
 	private function apply_meta( $entity, $id, $data ): void {
 		switch ( $entity ) {
 			case 'miembros':
-				update_post_meta( $id, '_conv_email', sanitize_email( $data[2] ?? '' ) );
-				update_post_meta( $id, '_conv_dni', sanitize_text_field( $data[3] ?? '' ) );
-				update_post_meta( $id, '_conv_plan', sanitize_text_field( $data[4] ?? '' ) );
-				update_post_meta( $id, '_conv_estado_miembro', sanitize_text_field( $data[5] ?? 'activo' ) );
-				update_post_meta( $id, '_conv_vencimiento', sanitize_text_field( $data[6] ?? '' ) );
+				update_post_meta( $id, '_convoca_email', sanitize_email( $data[2] ?? '' ) );
+				update_post_meta( $id, '_convoca_dni', sanitize_text_field( $data[3] ?? '' ) );
+				update_post_meta( $id, '_convoca_plan', sanitize_text_field( $data[4] ?? '' ) );
+				update_post_meta( $id, '_convoca_estado_miembro', sanitize_text_field( $data[5] ?? 'activo' ) );
+				update_post_meta( $id, '_convoca_vencimiento', sanitize_text_field( $data[6] ?? '' ) );
 				break;
 			case 'proyectos':
-				update_post_meta( $id, '_conv_fecha_inicio', sanitize_text_field( $data[2] ?? '' ) );
-				update_post_meta( $id, '_conv_fecha_fin', sanitize_text_field( $data[3] ?? '' ) );
-				update_post_meta( $id, '_conv_activo', sanitize_text_field( $data[4] ?? '1' ) );
+				update_post_meta( $id, '_convoca_fecha_inicio', sanitize_text_field( $data[2] ?? '' ) );
+				update_post_meta( $id, '_convoca_fecha_fin', sanitize_text_field( $data[3] ?? '' ) );
+				update_post_meta( $id, '_convoca_activo', sanitize_text_field( $data[4] ?? '1' ) );
 				break;
 			case 'inscripciones':
-				update_post_meta( $id, '_conv_nombre', sanitize_text_field( $data[1] ?? '' ) );
-				update_post_meta( $id, '_conv_email', sanitize_email( $data[2] ?? '' ) );
-				update_post_meta( $id, '_conv_estado', sanitize_text_field( $data[3] ?? 'pendiente' ) );
+				update_post_meta( $id, '_convoca_nombre', sanitize_text_field( $data[1] ?? '' ) );
+				update_post_meta( $id, '_convoca_email', sanitize_email( $data[2] ?? '' ) );
+				update_post_meta( $id, '_convoca_estado', sanitize_text_field( $data[3] ?? 'pendiente' ) );
 
 				$old_pid = (int) ( $data[4] ?? 0 );
 				$new_pid = $old_pid;
@@ -531,7 +531,7 @@ class Admin_Backup {
 					$mapped = get_posts(
 						array(
 							'post_type'      => 'proyecto',
-							'meta_key'       => '_conv_old_import_id',
+							'meta_key'       => '_convoca_old_import_id',
 							'meta_value'     => $old_pid,
 							'fields'         => 'ids',
 							'posts_per_page' => 1,
@@ -542,7 +542,7 @@ class Admin_Backup {
 						$new_pid = (int) $mapped[0];
 					}
 				}
-				update_post_meta( $id, '_conv_actividad_id', $new_pid );
+				update_post_meta( $id, '_convoca_actividad_id', $new_pid );
 				break;
 			case 'turnos':
 				update_post_meta( $id, '_estado_real', sanitize_text_field( $data[3] ?? 'pendiente' ) );

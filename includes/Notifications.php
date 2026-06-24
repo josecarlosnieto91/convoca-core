@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Notifications {
 
-	const META_KEY = '_conv_notifications';
+	const META_KEY = '_convoca_notifications';
 
 	/**
 	 * Initialize hooks.
@@ -358,7 +358,7 @@ class Notifications {
 		self::push( __( 'Pago fallido', 'convoca-core' ), $title, 'urgent', array( 'warning' ) );
 
 		// Also notify the member if we can find the member ID from the pago.
-		$member_id = get_post_meta( $pago_id, '_conv_origin_id', true );
+		$member_id = get_post_meta( $pago_id, '_convoca_origin_id', true );
 		if ( $member_id ) {
 			self::add_member(
 				(int) $member_id,
@@ -385,7 +385,7 @@ class Notifications {
 		self::push( __( 'Pago pendiente', 'convoca-core' ), $title, 'high', array( 'warning' ) );
 
 		// Try to find the member related to this inscription.
-		$email = get_post_meta( $inscripcion_id, '_conv_email', true );
+		$email = get_post_meta( $inscripcion_id, '_convoca_email', true );
 		if ( $email ) {
 			$members = get_posts(
 				array(
@@ -393,7 +393,7 @@ class Notifications {
 					'posts_per_page' => 1,
 					'meta_query'     => array(
 						array(
-							'key'   => '_conv_email',
+							'key'   => '_convoca_email',
 							'value' => $email,
 						),
 					),
@@ -454,7 +454,7 @@ class Notifications {
 				'posts_per_page' => 1,
 				'meta_query'     => array(
 					array(
-						'key'   => '_conv_email',
+						'key'   => '_convoca_email',
 						'value' => $user->user_email,
 					),
 				),

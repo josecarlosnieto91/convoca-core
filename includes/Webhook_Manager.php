@@ -101,8 +101,8 @@ class Webhook_Manager {
 			array(
 				'member_id' => $member_id,
 				'nombre'    => get_the_title( $member_id ),
-				'email'     => get_post_meta( $member_id, '_conv_email', true ),
-				'plan'      => get_post_meta( $member_id, '_conv_plan', true ),
+				'email'     => get_post_meta( $member_id, '_convoca_email', true ),
+				'plan'      => get_post_meta( $member_id, '_convoca_plan', true ),
 			)
 		);
 	}
@@ -140,7 +140,7 @@ class Webhook_Manager {
 			array(
 				'member_id'        => $member_id,
 				'nombre'           => get_the_title( $member_id ),
-				'fecha_renovacion' => get_post_meta( $member_id, '_conv_fecha_renovacion', true ),
+				'fecha_renovacion' => get_post_meta( $member_id, '_convoca_fecha_renovacion', true ),
 			)
 		);
 	}
@@ -185,7 +185,7 @@ class Webhook_Manager {
 			array(
 				'inscripcion_id' => $inscripcion_id,
 				'actividad_id'   => $actividad_id,
-				'nombre'         => get_post_meta( $inscripcion_id, '_conv_nombre', true ),
+				'nombre'         => get_post_meta( $inscripcion_id, '_convoca_nombre', true ),
 			)
 		);
 	}
@@ -216,8 +216,8 @@ class Webhook_Manager {
 			array(
 				'registro_id' => $registro_id,
 				'member_id'   => $member_id,
-				'horas'       => get_post_meta( $registro_id, '_conv_horas', true ),
-				'descripcion' => get_post_meta( $registro_id, '_conv_descripcion', true ),
+				'horas'       => get_post_meta( $registro_id, '_convoca_horas', true ),
+				'descripcion' => get_post_meta( $registro_id, '_convoca_descripcion', true ),
 			)
 		);
 	}
@@ -228,7 +228,7 @@ class Webhook_Manager {
 			array(
 				'registro_id' => $registro_id,
 				'member_id'   => $member_id,
-				'horas'       => get_post_meta( $registro_id, '_conv_horas', true ),
+				'horas'       => get_post_meta( $registro_id, '_convoca_horas', true ),
 			)
 		);
 	}
@@ -239,7 +239,7 @@ class Webhook_Manager {
 			array(
 				'registro_id' => $registro_id,
 				'member_id'   => $member_id,
-				'horas'       => get_post_meta( $registro_id, '_conv_horas', true ),
+				'horas'       => get_post_meta( $registro_id, '_convoca_horas', true ),
 			)
 		);
 	}

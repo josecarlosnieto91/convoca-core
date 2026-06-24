@@ -145,8 +145,8 @@ class Memory_Report {
 			$wpdb->prepare(
 				"SELECT COALESCE(SUM(CAST(pm.meta_value AS UNSIGNED)), 0) / 100
              FROM {$wpdb->posts} p
-             JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_conv_amount_cents'
-             JOIN {$wpdb->postmeta} ps ON p.ID = ps.post_id AND ps.meta_key = '_conv_status' AND ps.meta_value = 'paid'
+             JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_convoca_amount_cents'
+             JOIN {$wpdb->postmeta} ps ON p.ID = ps.post_id AND ps.meta_key = '_convoca_status' AND ps.meta_value = 'paid'
              WHERE p.post_type = 'pago' AND p.post_status = 'publish'
              AND p.post_date >= %s AND p.post_date < %s",
 				wp_date( 'Y-m-d', $month_start ),
