@@ -193,7 +193,7 @@ function convoca_notifications_menu(): void {
 
 function convoca_notifications_page(): void {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_die( 'Access denied.' );
+		wp_die( __( 'Access denied.', 'convoca-core' ) );
 	}
 	$all      = get_user_meta( get_current_user_id(), Notifications::META_KEY, true ) ?: array();
 	$paged    = isset( $_GET['paged'] ) ? max( 1, (int) $_GET['paged'] ) : 1;

@@ -25,11 +25,11 @@ class PDF_Serve {
 		$file_path  = $upload_dir['basedir'] . '/convoca-documentos/' . basename( $filename );
 
 		if ( ! file_exists( $file_path ) ) {
-			wp_die( 'Archivo no encontrado.', '', array( 'response' => 404 ) );
+			wp_die( __( 'Archivo no encontrado.', 'convoca-core' ), '', array( 'response' => 404 ) );
 		}
 
 		if ( ! is_user_logged_in() ) {
-			wp_die( 'No tienes permiso para acceder a este archivo.', '', array( 'response' => 403 ) );
+			wp_die( __( 'No tienes permiso para acceder a este archivo.', 'convoca-core' ), '', array( 'response' => 403 ) );
 		}
 
 		header( 'Content-Type: application/pdf' );

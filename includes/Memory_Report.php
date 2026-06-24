@@ -73,10 +73,10 @@ class Memory_Report {
 	 */
 	public static function handle_admin_generate(): void {
 		if ( ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'conv_generate_memory' ) ) {
-			wp_die( 'Nonce inválido.' );
+			wp_die( __( 'Nonce inválido.', 'convoca-core' ) );
 		}
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( 'No tienes permisos.' );
+			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
 		}
 
 		$month     = isset( $_GET['month'] ) ? (int) $_GET['month'] : 0;
@@ -85,7 +85,7 @@ class Memory_Report {
 
 		$pdf = self::generate_pdf( $timestamp );
 		if ( ! $pdf ) {
-			wp_die( 'Error al generar la memoria.' );
+			wp_die( __( 'Error al generar la memoria.', 'convoca-core' ) );
 		}
 
 		header( 'Content-Type: application/pdf' );

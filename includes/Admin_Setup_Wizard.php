@@ -119,7 +119,7 @@ class Admin_Setup_Wizard {
 	public function handle_skip(): void {
 		check_admin_referer( 'conv_wizard_skip' );
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( 'Access denied.' );
+			wp_die( __( 'Acceso denegado.', 'convoca-core' ) );
 		}
 		update_option( self::DISMISS_OPTION, 1 );
 		wp_safe_redirect( admin_url() );
@@ -278,11 +278,11 @@ class Admin_Setup_Wizard {
 	public function handle_create_pages(): void {
 		check_admin_referer( 'conv_wizard_create_pages' );
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( 'Access denied.' );
+			wp_die( __( 'Acceso denegado.', 'convoca-core' ) );
 		}
 
 		if ( ! \Convoca\Core\Utils::acquire_lock( 'conv_wizard_create_pages', 30 ) ) {
-			wp_die( 'Otra operación de creación de páginas está en curso.' );
+			wp_die( __( 'Otra operación de creación de páginas está en curso.', 'convoca-core' ) );
 		}
 
 		try {
