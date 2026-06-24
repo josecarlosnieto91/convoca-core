@@ -23,10 +23,10 @@ class Admin_Setup_Wizard {
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
 		add_action( 'admin_init', array( $this, 'maybe_redirect' ) );
-		add_action( 'admin_post_conv_wizard_save', array( $this, 'handle_save' ) );
-		add_action( 'admin_post_conv_wizard_skip', array( $this, 'handle_skip' ) );
-		add_action( 'admin_post_conv_wizard_create_pages', array( $this, 'handle_create_pages' ) );
-		add_action( 'admin_post_conv_wizard_complete', array( $this, 'handle_complete' ) );
+		add_action( 'admin_post_convoca_wizard_save', array( $this, 'handle_save' ) );
+		add_action( 'admin_post_convoca_wizard_skip', array( $this, 'handle_skip' ) );
+		add_action( 'admin_post_convoca_wizard_create_pages', array( $this, 'handle_create_pages' ) );
+		add_action( 'admin_post_convoca_wizard_complete', array( $this, 'handle_complete' ) );
 	}
 
 	public function register_page(): void {
@@ -159,7 +159,7 @@ class Admin_Setup_Wizard {
 			</div>
 
 			<div style="text-align:center;margin-top:30px;">
-				<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=conv_wizard_skip' ), 'convoca_wizard_skip' ) ); ?>" style="color:#94a3b8;text-decoration:none;font-size:13px;font-weight:500;">
+				<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=convoca_wizard_skip' ), 'convoca_wizard_skip' ) ); ?>" style="color:#94a3b8;text-decoration:none;font-size:13px;font-weight:500;">
 					<?php esc_html_e( 'Omitir asistente y configurar manualmente', 'convoca-core' ); ?>
 				</a>
 			</div>

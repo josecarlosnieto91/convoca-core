@@ -24,7 +24,7 @@ class Memory_Report {
 		// Weekly cron: auto-generate monthly report.
 		add_action( 'convoca_weekly_event', array( __CLASS__, 'auto_generate' ) );
 		// Admin: manual generation.
-		add_action( 'admin_post_conv_generate_memory', array( __CLASS__, 'handle_admin_generate' ) );
+		add_action( 'admin_post_convoca_generate_memory', array( __CLASS__, 'handle_admin_generate' ) );
 	}
 
 	/**

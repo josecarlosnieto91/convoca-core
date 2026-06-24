@@ -13,9 +13,9 @@ class Admin_Backup {
 
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
-		add_action( 'admin_post_conv_export_backup', array( $this, 'handle_export' ) );
-		add_action( 'admin_post_conv_import_backup', array( $this, 'handle_import_preview' ) );
-		add_action( 'admin_post_conv_import_backup_run', array( $this, 'handle_import_run' ) );
+		add_action( 'admin_post_convoca_export_backup', array( $this, 'handle_export' ) );
+		add_action( 'admin_post_convoca_import_backup', array( $this, 'handle_import_preview' ) );
+		add_action( 'admin_post_convoca_import_backup_run', array( $this, 'handle_import_run' ) );
 	}
 
 	public function register_page(): void {
@@ -49,7 +49,7 @@ class Admin_Backup {
 					<h2>📤 <?php esc_html_e( 'Exportar Datos', 'convoca-core' ); ?></h2>
 					<p><?php esc_html_e( 'Genera un archivo ZIP con CSVs de todas las entidades y un JSON con la configuración.', 'convoca-core' ); ?></p>
 					<div style="margin-top:20px;">
-						<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=conv_export_backup' ), 'convoca_export_backup' ) ); ?>" class="convoca-btn convoca-btn-primary">⬇️ <?php esc_html_e( 'Descargar ZIP de Seguridad', 'convoca-core' ); ?></a>
+						<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=convoca_export_backup' ), 'convoca_export_backup' ) ); ?>" class="convoca-btn convoca-btn-primary">⬇️ <?php esc_html_e( 'Descargar ZIP de Seguridad', 'convoca-core' ); ?></a>
 					</div>
 				</div>
 

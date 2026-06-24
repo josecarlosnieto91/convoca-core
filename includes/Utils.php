@@ -93,8 +93,8 @@ class Utils {
 	 * @return array|\WP_Error Result with URL.
 	 */
 	public static function get_payment_link( array $args ): array|\WP_Error {
-		if ( function_exists( '\Convoca\Gateway\conv_gateway_create_payment' ) ) {
-			return \Convoca\Gateway\conv_gateway_create_payment( $args );
+		if ( function_exists( '\Convoca\Gateway\convoca_gateway_create_payment' ) ) {
+			return \Convoca\Gateway\convoca_gateway_create_payment( $args );
 		}
 		return new \WP_Error( 'gateway_no_activo', 'La pasarela de pago no está activa.' );
 	}

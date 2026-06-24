@@ -77,7 +77,7 @@ function convoca_customize_new_menu( \WP_Admin_Bar $wp_admin_bar ): void {
 		'new-centro_turno'  => admin_url( 'edit.php?post_type=centro_turno&page=convoca_shifts_turno_rapido' ),
 	);
 
-	$remove_nodes = array( 'new-inscripcion', 'new-pago', 'new-conv_evaluacion', 'new-conv_documento' );
+	$remove_nodes = array( 'new-inscripcion', 'new-pago', 'new-conv_evaluacion', 'new-convoca_documento' );
 
 	foreach ( $custom_links as $node_id => $url ) {
 		$node = $wp_admin_bar->get_node( $node_id );
@@ -177,7 +177,7 @@ function convoca_export_pdf( string $title, array $headers, array $rows, string 
  * Admin POST handler: Export payments as PDF.
  */
 add_action(
-	'admin_post_conv_export_payments_pdf',
+	'admin_post_convoca_export_payments_pdf',
 	function () {
 		if ( ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'convoca_gateway_export_payments_pdf' ) ) {
 			wp_die( __( 'Nonce inválido.', 'convoca-core' ) );
@@ -329,7 +329,7 @@ function convoca_dashboard_page(): void {
 		<h1>📊 <?php esc_html_e( 'Panel de Control Convoca', 'convoca-core' ); ?></h1>
 		<p>
 			<a href="<?php echo esc_url( add_query_arg( 'refresh', '1' ) ); ?>" class="convoca-btn convoca-btn-outline">🔄 <?php esc_html_e( 'Actualizar datos', 'convoca-core' ); ?></a>
-			<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=conv_generate_memory' ), 'convoca_generate_memory' ) ); ?>" class="convoca-btn convoca-btn-primary" style="margin-left:8px;">📄 <?php esc_html_e( 'Generar memoria PDF', 'convoca-core' ); ?></a>
+			<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=convoca_generate_memory' ), 'convoca_generate_memory' ) ); ?>" class="convoca-btn convoca-btn-primary" style="margin-left:8px;">📄 <?php esc_html_e( 'Generar memoria PDF', 'convoca-core' ); ?></a>
 		</p>
 
 		<div class="conv-analytics-cards">

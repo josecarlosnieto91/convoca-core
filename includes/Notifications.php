@@ -24,8 +24,8 @@ class Notifications {
 	public static function init(): void {
 		// Admin bar bell icon.
 		add_action( 'admin_bar_menu', array( __CLASS__, 'admin_bar_bell' ), 100 );
-		add_action( 'wp_ajax_conv_notifications_mark_read', array( __CLASS__, 'ajax_mark_read' ) );
-		add_action( 'wp_ajax_conv_notifications_dismiss', array( __CLASS__, 'ajax_dismiss' ) );
+		add_action( 'wp_ajax_convoca_notifications_mark_read', array( __CLASS__, 'ajax_mark_read' ) );
+		add_action( 'wp_ajax_convoca_notifications_dismiss', array( __CLASS__, 'ajax_dismiss' ) );
 
 		// Event hooks.
 		add_action( 'convoca_member_created', array( __CLASS__, 'on_member_created' ), 10, 2 );
