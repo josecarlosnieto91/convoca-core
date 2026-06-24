@@ -471,7 +471,7 @@ class Utils {
 			}
 		}
 
-		return (string) apply_filters( "conv_{$filter_suffix}_logo_url", $logo_url );
+		return (string) apply_filters( "convoca_{$filter_suffix}_logo_url", $logo_url );
 	}
 
 	/**

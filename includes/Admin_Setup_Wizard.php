@@ -255,7 +255,7 @@ class Admin_Setup_Wizard {
 
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
 		wp_nonce_field( 'convoca_wizard_create_pages' );
-		echo '<input type="hidden" name="action" value="conv_wizard_create_pages">';
+		echo '<input type="hidden" name="action" value="convoca_wizard_create_pages">';
 		echo '<table style="width:100%;margin-bottom:20px;">';
 		$all_mand = true;
 		foreach ( $pages as $slug => $info ) {
@@ -357,7 +357,7 @@ class Admin_Setup_Wizard {
 		<h2><?php esc_html_e( '4. Configuración de Redsys', 'convoca-core' ); ?></h2>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<?php wp_nonce_field( 'convoca_wizard_save' ); ?>
-			<input type="hidden" name="action" value="conv_wizard_save">
+			<input type="hidden" name="action" value="convoca_wizard_save">
 			<input type="hidden" name="wizard_step" value="4">
 			<p><label>Merchant Code:</label><input type="text" name="merchant_code" value="<?php echo esc_attr( $settings['merchant_code'] ?? '' ); ?>"></p>
 			<p><label>Secret Key:</label><input type="password" name="secret_key" value="<?php echo esc_attr( $settings['secret_key'] ?? '' ); ?>"></p>
@@ -374,10 +374,10 @@ class Admin_Setup_Wizard {
 		<h2><?php esc_html_e( '5. Convoca Shifts', 'convoca-core' ); ?></h2>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<?php wp_nonce_field( 'convoca_wizard_save' ); ?>
-			<input type="hidden" name="action" value="conv_wizard_save">
+			<input type="hidden" name="action" value="convoca_wizard_save">
 			<input type="hidden" name="wizard_step" value="5">
-			<p><label>Hora Apertura:</label><input type="time" name="conv_apertura" value="<?php echo esc_attr( get_option( 'convoca_shifts_hora_apertura', '09:00' ) ); ?>"></p>
-			<p><label>Hora Cierre:</label><input type="time" name="conv_cierre" value="<?php echo esc_attr( get_option( 'convoca_shifts_hora_cierre', '22:00' ) ); ?>"></p>
+			<p><label>Hora Apertura:</label><input type="time" name="convoca_apertura" value="<?php echo esc_attr( get_option( 'convoca_shifts_hora_apertura', '09:00' ) ); ?>"></p>
+			<p><label>Hora Cierre:</label><input type="time" name="convoca_cierre" value="<?php echo esc_attr( get_option( 'convoca_shifts_hora_cierre', '22:00' ) ); ?>"></p>
 			<button type="submit" class="convoca-btn convoca-btn-primary"><?php esc_html_e( 'Guardar', 'convoca-core' ); ?></button>
 		</form>
 		<?php
@@ -393,7 +393,7 @@ class Admin_Setup_Wizard {
 		<?php if ( $status['is_ready'] ) : ?>
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<?php wp_nonce_field( 'convoca_wizard_complete' ); ?>
-				<input type="hidden" name="action" value="conv_wizard_complete">
+				<input type="hidden" name="action" value="convoca_wizard_complete">
 				<button type="submit" class="convoca-btn convoca-btn-primary"><?php esc_html_e( 'Finalizar configuración', 'convoca-core' ); ?></button>
 			</form>
 		<?php else : ?>

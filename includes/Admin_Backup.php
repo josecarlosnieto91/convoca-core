@@ -60,7 +60,7 @@ class Admin_Backup {
 					<?php if ( ! $preview ) : ?>
 					<form method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:20px;">
 						<?php wp_nonce_field( 'convoca_import_backup' ); ?>
-						<input type="hidden" name="action" value="conv_import_backup">
+						<input type="hidden" name="action" value="convoca_import_backup">
 						<div class="convoca-field">
 							<input type="file" name="backup_zip" accept=".zip" required style="width:100%;">
 						</div>
@@ -78,7 +78,7 @@ class Admin_Backup {
 				
 				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 					<?php wp_nonce_field( 'convoca_import_backup_run' ); ?>
-					<input type="hidden" name="action" value="conv_import_backup_run">
+					<input type="hidden" name="action" value="convoca_import_backup_run">
 					<input type="hidden" name="session_token" value="<?php echo esc_attr( $preview['token'] ); ?>">
 					
 					<h3 style="margin-bottom:15px;"><?php esc_html_e( 'Contenido Detectado', 'convoca-core' ); ?></h3>

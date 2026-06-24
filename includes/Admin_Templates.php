@@ -502,7 +502,7 @@ class Admin_Templates {
 				</div>
 
 				<p class="submit">
-					<input type="submit" name="conv_save_templates" id="submit" class="button button-primary" value="<?php echo esc_attr__( 'Guardar Cambios', 'convoca-core' ); ?>">
+					<input type="submit" name="convoca_save_templates" id="submit" class="button button-primary" value="<?php echo esc_attr__( 'Guardar Cambios', 'convoca-core' ); ?>">
 				</p>
 			</form>
 
@@ -511,7 +511,7 @@ class Admin_Templates {
 			<form method="post" action="" onsubmit="return confirm('<?php echo esc_js( __( '¿Estás seguro de que deseas restaurar las plantillas por defecto? Perderás cualquier cambio que hayas hecho en el HTML.', 'convoca-core' ) ); ?>');">
 				<?php wp_nonce_field( 'convoca_restore_templates_nonce' ); ?>
 				<p>
-					<input type="submit" name="conv_restore_templates" class="button button-secondary" value="<?php echo esc_attr__( 'Restaurar Plantillas por Defecto', 'convoca-core' ); ?>">
+					<input type="submit" name="convoca_restore_templates" class="button button-secondary" value="<?php echo esc_attr__( 'Restaurar Plantillas por Defecto', 'convoca-core' ); ?>">
 				</p>
 			</form>
 		</div>
