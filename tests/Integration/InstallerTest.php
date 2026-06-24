@@ -43,7 +43,7 @@ class InstallerTest extends TestCase
             $wpdb->prefix . 'convoca_logs',
             $wpdb->prefix . 'convoca_webhook_retries',
             $wpdb->prefix . 'convoca_locks',
-            $wpdb->prefix . 'conv_member_sequence',
+            $wpdb->prefix . 'convoca_member_sequence',
         ];
 
         foreach ($expected_tables as $table) {

@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Webhook_Manager {
 
 	/** Option key for stored webhooks. */
-	private const OPTION = 'conv_webhooks';
+	private const OPTION = 'convoca_webhooks';
 
 	/** Supported event types. */
 	public const EVENTS = array(
@@ -65,7 +65,7 @@ class Webhook_Manager {
 		$this->register_hooks();
 
 		// Register cron hook for webhook retries.
-		add_action( 'conv_webhook_retry', array( __CLASS__, 'process_retries' ) );
+		add_action( 'convoca_webhook_retry', array( __CLASS__, 'process_retries' ) );
 	}
 
 	/**
@@ -260,7 +260,7 @@ class Webhook_Manager {
 		}
 
 		// Dedup: prevent duplicate notifications for the same event+payload within 10 seconds.
-		$dedup_key = 'conv_webhook_dedup_' . $event . '_' . md5( wp_json_encode( $payload ) );
+		$dedup_key = 'convoca_webhook_dedup_' . $event . '_' . md5( wp_json_encode( $payload ) );
 		if ( get_transient( $dedup_key ) ) {
 			Logger::debug( "Webhook $event omitido (dedup dentro de 10s)", 'Common/Webhook' );
 			return;
@@ -408,8 +408,8 @@ class Webhook_Manager {
 		);
 
 		// Schedule cron job if not already scheduled.
-		if ( ! wp_next_scheduled( 'conv_webhook_retry' ) ) {
-			wp_schedule_event( time(), 'hourly', 'conv_webhook_retry' );
+		if ( ! wp_next_scheduled( 'convoca_webhook_retry' ) ) {
+			wp_schedule_event( time(), 'hourly', 'convoca_webhook_retry' );
 		}
 
 		Logger::info( sprintf( 'Webhook retry scheduled: intento %d en %ds para %s', $attempt, $delay, $webhook['url'] ), 'Common/Webhook' );
@@ -424,10 +424,10 @@ class Webhook_Manager {
 		$table_name = self::get_retry_table_name();
 
 		// Acquire lock to prevent concurrent runs.
-		if ( get_transient( 'conv_webhook_retry_lock' ) ) {
+		if ( get_transient( 'convoca_webhook_retry_lock' ) ) {
 			return;
 		}
-		set_transient( 'conv_webhook_retry_lock', true, 10 * MINUTE_IN_SECONDS );
+		set_transient( 'convoca_webhook_retry_lock', true, 10 * MINUTE_IN_SECONDS );
 
 		try {
 			// Get retries that are due.
@@ -498,7 +498,7 @@ class Webhook_Manager {
 				}
 			}
 		} finally {
-			delete_transient( 'conv_webhook_retry_lock' );
+			delete_transient( 'convoca_webhook_retry_lock' );
 		}
 	}
 
@@ -669,7 +669,7 @@ class Webhook_Manager {
 	 * Uses autoload=no to avoid loading in every page load.
 	 */
 	private static function log_delivery( string $webhook_id, string $event, bool $success, string $message ): void {
-		$log_key = 'conv_webhook_log_' . $webhook_id;
+		$log_key = 'convoca_webhook_log_' . $webhook_id;
 		$logs    = get_option( $log_key, array() );
 
 		$logs[] = array(
@@ -692,7 +692,7 @@ class Webhook_Manager {
 	 * Get delivery logs for a webhook.
 	 */
 	public static function get_delivery_logs( string $webhook_id, int $limit = 20 ): array {
-		$logs = get_option( 'conv_webhook_log_' . $webhook_id, array() );
+		$logs = get_option( 'convoca_webhook_log_' . $webhook_id, array() );
 		return array_slice( array_reverse( $logs ), 0, $limit );
 	}
 
@@ -700,6 +700,6 @@ class Webhook_Manager {
 	 * Clear delivery logs for a webhook.
 	 */
 	public static function clear_delivery_logs( string $webhook_id ): void {
-		delete_option( 'conv_webhook_log_' . $webhook_id );
+		delete_option( 'convoca_webhook_log_' . $webhook_id );
 	}
 }

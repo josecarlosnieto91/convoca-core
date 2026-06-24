@@ -13,14 +13,14 @@ if (!defined('DAY_IN_SECONDS')) {
     define('DAY_IN_SECONDS', 86400);
 }
 
-if (!defined('CONV_COMMON_VERSION')) {
-    define('CONV_COMMON_VERSION', '2.1.2');
+if (!defined('CONVOCA_COMMON_VERSION')) {
+    define('CONVOCA_COMMON_VERSION', '2.1.2');
 }
-if (!defined('CONV_COMMON_DIR')) {
-    define('CONV_COMMON_DIR', dirname(__DIR__) . '/');
+if (!defined('CONVOCA_COMMON_DIR')) {
+    define('CONVOCA_COMMON_DIR', dirname(__DIR__) . '/');
 }
-if (!defined('CONV_COMMON_DB_VERSION')) {
-    define('CONV_COMMON_DB_VERSION', '1.1.0');
+if (!defined('CONVOCA_COMMON_DB_VERSION')) {
+    define('CONVOCA_COMMON_DB_VERSION', '1.1.0');
 }
 if (!defined('CONVOCA_CORE_TEST_MODE')) {
     define('CONVOCA_CORE_TEST_MODE', true);

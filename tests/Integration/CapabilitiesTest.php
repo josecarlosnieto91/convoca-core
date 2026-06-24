@@ -36,9 +36,9 @@ class CapabilitiesTest extends TestCase
 
         // Verify a few known capabilities exist.
         $this->assertArrayHasKey('convoca_shifts_manage_turnos', $caps);
-        $this->assertArrayHasKey('conv_manage_checkin', $caps);
-        $this->assertArrayHasKey('conv_manage_hours', $caps);
-        $this->assertArrayHasKey('conv_view_payments', $caps);
+        $this->assertArrayHasKey('convoca_manage_checkin', $caps);
+        $this->assertArrayHasKey('convoca_manage_hours', $caps);
+        $this->assertArrayHasKey('convoca_view_payments', $caps);
         $this->assertArrayHasKey('common_view_logs', $caps);
         $this->assertArrayHasKey('common_manage_backup', $caps);
 
@@ -151,12 +151,12 @@ class CapabilitiesTest extends TestCase
 
         $this->assertTrue($monitor->has_cap('manage_inscripciones'));
         $this->assertTrue($monitor->has_cap('convoca_shifts_manage_turnos'));
-        $this->assertTrue($monitor->has_cap('conv_manage_checkin'));
-        $this->assertTrue($monitor->has_cap('conv_manage_hours'));
+        $this->assertTrue($monitor->has_cap('convoca_manage_checkin'));
+        $this->assertTrue($monitor->has_cap('convoca_manage_hours'));
 
         // Admin-only capabilities should NOT be on monitor.
-        $this->assertFalse($monitor->has_cap('conv_export_members'));
-        $this->assertFalse($monitor->has_cap('conv_manage_webhooks'));
+        $this->assertFalse($monitor->has_cap('convoca_export_members'));
+        $this->assertFalse($monitor->has_cap('convoca_manage_webhooks'));
         $this->assertFalse($monitor->has_cap('common_manage_backup'));
     }
 

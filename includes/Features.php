@@ -23,21 +23,21 @@ class Features {
 	 * Comprueba si el plugin Convoca Gateway está activo.
 	 */
 	public static function is_gateway_active(): bool {
-		return class_exists( '\Convoca\Gateway\Payment_Handler' ) || defined( 'CONV_GATEWAY_VERSION' );
+		return class_exists( '\Convoca\Gateway\Payment_Handler' ) || defined( 'CONVOCA_GATEWAY_VERSION' );
 	}
 
 	/**
 	 * Comprueba si el plugin Convoca Members está activo.
 	 */
 	public static function is_members_active(): bool {
-		return class_exists( '\Convoca\Members\Member_Auth' ) || defined( 'CONV_MEMBERS_VERSION' );
+		return class_exists( '\Convoca\Members\Member_Auth' ) || defined( 'CONVOCA_MEMBERS_VERSION' );
 	}
 
 	/**
 	 * Comprueba si el plugin Convoca Enroll (Inscripciones) está activo.
 	 */
 	public static function is_enroll_active(): bool {
-		return defined( 'CONV_ENROLL_VERSION' );
+		return defined( 'CONVOCA_ENROLL_VERSION' );
 	}
 
 	/**

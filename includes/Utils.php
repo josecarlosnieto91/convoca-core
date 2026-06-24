@@ -236,7 +236,7 @@ class Utils {
 	 */
 	public static function check_rate_limit( string $action, int $max = 10, int $window = 300 ): bool {
 		$ip        = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-		$cache_key = 'conv_rl_' . $action . '_' . md5( $ip );
+		$cache_key = 'convoca_rl_' . $action . '_' . md5( $ip );
 
 		// Try object cache first.
 		$cached = wp_cache_get( $cache_key, 'convoca_rate_limits' );
@@ -316,7 +316,7 @@ class Utils {
 	 */
 	public static function acquire_lock( string $key, int $ttl = 60 ): bool {
 		global $wpdb;
-		$lock_key = 'conv_lock_' . $key;
+		$lock_key = 'convoca_lock_' . $key;
 		$expires  = time() + $ttl;
 
 		// Try dedicated locks table first.
@@ -395,7 +395,7 @@ class Utils {
 	 */
 	public static function release_lock( string $key ): bool {
 		global $wpdb;
-		$lock_key = 'conv_lock_' . $key;
+		$lock_key = 'convoca_lock_' . $key;
 
 		$locks_table  = self::locks_table();
 		$table_exists = $wpdb->get_var( "SHOW TABLES LIKE '$locks_table'" ) === $locks_table;
@@ -438,7 +438,7 @@ class Utils {
 		$total += (int) $wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM $wpdb->options WHERE option_name LIKE %s AND CAST(option_value AS SIGNED) < %d",
-				'conv_lock_%',
+				'convoca_lock_%',
 				$now
 			)
 		);
@@ -465,9 +465,9 @@ class Utils {
 
 		// Fallback to internal logo if it exists.
 		if ( empty( $logo_url ) ) {
-			$logo_path = CONV_COMMON_DIR . 'assets/images/logo.png';
+			$logo_path = CONVOCA_COMMON_DIR . 'assets/images/logo.png';
 			if ( file_exists( $logo_path ) ) {
-				$logo_url = CONV_COMMON_URL . 'assets/images/logo.png';
+				$logo_url = CONVOCA_COMMON_URL . 'assets/images/logo.png';
 			}
 		}
 
@@ -503,10 +503,10 @@ class Utils {
 	 * @return string
 	 */
 	public static function get_persistent_salt(): string {
-		$salt = get_option( 'conv_persistent_salt' );
+		$salt = get_option( 'convoca_persistent_salt' );
 		if ( ! $salt ) {
 			$salt = wp_generate_password( 64, true, true );
-			update_option( 'conv_persistent_salt', $salt, 'no' );
+			update_option( 'convoca_persistent_salt', $salt, 'no' );
 		}
 		return $salt;
 	}
@@ -629,23 +629,23 @@ class Utils {
 	 * @param string $type    success|danger|warning|info.
 	 */
 	public static function set_admin_notice( string $message, string $type = 'success' ): void {
-		$notices   = get_transient( 'conv_notice_' . get_current_user_id() ) ?: array();
+		$notices   = get_transient( 'convoca_notice_' . get_current_user_id() ) ?: array();
 		$notices[] = array(
 			'message' => $message,
 			'type'    => $type,
 		);
-		set_transient( 'conv_notice_' . get_current_user_id(), $notices, 60 );
+		set_transient( 'convoca_notice_' . get_current_user_id(), $notices, 60 );
 	}
 
 	/**
 	 * Render all stored notices for the current user and clear them.
 	 */
 	public static function render_stored_notices(): void {
-		$notices = get_transient( 'conv_notice_' . get_current_user_id() );
+		$notices = get_transient( 'convoca_notice_' . get_current_user_id() );
 		if ( ! $notices ) {
 			return;
 		}
-		delete_transient( 'conv_notice_' . get_current_user_id() );
+		delete_transient( 'convoca_notice_' . get_current_user_id() );
 		foreach ( $notices as $notice ) {
 			self::admin_notice( $notice['message'], $notice['type'] );
 		}
@@ -663,13 +663,13 @@ class Utils {
 
 	/**
 	 * Get a PDF template by key from the centralized option.
-	 * All plugins should use this instead of get_option('conv_pdf_templates') directly.
+	 * All plugins should use this instead of get_option('convoca_pdf_templates') directly.
 	 *
 	 * @param string $key Template key.
 	 * @return array|null Template data with 'name' and 'content', or null.
 	 */
 	public static function get_pdf_template( string $key ): ?array {
-		$templates = get_option( 'conv_pdf_templates', array() );
+		$templates = get_option( 'convoca_pdf_templates', array() );
 		return $templates[ $key ] ?? null;
 	}
 
@@ -679,7 +679,7 @@ class Utils {
 	 * @return array
 	 */
 	public static function get_pdf_templates(): array {
-		return get_option( 'conv_pdf_templates', array() );
+		return get_option( 'convoca_pdf_templates', array() );
 	}
 
 	/**
@@ -725,7 +725,7 @@ class Utils {
 	 * @return array Response data.
 	 */
 	public static function rest_cache_get( string $key, int $ttl, callable $callback ): array {
-		$cache_key = 'conv_rest_' . md5( $key );
+		$cache_key = 'convoca_rest_' . md5( $key );
 		$cached    = get_transient( $cache_key );
 		if ( false !== $cached ) {
 			return $cached;
@@ -739,7 +739,7 @@ class Utils {
 	 * Invalidate a REST cache key.
 	 */
 	public static function rest_cache_invalidate( string $key ): void {
-		delete_transient( 'conv_rest_' . md5( $key ) );
+		delete_transient( 'convoca_rest_' . md5( $key ) );
 	}
 
 

@@ -5,7 +5,7 @@
  * Handles database structure upgrades for the common plugin.
  *
  * To add a new upgrade:
- * 1. Increment CONV_COMMON_DB_VERSION in convoca-common.php
+ * 1. Increment CONVOCA_COMMON_DB_VERSION in convoca-common.php
  * 2. Add a callback: '1.0.1' => [$this, 'upgrade_to_1_0_1']
  * 3. Implement the private method with idempotent logic.
  *
@@ -25,15 +25,15 @@ class Common_Upgrade_Manager extends Upgrade_Manager {
 	}
 
 	protected function get_db_version(): string {
-		return defined( 'CONV_COMMON_DB_VERSION' ) ? CONV_COMMON_DB_VERSION : '0.0.0';
+		return defined( 'CONVOCA_COMMON_DB_VERSION' ) ? CONVOCA_COMMON_DB_VERSION : '0.0.0';
 	}
 
 	protected function get_option_name(): string {
-		return 'conv_common_db_version';
+		return 'convoca_common_db_version';
 	}
 
 	protected function get_transient_prefix(): string {
-		return 'conv_common';
+		return 'convoca_common';
 	}
 
 	protected function get_upgrade_callbacks(): array {

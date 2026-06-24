@@ -35,7 +35,7 @@ class WebhookManagerTest extends TestCase
 
         // Clean up any test webhooks created during test.
         if (function_exists('delete_option')) {
-            delete_option('conv_webhooks');
+            delete_option('convoca_webhooks');
         }
     }
 

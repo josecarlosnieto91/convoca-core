@@ -160,7 +160,7 @@ function convoca_health_page(): void {
 	$all_checks[] = array(
 		'title'   => 'Convoca Common — Versión',
 		'status'  => 'ok',
-		'message' => 'v' . CONV_COMMON_VERSION,
+		'message' => 'v' . CONVOCA_COMMON_VERSION,
 	);
 	global $wpdb;
 	$tables = array( 'convoca_logs', 'convoca_locks', 'convoca_webhook_retries' );
@@ -249,16 +249,16 @@ endif;
 function convoca_common_enqueue_assets(): void {
 	wp_enqueue_style(
 		'convoca-core',
-		CONV_COMMON_URL . 'assets/css/convoca-common.css',
+		CONVOCA_COMMON_URL . 'assets/css/convoca-common.css',
 		array(),
-		CONV_COMMON_VERSION
+		CONVOCA_COMMON_VERSION
 	);
 
 	wp_enqueue_script(
 		'convoca-common-js',
-		CONV_COMMON_URL . 'assets/js/convoca-common.js',
+		CONVOCA_COMMON_URL . 'assets/js/convoca-common.js',
 		array(),
-		CONV_COMMON_VERSION,
+		CONVOCA_COMMON_VERSION,
 		true
 	);
 }
@@ -271,9 +271,9 @@ function convoca_common_enqueue_admin_assets(): void {
 
 	wp_enqueue_script(
 		'convoca-common-admin-js',
-		CONV_COMMON_URL . 'assets/js/convoca-common-admin.js',
+		CONVOCA_COMMON_URL . 'assets/js/convoca-common-admin.js',
 		array(),
-		CONV_COMMON_VERSION,
+		CONVOCA_COMMON_VERSION,
 		true
 	);
 }

@@ -17,11 +17,11 @@ class Settings_Helper {
 	 * Format: 'legacy_key' => 'standard_key'
 	 */
 	private const ALIASES = array(
-		'convoca_shifts_hora_apertura'     => 'conv_centro_hora_apertura',
-		'convoca_shifts_hora_cierre'       => 'conv_centro_hora_cierre',
-		'convoca_shifts_calendar_page_url' => 'conv_centro_calendar_page_url',
-		'conv_gateway_settings' => 'conv_gateway_settings',
-		'conv_enroll_settings'  => 'conv_enroll_settings',
+		'convoca_shifts_hora_apertura'     => 'convoca_centro_hora_apertura',
+		'convoca_shifts_hora_cierre'       => 'convoca_centro_hora_cierre',
+		'convoca_shifts_calendar_page_url' => 'convoca_centro_calendar_page_url',
+		'convoca_gateway_settings' => 'convoca_gateway_settings',
+		'convoca_enroll_settings'  => 'convoca_enroll_settings',
 	);
 
 	/**

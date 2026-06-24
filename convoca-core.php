@@ -28,20 +28,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! defined( 'CONV_COMMON_VERSION' ) ) {
-	define( 'CONV_COMMON_VERSION', '2.1.4' );
+if ( ! defined( 'CONVOCA_COMMON_VERSION' ) ) {
+	define( 'CONVOCA_COMMON_VERSION', '2.1.4' );
 }
-if ( ! defined( 'CONV_COMMON_DB_VERSION' ) ) {
-	define( 'CONV_COMMON_DB_VERSION', '1.1.0' );
+if ( ! defined( 'CONVOCA_COMMON_DB_VERSION' ) ) {
+	define( 'CONVOCA_COMMON_DB_VERSION', '1.1.0' );
 }
-if ( ! defined( 'CONV_COMMON_DIR' ) ) {
-	define( 'CONV_COMMON_DIR', plugin_dir_path( __FILE__ ) );
+if ( ! defined( 'CONVOCA_COMMON_DIR' ) ) {
+	define( 'CONVOCA_COMMON_DIR', plugin_dir_path( __FILE__ ) );
 }
-if ( ! defined( 'CONV_COMMON_URL' ) ) {
-	define( 'CONV_COMMON_URL', plugin_dir_url( __FILE__ ) );
+if ( ! defined( 'CONVOCA_COMMON_URL' ) ) {
+	define( 'CONVOCA_COMMON_URL', plugin_dir_url( __FILE__ ) );
 }
 if ( ! defined( 'CONVOCA_IMAGES_URL' ) ) {
-	define( 'CONVOCA_IMAGES_URL', CONV_COMMON_URL . 'assets/images/' );
+	define( 'CONVOCA_IMAGES_URL', CONVOCA_COMMON_URL . 'assets/images/' );
 }
 
 /* ── Composer autoload (Dompdf, etc.) ──────────── */
@@ -62,7 +62,7 @@ register_activation_hook(
 	__FILE__,
 	function (): void {
 		Installer::db_init();
-		add_option( 'conv_common_db_version', CONV_COMMON_DB_VERSION, '', false );
+		add_option( 'convoca_common_db_version', CONVOCA_COMMON_DB_VERSION, '', false );
 
 		// Ensure new granular capabilities are assigned to admin role.
 		$admin_role = get_role( 'administrator' );
@@ -80,21 +80,21 @@ register_activation_hook(
 register_deactivation_hook(
 	__FILE__,
 	function (): void {
-		wp_clear_scheduled_hook( 'conv_log_cleanup' );
-		wp_clear_scheduled_hook( 'conv_log_purge' );
-		wp_clear_scheduled_hook( 'conv_continue_access_codes' );
+		wp_clear_scheduled_hook( 'convoca_log_cleanup' );
+		wp_clear_scheduled_hook( 'convoca_log_purge' );
+		wp_clear_scheduled_hook( 'convoca_continue_access_codes' );
 	}
 );
 
 // Cron: log cleanup (90-day retention).
-add_action( 'conv_log_cleanup', array( '\Convoca\Core\Installer', 'run_cleanup' ) );
+add_action( 'convoca_log_cleanup', array( '\Convoca\Core\Installer', 'run_cleanup' ) );
 
 // Cron: log purge (60-day retention).
-add_action( 'conv_log_purge', array( '\Convoca\Core\Installer', 'run_purge' ) );
+add_action( 'convoca_log_purge', array( '\Convoca\Core\Installer', 'run_purge' ) );
 
 // Cron: continue access code generation if interrupted during activation.
 add_action(
-	'conv_continue_access_codes',
+	'convoca_continue_access_codes',
 	function () {
 		\Convoca\Core\Installer::continue_access_codes();
 	}
@@ -183,7 +183,7 @@ function assoc_build_metrics(): array {
 }
 
 function convoca_rest_metrics(): \WP_REST_Response {
-	$cache_key = 'conv_rest_metrics';
+	$cache_key = 'convoca_rest_metrics';
 	$data      = get_transient( $cache_key );
 
 	if ( ! $data ) {

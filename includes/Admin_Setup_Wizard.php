@@ -15,10 +15,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Admin_Setup_Wizard {
 
-	const COMPLETED_OPTION = 'conv_setup_wizard_completed';
-	const DISMISS_OPTION   = 'conv_setup_wizard_dismissed';
-	const PROGRESS_OPTION  = 'conv_setup_wizard_progress';
-	const SEEN_OPTION      = 'conv_setup_wizard_seen';
+	const COMPLETED_OPTION = 'convoca_setup_wizard_completed';
+	const DISMISS_OPTION   = 'convoca_setup_wizard_dismissed';
+	const PROGRESS_OPTION  = 'convoca_setup_wizard_progress';
+	const SEEN_OPTION      = 'convoca_setup_wizard_seen';
 
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
@@ -117,7 +117,7 @@ class Admin_Setup_Wizard {
 	}
 
 	public function handle_skip(): void {
-		check_admin_referer( 'conv_wizard_skip' );
+		check_admin_referer( 'convoca_wizard_skip' );
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( __( 'Acceso denegado.', 'convoca-core' ) );
 		}
@@ -159,7 +159,7 @@ class Admin_Setup_Wizard {
 			</div>
 
 			<div style="text-align:center;margin-top:30px;">
-				<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=conv_wizard_skip' ), 'conv_wizard_skip' ) ); ?>" style="color:#94a3b8;text-decoration:none;font-size:13px;font-weight:500;">
+				<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=conv_wizard_skip' ), 'convoca_wizard_skip' ) ); ?>" style="color:#94a3b8;text-decoration:none;font-size:13px;font-weight:500;">
 					<?php esc_html_e( 'Omitir asistente y configurar manualmente', 'convoca-core' ); ?>
 				</a>
 			</div>
@@ -254,7 +254,7 @@ class Admin_Setup_Wizard {
 		);
 
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
-		wp_nonce_field( 'conv_wizard_create_pages' );
+		wp_nonce_field( 'convoca_wizard_create_pages' );
 		echo '<input type="hidden" name="action" value="conv_wizard_create_pages">';
 		echo '<table style="width:100%;margin-bottom:20px;">';
 		$all_mand = true;
@@ -276,12 +276,12 @@ class Admin_Setup_Wizard {
 	}
 
 	public function handle_create_pages(): void {
-		check_admin_referer( 'conv_wizard_create_pages' );
+		check_admin_referer( 'convoca_wizard_create_pages' );
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( __( 'Acceso denegado.', 'convoca-core' ) );
 		}
 
-		if ( ! \Convoca\Core\Utils::acquire_lock( 'conv_wizard_create_pages', 30 ) ) {
+		if ( ! \Convoca\Core\Utils::acquire_lock( 'convoca_wizard_create_pages', 30 ) ) {
 			wp_die( __( 'Otra operación de creación de páginas está en curso.', 'convoca-core' ) );
 		}
 
@@ -321,7 +321,7 @@ class Admin_Setup_Wizard {
 				}
 			}
 		} finally {
-			\Convoca\Core\Utils::release_lock( 'conv_wizard_create_pages' );
+			\Convoca\Core\Utils::release_lock( 'convoca_wizard_create_pages' );
 		}
 
 		wp_safe_redirect( admin_url( 'admin.php?page=conv-setup-wizard&step=2' ) );
@@ -352,11 +352,11 @@ class Admin_Setup_Wizard {
 	/* ── Step 4: Redsys ── */
 
 	private function step_redsys(): void {
-		$settings = get_option( 'conv_gateway_settings', array() );
+		$settings = get_option( 'convoca_gateway_settings', array() );
 		?>
 		<h2><?php esc_html_e( '4. Configuración de Redsys', 'convoca-core' ); ?></h2>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<?php wp_nonce_field( 'conv_wizard_save' ); ?>
+			<?php wp_nonce_field( 'convoca_wizard_save' ); ?>
 			<input type="hidden" name="action" value="conv_wizard_save">
 			<input type="hidden" name="wizard_step" value="4">
 			<p><label>Merchant Code:</label><input type="text" name="merchant_code" value="<?php echo esc_attr( $settings['merchant_code'] ?? '' ); ?>"></p>
@@ -373,7 +373,7 @@ class Admin_Setup_Wizard {
 		?>
 		<h2><?php esc_html_e( '5. Convoca Shifts', 'convoca-core' ); ?></h2>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<?php wp_nonce_field( 'conv_wizard_save' ); ?>
+			<?php wp_nonce_field( 'convoca_wizard_save' ); ?>
 			<input type="hidden" name="action" value="conv_wizard_save">
 			<input type="hidden" name="wizard_step" value="5">
 			<p><label>Hora Apertura:</label><input type="time" name="conv_apertura" value="<?php echo esc_attr( get_option( 'convoca_shifts_hora_apertura', '09:00' ) ); ?>"></p>
@@ -392,7 +392,7 @@ class Admin_Setup_Wizard {
 		<h2><?php esc_html_e( '6. Finalización', 'convoca-core' ); ?></h2>
 		<?php if ( $status['is_ready'] ) : ?>
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-				<?php wp_nonce_field( 'conv_wizard_complete' ); ?>
+				<?php wp_nonce_field( 'convoca_wizard_complete' ); ?>
 				<input type="hidden" name="action" value="conv_wizard_complete">
 				<button type="submit" class="convoca-btn convoca-btn-primary"><?php esc_html_e( 'Finalizar configuración', 'convoca-core' ); ?></button>
 			</form>
@@ -407,17 +407,17 @@ class Admin_Setup_Wizard {
 	}
 
 	public function handle_save(): void {
-		check_admin_referer( 'conv_wizard_save' );
+		check_admin_referer( 'convoca_wizard_save' );
 		$step = (int) $_POST['wizard_step'];
 		if ( $step === 4 ) {
-			$settings                  = get_option( 'conv_gateway_settings', array() );
+			$settings                  = get_option( 'convoca_gateway_settings', array() );
 			$settings['merchant_code'] = sanitize_text_field( $_POST['merchant_code'] );
 			$settings['secret_key']    = sanitize_text_field( $_POST['secret_key'] );
-			update_option( 'conv_gateway_settings', $settings );
+			update_option( 'convoca_gateway_settings', $settings );
 		}
 		if ( $step === 5 ) {
-			update_option( 'convoca_shifts_hora_apertura', sanitize_text_field( $_POST['conv_apertura'] ) );
-			update_option( 'convoca_shifts_hora_cierre', sanitize_text_field( $_POST['conv_cierre'] ) );
+			update_option( 'convoca_shifts_hora_apertura', sanitize_text_field( $_POST['convoca_apertura'] ) );
+			update_option( 'convoca_shifts_hora_cierre', sanitize_text_field( $_POST['convoca_cierre'] ) );
 		}
 		update_option( self::PROGRESS_OPTION, $step + 1 );
 		wp_safe_redirect( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $step + 1 ) ) );
@@ -425,7 +425,7 @@ class Admin_Setup_Wizard {
 	}
 
 	public function handle_complete(): void {
-		check_admin_referer( 'conv_wizard_complete' );
+		check_admin_referer( 'convoca_wizard_complete' );
 		update_option( self::COMPLETED_OPTION, 1 );
 		delete_option( self::PROGRESS_OPTION );
 		wp_safe_redirect( admin_url() );

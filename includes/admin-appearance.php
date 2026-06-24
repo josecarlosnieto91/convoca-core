@@ -32,7 +32,7 @@ function convoca_admin_footer( string $text ): string {
  * Replace WP version in footer with Convoca version.
  */
 function convoca_admin_footer_version( string $version ): string {
-	return 'Convoca v' . CONV_COMMON_VERSION;
+	return 'Convoca v' . CONVOCA_COMMON_VERSION;
 }
 
 /**
@@ -56,7 +56,7 @@ function convoca_remove_help_tab(): void {
  * Remove the submitdiv metabox from all managed CPTs.
  */
 function convoca_remove_submitdiv(): void {
-	$cpts = array( 'miembro', 'actividad', 'inscripcion', 'pago', 'centro_turno', 'conv_evaluacion', 'proyecto', 'registro_hora', 'conv_documento' );
+	$cpts = array( 'miembro', 'actividad', 'inscripcion', 'pago', 'centro_turno', 'convoca_evaluacion', 'proyecto', 'registro_hora', 'convoca_documento' );
 	foreach ( $cpts as $cpt ) {
 		remove_meta_box( 'submitdiv', $cpt, 'side' );
 	}
@@ -179,7 +179,7 @@ function convoca_export_pdf( string $title, array $headers, array $rows, string 
 add_action(
 	'admin_post_conv_export_payments_pdf',
 	function () {
-		if ( ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'conv_gateway_export_payments_pdf' ) ) {
+		if ( ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'convoca_gateway_export_payments_pdf' ) ) {
 			wp_die( __( 'Nonce inválido.', 'convoca-core' ) );
 		}
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -329,7 +329,7 @@ function convoca_dashboard_page(): void {
 		<h1>📊 <?php esc_html_e( 'Panel de Control Convoca', 'convoca-core' ); ?></h1>
 		<p>
 			<a href="<?php echo esc_url( add_query_arg( 'refresh', '1' ) ); ?>" class="convoca-btn convoca-btn-outline">🔄 <?php esc_html_e( 'Actualizar datos', 'convoca-core' ); ?></a>
-			<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=conv_generate_memory' ), 'conv_generate_memory' ) ); ?>" class="convoca-btn convoca-btn-primary" style="margin-left:8px;">📄 <?php esc_html_e( 'Generar memoria PDF', 'convoca-core' ); ?></a>
+			<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=conv_generate_memory' ), 'convoca_generate_memory' ) ); ?>" class="convoca-btn convoca-btn-primary" style="margin-left:8px;">📄 <?php esc_html_e( 'Generar memoria PDF', 'convoca-core' ); ?></a>
 		</p>
 
 		<div class="conv-analytics-cards">

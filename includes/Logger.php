@@ -318,7 +318,7 @@ class Logger {
 	 */
 	private static function table_exists(): bool {
 		global $wpdb;
-		$transient_key = 'conv_logger_table_exists';
+		$transient_key = 'convoca_logger_table_exists';
 
 		// Only trust a POSITIVE transient cache.
 		$cached = get_transient( $transient_key );
@@ -341,6 +341,6 @@ class Logger {
 	 * Invalidate the table existence cache (e.g., after a write failure).
 	 */
 	private static function clear_table_cache(): void {
-		delete_transient( 'conv_logger_table_exists' );
+		delete_transient( 'convoca_logger_table_exists' );
 	}
 }

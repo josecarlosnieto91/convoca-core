@@ -19,7 +19,7 @@ class Push_Notifier {
 	/**
 	 * Option key for ntfy configuration.
 	 */
-	const CONFIG_OPTION = 'conv_ntfy_config';
+	const CONFIG_OPTION = 'convoca_ntfy_config';
 
 	/**
 	 * Send a push notification.

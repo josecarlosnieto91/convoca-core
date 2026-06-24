@@ -42,39 +42,39 @@ class Capabilities {
 			),
 
 			// Convoca Enroll.
-			'conv_manage_checkin'     => array(
+			'convoca_manage_checkin'     => array(
 				'description' => __( 'Hacer check-in de asistentes', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'conv_manage_evaluations' => array(
+			'convoca_manage_evaluations' => array(
 				'description' => __( 'Gestionar evaluaciones', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'conv_view_reports'       => array(
+			'convoca_view_reports'       => array(
 				'description' => __( 'Ver informes de actividades', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
 
 			// Convoca Members.
-			'conv_manage_hours'       => array(
+			'convoca_manage_hours'       => array(
 				'description' => __( 'Gestionar horas de voluntarios (aprobar)', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'conv_export_members'     => array(
+			'convoca_export_members'     => array(
 				'description' => __( 'Exportar listado de socios', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
-			'conv_manage_webhooks'    => array(
+			'convoca_manage_webhooks'    => array(
 				'description' => __( 'Gestionar webhooks', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
 
 			// Convoca Gateway.
-			'conv_view_payments'      => array(
+			'convoca_view_payments'      => array(
 				'description' => __( 'Ver pagos y dashboard', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
-			'conv_manage_payments'    => array(
+			'convoca_manage_payments'    => array(
 				'description' => __( 'Gestionar pagos manualmente', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
@@ -120,11 +120,11 @@ class Capabilities {
 		}
 
 		$version_hash = md5( 'convoca_caps_v1' );
-		if ( get_option( 'conv_capabilities_hash' ) === $version_hash ) {
+		if ( get_option( 'convoca_capabilities_hash' ) === $version_hash ) {
 			return;
 		}
 
 		self::register();
-		update_option( 'conv_capabilities_hash', $version_hash, false );
+		update_option( 'convoca_capabilities_hash', $version_hash, false );
 	}
 }

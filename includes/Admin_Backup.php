@@ -26,7 +26,7 @@ class Admin_Backup {
 		if ( ! current_user_can( 'common_manage_backup' ) ) {
 			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
 		}
-		$preview = get_transient( 'conv_import_preview_' . get_current_user_id() );
+		$preview = get_transient( 'convoca_import_preview_' . get_current_user_id() );
 		?>
 		<div class="wrap" style="max-width:900px;">
 			<div class="conv-admin-header" style="display:flex;align-items:center;gap:20px;margin-bottom:20px;">
@@ -49,7 +49,7 @@ class Admin_Backup {
 					<h2>📤 <?php esc_html_e( 'Exportar Datos', 'convoca-core' ); ?></h2>
 					<p><?php esc_html_e( 'Genera un archivo ZIP con CSVs de todas las entidades y un JSON con la configuración.', 'convoca-core' ); ?></p>
 					<div style="margin-top:20px;">
-						<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=conv_export_backup' ), 'conv_export_backup' ) ); ?>" class="convoca-btn convoca-btn-primary">⬇️ <?php esc_html_e( 'Descargar ZIP de Seguridad', 'convoca-core' ); ?></a>
+						<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=conv_export_backup' ), 'convoca_export_backup' ) ); ?>" class="convoca-btn convoca-btn-primary">⬇️ <?php esc_html_e( 'Descargar ZIP de Seguridad', 'convoca-core' ); ?></a>
 					</div>
 				</div>
 
@@ -59,7 +59,7 @@ class Admin_Backup {
 
 					<?php if ( ! $preview ) : ?>
 					<form method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:20px;">
-						<?php wp_nonce_field( 'conv_import_backup' ); ?>
+						<?php wp_nonce_field( 'convoca_import_backup' ); ?>
 						<input type="hidden" name="action" value="conv_import_backup">
 						<div class="convoca-field">
 							<input type="file" name="backup_zip" accept=".zip" required style="width:100%;">
@@ -77,7 +77,7 @@ class Admin_Backup {
 				</div>
 				
 				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-					<?php wp_nonce_field( 'conv_import_backup_run' ); ?>
+					<?php wp_nonce_field( 'convoca_import_backup_run' ); ?>
 					<input type="hidden" name="action" value="conv_import_backup_run">
 					<input type="hidden" name="session_token" value="<?php echo esc_attr( $preview['token'] ); ?>">
 					
@@ -115,7 +115,7 @@ class Admin_Backup {
 	/* ── Export ── */
 
 	public function handle_export(): void {
-		if ( ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'conv_export_backup' ) ) {
+		if ( ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'convoca_export_backup' ) ) {
 			wp_die( __( 'Nonce inválido.', 'convoca-core' ) );
 		}
 		if ( ! current_user_can( 'common_manage_backup' ) ) {
@@ -257,7 +257,7 @@ class Admin_Backup {
 
 		// Settings (Whitelist based).
 		$settings        = array();
-		$allowed_options = array( 'conv_gateway_settings', 'conv_members_settings', 'conv_members_plans', 'conv_enroll_settings', 'convoca_shifts_hora_apertura', 'convoca_shifts_hora_cierre', 'convoca_shifts_calendar_page_url' );
+		$allowed_options = array( 'convoca_gateway_settings', 'convoca_members_settings', 'convoca_members_plans', 'convoca_enroll_settings', 'convoca_shifts_hora_apertura', 'convoca_shifts_hora_cierre', 'convoca_shifts_calendar_page_url' );
 		foreach ( $allowed_options as $k ) {
 			$settings[ $k ] = get_option( $k );
 		}
@@ -282,7 +282,7 @@ class Admin_Backup {
 	/* ── Import Preview ── */
 
 	public function handle_import_preview(): void {
-		check_admin_referer( 'conv_import_backup' );
+		check_admin_referer( 'convoca_import_backup' );
 		if ( ! current_user_can( 'common_manage_backup' ) ) {
 			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
 		}
@@ -356,7 +356,7 @@ class Admin_Backup {
 		}
 
 		set_transient(
-			'conv_import_preview_' . get_current_user_id(),
+			'convoca_import_preview_' . get_current_user_id(),
 			array(
 				'token'    => $token,
 				'entities' => $entities,
@@ -372,12 +372,12 @@ class Admin_Backup {
 
 	public function handle_import_run(): void {
 		global $wpdb;
-		check_admin_referer( 'conv_import_backup_run' );
+		check_admin_referer( 'convoca_import_backup_run' );
 		if ( ! current_user_can( 'common_manage_backup' ) ) {
 			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
 		}
 
-		$preview = get_transient( 'conv_import_preview_' . get_current_user_id() );
+		$preview = get_transient( 'convoca_import_preview_' . get_current_user_id() );
 		if ( ! $preview || ! isset( $_POST['session_token'] ) || ! hash_equals( $preview['token'], $_POST['session_token'] ) ) {
 			wp_die( __( 'Token de sesión inválido o expirado.', 'convoca-core' ) );
 		}
@@ -412,7 +412,7 @@ class Admin_Backup {
 		$imported_posts = array();
 
 		// Prevent concurrent imports.
-		if ( ! \Convoca\Core\Utils::acquire_lock( 'conv_backup_import', 300 ) ) {
+		if ( ! \Convoca\Core\Utils::acquire_lock( 'convoca_backup_import', 300 ) ) {
 			wp_die( __( 'Otra importación está en curso. Espera a que termine.', 'convoca-core' ) );
 		}
 
@@ -484,20 +484,20 @@ class Admin_Backup {
 			foreach ( $imported_posts as $pid ) {
 				wp_delete_post( $pid, true );
 			}
-			\Convoca\Core\Utils::release_lock( 'conv_backup_import' );
+			\Convoca\Core\Utils::release_lock( 'convoca_backup_import' );
 			$zip->close();
 			unlink( $filepath );
-			delete_transient( 'conv_import_preview_' . get_current_user_id() );
+			delete_transient( 'convoca_import_preview_' . get_current_user_id() );
 			\Convoca\Core\Logger::error( 'Importación masiva fallida: ' . $e->getMessage(), 'System' );
 			wp_safe_redirect( admin_url( 'admin.php?page=conv-backup&import_result=' . urlencode( 'Error: ' . $e->getMessage() ) ) );
 			exit;
 		}
 
-		\Convoca\Core\Utils::release_lock( 'conv_backup_import' );
+		\Convoca\Core\Utils::release_lock( 'convoca_backup_import' );
 
 		$zip->close();
 		unlink( $filepath );
-		delete_transient( 'conv_import_preview_' . get_current_user_id() );
+		delete_transient( 'convoca_import_preview_' . get_current_user_id() );
 
 		\Convoca\Core\Logger::info( sprintf( 'Importación masiva completada: %d registros.', $results['total'] ), 'System' );
 
@@ -568,7 +568,7 @@ class Admin_Backup {
 			return;
 		}
 
-		$allowed = array( 'conv_gateway_settings', 'conv_members_settings', 'conv_members_plans', 'conv_enroll_settings', 'convoca_shifts_hora_apertura', 'convoca_shifts_hora_cierre', 'convoca_shifts_calendar_page_url' );
+		$allowed = array( 'convoca_gateway_settings', 'convoca_members_settings', 'convoca_members_plans', 'convoca_enroll_settings', 'convoca_shifts_hora_apertura', 'convoca_shifts_hora_cierre', 'convoca_shifts_calendar_page_url' );
 
 		foreach ( $allowed as $key ) {
 			if ( ! isset( $data[ $key ] ) ) {

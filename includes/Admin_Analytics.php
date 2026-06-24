@@ -21,7 +21,7 @@ class Admin_Analytics {
 	const CACHE_TTL = 300;
 
 	/** Metric groups (used for partial invalidation). */
-	const CACHE_PREFIX = 'conv_analytics_';
+	const CACHE_PREFIX = 'convoca_analytics_';
 
 	/**
 	 * Get all metrics aggregated across plugins.

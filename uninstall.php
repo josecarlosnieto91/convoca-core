@@ -18,15 +18,15 @@ if ( defined( 'CONVOCA_KEEP_DATA_ON_UNINSTALL' ) && CONVOCA_KEEP_DATA_ON_UNINSTA
 
 // Clean up options.
 $options = array(
-	'conv_common_db_version',
-	'conv_db_version',
-	'conv_webhooks',
-	'conv_settings',
-	'conv_persistent_salt',
-	'conv_template_version',
-	'conv_capabilities_hash',
-	'conv_webhook_retry_limit',
-	'conv_auto_cleanup_days',
+	'convoca_common_db_version',
+	'convoca_db_version',
+	'convoca_webhooks',
+	'convoca_settings',
+	'convoca_persistent_salt',
+	'convoca_template_version',
+	'convoca_capabilities_hash',
+	'convoca_webhook_retry_limit',
+	'convoca_auto_cleanup_days',
 );
 
 foreach ( $options as $option ) {
@@ -34,9 +34,9 @@ foreach ( $options as $option ) {
 }
 
 // Clean up cron jobs.
-wp_clear_scheduled_hook( 'conv_log_cleanup' );
-wp_clear_scheduled_hook( 'conv_log_purge' );
-wp_clear_scheduled_hook( 'conv_webhook_retry' );
+wp_clear_scheduled_hook( 'convoca_log_cleanup' );
+wp_clear_scheduled_hook( 'convoca_log_purge' );
+wp_clear_scheduled_hook( 'convoca_webhook_retry' );
 
 // Clean up transients.
 global $wpdb;
@@ -50,7 +50,7 @@ foreach ( $tables_convoca as $table ) {
 }
 
 // Also clean legacy conv_ prefixed tables.
-$tables_legacy = array( 'conv_logs', 'conv_webhook_retries', 'conv_locks' );
+$tables_legacy = array( 'convoca_logs', 'convoca_webhook_retries', 'convoca_locks' );
 foreach ( $tables_legacy as $table ) {
 	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}{$table}" );
 }

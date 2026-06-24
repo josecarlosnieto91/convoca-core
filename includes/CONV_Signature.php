@@ -24,8 +24,8 @@ class CONV_Signature {
 	public function __construct() {
 		// Dompdf must be installed in convoca-common via Composer:.
 		// cd convoca-common && composer require dompdf/dompdf.
-		if ( file_exists( CONV_COMMON_DIR . 'vendor/autoload.php' ) ) {
-			require_once CONV_COMMON_DIR . 'vendor/autoload.php';
+		if ( file_exists( CONVOCA_COMMON_DIR . 'vendor/autoload.php' ) ) {
+			require_once CONVOCA_COMMON_DIR . 'vendor/autoload.php';
 		}
 	}
 
@@ -56,7 +56,7 @@ class CONV_Signature {
 
 		// List of keys that should be treated as raw HTML (not escaped).
 		$html_safe_keys = apply_filters(
-			'conv_pdf_html_safe_keys',
+			'convoca_pdf_html_safe_keys',
 			array(
 				'dynamic_fields',
 				'declaracion',
@@ -70,7 +70,7 @@ class CONV_Signature {
 
 		// Allowed HTML tags for PDF-safe content.
 		$pdf_allowed_html = apply_filters(
-			'conv_pdf_allowed_html',
+			'convoca_pdf_allowed_html',
 			array(
 				'p'      => array( 'style' => array() ),
 				'br'     => array(),
