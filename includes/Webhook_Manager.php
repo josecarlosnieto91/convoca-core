@@ -306,12 +306,12 @@ class Webhook_Manager {
 		$delivery_id = wp_generate_uuid4();
 		$headers     = array(
 			'Content-Type'     => 'application/json',
-			'X-Assoc-Event'    => $payload['event'],
-			'X-Assoc-Delivery' => $delivery_id,
+			'X-Convoca-Event'    => $payload['event'],
+			'X-Convoca-Delivery' => $delivery_id,
 		);
 
 		if ( ! empty( $webhook['secret'] ) ) {
-			$headers['X-Assoc-Signature'] = hash_hmac( 'sha256', $body, $webhook['secret'] );
+			$headers['X-Convoca-Signature'] = hash_hmac( 'sha256', $body, $webhook['secret'] );
 		}
 
 		// Use blocking mode with short timeout to detect actual delivery status.

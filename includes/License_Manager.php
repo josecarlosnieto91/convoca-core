@@ -42,33 +42,31 @@ class License_Manager {
 	/**
 	 * Shared secret for API request signing (HMAC-SHA256).
 	 * Must match server-side CONVOCA_NONCE_SECRET.
-	 * Override via define('CONVOCA_LICENSE_NONCE_SECRET', '...') in wp-config.php
-	 * or filter 'convoca_license_nonce_secret'.
-	 */
-	const NONCE_SECRET = '';
+	 /**
+	  * Build a signed API request body with nonce + timestamp (V-6 anti-replay).
+	  *
+	  * The license key itself is used as the HMAC secret.
+	  * Since each license has a unique key, client A cannot forge
+	  * signatures for client B's license. The server verifies by
+	  * looking up the stored key in the database.
+	  */
+	 private static function build_signed_body( string $action, ?string $key_override = null ): array {
+	 	$site_url  = home_url();
+	 	$timestamp = time();
+	 	$key       = $key_override ?? self::get_license()['key'];
 
-	/**
-	 * Build a signed API request body with nonce + timestamp (V-6 anti-replay).
-	 */
-	private static function build_signed_body( string $action, ?string $key_override = null ): array {
-		$site_url  = home_url();
-		$timestamp = time();
-		$key       = $key_override ?? self::get_license()['key'];
+	 	// Use the license key as the HMAC secret (unique per license).
+	 	// No global shared secret needed.
+	 	$nonce = hash_hmac( 'sha256', "$key|$site_url|$action|$timestamp", $key );
 
-		$secret = defined( 'CONVOCA_LICENSE_NONCE_SECRET' )
-			? CONVOCA_LICENSE_NONCE_SECRET
-			: apply_filters( 'convoca_license_nonce_secret', self::NONCE_SECRET );
-
-		$nonce = hash_hmac( 'sha256', "$key|$site_url|$action|$timestamp", $secret );
-
-		return array(
-			'license_key' => $key,
-			'site_url'    => $site_url,
-			'action'      => $action,
-			'nonce'       => $nonce,
-			'timestamp'   => $timestamp,
-		);
-	}
+	 	return array(
+	 		'license_key' => $key,
+	 		'site_url'    => $site_url,
+	 		'action'      => $action,
+	 		'nonce'       => $nonce,
+	 		'timestamp'   => $timestamp,
+	 	);
+	 }
 
 	/**
 	 * Initialize hooks.
