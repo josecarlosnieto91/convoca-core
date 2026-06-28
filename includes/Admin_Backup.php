@@ -96,7 +96,7 @@ class Admin_Backup {
 					</table>
 
 					<div style="margin-top:30px;display:flex;gap:15px;align-items:center;">
-						<button type="submit" class="convoca-btn convoca-btn--danger" style="padding:12px 30px;" onclick="return confirm('¿Confirmas la importación de los datos seleccionados?');">✅ <?php esc_html_e( 'Ejecutar Importación', 'convoca-core' ); ?></button>
+						<button type="submit" class="convoca-btn convoca-btn--danger" style="padding:12px 30px;" onclick="return confirm('<?php echo esc_js( __( '¿Confirmas la importación de los datos seleccionados?', 'convoca-core' ) ); ?>');">✅ <?php esc_html_e( 'Ejecutar Importación', 'convoca-core' ); ?></button>
 						<a href="<?php echo esc_url( admin_url( 'admin.php?page=conv-backup' ) ); ?>" style="color:#64748b;text-decoration:none;font-weight:500;"><?php esc_html_e( 'Cancelar y borrar temporal', 'convoca-core' ); ?></a>
 					</div>
 				</form>

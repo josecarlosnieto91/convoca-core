@@ -159,7 +159,7 @@ class License_Manager {
 			);
 			return array(
 				'success' => true,
-				'message' => 'Licencia guardada. La validación remota se realizará cuando el servidor esté disponible.',
+				'message' => __( 'Licencia guardada. La validación remota se realizará cuando el servidor esté disponible.', 'convoca-core' ),
 			);
 		}
 
@@ -168,7 +168,7 @@ class License_Manager {
 		if ( ! $body || empty( $body['success'] ) ) {
 			return array(
 				'success' => false,
-				'message' => $body['message'] ?? 'Error de validación con el servidor.',
+				'message' => $body['message'] ?? __( 'Error de validación con el servidor.', 'convoca-core' ),
 			);
 		}
 
@@ -210,7 +210,7 @@ class License_Manager {
 		if ( empty( $license['key'] ) ) {
 			return array(
 				'success' => true,
-				'message' => 'Sin licencia activa.',
+				'message' => __( 'Sin licencia activa.', 'convoca-core' ),
 			);
 		}
 
@@ -235,7 +235,7 @@ class License_Manager {
 
 		return array(
 			'success' => true,
-			'message' => 'Licencia desactivada.',
+			'message' => __( 'Licencia desactivada.', 'convoca-core' ),
 		);
 	}
 
@@ -260,7 +260,7 @@ class License_Manager {
 	 */
 	public static function render_page(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( 'No tienes permisos.' );
+			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
 		}
 
 		$license  = self::get_license();
@@ -313,7 +313,7 @@ class License_Manager {
 						<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 							<input type="hidden" name="action" value="convoca_deactivate_license">
 							<?php wp_nonce_field( 'convoca_deactivate' ); ?>
-							<button type="submit" class="button button-secondary" onclick="return confirm('¿Desactivar la licencia de este sitio?')">
+							<button type="submit" class="button button-secondary" onclick="return confirm('<?php echo esc_js( __( '¿Desactivar la licencia de este sitio?', 'convoca-core' ) ); ?>')">
 								<?php esc_html_e( 'Desactivar licencia', 'convoca-core' ); ?>
 							</button>
 						</form>
@@ -367,10 +367,10 @@ class License_Manager {
 	 */
 	public static function handle_activate(): void {
 		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'convoca_activate' ) ) {
-			wp_die( 'Nonce inválido.' );
+			wp_die( __( 'Nonce inválido.', 'convoca-core' ) );
 		}
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( 'No tienes permisos.' );
+			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
 		}
 
 		$key = sanitize_text_field( $_POST['license_key'] ?? '' );
@@ -391,14 +391,14 @@ class License_Manager {
 	 */
 	public static function handle_deactivate(): void {
 		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'convoca_deactivate' ) ) {
-			wp_die( 'Nonce inválido.' );
+			wp_die( __( 'Nonce inválido.', 'convoca-core' ) );
 		}
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( 'No tienes permisos.' );
+			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
 		}
 
 		self::deactivate();
-		set_transient( 'convoca_license_message', 'Licencia desactivada.', 30 );
+		set_transient( 'convoca_license_message', __( 'Licencia desactivada.', 'convoca-core' ), 30 );
 
 		wp_redirect( wp_get_referer() );
 		exit;
