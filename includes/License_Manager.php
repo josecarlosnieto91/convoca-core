@@ -334,7 +334,7 @@ class License_Manager {
 						</form>
 						<p style="margin-top:20px;font-size:13px;color:#64748b;">
 							<?php esc_html_e( '¿Sin licencia?', 'convoca-core' ); ?>
-							<a href="https://convoca.app/pricing" target="_blank"><?php esc_html_e( 'Adquiere una aquí', 'convoca-core' ); ?></a>.
+							<a href="https://getconvoca.app/tienda/" target="_blank"><?php esc_html_e( 'Adquiere una aquí', 'convoca-core' ); ?></a>.
 						</p>
 					<?php endif; ?>
 				</div>
