@@ -1,4 +1,4 @@
-# MANUAL_USUARIO.md — Convoca Core v2.1.3
+# MANUAL_USUARIO.md — Convoca Core v2.1.4
 
 > Plugin base del ecosistema. Panel de control, logs, webhooks, backup y plantillas PDF.
 
