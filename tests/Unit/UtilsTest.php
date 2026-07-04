@@ -69,7 +69,7 @@ class UtilsTest extends TestCase
 
     public function test_valid_nie_z(): void
     {
-        $this->assertTrue(\Convoca\Core\Utils::validate_dni('Z1234567M'));
+        $this->assertTrue(\Convoca\Core\Utils::validate_dni('Z1234567R'));
     }
 
     public function test_invalid_nie_letter(): void
