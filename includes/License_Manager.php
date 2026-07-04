@@ -32,6 +32,8 @@ class License_Manager {
 		'pwa_checkin'  => 'PWA Check-in QR',
 		'analytics'    => 'Analytics avanzados',
 		'webhooks'     => 'Webhooks salientes',
+		'publisher'    => 'Convoca Publisher PRO',
+		'theme'        => 'Convoca Theme PRO',
 	);
 
 	/**

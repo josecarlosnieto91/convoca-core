@@ -72,7 +72,7 @@ class LicenseManagerTest extends TestCase
     public function test_pro_features_has_nine_keys(): void
     {
         $features = License_Manager::PRO_FEATURES;
-        $this->assertCount(9, $features, 'PRO_FEATURES should contain exactly 9 features.');
+        $this->assertCount(11, $features, 'PRO_FEATURES should contain exactly 11 features.');
     }
 
     /**
@@ -94,6 +94,8 @@ class LicenseManagerTest extends TestCase
             'pwa_checkin',
             'analytics',
             'webhooks',
+            'publisher',
+            'theme',
         ];
 
         foreach ($expected as $key) {
