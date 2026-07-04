@@ -1,6 +1,6 @@
 === Convoca Core ===
 Contributors: josecarlosnietoramos
-Tags: common, utilities, logging, validation, webhooks, licenses
+Tags: common, utilities, logging, validation, webhooks, licenses, asociaciones, ONG, voluntariado
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 8.1
@@ -8,7 +8,7 @@ Stable tag: 2.1.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Funcionalidades comunes, utilidades, logging y validación para el ecosistema Convoca.
+Plugin base del ecosistema Convoca. Proporciona logging, rate limiting, webhooks, licencias y dashboard para asociaciones y ONGs.
 
 == Description ==
 
@@ -17,15 +17,19 @@ Plugin base del ecosistema Convoca. Proporciona funcionalidades compartidas para
 * Sistema de logging — Registro centralizado con niveles, contexto y purga automática
 * Rate limiting — Protección contra abusos con UPSERT atómico
 * Webhooks — Gestión de webhooks entrantes y salientes con reintentos
-* Locks atómicos — Prevención de race conditions (tabla dedicada + fallback wp_options)
-* Gestor de licencias — Validación local y remota, funciones PRO
+* Locks atómicos — Prevención de race conditions
+* Gestor de licencias — Validación local y remota (servicio externo opcional), funciones PRO
 * Setup Wizard — Asistente de configuración en 6 pasos
 * Dashboard centralizado — Métricas del sistema desde un solo panel
-* Visor de logs — WP_List_Table con filtros (contexto, nivel, fecha, búsqueda)
+* Visor de logs — WP_List_Table con filtros
 * Página de Salud del Sistema — Diagnóstico de dependencias y configuración
 * Backup/Restore — Exportación ZIP con previsualización de importación
 * Capacidades centralizadas — Constantes para todas las capabilities de Convoca
 * Generación de PDF — Integración con Dompdf para certificados y memorias
+
+= Servicios externos =
+
+Este plugin puede conectar con un servicio externo de validación de licencias en `getconvoca.app/api/license.php` para verificar claves de licencia PRO. Esta conexión es completamente opcional y solo ocurre cuando el administrador introduce una clave de licencia en el panel de administración. El plugin funciona sin esta conexión con todas las funcionalidades gratuitas.
 
 = Privacidad =
 
@@ -58,12 +62,18 @@ Sí, todos los demás plugins de Convoca requieren Convoca Core activo.
 
 Sí, para la generación de PDF con Dompdf.
 
+= ¿El plugin envía datos a servidores externos? =
+
+El plugin incluye un sistema opcional de validación de licencias que contacta con getconvoca.app solo cuando el administrador introduce manualmente una clave de licencia. Sin esta acción, no se realiza ninguna conexión externa.
+
 == Changelog ==
 
-
 = 2.1.4 =
-* Added: MANUAL_USUARIO.md with complete admin guide
-* Dev: Added phpstan.neon for static analysis
+* Añadido: MANUAL_USUARIO.md con guía completa
+* Mejora: Tests unitarios — bootstrap corregido para ejecución standalone
+* Mejora: Cobertura de tests aumentada a 65 tests, 235 aserciones
+* Dev: Añadido phpstan.neon para análisis estático
+
 = 2.1.3 =
 * Fix: Logo en get_branding_html() ahora aplica inline style
 
@@ -78,13 +88,9 @@ Sí, para la generación de PDF con Dompdf.
 * Nuevo: Sistema de locks atómico, rate limiting y webhook dedup
 
 = 2.0.0 =
-* Primera versión del plugin Convoca Core (refactorizado desde Convoca Core)
+* Primera versión del plugin Convoca Core
 
 == Upgrade Notice ==
 
-
 = 2.1.4 =
-* Added: MANUAL_USUARIO.md with complete admin guide
-* Dev: Added phpstan.neon for static analysis
-= 2.1.3 =
-Actualización de mantenimiento.
+* Tests y documentación mejorados. Compatible con WordPress 7.0.
