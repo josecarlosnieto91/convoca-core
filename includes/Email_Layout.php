@@ -147,10 +147,10 @@ img{display:block;border:0;height:auto;line-height:100%;outline:none;text-decora
 <!--[if mso]><table role="presentation" width="600" cellpadding="0" cellspacing="0" align="center"><tr><td><![endif]-->
 <table role="presentation" class="email-wrapper" width="100%" cellpadding="0" cellspacing="0">
 <tr><td class="email-header">
-		<?php echo $logo_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — already escaped inside get_branding_html ?>.
+		<?php echo wp_kses_post( $logo_html ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — already escaped inside get_branding_html ?>.
 </td></tr>
 <tr><td class="email-body">
-		<?php echo $body; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — already sanitized by caller ?>.
+		<?php echo wp_kses_post( $body ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — already sanitized by caller ?>.
 		<?php if ( $button_url && $button_text ) : ?>
 <p style="text-align:center;margin:24px 0 0">
 <a href="<?php echo esc_url( $button_url ); ?>" class="email-btn"><?php echo esc_html( $button_text ); ?></a>

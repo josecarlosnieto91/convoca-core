@@ -186,6 +186,7 @@ function convoca_health_page(): void {
 	$tables = array( 'convoca_logs', 'convoca_locks', 'convoca_webhook_retries' );
 	foreach ( $tables as $t ) {
 		$exists       = $wpdb->get_var( "SHOW TABLES LIKE '{$wpdb->prefix}{$t}'" ) === $wpdb->prefix . $t;
+		/* translators: %s: database table name */
 		$all_checks[] = array(
 			'title'   => sprintf( __( 'Tabla %s', 'convoca-core' ), $t ),
 			'status'  => $exists ? 'ok' : 'error',
@@ -236,7 +237,7 @@ function convoca_notifications_page(): void {
 							'success' => '✅', 'warning' => '⚠️', 'error' => '❌', default => 'ℹ️' };
 						?>
 				<tr>
-					<td><?php echo $icon; ?></td>
+					<td><?php echo esc_html( $icon ); ?></td>
 					<td><a href="<?php echo esc_url( $n['url'] ); ?>"><?php echo esc_html( $n['title'] ); ?></a></td>
 					<td><?php echo esc_html( $n['time'] ); ?></td>
 					<td><?php echo empty( $n['read'] ) ? '<span style="color:#d63638;font-weight:bold;">' . esc_html__( 'No leída', 'convoca-core' ) . '</span>' : '<span style="color:#46b450;">' . esc_html__( 'Leída', 'convoca-core' ) . '</span>'; ?></td>
@@ -250,14 +251,15 @@ endif;
 		<?php if ( $total > $per_page ) : ?>
 		<div class="tablenav"><div class="tablenav-pages">
 			<?php
-			echo paginate_links(
+			echo wp_kses_post(
+				paginate_links(
 				array(
 					'base'    => add_query_arg( 'paged', '%#%' ),
 					'format'  => '',
 					'total'   => ceil( $total / $per_page ),
 					'current' => $paged,
 				)
-			);
+			) );
 			?>
 		</div></div>
 		<?php endif; ?>

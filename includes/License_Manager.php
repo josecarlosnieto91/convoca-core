@@ -432,6 +432,6 @@ class License_Manager {
 		}
 		delete_transient( 'convoca_license_message' );
 		$type = strpos( $message, 'Error' ) !== false ? 'error' : 'success';
-		echo '<div class="notice notice-' . $type . ' is-dismissible"><p>' . esc_html( $message ) . '</p></div>';
+		echo '<div class="notice notice-' . esc_attr( $type ) . ' is-dismissible"><p>' . esc_html( $message ) . '</p></div>';
 	}
 }

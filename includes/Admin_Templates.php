@@ -79,11 +79,12 @@ class Admin_Templates {
 
 					// Atomic validation.
 					if ( ! empty( $content ) && ! self::validate_template( $content ) ) {
-						$template_name = $data['name'] ?? $key;
-						\Convoca\Core\Utils::set_admin_notice(
-							sprintf( __( 'Error: La plantilla "%s" contiene HTML inválido o peligroso.' ), esc_html( $template_name ) ),
-							'danger'
-						);
+					$template_name = $data['name'] ?? $key;
+					\Convoca\Core\Utils::set_admin_notice(
+						/* translators: %s: template name */
+						sprintf( __( 'Error: La plantilla "%s" contiene HTML inválido o peligroso.', 'convoca-core' ), esc_html( $template_name ) ),
+						'danger'
+					);
 						continue;
 					}
 
@@ -483,6 +484,7 @@ class Admin_Templates {
 			<?php \Convoca\Core\Utils::render_stored_notices(); ?>
 
 			<p><?php echo esc_html__( 'Aquí puedes modificar el diseño HTML de los documentos generados por el sistema de firmas (Convoca Common).', 'convoca-core' ); ?></p>
+		/* translators: %1$s, %2$s, %3$s: template placeholder examples like {{nombre}}, {{dni}}, {{fecha}} */
 			<p><?php printf( esc_html__( 'Utiliza etiquetas como %1$s, %2$s, %3$s para que se rellenen automáticamente según el contexto.', 'convoca-core' ), '<code>{{nombre}}</code>', '<code>{{dni}}</code>', '<code>{{fecha}}</code>' ); ?></p>
 
 			<form method="post" action="">

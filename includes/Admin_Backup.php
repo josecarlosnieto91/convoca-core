@@ -309,7 +309,7 @@ class Admin_Backup {
 		$file = $_FILES['backup_zip'];
 
 		if ( $file['error'] !== UPLOAD_ERR_OK ) {
-			wp_die( __( 'Error en la subida: ', 'convoca-core' ) . $file['error'] );
+			wp_die( esc_html__( 'Error en la subida: ', 'convoca-core' ) . esc_html( $file['error'] ) );
 		}
 		if ( strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) ) !== 'zip' ) {
 			wp_die( __( 'Formato inválido. Solo ZIP.', 'convoca-core' ) );
@@ -517,6 +517,7 @@ class Admin_Backup {
 
 		\Convoca\Core\Logger::info( sprintf( 'Importación masiva completada: %d registros.', $results['total'] ), 'System' );
 
+		/* translators: %d: number of records processed */
 		$msg = sprintf( __( 'Importación finalizada. %d registros procesados.', 'convoca-core' ), $results['total'] );
 		wp_safe_redirect( admin_url( 'admin.php?page=conv-backup&import_result=' . urlencode( $msg ) ) );
 		exit;

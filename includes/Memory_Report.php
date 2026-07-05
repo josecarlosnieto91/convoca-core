@@ -107,7 +107,7 @@ class Memory_Report {
 		header( 'Content-Type: application/pdf' );
 		header( 'Content-Disposition: attachment; filename="memoria-' . wp_date( 'F-Y', $timestamp ) . '.pdf"' );
 		header( 'Content-Length: ' . strlen( $pdf ) );
-		echo $pdf;
+		echo $pdf; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — binary PDF content, escaping would corrupt the file
 		exit;
 	}
 

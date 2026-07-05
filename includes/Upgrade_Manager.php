@@ -122,7 +122,7 @@ abstract class Upgrade_Manager {
 			if ( version_compare( $from, $version, '<' ) && version_compare( $version, $to, '<=' ) ) {
 				if ( ! is_callable( $callback ) ) {
 					Logger::error( "Upgrade $version callback not callable in {$this->get_transient_prefix()}", 'System' );
-					throw new \RuntimeException( "Upgrade callback not callable for version $version" );
+					throw new \RuntimeException( esc_html( "Upgrade callback not callable for version $version" ) );
 				}
 				try {
 					call_user_func( $callback );
@@ -170,7 +170,7 @@ abstract class Upgrade_Manager {
 				"Data migration '$description' fallo: " . $e->getMessage(),
 				'System'
 			);
-			throw new \RuntimeException( "Data migration '$description' failed: " . $e->getMessage() );
+			throw new \RuntimeException( esc_html( "Data migration '$description' failed: " . $e->getMessage() ) );
 		}
 	}
 

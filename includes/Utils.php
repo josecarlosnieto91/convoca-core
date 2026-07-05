@@ -559,7 +559,7 @@ class Utils {
 		<div class="convoca-diagnostic">
 			<div class="convoca-diagnostic-header convoca-diagnostic-header--<?php echo esc_attr( $level ); ?>">
 				<div class="convoca-diagnostic-icon convoca-badge convoca-badge--<?php echo esc_attr( $level ); ?>">
-					<?php echo $icon; ?>
+					<?php echo esc_html( $icon ); ?>
 				</div>
 				<div class="convoca-diagnostic-summary">
 					<h3><?php echo esc_html( $title ); ?></h3>
