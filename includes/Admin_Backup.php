@@ -40,7 +40,7 @@ class Admin_Backup {
 
 	public function render(): void {
 		if ( ! current_user_can( 'common_manage_backup' ) ) {
-			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
+			wp_die( esc_html__( 'No tienes permisos.', 'convoca-core' ) );
 		}
 		$preview = get_transient( 'convoca_import_preview_' . get_current_user_id() );
 		?>
@@ -132,13 +132,13 @@ class Admin_Backup {
 
 	public function handle_export(): void {
 		if ( ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'convoca_export_backup' ) ) {
-			wp_die( __( 'Nonce inválido.', 'convoca-core' ) );
+			wp_die( esc_html__( 'Nonce inválido.', 'convoca-core' ) );
 		}
 		if ( ! current_user_can( 'common_manage_backup' ) ) {
-			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
+			wp_die( esc_html__( 'No tienes permisos.', 'convoca-core' ) );
 		}
 		if ( ! class_exists( 'ZipArchive' ) ) {
-			wp_die( __( 'ZipArchive no disponible.', 'convoca-core' ) );
+			wp_die( esc_html__( 'ZipArchive no disponible.', 'convoca-core' ) );
 		}
 
 		@set_time_limit( 300 );
@@ -163,7 +163,7 @@ class Admin_Backup {
 		$zip = new \ZipArchive();
 		if ( $zip->open( $tmp_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE ) !== true ) {
 			$cleanup();
-			wp_die( __( 'No se pudo crear el archivo temporal ZIP.', 'convoca-core' ) );
+			wp_die( esc_html__( 'No se pudo crear el archivo temporal ZIP.', 'convoca-core' ) );
 		}
 
 		$add_csv = function ( $name, $headers, $rows ) use ( $zip ) {
@@ -282,7 +282,7 @@ class Admin_Backup {
 		$zip->close();
 
 		if ( ! file_exists( $tmp_file ) ) {
-			wp_die( __( 'Error fatal: ZIP no generado.', 'convoca-core' ) );
+			wp_die( esc_html__( 'Error fatal: ZIP no generado.', 'convoca-core' ) );
 		}
 
 		header( 'Content-Type: application/zip' );
@@ -300,11 +300,11 @@ class Admin_Backup {
 	public function handle_import_preview(): void {
 		check_admin_referer( 'convoca_import_backup' );
 		if ( ! current_user_can( 'common_manage_backup' ) ) {
-			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
+			wp_die( esc_html__( 'No tienes permisos.', 'convoca-core' ) );
 		}
 
 		if ( empty( $_FILES['backup_zip']['tmp_name'] ) ) {
-			wp_die( __( 'No se ha subido ningún archivo.', 'convoca-core' ) );
+			wp_die( esc_html__( 'No se ha subido ningún archivo.', 'convoca-core' ) );
 		}
 		$file = $_FILES['backup_zip'];
 
@@ -312,15 +312,15 @@ class Admin_Backup {
 			wp_die( esc_html__( 'Error en la subida: ', 'convoca-core' ) . esc_html( $file['error'] ) );
 		}
 		if ( strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) ) !== 'zip' ) {
-			wp_die( __( 'Formato inválido. Solo ZIP.', 'convoca-core' ) );
+			wp_die( esc_html__( 'Formato inválido. Solo ZIP.', 'convoca-core' ) );
 		}
 		if ( $file['size'] > self::MAX_ZIP_SIZE ) {
-			wp_die( __( 'Archivo demasiado grande.', 'convoca-core' ) );
+			wp_die( esc_html__( 'Archivo demasiado grande.', 'convoca-core' ) );
 		}
 
 		$zip = new \ZipArchive();
 		if ( $zip->open( $file['tmp_name'] ) !== true ) {
-			wp_die( __( 'No se pudo abrir el ZIP.', 'convoca-core' ) );
+			wp_die( esc_html__( 'No se pudo abrir el ZIP.', 'convoca-core' ) );
 		}
 
 		// Robust validation.
@@ -349,7 +349,7 @@ class Admin_Backup {
 
 		if ( empty( $entities ) ) {
 			$zip->close();
-			wp_die( __( 'El archivo ZIP no contiene datos compatibles de Convoca.', 'convoca-core' ) );
+			wp_die( esc_html__( 'El archivo ZIP no contiene datos compatibles de Convoca.', 'convoca-core' ) );
 		}
 
 		$zip->close();
@@ -368,7 +368,7 @@ class Admin_Backup {
 		$token  = wp_generate_password( 24, false );
 		$target = $import_dir . '/import-' . $token . '.zip';
 		if ( ! move_uploaded_file( $file['tmp_name'], $target ) ) {
-			wp_die( __( 'Error al guardar el temporal.', 'convoca-core' ) );
+			wp_die( esc_html__( 'Error al guardar el temporal.', 'convoca-core' ) );
 		}
 
 		set_transient(
@@ -390,12 +390,12 @@ class Admin_Backup {
 		global $wpdb;
 		check_admin_referer( 'convoca_import_backup_run' );
 		if ( ! current_user_can( 'common_manage_backup' ) ) {
-			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
+			wp_die( esc_html__( 'No tienes permisos.', 'convoca-core' ) );
 		}
 
 		$preview = get_transient( 'convoca_import_preview_' . get_current_user_id() );
 		if ( ! $preview || ! isset( $_POST['session_token'] ) || ! hash_equals( $preview['token'], wp_unslash( $_POST['session_token'] ) ) ) {
-			wp_die( __( 'Token de sesión inválido o expirado.', 'convoca-core' ) );
+			wp_die( esc_html__( 'Token de sesión inválido o expirado.', 'convoca-core' ) );
 		}
 
 		$selected = isset( $_POST['entities'] ) ? (array) wp_unslash( $_POST['entities'] ) : array();
@@ -408,7 +408,8 @@ class Admin_Backup {
 		);
 		foreach ( $selected as $entity ) {
 			if ( isset( $cap_checks[ $entity ] ) && ! current_user_can( $cap_checks[ $entity ] ) ) {
-				wp_die( __( "No tienes permisos para importar $entity.", "convoca-core" ) );
+				/* translators: %s: entity type name */
+				wp_die( sprintf( esc_html__( 'No tienes permisos para importar %s.', 'convoca-core' ), $entity ) );
 			}
 		}
 
@@ -416,12 +417,12 @@ class Admin_Backup {
 		$filepath   = $upload_dir['basedir'] . '/' . self::IMPORT_DIR . '/import-' . $preview['token'] . '.zip';
 
 		if ( ! file_exists( $filepath ) ) {
-			wp_die( __( 'Archivo temporal no encontrado.', 'convoca-core' ) );
+			wp_die( esc_html__( 'Archivo temporal no encontrado.', 'convoca-core' ) );
 		}
 
 		$zip = new \ZipArchive();
 		if ( $zip->open( $filepath ) !== true ) {
-			wp_die( __( 'No se pudo procesar el ZIP.', 'convoca-core' ) );
+			wp_die( esc_html__( 'No se pudo procesar el ZIP.', 'convoca-core' ) );
 		}
 
 		$results        = array( 'total' => 0 );
@@ -429,7 +430,7 @@ class Admin_Backup {
 
 		// Prevent concurrent imports.
 		if ( ! \Convoca\Core\Utils::acquire_lock( 'convoca_backup_import', 300 ) ) {
-			wp_die( __( 'Otra importación está en curso. Espera a que termine.', 'convoca-core' ) );
+			wp_die( esc_html__( 'Otra importación está en curso. Espera a que termine.', 'convoca-core' ) );
 		}
 
 		try {

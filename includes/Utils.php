@@ -337,19 +337,22 @@ class Utils {
 
 		// Try dedicated locks table first.
 		$locks_table  = self::locks_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name, not user input
 		$table_exists = $wpdb->get_var( "SHOW TABLES LIKE '$locks_table'" ) === $locks_table;
 
 		if ( $table_exists ) {
 			// Clean expired locks first.
-			$wpdb->query( "DELETE FROM $locks_table WHERE expires < " . time() );
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name
+			$wpdb->query( $wpdb->prepare( "DELETE FROM $locks_table WHERE expires < %d", time() ) );
 
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name
 			$result = $wpdb->query(
 				$wpdb->prepare(
-					"INSERT INTO $locks_table (lock_key, expires, created_at) 
+					"INSERT INTO $locks_table (lock_key, expires, created_at)
                  VALUES (%s, %d, NOW())
-                 ON DUPLICATE KEY UPDATE 
-                 expires = CASE 
-                     WHEN expires < %d THEN %d 
+                 ON DUPLICATE KEY UPDATE
+                 expires = CASE
+                     WHEN expires < %d THEN %d
                      ELSE expires END",
 					$lock_key,
 					$expires,
@@ -363,6 +366,7 @@ class Utils {
 			}
 
 			// Verify we got the lock.
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name
 			$current = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT expires FROM $locks_table WHERE lock_key = %s",
@@ -376,11 +380,11 @@ class Utils {
 		// Fallback: wp_options.
 		$result = $wpdb->query(
 			$wpdb->prepare(
-				"INSERT INTO $wpdb->options (option_name, option_value, autoload) 
-             VALUES (%s, %d, 'no') 
-             ON DUPLICATE KEY UPDATE 
-             option_value = CASE 
-                 WHEN option_value < %d THEN %d 
+				"INSERT INTO $wpdb->options (option_name, option_value, autoload)
+             VALUES (%s, %d, 'no')
+             ON DUPLICATE KEY UPDATE
+             option_value = CASE
+                 WHEN option_value < %d THEN %d
                  ELSE option_value END",
 				$lock_key,
 				$expires,
@@ -414,9 +418,11 @@ class Utils {
 		$lock_key = 'convoca_lock_' . $key;
 
 		$locks_table  = self::locks_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name
 		$table_exists = $wpdb->get_var( "SHOW TABLES LIKE '$locks_table'" ) === $locks_table;
 
 		if ( $table_exists ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name
 			$wpdb->query(
 				$wpdb->prepare(
 					"DELETE FROM $locks_table WHERE lock_key = %s",
@@ -445,10 +451,12 @@ class Utils {
 		$total = 0;
 
 		$locks_table  = self::locks_table();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name
 		$table_exists = $wpdb->get_var( "SHOW TABLES LIKE '$locks_table'" ) === $locks_table;
 
 		if ( $table_exists ) {
-			$total += (int) $wpdb->query( "DELETE FROM $locks_table WHERE expires < $now" );
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name
+			$total += (int) $wpdb->query( $wpdb->prepare( "DELETE FROM $locks_table WHERE expires < %d", $now ) );
 		}
 
 		$total += (int) $wpdb->query(

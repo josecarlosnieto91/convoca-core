@@ -139,7 +139,7 @@ function convoca_add_wizard_link( \WP_Admin_Bar $wp_admin_bar ): void {
  */
 function convoca_export_pdf( string $title, array $headers, array $rows, string $filename ): void {
 	if ( ! class_exists( 'Dompdf\Dompdf' ) ) {
-		wp_die( __( 'La librería Dompdf no está instalada. Contacta con el administrador.', 'convoca-core' ) );
+		wp_die( esc_html__( 'La librería Dompdf no está instalada. Contacta con el administrador.', 'convoca-core' ) );
 	}
 
 	$html  = '<html><head><meta charset="UTF-8"><style>
@@ -183,13 +183,13 @@ function convoca_export_pdf( string $title, array $headers, array $rows, string 
 		$dompdf->render();
 	} catch ( \Throwable $e ) {
 		\Convoca\Core\Logger::error( 'Error generando PDF export: ' . $e->getMessage(), 'System' );
-		wp_die( __( 'Error al generar el PDF. Contacta con el administrador.', 'convoca-core' ) );
+		wp_die( esc_html__( 'Error al generar el PDF. Contacta con el administrador.', 'convoca-core' ) );
 	}
 
 	header( 'Content-Type: application/pdf' );
 	header( 'Content-Disposition: attachment; filename="' . $filename . '-' . wp_date( 'Y-m-d' ) . '.pdf"' );
 	header( 'Pragma: no-cache' );
-	echo $dompdf->output();
+	echo $dompdf->output(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — binary PDF output, escaping would corrupt the file
 	exit;
 }
 
@@ -200,10 +200,10 @@ add_action(
 	'admin_post_convoca_export_payments_pdf',
 	function () {
 		if ( ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'convoca_gateway_export_payments_pdf' ) ) {
-			wp_die( __( 'Nonce inválido.', 'convoca-core' ) );
+			wp_die( esc_html__( 'Nonce inválido.', 'convoca-core' ) );
 		}
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
+			wp_die( esc_html__( 'No tienes permisos.', 'convoca-core' ) );
 		}
 
 		$posts   = get_posts(
@@ -238,7 +238,7 @@ add_action(
  */
 function convoca_logs_page(): void {
 	if ( ! current_user_can( 'manage_convoca_logs' ) && ! current_user_can( 'manage_options' ) ) {
-		wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
+		wp_die( esc_html__( 'No tienes permisos.', 'convoca-core' ) );
 	}
 	// [PSR-4] Admin_Logs_List is autoloaded from includes/Admin_Logs_List.php
 	$table = new \Convoca\Core\Admin_Logs_List();
@@ -287,7 +287,7 @@ function convoca_logs_page(): void {
  */
 function convoca_dashboard_page(): void {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
+		wp_die( esc_html__( 'No tienes permisos.', 'convoca-core' ) );
 	}
 
 	$force = isset( $_GET['refresh'] );

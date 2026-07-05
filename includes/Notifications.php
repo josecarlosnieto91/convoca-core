@@ -203,6 +203,7 @@ class Notifications {
 	private static function render_dropdown( array $notifications, int $total ): string {
 		$html  = '<div class="conv-notif-dropdown">';
 		$html .= '<div class="conv-notif-header">';
+		/* translators: %d: number of notifications */
 		$html .= '<strong>' . sprintf( __( 'Notificaciones (%d)', 'convoca-core' ), $total ) . '</strong>';
 		if ( $total > 0 ) {
 			$html .= ' <a href="#" class="conv-notif-mark-all" style="float:right;font-size:12px;">' . __( 'Marcar todas leídas', 'convoca-core' ) . '</a>';
@@ -359,6 +360,7 @@ class Notifications {
 	/* ── Event Hooks ── */
 
 	public static function on_member_created( int $member_id, array $data ): void {
+		/* translators: %s: member name */
 		$title = sprintf( __( 'Nuevo socio pendiente: %s', 'convoca-core' ), $data['nombre'] ?? '' );
 		$url   = admin_url( 'admin.php?page=conv-members&member_id=' . $member_id );
 
@@ -367,6 +369,7 @@ class Notifications {
 	}
 
 	public static function on_payment_failed( int $pago_id, string $order_id ): void {
+		/* translators: %s: order ID */
 		$title = sprintf( __( 'Pago fallido: %s', 'convoca-core' ), $order_id );
 		$url   = admin_url( 'admin.php?page=conv-gateway-payments-detail&id=' . $pago_id );
 
@@ -378,6 +381,7 @@ class Notifications {
 		if ( $member_id ) {
 			self::add_member(
 				(int) $member_id,
+				/* translators: %s: order ID */
 				sprintf( __( '❌ Tu pago (%s) no pudo procesarse. Revisa tu método de pago.', 'convoca-core' ), $order_id ),
 				'',
 				'error'
@@ -386,6 +390,7 @@ class Notifications {
 	}
 
 	public static function on_hours_submitted( int $record_id, string $member_name ): void {
+		/* translators: %s: member name */
 		$title = sprintf( __( 'Horas pendientes de aprobar: %s', 'convoca-core' ), $member_name );
 		$url   = admin_url( 'admin.php?page=conv-volunteer-hours' );
 
@@ -394,6 +399,7 @@ class Notifications {
 	}
 
 	public static function on_inscripcion_pendiente( int $inscripcion_id, string $nombre ): void {
+		/* translators: %s: person name */
 		$title = sprintf( __( 'Inscripción pendiente de pago: %s', 'convoca-core' ), $nombre );
 		$url   = admin_url( 'admin.php?page=convoca-core-enroll&inscripcion_id=' . $inscripcion_id );
 
@@ -433,6 +439,7 @@ class Notifications {
 			return;
 		}
 
+		/* translators: %s: user display name */
 		$title = sprintf( __( 'Nueva solicitud de voluntariado: %s', 'convoca-core' ), $user->display_name );
 		$url   = admin_url( 'edit.php?post_type=centro_turno&page=convoca_shifts_voluntarios_pendientes' );
 
@@ -446,6 +453,7 @@ class Notifications {
 			return;
 		}
 
+		/* translators: %s: post title */
 		$title = sprintf( __( 'Solicitud de baja: %s', 'convoca-core' ), $post->post_title );
 		$url   = admin_url( 'admin.php?page=conv-members&id=' . $member_id );
 

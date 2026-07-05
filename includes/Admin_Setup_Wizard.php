@@ -135,7 +135,7 @@ class Admin_Setup_Wizard {
 	public function handle_skip(): void {
 		check_admin_referer( 'convoca_wizard_skip' );
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'Acceso denegado.', 'convoca-core' ) );
+			wp_die( esc_html__( 'Acceso denegado.', 'convoca-core' ) );
 		}
 		update_option( self::DISMISS_OPTION, 1 );
 		wp_safe_redirect( admin_url() );
@@ -144,7 +144,7 @@ class Admin_Setup_Wizard {
 
 	public function render(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
+			wp_die( esc_html__( 'No tienes permisos.', 'convoca-core' ) );
 		}
 
 		$saved_progress = (int) get_option( self::PROGRESS_OPTION, 1 );
@@ -218,7 +218,8 @@ class Admin_Setup_Wizard {
 		$checks[] = $this->check_item( __( 'Convoca Common', 'convoca-core' ), class_exists( '\\Convoca\\Core\\Utils' ), __( 'Plugin activo.', 'convoca-core' ), __( 'Activa Convoca Common.', 'convoca-core' ) );
 
 		foreach ( array( 'convoca_logs', 'convoca_locks' ) as $t ) {
-			$exists   = $wpdb->get_var( "SHOW TABLES LIKE '{$wpdb->prefix}{$t}'" ) === $wpdb->prefix . $t;
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — SHOW TABLES LIKE requires a literal string
+			$exists   = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $wpdb->prefix . $t ) ) === $wpdb->prefix . $t;
 			/* translators: %s: database table name */
 			$checks[] = $this->check_item( sprintf( __( 'Tabla %s', 'convoca-core' ), $t ), $exists, __( 'Correcto.', 'convoca-core' ), __( 'No encontrada.', 'convoca-core' ) );
 		}
@@ -295,11 +296,11 @@ class Admin_Setup_Wizard {
 	public function handle_create_pages(): void {
 		check_admin_referer( 'convoca_wizard_create_pages' );
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'Acceso denegado.', 'convoca-core' ) );
+			wp_die( esc_html__( 'Acceso denegado.', 'convoca-core' ) );
 		}
 
 		if ( ! \Convoca\Core\Utils::acquire_lock( 'convoca_wizard_create_pages', 30 ) ) {
-			wp_die( __( 'Otra operación de creación de páginas está en curso.', 'convoca-core' ) );
+			wp_die( esc_html__( 'Otra operación de creación de páginas está en curso.', 'convoca-core' ) );
 		}
 
 		try {

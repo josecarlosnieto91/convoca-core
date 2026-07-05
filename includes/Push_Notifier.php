@@ -86,6 +86,7 @@ class Push_Notifier {
 
 		if ( is_wp_error( $response ) ) {
 			Logger::warning(
+				/* translators: %s: error message from the push notification service */
 				sprintf( __( 'Push notification error: %s', 'convoca-core' ), $response->get_error_message() ),
 				'Common/Push'
 			);
@@ -95,6 +96,7 @@ class Push_Notifier {
 		$code = wp_remote_retrieve_response_code( $response );
 		if ( $code >= 200 && $code < 300 ) {
 			Logger::debug(
+				/* translators: %s: notification title */
 				sprintf( __( 'Push notification sent: %s', 'convoca-core' ), $title ),
 				'Common/Push'
 			);
@@ -102,6 +104,7 @@ class Push_Notifier {
 		}
 
 		Logger::warning(
+			/* translators: %1$d: HTTP status code, %2$s: response body */
 			sprintf( __( 'Push notification HTTP %1$d: %2$s', 'convoca-core' ), $code, wp_remote_retrieve_body( $response ) ),
 			'Common/Push'
 		);

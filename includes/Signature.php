@@ -179,12 +179,14 @@ class Signature {
 
 			if ( ! file_exists( $dir ) ) {
 				if ( ! wp_mkdir_p( $dir ) ) {
+					/* translators: %s: directory path */
 					$this->last_error = sprintf( __( 'No se pudo crear el directorio %s. Comprueba los permisos de escritura del servidor.', 'convoca-core' ), $dir );
 					return false;
 				}
 			}
 
 			if ( ! is_writable( $dir ) ) {
+				/* translators: %s: directory path */
 				$this->last_error = sprintf( __( 'El directorio %s no tiene permisos de escritura.', 'convoca-core' ), $dir );
 				return false;
 			}
@@ -196,6 +198,7 @@ class Signature {
 			}
 
 			if ( file_put_contents( $output_path, $output ) === false ) {
+				/* translators: %s: file path */
 				$this->last_error = sprintf( __( 'No se pudo escribir el archivo PDF en %s. Comprueba los permisos de escritura.', 'convoca-core' ), $output_path );
 				return false;
 			}
@@ -278,6 +281,7 @@ class Signature {
 		if ( ! file_exists( $htaccess_file ) ) {
 			$rules = "Options -ExecCGI\nphp_flag engine off\n<FilesMatch \"\\.(pdf|sig)$\">\n    Order allow,deny\n    Allow from all\n    Satisfy any\n</FilesMatch>\nOrder deny,allow\nDeny from all\n";
 			if ( @file_put_contents( $htaccess_file, $rules ) === false ) {
+				/* translators: %s: directory path */
 				$this->last_error = sprintf( __( 'No se pudo crear el archivo de protección .htaccess en %s.', 'convoca-core' ), $dir );
 				return false;
 			}
@@ -285,6 +289,7 @@ class Signature {
 
 		if ( ! file_exists( $index_file ) ) {
 			if ( @file_put_contents( $index_file, "<?php\n// Silence is golden.\n" ) === false ) {
+				/* translators: %s: directory path */
 				$this->last_error = sprintf( __( 'No se pudo crear el archivo de protección index.php en %s.', 'convoca-core' ), $dir );
 				return false;
 			}

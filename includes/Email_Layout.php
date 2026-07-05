@@ -64,7 +64,7 @@ class Email_Layout {
 		$logo_html = Utils::get_branding_html( 'email', '', 'max-width:180px;height:auto;display:block;margin:0 auto;' );
 
 		// Convert plain text line breaks to <p> if body has no HTML tags.
-		if ( $body === strip_tags( $body ) ) {
+		if ( $body === wp_strip_all_tags( $body ) ) {
 			$body = nl2br( esc_html( $body ) );
 		}
 

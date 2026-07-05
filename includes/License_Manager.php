@@ -278,7 +278,7 @@ class License_Manager {
 	 */
 	public static function render_page(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
+			wp_die( esc_html__( 'No tienes permisos.', 'convoca-core' ) );
 		}
 
 		$license  = self::get_license();
@@ -385,10 +385,10 @@ class License_Manager {
 	 */
 	public static function handle_activate(): void {
 		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'convoca_activate' ) ) {
-			wp_die( __( 'Nonce inválido.', 'convoca-core' ) );
+			wp_die( esc_html__( 'Nonce inválido.', 'convoca-core' ) );
 		}
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
+			wp_die( esc_html__( 'No tienes permisos.', 'convoca-core' ) );
 		}
 
 		$key = sanitize_text_field( $_POST['license_key'] ?? '' );
@@ -409,10 +409,10 @@ class License_Manager {
 	 */
 	public static function handle_deactivate(): void {
 		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'convoca_deactivate' ) ) {
-			wp_die( __( 'Nonce inválido.', 'convoca-core' ) );
+			wp_die( esc_html__( 'Nonce inválido.', 'convoca-core' ) );
 		}
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
+			wp_die( esc_html__( 'No tienes permisos.', 'convoca-core' ) );
 		}
 
 		self::deactivate();

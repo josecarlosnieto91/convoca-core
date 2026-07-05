@@ -484,8 +484,10 @@ class Admin_Templates {
 			<?php \Convoca\Core\Utils::render_stored_notices(); ?>
 
 			<p><?php echo esc_html__( 'Aquí puedes modificar el diseño HTML de los documentos generados por el sistema de firmas (Convoca Common).', 'convoca-core' ); ?></p>
-		/* translators: %1$s, %2$s, %3$s: template placeholder examples like {{nombre}}, {{dni}}, {{fecha}} */
-			<p><?php printf( esc_html__( 'Utiliza etiquetas como %1$s, %2$s, %3$s para que se rellenen automáticamente según el contexto.', 'convoca-core' ), '<code>{{nombre}}</code>', '<code>{{dni}}</code>', '<code>{{fecha}}</code>' ); ?></p>
+			<p><?php
+			/* translators: %1$s, %2$s, %3$s: template placeholder examples like {{nombre}}, {{dni}}, {{fecha}} */
+			printf( esc_html__( 'Utiliza etiquetas como %1$s, %2$s, %3$s para que se rellenen automáticamente según el contexto.', 'convoca-core' ), '<code>{{nombre}}</code>', '<code>{{dni}}</code>', '<code>{{fecha}}</code>' );
+			?></p>
 
 			<form method="post" action="">
 				<?php wp_nonce_field( 'convoca_save_templates_nonce' ); ?>
@@ -511,7 +513,7 @@ class Admin_Templates {
 						?>
 						<div id="tab-<?php echo esc_attr( $key ); ?>" class="conv-tab-content" style="<?php echo $first ? '' : 'display:none;'; ?> margin-top:20px;">
 							<label for="template_<?php echo esc_attr( $key ); ?>"><strong><?php echo esc_html__( 'Código HTML:', 'convoca-core' ); ?></strong></label><br><br>
-							<textarea id="template_<?php echo esc_attr( $key ); ?>" name="template[<?php echo esc_attr( $key ); ?>]" rows="25" class="large-text code" style="font-family: monospace; background: #fcfcfc;"><?php echo htmlspecialchars( $data['content'], ENT_QUOTES, 'UTF-8', false ); ?></textarea>
+							<textarea id="template_<?php echo esc_attr( $key ); ?>" name="template[<?php echo esc_attr( $key ); ?>]" rows="25" class="large-text code" style="font-family: monospace; background: #fcfcfc;"><?php echo esc_textarea( $data['content'] ); ?></textarea>
 						</div>
 						<?php
 						$first = false;

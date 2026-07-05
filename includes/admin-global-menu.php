@@ -69,7 +69,7 @@ function convoca_register_global_menu(): void {
  */
 function convoca_health_page(): void {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_die( __( 'No tienes permisos.', 'convoca-core' ) );
+		wp_die( esc_html__( 'No tienes permisos.', 'convoca-core' ) );
 	}
 
 	$force = isset( $_GET['force'] ) && $_GET['force'] === '1';
@@ -185,9 +185,10 @@ function convoca_health_page(): void {
 	global $wpdb;
 	$tables = array( 'convoca_logs', 'convoca_locks', 'convoca_webhook_retries' );
 	foreach ( $tables as $t ) {
-		$exists       = $wpdb->get_var( "SHOW TABLES LIKE '{$wpdb->prefix}{$t}'" ) === $wpdb->prefix . $t;
-		/* translators: %s: database table name */
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — SHOW TABLES LIKE requires a literal string, prepare() percent-escapes break it
+		$exists       = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $wpdb->prefix . $t ) ) === $wpdb->prefix . $t;
 		$all_checks[] = array(
+			/* translators: %s: database table name */
 			'title'   => sprintf( __( 'Tabla %s', 'convoca-core' ), $t ),
 			'status'  => $exists ? 'ok' : 'error',
 			'message' => $exists ? __( 'OK', 'convoca-core' ) : __( 'No encontrada. Desactiva y reactiva Convoca Common.', 'convoca-core' ),
@@ -214,7 +215,7 @@ function convoca_notifications_menu(): void {
 
 function convoca_notifications_page(): void {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_die( __( 'Access denied.', 'convoca-core' ) );
+		wp_die( esc_html__( 'Access denied.', 'convoca-core' ) );
 	}
 	$all      = get_user_meta( get_current_user_id(), Notifications::META_KEY, true ) ?: array();
 	$paged    = isset( $_GET['paged'] ) ? max( 1, (int) $_GET['paged'] ) : 1;
@@ -224,7 +225,7 @@ function convoca_notifications_page(): void {
 	?>
 	<div class="wrap">
 		<h1><?php esc_html_e( 'Notificaciones', 'convoca-core' ); ?></h1>
-		<p><?php printf( esc_html__( 'Total: %d notificaciones', 'convoca-core' ), $total ); ?></p>
+		<p><?php printf( esc_html__( 'Total: %d notificaciones', 'convoca-core' ), (int) $total ); ?></p>
 		<table class="wp-list-table widefat fixed striped">
 			<thead><tr><th><?php esc_html_e( 'Tipo', 'convoca-core' ); ?></th><th><?php esc_html_e( 'Mensaje', 'convoca-core' ); ?></th><th><?php esc_html_e( 'Fecha', 'convoca-core' ); ?></th><th><?php esc_html_e( 'Estado', 'convoca-core' ); ?></th></tr></thead>
 			<tbody>
