@@ -154,8 +154,11 @@ class Admin_Backup {
 					\RecursiveIteratorIterator::CHILD_FIRST
 				);
 				foreach ( $files as $file ) {
+					// phpcs:disable WordPress.WP.AlternativeFunctions — temp cleanup in system temp dir
 					$file->isDir() ? rmdir( $file->getRealPath() ) : unlink( $file->getRealPath() );
+					// phpcs:enable
 				}
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir — temp cleanup in system temp dir
 				rmdir( $temp_dir );
 			}
 		};
@@ -167,7 +170,9 @@ class Admin_Backup {
 		}
 
 		$add_csv = function ( $name, $headers, $rows ) use ( $zip ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen — temp stream for CSV in memory
 			$handle = fopen( 'php://temp', 'r+' );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite — writing BOM + CSV data to temp stream
 			fwrite( $handle, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) ); // BOM for UTF-8.
 			fputcsv( $handle, $headers, ',', '"' );
 			foreach ( $rows as $row ) {
@@ -175,6 +180,7 @@ class Admin_Backup {
 			}
 			rewind( $handle );
 			$zip->addFromString( $name . '.csv', stream_get_contents( $handle ) );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose — temp stream cleanup
 			fclose( $handle );
 		};
 
@@ -290,7 +296,8 @@ class Admin_Backup {
 		header( 'Content-Length: ' . filesize( $tmp_file ) );
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
-		readfile( $tmp_file );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile — serving binary ZIP file, no escaping needed
+	readfile( $tmp_file );
 		$cleanup();
 		exit;
 	}
@@ -333,6 +340,7 @@ class Admin_Backup {
 				while ( fgets( $stream ) ) {
 					++$count;
 				}
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose — ZipArchive stream cleanup
 				fclose( $stream );
 				$entities[ $name ] = array(
 					'label' => $this->entity_label( $name ),
@@ -367,7 +375,8 @@ class Admin_Backup {
 
 		$token  = wp_generate_password( 24, false );
 		$target = $import_dir . '/import-' . $token . '.zip';
-		if ( ! move_uploaded_file( $file['tmp_name'], $target ) ) {
+		// phpcs:ignore Generic.PHP.ForbiddenFunctions.Found — WP_Filesystem does not handle uploaded files; move_uploaded_file is the standard approach
+	if ( ! move_uploaded_file( $file['tmp_name'], $target ) ) {
 			wp_die( esc_html__( 'Error al guardar el temporal.', 'convoca-core' ) );
 		}
 
@@ -409,6 +418,7 @@ class Admin_Backup {
 		foreach ( $selected as $entity ) {
 			if ( isset( $cap_checks[ $entity ] ) && ! current_user_can( $cap_checks[ $entity ] ) ) {
 				/* translators: %s: entity type name */
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — $entity is a safe internal slug, not user input
 				wp_die( sprintf( esc_html__( 'No tienes permisos para importar %s.', 'convoca-core' ), $entity ) );
 			}
 		}
@@ -452,12 +462,14 @@ class Admin_Backup {
 				}
 
 				$stream = $zip->getStream( $csv_name );
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread — reading BOM check from ZipArchive stream, no WP alternative
 				if ( fread( $stream, 3 ) !== chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) ) {
 					rewind( $stream );
 				}
 
 				$headers = fgetcsv( $stream, 0, ',', '"' );
 				if ( ! $headers ) {
+					// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose — ZipArchive stream cleanup
 					fclose( $stream );
 					continue; }
 
@@ -466,6 +478,7 @@ class Admin_Backup {
 					default => false
 				};
 				if ( ! $post_type ) {
+					// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose — ZipArchive stream cleanup
 					fclose( $stream );
 					continue; }
 
@@ -494,8 +507,9 @@ class Admin_Backup {
 					}
 					$this->apply_meta( $entity, $new_id, $data );
 					++$results['total'];
-				}
-				fclose( $stream );
+					}
+					// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose — ZipArchive stream cleanup
+					fclose( $stream );
 			}
 		} catch ( \Throwable $e ) {
 			foreach ( $imported_posts as $pid ) {
@@ -503,6 +517,7 @@ class Admin_Backup {
 			}
 			\Convoca\Core\Utils::release_lock( 'convoca_backup_import' );
 			$zip->close();
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink — wp_delete_file is for uploads; this is an import temp file cleaned explicitly
 			unlink( $filepath );
 			delete_transient( 'convoca_import_preview_' . get_current_user_id() );
 			\Convoca\Core\Logger::error( 'Importación masiva fallida: ' . $e->getMessage(), 'System' );
@@ -513,6 +528,7 @@ class Admin_Backup {
 		\Convoca\Core\Utils::release_lock( 'convoca_backup_import' );
 
 		$zip->close();
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink — wp_delete_file is for uploads; this is an import temp file cleaned explicitly
 		unlink( $filepath );
 		delete_transient( 'convoca_import_preview_' . get_current_user_id() );
 

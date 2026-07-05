@@ -52,7 +52,8 @@ class PDF_Serve {
 		header( 'Content-Disposition: inline; filename="' . basename( $file_path ) . '"' );
 		header( 'Content-Length: ' . filesize( $file_path ) );
 		header( 'Cache-Control: private, max-age=3600' );
-		readfile( $file_path );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile — serving binary PDF file through PHP, no escaping or WP_Filesystem needed
+	readfile( $file_path );
 		exit;
 	}
 }

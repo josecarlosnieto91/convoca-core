@@ -370,6 +370,7 @@ function convoca_dashboard_page(): void {
 			<div class="conv-chart-card">
 				<h3>📈 <?php esc_html_e( 'Tendencia (6 meses)', 'convoca-core' ); ?></h3>
 				<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — chart.js data is numeric, render_chart returns safe HTML with inline JS
 				echo \Convoca\Core\Admin_Analytics::render_chart(
 					'chartTrends',
 					'line',
@@ -394,6 +395,7 @@ function convoca_dashboard_page(): void {
 			<div class="conv-chart-card">
 				<h3>💰 <?php esc_html_e( 'Ingresos mensuales', 'convoca-core' ); ?></h3>
 				<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — chart.js data is numeric, render_chart returns safe HTML with inline JS
 				echo \Convoca\Core\Admin_Analytics::render_chart(
 					'chartPayments',
 					'bar',
@@ -412,6 +414,7 @@ function convoca_dashboard_page(): void {
 			<div class="conv-chart-card">
 				<h3>📊 <?php esc_html_e( 'Inscripciones por estado', 'convoca-core' ); ?></h3>
 				<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — chart.js data is numeric, render_chart returns safe HTML with inline JS
 				echo \Convoca\Core\Admin_Analytics::render_chart(
 					'chartInscriptionStates',
 					'doughnut',
@@ -429,6 +432,7 @@ function convoca_dashboard_page(): void {
 			<div class="conv-chart-card">
 				<h3>💳 <?php esc_html_e( 'Métodos de pago (mes)', 'convoca-core' ); ?></h3>
 				<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — chart.js data is numeric, render_chart returns safe HTML with inline JS
 				echo \Convoca\Core\Admin_Analytics::render_chart(
 					'chartPayMethods',
 					'doughnut',
@@ -446,6 +450,7 @@ function convoca_dashboard_page(): void {
 			<div class="conv-chart-card conv-chart-card--wide">
 				<h3>📋 <?php esc_html_e( 'Últimos 7 días — Pagos', 'convoca-core' ); ?></h3>
 				<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — chart.js data is numeric, render_chart returns safe HTML with inline JS
 				echo \Convoca\Core\Admin_Analytics::render_chart(
 					'chart7days',
 					'bar',

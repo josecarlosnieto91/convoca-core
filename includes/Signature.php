@@ -185,7 +185,8 @@ class Signature {
 				}
 			}
 
-			if ( ! is_writable( $dir ) ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable — checking directory permissions before writing, no WP_Filesystem equivalent for directory writability check
+	if ( ! is_writable( $dir ) ) {
 				/* translators: %s: directory path */
 				$this->last_error = sprintf( __( 'El directorio %s no tiene permisos de escritura.', 'convoca-core' ), $dir );
 				return false;

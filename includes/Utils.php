@@ -159,7 +159,8 @@ class Utils {
 		$out = fopen( 'php://output', 'w' );
 		// BOM for Excel.
 		fprintf( $out, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) );
-		fclose( $out );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose — closing php://output stream after BOM write, no WP_Filesystem equivalent for CSV streams
+	fclose( $out );
 	}
 	/**
 	 * Generate a unique alphanumeric access code.
@@ -178,7 +179,7 @@ class Utils {
 				try {
 					$code .= $chars[ random_int( 0, strlen( $chars ) - 1 ) ];
 				} catch ( \Exception $e ) {
-					$code .= $chars[ mt_rand( 0, strlen( $chars ) - 1 ) ];
+					$code .= $chars[ wp_rand( 0, strlen( $chars ) - 1 ) ];
 				}
 			}
 

@@ -189,6 +189,7 @@ class Installer {
 
 				if ( ! empty( $values ) ) {
 					// Use INSERT IGNORE to handle race conditions gracefully.
+					// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared — $values are individually built with $wpdb->prepare(), implode only joins already-prepared placeholders
 					$wpdb->query(
 						"INSERT IGNORE INTO {$wpdb->postmeta} (post_id, meta_key, meta_value) VALUES " . implode( ',', $values )
 					);
