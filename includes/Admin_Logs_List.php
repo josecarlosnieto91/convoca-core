@@ -1,4 +1,20 @@
 <?php
+
+/**
+ * Convoca Core
+ *
+ * @package    Convoca\Core
+ * @subpackage Includes
+ *
+ * @copyright  Copyright (C) 2026 Jose Carlos Nieto Ramos
+ * @license    GPL-2.0-or-later
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ */
+
 /**
  * Centralized log viewer for the convoca_logs table.
  *
@@ -69,7 +85,7 @@ class Admin_Logs_List extends \WP_List_Table {
 	protected function column_message( $item ): string {
 		$msg = esc_html( mb_substr( $item->message, 0, 200 ) );
 		if ( mb_strlen( $item->message ) > 200 ) {
-			$msg .= ' <span class="view-log-detail" data-log-message="' . esc_attr( $item->message ) . '">[' . __( 'ver más', 'convoca-core' ) . ']</span>';
+			$msg .= ' <span class="view-log-detail" data-log-message="' . esc_attr( $item->message ) . '">[' . esc_html__( 'ver más', 'convoca-core' ) . ']</span>';
 		}
 		return $msg;
 	}
@@ -196,7 +212,7 @@ class Admin_Logs_List extends \WP_List_Table {
 	 */
 	public function display(): void {
 		if ( $this->screen === null ) {
-			echo '<div class="notice notice-warning"><p>' . __( 'La vista de logs requiere el panel de administración.', 'convoca-core' ) . '</p></div>';
+			echo '<div class="notice notice-warning"><p>' . esc_html__( 'La vista de logs requiere el panel de administración.', 'convoca-core' ) . '</p></div>';
 			return;
 		}
 		parent::display();
@@ -220,13 +236,13 @@ class Admin_Logs_List extends \WP_List_Table {
 		?>
 		<div class="alignleft actions" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
 			<select name="filter_context">
-				<option value=""><?php _e( 'Todos los plugins', 'convoca-core' ); ?></option>
+				<option value=""><?php esc_html_e( 'Todos los plugins', 'convoca-core' ); ?></option>
 				<?php foreach ( $contexts as $c ) : ?>
 					<option value="<?php echo esc_attr( $c ); ?>" <?php selected( $filter_context, $c ); ?>><?php echo esc_html( $c ); ?></option>
 				<?php endforeach; ?>
 			</select>
 			<select name="filter_level">
-				<option value=""><?php _e( 'Todos los niveles', 'convoca-core' ); ?></option>
+				<option value=""><?php esc_html_e( 'Todos los niveles', 'convoca-core' ); ?></option>
 				<?php foreach ( $levels as $l ) : ?>
 					<option value="<?php echo esc_attr( $l ); ?>" <?php selected( $filter_level, $l ); ?>><?php echo esc_html( ucfirst( $l ) ); ?></option>
 				<?php endforeach; ?>

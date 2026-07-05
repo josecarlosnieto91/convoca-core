@@ -1,4 +1,20 @@
 <?php
+
+/**
+ * Convoca Core
+ *
+ * @package    Convoca\Core
+ * @subpackage Includes
+ *
+ * @copyright  Copyright (C) 2026 Jose Carlos Nieto Ramos
+ * @license    GPL-2.0-or-later
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ */
+
 /**
  * Convoca Internal Notifications System.
  *
@@ -265,22 +281,22 @@ class Notifications {
 						var fd = new FormData();
 						fd.append('action', 'convoca_notifications_mark_read');
 						fd.append('id', id);
-						fd.append('nonce', '<?php echo wp_create_nonce( 'convoca_notifications_ajax' ); ?>');
+						fd.append('nonce', '<?php echo esc_attr( wp_create_nonce( 'convoca_notifications_ajax' ) ); ?>');
 						fetch(ajaxurl, { method: 'POST', body: fd });
 						item.classList.remove('conv-notif-unread');
-					}
-				}
-				// Dismiss single.
-				var dismiss = e.target.closest('.conv-notif-dismiss');
-				if (dismiss) {
-					e.preventDefault();
-					var item = dismiss.closest('.conv-notif-item');
-					if (item) {
+						}
+						}
+						// Dismiss single.
+						var dismiss = e.target.closest('.conv-notif-dismiss');
+						if (dismiss) {
+						e.preventDefault();
+						var item = dismiss.closest('.conv-notif-item');
+						if (item) {
 						var id = item.dataset.id;
 						var fd = new FormData();
 						fd.append('action', 'convoca_notifications_dismiss');
 						fd.append('id', id);
-						fd.append('nonce', '<?php echo wp_create_nonce( 'convoca_notifications_ajax' ); ?>');
+						fd.append('nonce', '<?php echo esc_attr( wp_create_nonce( 'convoca_notifications_ajax' ) ); ?>');
 						fetch(ajaxurl, { method: 'POST', body: fd }).then(function() { item.remove(); });
 					}
 				}
@@ -293,7 +309,7 @@ class Notifications {
 						var fd = new FormData();
 						fd.append('action', 'convoca_notifications_mark_read');
 						fd.append('id', id);
-						fd.append('nonce', '<?php echo wp_create_nonce( 'convoca_notifications_ajax' ); ?>');
+						fd.append('nonce', '<?php echo esc_attr( wp_create_nonce( 'convoca_notifications_ajax' ) ); ?>');
 						fetch(ajaxurl, { method: 'POST', body: fd });
 						item.classList.remove('conv-notif-unread');
 					});
@@ -311,7 +327,7 @@ class Notifications {
 		if ( ! is_user_logged_in() ) {
 			return;
 		}
-		$id = sanitize_text_field( $_POST['id'] ?? '' );
+		$id = sanitize_text_field( wp_unslash( $_POST['id'] ?? '' ) );
 		if ( ! $id ) {
 			return;
 		}
@@ -329,7 +345,7 @@ class Notifications {
 
 	public static function ajax_dismiss(): void {
 		check_ajax_referer( 'convoca_notifications_ajax', 'nonce' );
-		$id = sanitize_text_field( $_POST['id'] ?? '' );
+		$id = sanitize_text_field( wp_unslash( $_POST['id'] ?? '' ) );
 		if ( ! $id ) {
 			return;
 		}

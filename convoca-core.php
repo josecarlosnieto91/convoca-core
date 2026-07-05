@@ -1,22 +1,31 @@
 <?php
 /**
- * Plugin Name: Convoca Core
- * Plugin URI: https://getconvoca.app.
- * Description: Common functions, validation, and logging.
- * Author: Jose Carlos Nieto Ramos
- * Author URI: https://josecarlosnietoramos.com.
- * Version: 2.1.4
- * License: GPL-2.0-or-later
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Plugin Name:       Convoca Core
+ * Plugin URI:        https://getconvoca.app
+ * Description:       Common functions, validation, logging, and shared infrastructure.
+ * Version:           2.1.4
  * Requires at least: 6.4
- * Requires PHP: 8.1
- * Tested up to: 7.0
- * Text Domain: convoca-core
- * Domain Path: /languages
+ * Requires PHP:      8.1
+ * Tested up to:      7.0
+ * Author:            Jose Carlos Nieto Ramos
+ * Author URI:        https://getconvoca.app
+ * License:           GPL-2.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       convoca-core
+ * Domain Path:       /languages
+
  */
+
+namespace Convoca\Core;
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 
 
 namespace Convoca\Core;
+
+// Load translations.
 
 // Load translations.
 add_action( 'init', function () {

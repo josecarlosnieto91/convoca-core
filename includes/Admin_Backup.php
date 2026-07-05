@@ -1,4 +1,20 @@
 <?php
+
+/**
+ * Convoca Core
+ *
+ * @package    Convoca\Core
+ * @subpackage Includes
+ *
+ * @copyright  Copyright (C) 2026 Jose Carlos Nieto Ramos
+ * @license    GPL-2.0-or-later
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ */
+
 namespace Convoca\Core;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -378,11 +394,11 @@ class Admin_Backup {
 		}
 
 		$preview = get_transient( 'convoca_import_preview_' . get_current_user_id() );
-		if ( ! $preview || ! isset( $_POST['session_token'] ) || ! hash_equals( $preview['token'], $_POST['session_token'] ) ) {
+		if ( ! $preview || ! isset( $_POST['session_token'] ) || ! hash_equals( $preview['token'], wp_unslash( $_POST['session_token'] ) ) ) {
 			wp_die( __( 'Token de sesión inválido o expirado.', 'convoca-core' ) );
 		}
 
-		$selected = isset( $_POST['entities'] ) ? (array) $_POST['entities'] : array();
+		$selected = isset( $_POST['entities'] ) ? (array) wp_unslash( $_POST['entities'] ) : array();
 
 		$cap_checks = array(
 			'proyectos'     => 'manage_inscripciones',

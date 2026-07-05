@@ -1,6 +1,6 @@
 === Convoca Core ===
 Contributors: josecarlosnietoramos
-Tags: common, utilities, logging, validation, webhooks, licenses, asociaciones, ONG, voluntariado
+Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 8.1
@@ -8,89 +8,89 @@ Stable tag: 2.1.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Plugin base del ecosistema Convoca. Proporciona logging, rate limiting, webhooks, licencias y dashboard para asociaciones y ONGs.
+Base plugin for the Convoca ecosystem. Provides logging, rate limiting, webhooks, license management, and a dashboard for associations and NGOs.
 
 == Description ==
 
-Plugin base del ecosistema Convoca. Proporciona funcionalidades compartidas para todos los demás plugins Convoca:
+Base plugin for the Convoca ecosystem. Provides shared functionality for all other Convoca plugins:
 
-* Sistema de logging — Registro centralizado con niveles, contexto y purga automática
-* Rate limiting — Protección contra abusos con UPSERT atómico
-* Webhooks — Gestión de webhooks entrantes y salientes con reintentos
-* Locks atómicos — Prevención de race conditions
-* Gestor de licencias — Validación local y remota (servicio externo opcional), funciones PRO
-* Setup Wizard — Asistente de configuración en 6 pasos
-* Dashboard centralizado — Métricas del sistema desde un solo panel
-* Visor de logs — WP_List_Table con filtros
-* Página de Salud del Sistema — Diagnóstico de dependencias y configuración
-* Backup/Restore — Exportación ZIP con previsualización de importación
-* Capacidades centralizadas — Constantes para todas las capabilities de Convoca
-* Generación de PDF — Integración con Dompdf para certificados y memorias
+* Logging system — Centralized logging with levels, context, and automatic purge
+* Rate limiting — Abuse protection with atomic UPSERT
+* Webhooks — Inbound and outbound webhook management with retries
+* Atomic locks — Race condition prevention
+* License manager — Local and remote validation (optional external service), PRO features
+* Setup Wizard — 6-step configuration assistant
+* Centralized Dashboard — System metrics from a single panel
+* Log viewer — WP_List_Table with filters
+* System Health page — Dependency and configuration diagnostics
+* Backup/Restore — ZIP export with import preview
+* Shared capabilities — Constants for all Convoca capabilities
+* PDF generation — Dompdf integration for certificates and reports
 
-= Servicios externos =
+= External services =
 
-Este plugin puede conectar con un servicio externo de validación de licencias en `getconvoca.app/api/license.php` para verificar claves de licencia PRO. Esta conexión es completamente opcional y solo ocurre cuando el administrador introduce una clave de licencia en el panel de administración. El plugin funciona sin esta conexión con todas las funcionalidades gratuitas.
+This plugin may connect to an external license validation service at `getconvoca.app/api/license.php` to verify PRO license keys. This connection is entirely optional and only occurs when the administrator enters a license key in the admin panel. The plugin works without this connection with all free features.
 
-= Privacidad =
+= Privacy =
 
-Este plugin es el núcleo técnico del ecosistema Convoca y proporciona funcionalidades de infraestructura. No recopila datos personales de forma directa, pero su sistema de logging centralizado puede registrar acciones de usuarios y administradores que incluyan datos personales de forma indirecta (direcciones IP, marcas de tiempo, acciones realizadas, contenido de peticiones). El sistema de rate limiting almacena direcciones IP temporalmente para prevenir abusos.
+This plugin is the technical core of the Convoca ecosystem and provides infrastructure functionality. It does not directly collect personal data, but its centralized logging system may record user and administrator actions that indirectly include personal data (IP addresses, timestamps, performed actions, request content). The rate limiting system temporarily stores IP addresses to prevent abuse.
 
-Los logs se almacenan en la base de datos local de WordPress (tabla wp_convoca_logs) y se purgan automáticamente según la configuración de retención del plugin (por defecto 30 días). Los datos de rate limiting se limpian automáticamente al expirar las ventanas de tiempo.
+Logs are stored in the local WordPress database (`wp_convoca_logs` table) and are automatically purged according to the plugin's retention settings (default 30 days). Rate limiting data is automatically cleared when time windows expire.
 
-Los webhooks gestionados por este plugin pueden enviar datos a URLs configuradas externamente; es responsabilidad del administrador del sitio revisar qué datos se incluyen en los webhooks y asegurar el cumplimiento normativo.
+Webhooks managed by this plugin may send data to externally configured URLs; it is the site administrator's responsibility to review what data is included in webhooks and ensure regulatory compliance.
 
-No se comparten datos personales con terceros por parte de este plugin.
+No personal data is shared with third parties by this plugin.
 
-Los usuarios tienen derecho a:
-* Solicitar acceso a los logs que les conciernan
-* Solicitar la eliminación de logs personales (sujeto a retenciones de seguridad)
-Para ejercer estos derechos, contacte con el administrador del sitio.
+Users have the right to:
+* Request access to logs concerning them
+* Request deletion of personal logs (subject to security retentions)
+To exercise these rights, contact the site administrator.
 
 == Installation ==
 
-1. Sube la carpeta convoca-core a /wp-content/plugins/
-2. Ejecuta composer install dentro del directorio del plugin (requerido para Dompdf)
-3. Activa el plugin desde el menú Plugins
+1. Upload the convoca-core folder to /wp-content/plugins/
+2. Run composer install inside the plugin directory (required for Dompdf)
+3. Activate the plugin from the Plugins menu
 
 == Frequently Asked Questions ==
 
-= ¿Es necesario tener este plugin activo? =
+= Is this plugin required? =
 
-Sí, todos los demás plugins de Convoca requieren Convoca Core activo.
+Yes, all other Convoca plugins require Convoca Core to be active.
 
-= ¿Requiere Composer? =
+= Does it require Composer? =
 
-Sí, para la generación de PDF con Dompdf.
+Yes, for PDF generation with Dompdf.
 
-= ¿El plugin envía datos a servidores externos? =
+= Does the plugin send data to external servers? =
 
-El plugin incluye un sistema opcional de validación de licencias que contacta con getconvoca.app solo cuando el administrador introduce manualmente una clave de licencia. Sin esta acción, no se realiza ninguna conexión externa.
+The plugin includes an optional license validation system that contacts getconvoca.app only when the administrator manually enters a license key. Without this action, no external connection is made.
 
 == Changelog ==
 
 = 2.1.4 =
-* Añadido: MANUAL_USUARIO.md con guía completa
-* Mejora: Tests unitarios — bootstrap corregido para ejecución standalone
-* Mejora: Cobertura de tests aumentada a 65 tests, 235 aserciones
-* Dev: Añadido phpstan.neon para análisis estático
+* Added: MANUAL_USUARIO.md with complete guide
+* Improvement: Unit tests — bootstrap fixed for standalone execution
+* Improvement: Test coverage increased to 65 tests, 235 assertions
+* Dev: Added phpstan.neon for static analysis
 
 = 2.1.3 =
-* Fix: Logo en get_branding_html() ahora aplica inline style
+* Fix: Logo in get_branding_html() now applies inline style
 
 = 2.1.2 =
-* Fix: Visor de logs protegido contra screen nulo en WP-CLI
+* Fix: Log viewer protected against null screen in WP-CLI
 
 = 2.1.1 =
-* Fix: Webhook retries no se acumulan infinitamente
+* Fix: Webhook retries no longer accumulate indefinitely
 
 = 2.1.0 =
-* Nuevo: Dashboard centralizado con métricas, visor de logs, Setup Wizard, Backup/Restore
-* Nuevo: Sistema de locks atómico, rate limiting y webhook dedup
+* New: Centralized Dashboard with metrics, log viewer, Setup Wizard, Backup/Restore
+* New: Atomic lock system, rate limiting, and webhook dedup
 
 = 2.0.0 =
-* Primera versión del plugin Convoca Core
+* First release of the Convoca Core plugin
 
 == Upgrade Notice ==
 
 = 2.1.4 =
-* Tests y documentación mejorados. Compatible con WordPress 7.0.
+* Improved tests and documentation. Compatible with WordPress 7.0.

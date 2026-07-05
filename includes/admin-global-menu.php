@@ -1,7 +1,27 @@
 <?php
+
+/**
+ * Convoca Core
+ *
+ * @package    Convoca\Core
+ * @subpackage Includes
+ *
+ * @copyright  Copyright (C) 2026 Jose Carlos Nieto Ramos
+ * @license    GPL-2.0-or-later
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ */
+
 namespace Convoca\Core;
 
-/* ── Global Convoca menu ────────────────────── */
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/* ── Admin Dashboard ─────────────────────────────────── */
 add_action( 'admin_menu', 'Convoca\Core\convoca_register_global_menu' );
 function convoca_register_global_menu(): void {
 	add_menu_page(
@@ -219,7 +239,7 @@ function convoca_notifications_page(): void {
 					<td><?php echo $icon; ?></td>
 					<td><a href="<?php echo esc_url( $n['url'] ); ?>"><?php echo esc_html( $n['title'] ); ?></a></td>
 					<td><?php echo esc_html( $n['time'] ); ?></td>
-					<td><?php echo empty( $n['read'] ) ? '<span style="color:#d63638;font-weight:bold;">' . __( 'No leída', 'convoca-core' ) . '</span>' : '<span style="color:#46b450;">' . __( 'Leída', 'convoca-core' ) . '</span>'; ?></td>
+					<td><?php echo empty( $n['read'] ) ? '<span style="color:#d63638;font-weight:bold;">' . esc_html__( 'No leída', 'convoca-core' ) . '</span>' : '<span style="color:#46b450;">' . esc_html__( 'Leída', 'convoca-core' ) . '</span>'; ?></td>
 				</tr>
 									<?php
 				endforeach;

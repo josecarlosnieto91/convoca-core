@@ -1,4 +1,20 @@
 <?php
+
+/**
+ * Convoca Core
+ *
+ * @package    Convoca\Core
+ * @subpackage Includes
+ *
+ * @copyright  Copyright (C) 2026 Jose Carlos Nieto Ramos
+ * @license    GPL-2.0-or-later
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ */
+
 /**
  * Convoca Setup Wizard — First-run configuration assistant.
  *
@@ -411,13 +427,13 @@ class Admin_Setup_Wizard {
 		$step = (int) $_POST['wizard_step'];
 		if ( $step === 4 ) {
 			$settings                  = get_option( 'convoca_gateway_settings', array() );
-			$settings['merchant_code'] = sanitize_text_field( $_POST['merchant_code'] );
-			$settings['secret_key']    = sanitize_text_field( $_POST['secret_key'] );
+			$settings['merchant_code'] = sanitize_text_field( wp_unslash( $_POST['merchant_code'] ) );
+			$settings['secret_key']    = sanitize_text_field( wp_unslash( $_POST['secret_key'] ) );
 			update_option( 'convoca_gateway_settings', $settings );
 		}
 		if ( $step === 5 ) {
-			update_option( 'convoca_shifts_hora_apertura', sanitize_text_field( $_POST['convoca_apertura'] ) );
-			update_option( 'convoca_shifts_hora_cierre', sanitize_text_field( $_POST['convoca_cierre'] ) );
+			update_option( 'convoca_shifts_hora_apertura', sanitize_text_field( wp_unslash( $_POST['convoca_apertura'] ) ) );
+			update_option( 'convoca_shifts_hora_cierre', sanitize_text_field( wp_unslash( $_POST['convoca_cierre'] ) ) );
 		}
 		update_option( self::PROGRESS_OPTION, $step + 1 );
 		wp_safe_redirect( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $step + 1 ) ) );

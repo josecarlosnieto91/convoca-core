@@ -1,1033 +1,1052 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the Convoca Core package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# Copyright (C) 2026 Jose Carlos Nieto Ramos
+# This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Core 2.1.4\n"
-"Report-Msgid-Bugs-To: support@getconvoca.app\n"
-"POT-Creation-Date: 2026-06-29 00:22+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Project-Id-Version: convoca-core 2.1.4\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-core\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-07-05T06:52:07+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: convoca-core\n"
 
-#: includes/admin-appearance.php:27
+#. Plugin Name of the plugin
+#: convoca-core.php
+msgid "Convoca Core"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+#: convoca-core.php
+msgid "https://getconvoca.app"
+msgstr ""
+
+#. Description of the plugin
+#: convoca-core.php
+msgid "Common functions, validation, logging, and shared infrastructure."
+msgstr ""
+
+#. Author of the plugin
+#: convoca-core.php
+msgid "Jose Carlos Nieto Ramos"
+msgstr ""
+
+#: includes/admin-appearance.php:47
 msgid "Plataforma de gestión de la asociación."
 msgstr ""
 
-#: includes/admin-appearance.php:105
+#: includes/admin-appearance.php:125
 msgid "Asistente Convoca"
 msgstr ""
 
-#: includes/admin-appearance.php:122
+#: includes/admin-appearance.php:142
 msgid "La librería Dompdf no está instalada. Contacta con el administrador."
 msgstr ""
 
-#: includes/admin-appearance.php:136
+#: includes/admin-appearance.php:156
 msgid "Generado el"
 msgstr ""
 
-#: includes/admin-appearance.php:166
+#: includes/admin-appearance.php:186
 msgid "Error al generar el PDF. Contacta con el administrador."
 msgstr ""
 
-#: includes/admin-appearance.php:183 includes/Admin_Backup.php:119
-#: includes/License_Manager.php:370 includes/License_Manager.php:394
-#: includes/Memory_Report.php:76
+#: includes/admin-appearance.php:203
+#: includes/Admin_Backup.php:135
+#: includes/License_Manager.php:388
+#: includes/License_Manager.php:412
+#: includes/Memory_Report.php:92
 msgid "Nonce inválido."
 msgstr ""
 
-#: includes/admin-appearance.php:186 includes/admin-appearance.php:221
-#: includes/admin-appearance.php:270 includes/Admin_Backup.php:27
-#: includes/Admin_Backup.php:122 includes/Admin_Backup.php:287
-#: includes/Admin_Backup.php:377 includes/admin-global-menu.php:52
-#: includes/Admin_Setup_Wizard.php:131 includes/License_Manager.php:263
-#: includes/License_Manager.php:373 includes/License_Manager.php:397
-#: includes/Memory_Report.php:79
+#: includes/admin-appearance.php:206
+#: includes/admin-appearance.php:241
+#: includes/admin-appearance.php:290
+#: includes/admin-global-menu.php:72
+#: includes/Admin_Backup.php:43
+#: includes/Admin_Backup.php:138
+#: includes/Admin_Backup.php:303
+#: includes/Admin_Backup.php:393
+#: includes/Admin_Setup_Wizard.php:147
+#: includes/License_Manager.php:281
+#: includes/License_Manager.php:391
+#: includes/License_Manager.php:415
+#: includes/Memory_Report.php:95
 msgid "No tienes permisos."
 msgstr ""
 
-#: includes/admin-appearance.php:196
+#: includes/admin-appearance.php:216
 msgid "Order ID"
 msgstr ""
 
-#: includes/admin-appearance.php:196
+#: includes/admin-appearance.php:216
 msgid "Importe"
 msgstr ""
 
-#: includes/admin-appearance.php:196 includes/admin-global-menu.php:208
-#: includes/License_Manager.php:279
+#: includes/admin-appearance.php:216
+#: includes/admin-global-menu.php:228
+#: includes/License_Manager.php:297
 msgid "Estado"
 msgstr ""
 
-#: includes/admin-appearance.php:196
+#: includes/admin-appearance.php:216
 msgid "Método"
 msgstr ""
 
-#: includes/admin-appearance.php:196 includes/admin-global-menu.php:208
-#: includes/Admin_Logs_List.php:36
+#: includes/admin-appearance.php:216
+#: includes/admin-global-menu.php:228
+#: includes/Admin_Logs_List.php:52
 msgid "Fecha"
 msgstr ""
 
-#: includes/admin-appearance.php:212
+#: includes/admin-appearance.php:232
 msgid "Listado de Pagos"
 msgstr ""
 
-#: includes/admin-appearance.php:228 includes/admin-global-menu.php:38
+#: includes/admin-appearance.php:248
+#: includes/admin-global-menu.php:58
 msgid "Registros del Sistema"
 msgstr ""
 
-#: includes/admin-appearance.php:230
-msgid ""
-"⚠️ El contador de registros es aproximado para tablas grandes (>10.000 "
-"filas). Usa filtros para obtener un recuento exacto."
+#: includes/admin-appearance.php:250
+msgid "⚠️ El contador de registros es aproximado para tablas grandes (>10.000 filas). Usa filtros para obtener un recuento exacto."
 msgstr ""
 
-#: includes/admin-appearance.php:234
+#: includes/admin-appearance.php:254
 msgid "Buscar en logs"
 msgstr ""
 
-#: includes/admin-appearance.php:240
+#: includes/admin-appearance.php:260
 msgid "Detalle del Log"
 msgstr ""
 
-#: includes/admin-appearance.php:242
+#: includes/admin-appearance.php:262
 msgid "Cerrar"
 msgstr ""
 
-#: includes/admin-appearance.php:286
+#: includes/admin-appearance.php:306
 msgid "Socios activos"
 msgstr ""
 
-#: includes/admin-appearance.php:293
+#: includes/admin-appearance.php:313
 msgid "Altas este mes"
 msgstr ""
 
-#: includes/admin-appearance.php:300
+#: includes/admin-appearance.php:320
 msgid "Inscripciones confirmadas"
 msgstr ""
 
-#: includes/admin-appearance.php:307
+#: includes/admin-appearance.php:327
 msgid "En lista de espera"
 msgstr ""
 
-#: includes/admin-appearance.php:314
+#: includes/admin-appearance.php:334
 msgid "Ingresos este mes"
 msgstr ""
 
-#: includes/admin-appearance.php:321
+#: includes/admin-appearance.php:341
 msgid "Turnos sin cubrir"
 msgstr ""
 
-#: includes/admin-appearance.php:329
+#: includes/admin-appearance.php:349
 msgid "Panel de Control Convoca"
 msgstr ""
 
-#: includes/admin-appearance.php:331
+#: includes/admin-appearance.php:351
 msgid "Actualizar datos"
 msgstr ""
 
-#: includes/admin-appearance.php:332
+#: includes/admin-appearance.php:352
 msgid "Generar memoria PDF"
 msgstr ""
 
-#: includes/admin-appearance.php:351
+#: includes/admin-appearance.php:371
 msgid "Tendencia (6 meses)"
 msgstr ""
 
-#: includes/admin-appearance.php:375
+#: includes/admin-appearance.php:395
 msgid "Ingresos mensuales"
 msgstr ""
 
-#: includes/admin-appearance.php:393
+#: includes/admin-appearance.php:413
 msgid "Inscripciones por estado"
 msgstr ""
 
-#: includes/admin-appearance.php:410
+#: includes/admin-appearance.php:430
 msgid "Métodos de pago (mes)"
 msgstr ""
 
-#: includes/admin-appearance.php:427
+#: includes/admin-appearance.php:447
 msgid "Últimos 7 días — Pagos"
 msgstr ""
 
-#: includes/Admin_Backup.php:22
-msgid "Copia de Seguridad"
-msgstr ""
-
-#: includes/Admin_Backup.php:35
-msgid "Copia de Seguridad y Mantenimiento"
-msgstr ""
-
-#: includes/Admin_Backup.php:36
-msgid "Gestión de datos masivos e infraestructura."
-msgstr ""
-
-#: includes/Admin_Backup.php:49
-msgid "Exportar Datos"
-msgstr ""
-
-#: includes/Admin_Backup.php:50
-msgid ""
-"Genera un archivo ZIP con CSVs de todas las entidades y un JSON con la "
-"configuración."
-msgstr ""
-
-#: includes/Admin_Backup.php:52
-msgid "Descargar ZIP de Seguridad"
-msgstr ""
-
-#: includes/Admin_Backup.php:57
-msgid "Importar Datos"
-msgstr ""
-
-#: includes/Admin_Backup.php:58
-msgid "Restaura entidades o configuraciones desde un archivo ZIP oficial."
-msgstr ""
-
-#: includes/Admin_Backup.php:67
-msgid "Validar archivo y previsualizar"
-msgstr ""
-
-#: includes/Admin_Backup.php:76
-msgid "Modo de Importación Atómica:"
-msgstr ""
-
-#: includes/Admin_Backup.php:76
-msgid ""
-"Se crearán nuevos registros. Los IDs originales se perderán y se generarán "
-"nuevos. El sistema intentará remapear las relaciones internas."
-msgstr ""
-
-#: includes/Admin_Backup.php:84
-msgid "Contenido Detectado"
-msgstr ""
-
-#: includes/Admin_Backup.php:86
-msgid "Entidad"
-msgstr ""
-
-#: includes/Admin_Backup.php:86 includes/admin-global-menu.php:39
-msgid "Registros"
-msgstr ""
-
-#: includes/Admin_Backup.php:99
-msgid "¿Confirmas la importación de los datos seleccionados?"
-msgstr ""
-
-#: includes/Admin_Backup.php:99
-msgid "Ejecutar Importación"
-msgstr ""
-
-#: includes/Admin_Backup.php:100
-msgid "Cancelar y borrar temporal"
-msgstr ""
-
-#: includes/Admin_Backup.php:125
-msgid "ZipArchive no disponible."
-msgstr ""
-
-#: includes/Admin_Backup.php:150
-msgid "No se pudo crear el archivo temporal ZIP."
-msgstr ""
-
-#: includes/Admin_Backup.php:269
-msgid "Error fatal: ZIP no generado."
-msgstr ""
-
-#: includes/Admin_Backup.php:291
-msgid "No se ha subido ningún archivo."
-msgstr ""
-
-#: includes/Admin_Backup.php:296
-msgid "Error en la subida: "
-msgstr ""
-
-#: includes/Admin_Backup.php:299
-msgid "Formato inválido. Solo ZIP."
-msgstr ""
-
-#: includes/Admin_Backup.php:302
-msgid "Archivo demasiado grande."
-msgstr ""
-
-#: includes/Admin_Backup.php:307
-msgid "No se pudo abrir el ZIP."
-msgstr ""
-
-#: includes/Admin_Backup.php:329
-msgid "Configuración del Sistema"
-msgstr ""
-
-#: includes/Admin_Backup.php:336
-msgid "El archivo ZIP no contiene datos compatibles de Convoca."
-msgstr ""
-
-#: includes/Admin_Backup.php:355
-msgid "Error al guardar el temporal."
-msgstr ""
-
-#: includes/Admin_Backup.php:382
-msgid "Token de sesión inválido o expirado."
-msgstr ""
-
-#: includes/Admin_Backup.php:403
-msgid "Archivo temporal no encontrado."
-msgstr ""
-
-#: includes/Admin_Backup.php:408
-msgid "No se pudo procesar el ZIP."
-msgstr ""
-
-#: includes/Admin_Backup.php:416
-msgid "Otra importación está en curso. Espera a que termine."
-msgstr ""
-
-#: includes/Admin_Backup.php:464
-msgid "Importado"
-msgstr ""
-
-#: includes/Admin_Backup.php:504
-#, php-format
-msgid "Importación finalizada. %d registros procesados."
-msgstr ""
-
-#: includes/Admin_Backup.php:594
-msgid "Miembros / Socios"
-msgstr ""
-
-#: includes/Admin_Backup.php:595
-msgid "Inscripciones a Actividades"
-msgstr ""
-
-#: includes/Admin_Backup.php:596
-msgid "Proyectos y Actividades"
-msgstr ""
-
-#: includes/Admin_Backup.php:597
-msgid "Turnos Centro Social"
-msgstr ""
-
-#: includes/admin-global-menu.php:19 includes/admin-global-menu.php:20
+#: includes/admin-global-menu.php:39
+#: includes/admin-global-menu.php:40
 msgid "Salud del Sistema"
 msgstr ""
 
-#: includes/admin-global-menu.php:29 includes/admin-global-menu.php:30
+#: includes/admin-global-menu.php:49
+#: includes/admin-global-menu.php:50
 msgid "Panel de Control"
 msgstr ""
 
-#: includes/admin-global-menu.php:58
+#: includes/admin-global-menu.php:59
+#: includes/Admin_Backup.php:102
+msgid "Registros"
+msgstr ""
+
+#: includes/admin-global-menu.php:78
 msgid "Salud del Sistema Convoca"
 msgstr ""
 
-#: includes/admin-global-menu.php:59
+#: includes/admin-global-menu.php:79
 msgid "Diagnóstico consolidado de todos los plugins del ecosistema."
 msgstr ""
 
-#: includes/admin-global-menu.php:60
+#: includes/admin-global-menu.php:80
 msgid "Forzar comprobación"
 msgstr ""
 
-#: includes/admin-global-menu.php:75
+#: includes/admin-global-menu.php:95
 msgid "Convoca Members"
 msgstr ""
 
-#: includes/admin-global-menu.php:88 includes/admin-global-menu.php:113
+#: includes/admin-global-menu.php:108
 #: includes/admin-global-menu.php:133
+#: includes/admin-global-menu.php:153
 msgid "Plugin no activo."
 msgstr ""
 
-#: includes/admin-global-menu.php:100
+#: includes/admin-global-menu.php:120
 msgid "Convoca Enroll"
 msgstr ""
 
-#: includes/admin-global-menu.php:128
+#: includes/admin-global-menu.php:148
 msgid "Convoca Gateway"
 msgstr ""
 
-#: includes/admin-global-menu.php:149
+#: includes/admin-global-menu.php:169
 msgid "Convoca Shifts"
 msgstr ""
 
-#: includes/admin-global-menu.php:155
+#: includes/admin-global-menu.php:175
 msgid "Plugin no activo o sin función de diagnóstico."
 msgstr ""
 
-#: includes/admin-global-menu.php:170 includes/Admin_Setup_Wizard.php:206
+#: includes/admin-global-menu.php:190
+#: includes/Admin_Setup_Wizard.php:222
 #, php-format
 msgid "Tabla %s"
 msgstr ""
 
-#: includes/admin-global-menu.php:172
+#: includes/admin-global-menu.php:192
 msgid "OK"
 msgstr ""
 
-#: includes/admin-global-menu.php:172
+#: includes/admin-global-menu.php:192
 msgid "No encontrada. Desactiva y reactiva Convoca Common."
 msgstr ""
 
-#: includes/admin-global-menu.php:176
+#: includes/admin-global-menu.php:196
 msgid "Diagnóstico completo del ecosistema"
 msgstr ""
 
-#: includes/admin-global-menu.php:186 includes/admin-global-menu.php:187
-#: includes/admin-global-menu.php:205
+#: includes/admin-global-menu.php:206
+#: includes/admin-global-menu.php:207
+#: includes/admin-global-menu.php:225
 msgid "Notificaciones"
 msgstr ""
 
-#: includes/admin-global-menu.php:196
+#: includes/admin-global-menu.php:216
 msgid "Access denied."
 msgstr ""
 
-#: includes/admin-global-menu.php:206
+#: includes/admin-global-menu.php:226
 #, php-format
 msgid "Total: %d notificaciones"
 msgstr ""
 
-#: includes/admin-global-menu.php:208 includes/License_Manager.php:301
+#: includes/admin-global-menu.php:228
+#: includes/License_Manager.php:319
 msgid "Tipo"
 msgstr ""
 
-#: includes/admin-global-menu.php:208 includes/Admin_Logs_List.php:39
+#: includes/admin-global-menu.php:228
+#: includes/Admin_Logs_List.php:55
 msgid "Mensaje"
 msgstr ""
 
-#: includes/admin-global-menu.php:211 includes/Notifications.php:198
+#: includes/admin-global-menu.php:231
+#: includes/Notifications.php:214
 msgid "No hay notificaciones."
 msgstr ""
 
-#: includes/admin-global-menu.php:222
+#: includes/admin-global-menu.php:242
 msgid "No leída"
 msgstr ""
 
-#: includes/admin-global-menu.php:222
+#: includes/admin-global-menu.php:242
 msgid "Leída"
 msgstr ""
 
-#: includes/Admin_Logs_List.php:37
+#: includes/Admin_Backup.php:38
+msgid "Copia de Seguridad"
+msgstr ""
+
+#: includes/Admin_Backup.php:51
+msgid "Copia de Seguridad y Mantenimiento"
+msgstr ""
+
+#: includes/Admin_Backup.php:52
+msgid "Gestión de datos masivos e infraestructura."
+msgstr ""
+
+#: includes/Admin_Backup.php:65
+msgid "Exportar Datos"
+msgstr ""
+
+#: includes/Admin_Backup.php:66
+msgid "Genera un archivo ZIP con CSVs de todas las entidades y un JSON con la configuración."
+msgstr ""
+
+#: includes/Admin_Backup.php:68
+msgid "Descargar ZIP de Seguridad"
+msgstr ""
+
+#: includes/Admin_Backup.php:73
+msgid "Importar Datos"
+msgstr ""
+
+#: includes/Admin_Backup.php:74
+msgid "Restaura entidades o configuraciones desde un archivo ZIP oficial."
+msgstr ""
+
+#: includes/Admin_Backup.php:83
+msgid "Validar archivo y previsualizar"
+msgstr ""
+
+#: includes/Admin_Backup.php:92
+msgid "Modo de Importación Atómica:"
+msgstr ""
+
+#: includes/Admin_Backup.php:92
+msgid "Se crearán nuevos registros. Los IDs originales se perderán y se generarán nuevos. El sistema intentará remapear las relaciones internas."
+msgstr ""
+
+#: includes/Admin_Backup.php:100
+msgid "Contenido Detectado"
+msgstr ""
+
+#: includes/Admin_Backup.php:102
+msgid "Entidad"
+msgstr ""
+
+#: includes/Admin_Backup.php:115
+msgid "¿Confirmas la importación de los datos seleccionados?"
+msgstr ""
+
+#: includes/Admin_Backup.php:115
+msgid "Ejecutar Importación"
+msgstr ""
+
+#: includes/Admin_Backup.php:116
+msgid "Cancelar y borrar temporal"
+msgstr ""
+
+#: includes/Admin_Backup.php:141
+msgid "ZipArchive no disponible."
+msgstr ""
+
+#: includes/Admin_Backup.php:166
+msgid "No se pudo crear el archivo temporal ZIP."
+msgstr ""
+
+#: includes/Admin_Backup.php:285
+msgid "Error fatal: ZIP no generado."
+msgstr ""
+
+#: includes/Admin_Backup.php:307
+msgid "No se ha subido ningún archivo."
+msgstr ""
+
+#: includes/Admin_Backup.php:312
+msgid "Error en la subida: "
+msgstr ""
+
+#: includes/Admin_Backup.php:315
+msgid "Formato inválido. Solo ZIP."
+msgstr ""
+
+#: includes/Admin_Backup.php:318
+msgid "Archivo demasiado grande."
+msgstr ""
+
+#: includes/Admin_Backup.php:323
+msgid "No se pudo abrir el ZIP."
+msgstr ""
+
+#: includes/Admin_Backup.php:345
+msgid "Configuración del Sistema"
+msgstr ""
+
+#: includes/Admin_Backup.php:352
+msgid "El archivo ZIP no contiene datos compatibles de Convoca."
+msgstr ""
+
+#: includes/Admin_Backup.php:371
+msgid "Error al guardar el temporal."
+msgstr ""
+
+#: includes/Admin_Backup.php:398
+msgid "Token de sesión inválido o expirado."
+msgstr ""
+
+#: includes/Admin_Backup.php:419
+msgid "Archivo temporal no encontrado."
+msgstr ""
+
+#: includes/Admin_Backup.php:424
+msgid "No se pudo procesar el ZIP."
+msgstr ""
+
+#: includes/Admin_Backup.php:432
+msgid "Otra importación está en curso. Espera a que termine."
+msgstr ""
+
+#: includes/Admin_Backup.php:480
+msgid "Importado"
+msgstr ""
+
+#: includes/Admin_Backup.php:520
+#, php-format
+msgid "Importación finalizada. %d registros procesados."
+msgstr ""
+
+#: includes/Admin_Backup.php:610
+msgid "Miembros / Socios"
+msgstr ""
+
+#: includes/Admin_Backup.php:611
+msgid "Inscripciones a Actividades"
+msgstr ""
+
+#: includes/Admin_Backup.php:612
+msgid "Proyectos y Actividades"
+msgstr ""
+
+#: includes/Admin_Backup.php:613
+msgid "Turnos Centro Social"
+msgstr ""
+
+#: includes/Admin_Logs_List.php:53
 msgid "Nivel"
 msgstr ""
 
-#: includes/Admin_Logs_List.php:38
+#: includes/Admin_Logs_List.php:54
 msgid "Plugin"
 msgstr ""
 
-#: includes/Admin_Logs_List.php:40
+#: includes/Admin_Logs_List.php:56
 msgid "Usuario"
 msgstr ""
 
-#: includes/Admin_Logs_List.php:41
+#: includes/Admin_Logs_List.php:57
 msgid "ID Objeto"
 msgstr ""
 
-#: includes/Admin_Logs_List.php:72
+#: includes/Admin_Logs_List.php:88
 msgid "ver más"
 msgstr ""
 
-#: includes/Admin_Logs_List.php:91
+#: includes/Admin_Logs_List.php:107
 msgid "Eliminar seleccionados"
 msgstr ""
 
-#: includes/Admin_Logs_List.php:92
+#: includes/Admin_Logs_List.php:108
 msgid "Purgar > 30 días"
 msgstr ""
 
-#: includes/Admin_Logs_List.php:199
+#: includes/Admin_Logs_List.php:215
 msgid "La vista de logs requiere el panel de administración."
 msgstr ""
 
-#: includes/Admin_Logs_List.php:223
+#: includes/Admin_Logs_List.php:239
 msgid "Todos los plugins"
 msgstr ""
 
-#: includes/Admin_Logs_List.php:229
+#: includes/Admin_Logs_List.php:245
 msgid "Todos los niveles"
 msgstr ""
 
-#: includes/Admin_Logs_List.php:236
+#: includes/Admin_Logs_List.php:252
 msgid "Filtrar"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:35
+#: includes/Admin_Setup_Wizard.php:51
 msgid "Asistente de Configuración Convoca"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:36
+#: includes/Admin_Setup_Wizard.php:52
 msgid "Asistente"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:122 includes/Admin_Setup_Wizard.php:281
+#: includes/Admin_Setup_Wizard.php:138
+#: includes/Admin_Setup_Wizard.php:297
 msgid "Acceso denegado."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:141
+#: includes/Admin_Setup_Wizard.php:157
 msgid "Configuración del Ecosistema"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:142
+#: includes/Admin_Setup_Wizard.php:158
 msgid "Sigue los pasos para asegurar que tu plataforma Convoca esté lista."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:163
+#: includes/Admin_Setup_Wizard.php:179
 msgid "Omitir asistente y configurar manualmente"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:172
+#: includes/Admin_Setup_Wizard.php:188
 msgid "Infraestructura"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:173
+#: includes/Admin_Setup_Wizard.php:189
 msgid "Páginas"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:174
+#: includes/Admin_Setup_Wizard.php:190
 msgid "Membresía"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:175 includes/Blocks_Common.php:40
+#: includes/Admin_Setup_Wizard.php:191
+#: includes/Blocks_Common.php:56
 msgid "Pagos"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:176 includes/Blocks_Common.php:35
+#: includes/Admin_Setup_Wizard.php:192
+#: includes/Blocks_Common.php:51
 msgid "Turnos"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:177
+#: includes/Admin_Setup_Wizard.php:193
 msgid "Finalización"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:202
+#: includes/Admin_Setup_Wizard.php:218
 msgid "Convoca Common"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:202
+#: includes/Admin_Setup_Wizard.php:218
 msgid "Plugin activo."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:202
+#: includes/Admin_Setup_Wizard.php:218
 msgid "Activa Convoca Common."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:206
+#: includes/Admin_Setup_Wizard.php:222
 msgid "Correcto."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:206
+#: includes/Admin_Setup_Wizard.php:222
 msgid "No encontrada."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:210
+#: includes/Admin_Setup_Wizard.php:226
 msgid "1. Infraestructura y Base de Datos"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:237
+#: includes/Admin_Setup_Wizard.php:253
 msgid "2. Páginas del Sistema"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:271
+#: includes/Admin_Setup_Wizard.php:287
 msgid "Crear páginas faltantes"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:285
+#: includes/Admin_Setup_Wizard.php:301
 msgid "Otra operación de creación de páginas está en curso."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:336
+#: includes/Admin_Setup_Wizard.php:352
 msgid "3. Planes de Membresía"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:338
+#: includes/Admin_Setup_Wizard.php:354
 msgid "No se han detectado planes. Configúralos en Ajustes → Miembros."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:340
+#: includes/Admin_Setup_Wizard.php:356
 msgid "Planes detectados:"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:357
+#: includes/Admin_Setup_Wizard.php:373
 msgid "4. Configuración de Redsys"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:364 includes/Admin_Setup_Wizard.php:381
+#: includes/Admin_Setup_Wizard.php:380
+#: includes/Admin_Setup_Wizard.php:397
 msgid "Guardar"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:374
+#: includes/Admin_Setup_Wizard.php:390
 msgid "5. Convoca Shifts"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:392
+#: includes/Admin_Setup_Wizard.php:408
 msgid "6. Finalización"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:397
+#: includes/Admin_Setup_Wizard.php:413
 msgid "Finalizar configuración"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:400
+#: includes/Admin_Setup_Wizard.php:416
 msgid "Faltan requisitos obligatorios."
 msgstr ""
 
-#: includes/Admin_Templates.php:27
+#: includes/Admin_Templates.php:43
 msgid "Plantillas PDF (Convoca)"
 msgstr ""
 
-#: includes/Admin_Templates.php:28
+#: includes/Admin_Templates.php:44
 msgid "Plantillas PDF"
 msgstr ""
 
-#: includes/Admin_Templates.php:47
+#: includes/Admin_Templates.php:63
 msgid "Plantillas restauradas a sus valores por defecto."
 msgstr ""
 
-#: includes/Admin_Templates.php:68
-#, php-format
-msgid "Error: La plantilla \"%s\" contiene HTML inválido o peligroso."
-msgstr ""
-
-#: includes/Admin_Templates.php:84
+#: includes/Admin_Templates.php:100
 msgid "Plantillas actualizadas correctamente."
 msgstr ""
 
-#: includes/Admin_Templates.php:379
-msgid ""
-"Convoca: Las plantillas PDF se han restaurado a sus valores por defecto "
-"debido a datos corruptos. Se ha guardado una copia de seguridad."
+#: includes/Admin_Templates.php:395
+msgid "Convoca: Las plantillas PDF se han restaurado a sus valores por defecto debido a datos corruptos. Se ha guardado una copia de seguridad."
 msgstr ""
 
-#: includes/Admin_Templates.php:401
-msgid ""
-"Convoca: Algunas plantillas PDF estaban corruptas. Se han restaurado a sus "
-"valores por defecto. Se ha guardado una copia de seguridad."
+#: includes/Admin_Templates.php:417
+msgid "Convoca: Algunas plantillas PDF estaban corruptas. Se han restaurado a sus valores por defecto. Se ha guardado una copia de seguridad."
 msgstr ""
 
-#: includes/Admin_Templates.php:423
+#: includes/Admin_Templates.php:439
 msgid "Acuerdo de Incorporación"
 msgstr ""
 
-#: includes/Admin_Templates.php:424
+#: includes/Admin_Templates.php:440
 msgid "Anexo de Voluntariado"
 msgstr ""
 
-#: includes/Admin_Templates.php:425
+#: includes/Admin_Templates.php:441
 msgid "Certificado"
 msgstr ""
 
-#: includes/Admin_Templates.php:426
+#: includes/Admin_Templates.php:442
 msgid "Acuerdo de Desvinculación"
 msgstr ""
 
-#: includes/Admin_Templates.php:463
+#: includes/Admin_Templates.php:479
 msgid "Plantillas de Documentos (PDF)"
 msgstr ""
 
-#: includes/Admin_Templates.php:464
+#: includes/Admin_Templates.php:480
 msgid "Utilidades comunes e infraestructura de documentos"
 msgstr ""
 
-#: includes/Admin_Templates.php:469
-msgid ""
-"Aquí puedes modificar el diseño HTML de los documentos generados por el "
-"sistema de firmas (Convoca Common)."
+#: includes/Admin_Templates.php:485
+msgid "Aquí puedes modificar el diseño HTML de los documentos generados por el sistema de firmas (Convoca Common)."
 msgstr ""
 
-#: includes/Admin_Templates.php:470
+#: includes/Admin_Templates.php:486
 #, php-format
-msgid ""
-"Utiliza etiquetas como %1$s, %2$s, %3$s para que se rellenen automáticamente "
-"según el contexto."
-msgstr ""
-
-#: includes/Admin_Templates.php:495
-msgid "Código HTML:"
-msgstr ""
-
-#: includes/Admin_Templates.php:505
-msgid "Guardar Cambios"
+msgid "Utiliza etiquetas como %1$s, %2$s, %3$s para que se rellenen automáticamente según el contexto."
 msgstr ""
 
 #: includes/Admin_Templates.php:511
-msgid ""
-"¿Estás seguro de que deseas restaurar las plantillas por defecto? Perderás "
-"cualquier cambio que hayas hecho en el HTML."
+msgid "Código HTML:"
 msgstr ""
 
-#: includes/Admin_Templates.php:514
+#: includes/Admin_Templates.php:521
+msgid "Guardar Cambios"
+msgstr ""
+
+#: includes/Admin_Templates.php:527
+msgid "¿Estás seguro de que deseas restaurar las plantillas por defecto? Perderás cualquier cambio que hayas hecho en el HTML."
+msgstr ""
+
+#: includes/Admin_Templates.php:530
 msgid "Restaurar Plantillas por Defecto"
 msgstr ""
 
-#: includes/Blocks_Common.php:25
+#: includes/Blocks_Common.php:41
 msgid "Inscripciones"
 msgstr ""
 
-#: includes/Blocks_Common.php:30
+#: includes/Blocks_Common.php:46
 msgid "Socios"
 msgstr ""
 
-#: includes/Blocks_Common.php:45
+#: includes/Blocks_Common.php:61
 msgid "General"
 msgstr ""
 
-#: includes/Blocks_Common.php:67
+#: includes/Blocks_Common.php:83
 msgid "Metadato de Post"
 msgstr ""
 
-#: includes/Capabilities.php:28
+#: includes/Capabilities.php:44
 msgid "Gestionar mis turnos (voluntarios)"
 msgstr ""
 
-#: includes/Capabilities.php:32
+#: includes/Capabilities.php:48
 msgid "Gestionar turnos del calendario (crear, editar)"
 msgstr ""
 
-#: includes/Capabilities.php:36
+#: includes/Capabilities.php:52
 msgid "Ver estadísticas de turnos"
 msgstr ""
 
-#: includes/Capabilities.php:40
+#: includes/Capabilities.php:56
 msgid "Auditoría de horas de voluntarios"
 msgstr ""
 
-#: includes/Capabilities.php:46
+#: includes/Capabilities.php:62
 msgid "Hacer check-in de asistentes"
 msgstr ""
 
-#: includes/Capabilities.php:50
+#: includes/Capabilities.php:66
 msgid "Gestionar evaluaciones"
 msgstr ""
 
-#: includes/Capabilities.php:54
+#: includes/Capabilities.php:70
 msgid "Ver informes de actividades"
 msgstr ""
 
-#: includes/Capabilities.php:60
+#: includes/Capabilities.php:76
 msgid "Gestionar horas de voluntarios (aprobar)"
 msgstr ""
 
-#: includes/Capabilities.php:64
+#: includes/Capabilities.php:80
 msgid "Exportar listado de socios"
 msgstr ""
 
-#: includes/Capabilities.php:68
+#: includes/Capabilities.php:84
 msgid "Gestionar webhooks"
 msgstr ""
 
-#: includes/Capabilities.php:74
+#: includes/Capabilities.php:90
 msgid "Ver pagos y dashboard"
 msgstr ""
 
-#: includes/Capabilities.php:78
+#: includes/Capabilities.php:94
 msgid "Gestionar pagos manualmente"
 msgstr ""
 
-#: includes/Capabilities.php:84
+#: includes/Capabilities.php:100
 msgid "Ver logs del sistema"
 msgstr ""
 
-#: includes/Capabilities.php:88
+#: includes/Capabilities.php:104
 msgid "Gestionar copias de seguridad"
 msgstr ""
 
-#: includes/License_Manager.php:110
+#: includes/License_Manager.php:128
 msgid "Activa"
 msgstr ""
 
-#: includes/License_Manager.php:111
+#: includes/License_Manager.php:129
 msgid "Expirada"
 msgstr ""
 
-#: includes/License_Manager.php:112
+#: includes/License_Manager.php:130
 msgid "Invalida"
 msgstr ""
 
-#: includes/License_Manager.php:113
+#: includes/License_Manager.php:131
 msgid "Inactiva"
 msgstr ""
 
-#: includes/License_Manager.php:162
-msgid ""
-"Licencia guardada. La validación remota se realizará cuando el servidor esté "
-"disponible."
+#: includes/License_Manager.php:180
+msgid "Licencia guardada. La validación remota se realizará cuando el servidor esté disponible."
 msgstr ""
 
-#: includes/License_Manager.php:171
+#: includes/License_Manager.php:189
 msgid "Error de validación con el servidor."
 msgstr ""
 
-#: includes/License_Manager.php:213
+#: includes/License_Manager.php:231
 msgid "Sin licencia activa."
 msgstr ""
 
-#: includes/License_Manager.php:238 includes/License_Manager.php:401
+#: includes/License_Manager.php:256
+#: includes/License_Manager.php:419
 msgid "Licencia desactivada."
 msgstr ""
 
-#: includes/License_Manager.php:250 includes/License_Manager.php:271
+#: includes/License_Manager.php:268
+#: includes/License_Manager.php:289
 msgid "Licencia Convoca"
 msgstr ""
 
-#: includes/License_Manager.php:251
+#: includes/License_Manager.php:269
 msgid "Licencia"
 msgstr ""
 
-#: includes/License_Manager.php:276
+#: includes/License_Manager.php:294
 msgid "Estado de la licencia"
 msgstr ""
 
-#: includes/License_Manager.php:289
+#: includes/License_Manager.php:307
 msgid "Clave"
 msgstr ""
 
-#: includes/License_Manager.php:295
+#: includes/License_Manager.php:313
 msgid "Válida hasta"
 msgstr ""
 
-#: includes/License_Manager.php:311
+#: includes/License_Manager.php:329
 msgid "Licencia activa"
 msgstr ""
 
-#: includes/License_Manager.php:312
+#: includes/License_Manager.php:330
 msgid "Tu licencia está activa. Puedes desactivarla para moverla a otro sitio."
 msgstr ""
 
-#: includes/License_Manager.php:316
+#: includes/License_Manager.php:334
 msgid "¿Desactivar la licencia de este sitio?"
 msgstr ""
 
-#: includes/License_Manager.php:317
+#: includes/License_Manager.php:335
 msgid "Desactivar licencia"
 msgstr ""
 
-#: includes/License_Manager.php:321 includes/License_Manager.php:332
+#: includes/License_Manager.php:339
+#: includes/License_Manager.php:350
 msgid "Activar licencia"
 msgstr ""
 
-#: includes/License_Manager.php:322
+#: includes/License_Manager.php:340
 msgid "Introduce tu clave de licencia para activar las funcionalidades PRO."
 msgstr ""
 
-#: includes/License_Manager.php:336
+#: includes/License_Manager.php:354
 msgid "¿Sin licencia?"
 msgstr ""
 
-#: includes/License_Manager.php:337
+#: includes/License_Manager.php:355
 msgid "Adquiere una aquí"
 msgstr ""
 
-#: includes/License_Manager.php:345
+#: includes/License_Manager.php:363
 msgid "Funcionalidades"
 msgstr ""
 
-#: includes/Memory_Report.php:88
+#: includes/Memory_Report.php:104
 msgid "Error al generar la memoria."
 msgstr ""
 
-#: includes/Notifications.php:190
+#: includes/Notifications.php:206
 #, php-format
 msgid "Notificaciones (%d)"
 msgstr ""
 
-#: includes/Notifications.php:192
+#: includes/Notifications.php:208
 msgid "Marcar todas leídas"
 msgstr ""
 
-#: includes/Notifications.php:212
+#: includes/Notifications.php:228
 msgid "atrás"
 msgstr ""
 
-#: includes/Notifications.php:214
+#: includes/Notifications.php:230
 msgid "Descartar"
 msgstr ""
 
-#: includes/Notifications.php:221
+#: includes/Notifications.php:237
 msgid "Ver todas"
 msgstr ""
 
-#: includes/Notifications.php:346
+#: includes/Notifications.php:362
 #, php-format
 msgid "Nuevo socio pendiente: %s"
 msgstr ""
 
-#: includes/Notifications.php:350
+#: includes/Notifications.php:366
 msgid "Nuevo socio"
 msgstr ""
 
-#: includes/Notifications.php:354
+#: includes/Notifications.php:370
 #, php-format
 msgid "Pago fallido: %s"
 msgstr ""
 
-#: includes/Notifications.php:358
+#: includes/Notifications.php:374
 msgid "Pago fallido"
-msgstr ""
-
-#: includes/Notifications.php:365
-#, php-format
-msgid "❌ Tu pago (%s) no pudo procesarse. Revisa tu método de pago."
-msgstr ""
-
-#: includes/Notifications.php:373
-#, php-format
-msgid "Horas pendientes de aprobar: %s"
-msgstr ""
-
-#: includes/Notifications.php:377
-msgid "Horas voluntariado"
 msgstr ""
 
 #: includes/Notifications.php:381
 #, php-format
+msgid "❌ Tu pago (%s) no pudo procesarse. Revisa tu método de pago."
+msgstr ""
+
+#: includes/Notifications.php:389
+#, php-format
+msgid "Horas pendientes de aprobar: %s"
+msgstr ""
+
+#: includes/Notifications.php:393
+msgid "Horas voluntariado"
+msgstr ""
+
+#: includes/Notifications.php:397
+#, php-format
 msgid "Inscripción pendiente de pago: %s"
 msgstr ""
 
-#: includes/Notifications.php:385
+#: includes/Notifications.php:401
 msgid "Pago pendiente"
 msgstr ""
 
-#: includes/Notifications.php:406
-msgid ""
-"⚠️ Tienes una inscripción pendiente de pago. Revisa tu panel para completarla."
+#: includes/Notifications.php:422
+msgid "⚠️ Tienes una inscripción pendiente de pago. Revisa tu panel para completarla."
 msgstr ""
 
-#: includes/Notifications.php:420
+#: includes/Notifications.php:436
 #, php-format
 msgid "Nueva solicitud de voluntariado: %s"
 msgstr ""
 
-#: includes/Notifications.php:424
+#: includes/Notifications.php:440
 msgid "Voluntariado"
 msgstr ""
 
-#: includes/Notifications.php:433
+#: includes/Notifications.php:449
 #, php-format
 msgid "Solicitud de baja: %s"
 msgstr ""
 
-#: includes/Notifications.php:437
+#: includes/Notifications.php:453
 msgid "Solicitud de baja"
 msgstr ""
 
-#: includes/Notifications.php:468
-msgid ""
-"🎉 ¡Tu solicitud de voluntariado ha sido aprobada! Bienvenido/a al equipo."
+#: includes/Notifications.php:484
+msgid "🎉 ¡Tu solicitud de voluntariado ha sido aprobada! Bienvenido/a al equipo."
 msgstr ""
 
-#: includes/PDF_Serve.php:28
+#: includes/PDF_Serve.php:44
 msgid "Archivo no encontrado."
 msgstr ""
 
-#: includes/PDF_Serve.php:32
+#: includes/PDF_Serve.php:48
 msgid "No tienes permiso para acceder a este archivo."
-msgstr ""
-
-#: includes/Push_Notifier.php:73
-#, php-format
-msgid "Push notification error: %s"
-msgstr ""
-
-#: includes/Push_Notifier.php:82
-#, php-format
-msgid "Push notification sent: %s"
 msgstr ""
 
 #: includes/Push_Notifier.php:89
 #, php-format
+msgid "Push notification error: %s"
+msgstr ""
+
+#: includes/Push_Notifier.php:98
+#, php-format
+msgid "Push notification sent: %s"
+msgstr ""
+
+#: includes/Push_Notifier.php:105
+#, php-format
 msgid "Push notification HTTP %1$d: %2$s"
 msgstr ""
 
-#: includes/Signature.php:52
-msgid ""
-"La librería Dompdf no está instalada. Por favor, contacta con el "
-"administrador."
+#: includes/Signature.php:68
+msgid "La librería Dompdf no está instalada. Por favor, contacta con el administrador."
 msgstr ""
 
-#: includes/Signature.php:152
+#: includes/Signature.php:168
 msgid "Error al renderizar el PDF (salida vacía)."
 msgstr ""
 
-#: includes/Signature.php:166
+#: includes/Signature.php:182
 #, php-format
-msgid ""
-"No se pudo crear el directorio %s. Comprueba los permisos de escritura del "
-"servidor."
+msgid "No se pudo crear el directorio %s. Comprueba los permisos de escritura del servidor."
 msgstr ""
 
-#: includes/Signature.php:172
+#: includes/Signature.php:188
 #, php-format
 msgid "El directorio %s no tiene permisos de escritura."
 msgstr ""
 
-#: includes/Signature.php:183
+#: includes/Signature.php:199
 #, php-format
-msgid ""
-"No se pudo escribir el archivo PDF en %s. Comprueba los permisos de "
-"escritura."
+msgid "No se pudo escribir el archivo PDF en %s. Comprueba los permisos de escritura."
 msgstr ""
 
-#: includes/Signature.php:189
+#: includes/Signature.php:205
 msgid "Excepción durante la generación del PDF: "
 msgstr ""
 
-#: includes/Signature.php:265
+#: includes/Signature.php:281
 #, php-format
 msgid "No se pudo crear el archivo de protección .htaccess en %s."
 msgstr ""
 
-#: includes/Signature.php:272
+#: includes/Signature.php:288
 #, php-format
 msgid "No se pudo crear el archivo de protección index.php en %s."
 msgstr ""
 
-#: includes/Utils.php:99
+#: includes/Utils.php:115
 msgid "La pasarela de pago no está activa."
 msgstr ""
 
-#: includes/Utils.php:527
+#: includes/Utils.php:543
 msgid "Se han detectado problemas críticos que impediment el funcionamiento."
 msgstr ""
 
-#: includes/Utils.php:528
+#: includes/Utils.php:544
 msgid "Estado: Errores detectados"
 msgstr ""
 
-#: includes/Utils.php:532
+#: includes/Utils.php:548
 msgid "Hay advertencias que podrían afectar el funcionamiento."
 msgstr ""
 
-#: includes/Utils.php:533
+#: includes/Utils.php:549
 msgid "Estado: Advertencias"
 msgstr ""
 
-#: includes/Utils.php:537
+#: includes/Utils.php:553
 msgid "Todos los componentes están configurados correctamente."
 msgstr ""
 
-#: includes/Utils.php:538
+#: includes/Utils.php:554
 msgid "Estado: Todo correcto"
 msgstr ""
 
-#: includes/Utils.php:753 includes/Utils.php:760
+#: includes/Utils.php:769
+#: includes/Utils.php:776
 msgid "Aportación"
 msgstr ""
 
-#: includes/Utils.php:757
+#: includes/Utils.php:773
+msgctxt "plural"
 msgid "Aportaciones"
 msgstr ""
 
-#: includes/Utils.php:763
+#: includes/Utils.php:779
+msgctxt "trasgu"
 msgid "Aportación Trasgu"
 msgstr ""
 
-#: includes/Utils.php:766
+#: includes/Utils.php:782
+msgctxt "socio"
 msgid "Aportación sugerida para socios"
 msgstr ""
 
-#: includes/Utils.php:769
+#: includes/Utils.php:785
+msgctxt "no-socio"
 msgid "Aportación sugerida para no socios"
 msgstr ""

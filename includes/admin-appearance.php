@@ -1,5 +1,25 @@
 <?php
+
+/**
+ * Convoca Core
+ *
+ * @package    Convoca\Core
+ * @subpackage Includes
+ *
+ * @copyright  Copyright (C) 2026 Jose Carlos Nieto Ramos
+ * @license    GPL-2.0-or-later
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ */
+
 namespace Convoca\Core;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /* ── Admin Appearance (Prompts 19, 20) ────────────────── */
 
@@ -102,7 +122,7 @@ function convoca_add_wizard_link( \WP_Admin_Bar $wp_admin_bar ): void {
 	$wp_admin_bar->add_node(
 		array(
 			'id'     => 'conv-wizard',
-			'title'  => '🔧 ' . __( 'Asistente Convoca', 'convoca-core' ),
+			'title'  => '🔧 ' . esc_html__( 'Asistente Convoca', 'convoca-core' ),
 			'href'   => admin_url( 'admin.php?page=conv-setup-wizard' ),
 			'parent' => 'top-secondary',
 		)
@@ -335,7 +355,7 @@ function convoca_dashboard_page(): void {
 		<div class="conv-analytics-cards">
 			<?php foreach ( $cards as $card ) : ?>
 				<a href="<?php echo esc_url( $card['url'] ); ?>" class="conv-analytics-card">
-					<div class="conv-card-icon"><?php echo $card['icon']; ?></div>
+					<div class="conv-card-icon"><?php echo esc_html( $card['icon'] ); ?></div>
 					<div class="conv-card-value"><?php echo esc_html( $card['value'] ); ?></div>
 					<?php
 					if ( $card['total'] ) :
