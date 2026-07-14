@@ -102,7 +102,10 @@ class Installer {
         ) $charset_collate;";
 		dbDelta( $sql_retries );
 		// Ensure index exists for existing installations.
+		$index_status = $wpdb->get_results( "SHOW INDEX FROM $table_retries WHERE Key_name = 'status'" );
+		if ( empty( $index_status ) ) {
 		$wpdb->query( "ALTER TABLE $table_retries ADD INDEX status (status)" );
+		}
 
 		// 3. Locks table (wp_convoca_locks).
 		$table_locks = $wpdb->prefix . 'convoca_locks';
