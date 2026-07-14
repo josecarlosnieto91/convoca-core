@@ -22,20 +22,11 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-
-namespace Convoca\Core;
-
-// Load translations.
-
 // Load translations.
 add_action( 'init', function () {
 	wp_set_script_translations( 'convoca-core-scripts', 'convoca-core', plugin_dir_path( __FILE__ ) . 'languages/' );
 	load_plugin_textdomain( 'convoca-core', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 } );
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
 
 if ( ! defined( 'CONVOCA_COMMON_VERSION' ) ) {
 	define( 'CONVOCA_COMMON_VERSION', '2.1.4' );
