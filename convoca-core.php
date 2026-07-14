@@ -172,7 +172,7 @@ add_action(
 			'/admin/metrics',
 			array(
 				'methods'             => 'GET',
-				'callback'            => 'Convoca\\Core\\assoc_rest_metrics',
+				'callback'            => 'Convoca\\Core\\convoca_rest_metrics',
 				'permission_callback' => function () {
 					return current_user_can( 'manage_options' );
 				},
