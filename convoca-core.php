@@ -163,7 +163,16 @@ add_action(
 			'/admin/metrics',
 			array(
 				'methods'             => 'GET',
-				'callback'            => 'Convoca\\Core\\convoca_rest_metrics',
+				'callback'            => function () {
+				return new \WP_REST_Response(
+					array(
+						'timestamp'   => current_time( 'mysql' ),
+						'php_version' => PHP_VERSION,
+						'wp_version'  => get_bloginfo( 'version' ),
+					),
+					200
+				);
+			},
 				'permission_callback' => function () {
 					return current_user_can( 'manage_options' );
 				},
