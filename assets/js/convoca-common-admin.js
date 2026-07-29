@@ -182,7 +182,7 @@ window.convocaAdmin = window.convocaAdmin || {};
   const SAMPLE_DATA = {
     '{nombre}': 'María García López',
     '{email}': 'maria@ejemplo.com',
-    '{plan}': 'Lugg',
+    '{plan}': 'Plan de membresía',
     '{importe}': '50€',
     '{link_pago}': 'https://ejemplo.com/pago/ABC123',
     '{numero_socio}': 'S-0042',

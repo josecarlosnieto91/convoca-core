@@ -27,7 +27,7 @@ class ActivityFactory
         '_convoca_precio_socio'      => 0,
         '_convoca_ubicacion'         => 'Test Location',
         '_convoca_requiere_pago'     => 0,
-        '_convoca_actividad_lugg'    => 0,
+        '_convoca_actividad_externa'    => 0,
     ];
 
     /**

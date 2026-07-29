@@ -42,7 +42,7 @@
 .convoca-badge--error { background: #fef2f2; color: #991b1b; }
 .convoca-badge--danger { background: #fef2f2; color: #991b1b; }
 .convoca-badge--info { background: #e0f2fe; color: #0369a1; }
-.convoca-badge--lugg { background: #2d5a27; color: #fff; }
+.convoca-badge--externa { background: #2d5a27; color: #fff; }
 
 /* ── Typography & Globals ─────────────────────── */
 .convoca-text-center { text-align: center; }

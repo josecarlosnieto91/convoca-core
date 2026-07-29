@@ -54,9 +54,13 @@ class License_Manager {
 
 	/**
 	 * API endpoint for license validation.
-	 * Override via filter 'convoca_license_api_url '
+	 * Override via filter 'convoca_license_api_url'
+	 *
+	 * @return string
 	 */
-	const API_URL = 'https://getconvoca.app/api/license.php';
+	public static function get_api_url(): string {
+		return apply_filters( 'convoca_license_api_url', 'https://getconvoca.app/api/license.php' );
+	}
 
 	/**
 	 * Initialize hooks.
@@ -140,7 +144,7 @@ class License_Manager {
 	 */
 	public static function validate_key( string $key ): array {
 		$site_url = home_url();
-		$api_url  = apply_filters( 'convoca_license_api_url', self::API_URL );
+		$api_url  = self::get_api_url();
 
 		$response = wp_remote_post(
 			$api_url,
@@ -232,7 +236,7 @@ class License_Manager {
 			);
 		}
 
-		$api_url = apply_filters( 'convoca_license_api_url', self::API_URL );
+		$api_url = self::get_api_url();
 		wp_remote_post(
 			$api_url,
 			array(
