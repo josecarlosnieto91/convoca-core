@@ -8,3 +8,6 @@
 # Translation files (user-generated)
 *.po
 *.mo
+
+# Entorno de desarrollo local (descontinuado)
+wp-tests-config.php
