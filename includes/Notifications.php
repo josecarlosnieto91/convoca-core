@@ -181,7 +181,7 @@ class Notifications {
 		$wp_admin_bar->add_node(
 			array(
 				'id'     => 'conv-notifications',
-				'title'  => '<span class="conv-bell-icon' . ( $count > 0 ? ' conv-bell-has-unread' : '' ) . '">🔔</span>' . $badge,
+				'title'  => __( '<span class="conv-bell-icon', 'convoca-core' ) . ( $count > 0 ? ' conv-bell-has-unread' : '' ) . '">🔔</span>' . $badge,
 				'parent' => 'top-secondary',
 			)
 		);

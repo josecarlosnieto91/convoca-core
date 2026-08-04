@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  WPML String Translation configuration for Convoca Core.
+  PDF templates contain user-facing text.
+-->
+<wpml-config>
+    <admin-texts>
+        <key name="convoca_pdf_templates"/>
+    </admin-texts>
+</wpml-config>

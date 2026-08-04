@@ -178,7 +178,7 @@ function convoca_health_page(): void {
 
 	// ── Common self-check ──
 	$all_checks[] = array(
-		'title'   => 'Convoca Common — Versión',
+		'title'   => __( 'Convoca Common — Versión', 'convoca-core' ),
 		'status'  => 'ok',
 		'message' => 'v' . CONVOCA_COMMON_VERSION,
 	);

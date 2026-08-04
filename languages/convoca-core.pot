@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-04T22:40:35+00:00\n"
+"POT-Creation-Date: 2026-08-04T23:00:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-core\n"
@@ -237,6 +237,10 @@ msgstr ""
 msgid "Plugin no activo o sin función de diagnóstico."
 msgstr ""
 
+#: includes/admin-global-menu.php:181
+msgid "Convoca Common — Versión"
+msgstr ""
+
 #. translators: %s: database table name
 #: includes/admin-global-menu.php:192
 #: includes/Admin_Setup_Wizard.php:224
@@ -449,6 +453,10 @@ msgstr ""
 msgid "Turnos Centro Social"
 msgstr ""
 
+#: includes/Admin_Logs_List.php:51
+msgid "<input type=\"checkbox\">"
+msgstr ""
+
 #: includes/Admin_Logs_List.php:53
 msgid "Nivel"
 msgstr ""
@@ -617,6 +625,14 @@ msgstr ""
 
 #: includes/Admin_Setup_Wizard.php:418
 msgid "Faltan requisitos obligatorios."
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:456
+msgid "Anterior"
+msgstr ""
+
+#: includes/Admin_Setup_Wizard.php:461
+msgid "Siguiente"
 msgstr ""
 
 #: includes/Admin_Templates.php:43
@@ -866,6 +882,10 @@ msgstr ""
 msgid "Error al generar la memoria."
 msgstr ""
 
+#: includes/Notifications.php:184
+msgid "<span class=\"conv-bell-icon"
+msgstr ""
+
 #. translators: %d: number of notifications
 #: includes/Notifications.php:207
 #, php-format
@@ -1081,4 +1101,8 @@ msgstr ""
 #: includes/Utils.php:794
 msgctxt "no-socio"
 msgid "Aportación sugerida para no socios"
+msgstr ""
+
+#: includes/Webhook_Manager.php:672
+msgid "Test ping from "
 msgstr ""

@@ -669,7 +669,7 @@ class Webhook_Manager {
 				'timestamp' => current_time( 'c' ),
 				'site_url'  => home_url(),
 				'data'      => array(
-					'message'    => 'Test ping from ' . get_bloginfo('name'),
+					'message'    => __( 'Test ping from ', 'convoca-core' ) . get_bloginfo('name'),
 					'webhook_id' => $id,
 				),
 			)

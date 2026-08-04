@@ -453,12 +453,12 @@ class Admin_Setup_Wizard {
 	private function step_nav( int $current, bool $can_continue ): void {
 		echo '<div style="margin-top:35px;display:flex;justify-content:space-between;">';
 		if ( $current > 1 ) {
-			echo '<a href="' . esc_url( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $current - 1 ) ) ) . '" class="convoca-btn convoca-btn-outline">Anterior</a>';
+			echo '<a href="' . esc_url( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $current - 1 ) ) ) . '" class="convoca-btn convoca-btn-outline">' . esc_html__( 'Anterior', 'convoca-core' ) . '</a>';
 		} else {
 			echo '<div></div>';
 		}
 		if ( $can_continue && $current < 6 ) {
-			echo '<a href="' . esc_url( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $current + 1 ) ) ) . '" class="convoca-btn convoca-btn-primary">Siguiente</a>';
+			echo '<a href="' . esc_url( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $current + 1 ) ) ) . '" class="convoca-btn convoca-btn-primary">' . esc_html__( 'Siguiente', 'convoca-core' ) . '</a>';
 		}
 		echo '</div>';
 	}

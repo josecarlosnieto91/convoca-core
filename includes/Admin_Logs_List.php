@@ -48,7 +48,7 @@ class Admin_Logs_List extends \WP_List_Table {
 
 	public function get_columns(): array {
 		return array(
-			'cb'         => '<input type="checkbox">',
+			'cb'         => __( '<input type="checkbox">', 'convoca-core' ),
 			'created_at' => __( 'Fecha', 'convoca-core' ),
 			'level'      => __( 'Nivel', 'convoca-core' ),
 			'context'    => __( 'Plugin', 'convoca-core' ),
