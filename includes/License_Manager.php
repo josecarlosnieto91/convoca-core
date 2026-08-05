@@ -148,6 +148,12 @@ class License_Manager {
 		$site_url = home_url();
 		$api_url  = self::get_api_url();
 
+		// V-6 anti-replay: HMAC-signed request (nonce + timestamp).
+		// The license key itself is the HMAC secret (matches the server).
+		$timestamp   = time();
+		$action      = 'activate';
+		$nonce       = hash_hmac( 'sha256', $key . '|' . $site_url . '|' . $action . '|' . $timestamp, $key );
+
 		$response = wp_remote_post(
 			$api_url,
 			array(
@@ -157,7 +163,9 @@ class License_Manager {
 					array(
 						'license_key' => $key,
 						'site_url'    => $site_url,
-						'action'      => 'activate',
+						'action'      => $action,
+						'nonce'       => $nonce,
+						'timestamp'   => $timestamp,
 					)
 				),
 			)
@@ -169,18 +177,14 @@ class License_Manager {
 			if ( $cached ) {
 				return $cached;
 			}
-			// Store pending validation.
-			update_option(
-				self::OPTION_KEY,
-				array_merge(
-					self::get_license(),
-					array(
-						'key'    => $key,
-						'status' => 'pending',
-						'type'   => 'free',
-					)
-				)
-			);
+			// Store pending validation. Keep existing type/features intact
+			// (do NOT downgrade an active license to free on a network hiccup).
+			$current = self::get_license();
+			$current['key'] = $key;
+			if ( empty( $current['status'] ) || $current['status'] === 'inactive' ) {
+				$current['status'] = 'pending';
+			}
+			update_option( self::OPTION_KEY, $current );
 			return array(
 				'success' => true,
 				'message' => __( 'Licencia guardada. La validación remota se realizará cuando el servidor esté disponible.', 'convoca-core' ),
