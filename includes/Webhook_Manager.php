@@ -38,21 +38,23 @@ class Webhook_Manager {
 	private const OPTION = 'convoca_webhooks';
 
 	/** Supported event types. */
-	public const EVENTS = array(
-		'member.created'           => 'Nuevo socio registrado',
-		'member.activated'         => 'Socio activado',
-		'member.suspended'         => 'Socio suspendido',
-		'member.expired'           => 'Membresía expirada',
-		'member.renewed'           => 'Membresía renovada',
-		'payment.completed'        => 'Pago completado',
-		'payment.failed'           => 'Pago fallido',
-		'payment.reminder_sent'    => 'Recordatorio de pago enviado',
-		'enrollment.created'       => 'Nueva inscripción',
-		'enrollment.cancelled'     => 'Inscripción cancelada',
-		'enrollment.checkin'       => 'Check-in realizado',
-		'volunteer.hours_logged'   => 'Horas de voluntariado registradas',
-		'volunteer.hours_approved' => 'Horas de voluntariado aprobadas',
-	);
+	public static function events(): array {
+		return array(
+			'member.created'           => __( 'Nuevo socio registrado', 'convoca-core' ),
+			'member.activated'         => __( 'Socio activado', 'convoca-core' ),
+			'member.suspended'         => __( 'Socio suspendido', 'convoca-core' ),
+			'member.expired'           => __( 'Membresía expirada', 'convoca-core' ),
+			'member.renewed'           => __( 'Membresía renovada', 'convoca-core' ),
+			'payment.completed'        => __( 'Pago completado', 'convoca-core' ),
+			'payment.failed'           => __( 'Pago fallido', 'convoca-core' ),
+			'payment.reminder_sent'    => __( 'Recordatorio de pago enviado', 'convoca-core' ),
+			'enrollment.created'       => __( 'Nueva inscripción', 'convoca-core' ),
+			'enrollment.cancelled'     => __( 'Inscripción cancelada', 'convoca-core' ),
+			'enrollment.checkin'       => __( 'Check-in realizado', 'convoca-core' ),
+			'volunteer.hours_logged'   => __( 'Horas de voluntariado registradas', 'convoca-core' ),
+			'volunteer.hours_approved' => __( 'Horas de voluntariado aprobadas', 'convoca-core' ),
+		);
+	}
 
 	/**
 	 * Maximum webhook delivery attempts.

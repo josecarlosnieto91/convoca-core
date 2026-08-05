@@ -251,11 +251,11 @@ class WebhookManagerTest extends TestCase
     /**
      * Test that EVENTS constant has expected structure.
      *
-     * @covers \Convoca\Core\Webhook_Manager::EVENTS
+     * @covers \Convoca\Core\Webhook_Manager::events()
      */
     public function test_events_constant(): void
     {
-        $events = Webhook_Manager::EVENTS;
+        $events = Webhook_Manager::events();
 
         $this->assertIsArray($events);
         $this->assertNotEmpty($events);
@@ -280,11 +280,11 @@ class WebhookManagerTest extends TestCase
     /**
      * Test that event labels are non-empty strings.
      *
-     * @covers \Convoca\Core\Webhook_Manager::EVENTS
+     * @covers \Convoca\Core\Webhook_Manager::events()
      */
     public function test_event_labels(): void
     {
-        $events = Webhook_Manager::EVENTS;
+        $events = Webhook_Manager::events();
 
         foreach ($events as $key => $label) {
             $this->assertIsString($label);

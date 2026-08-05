@@ -48,17 +48,17 @@ class Event_Style_Registry {
 	 */
 	public static function all(): array {
 		return array(
-			'naturaleza'    => array( 'label' => 'Naturaleza', 'color' => '#4caf50', 'text_color' => '#ffffff', 'icon' => '🌿', 'accent' => '#2e7d32' ),
-			'familiar'      => array( 'label' => 'Familiar', 'color' => '#ff9800', 'text_color' => '#ffffff', 'icon' => '👨‍👩‍👧‍👦', 'accent' => '#e65100' ),
-			'formacion'     => array( 'label' => 'Formación', 'color' => '#2196f3', 'text_color' => '#ffffff', 'icon' => '🎓', 'accent' => '#1565c0' ),
-			'adultos'       => array( 'label' => 'Adultos', 'color' => '#9c27b0', 'text_color' => '#ffffff', 'icon' => '🧑', 'accent' => '#6a1b9a' ),
-			'voluntariado'  => array( 'label' => 'Voluntariado', 'color' => '#009688', 'text_color' => '#ffffff', 'icon' => '🤝', 'accent' => '#00695c' ),
-			'infantil'      => array( 'label' => 'Infantil', 'color' => '#ff5722', 'text_color' => '#ffffff', 'icon' => '🧒', 'accent' => '#bf360c' ),
-			'online'        => array( 'label' => 'Online', 'color' => '#607d8b', 'text_color' => '#ffffff', 'icon' => '💻', 'accent' => '#37474f' ),
-			'ruta'          => array( 'label' => 'Ruta interpretada', 'color' => '#8bc34a', 'text_color' => '#ffffff', 'icon' => '🚶', 'accent' => '#558b2f' ),
-			'taller'        => array( 'label' => 'Taller', 'color' => '#795548', 'text_color' => '#ffffff', 'icon' => '🔧', 'accent' => '#4e342e' ),
-			'socios'        => array( 'label' => 'Exclusiva socios', 'color' => '#e91e63', 'text_color' => '#ffffff', 'icon' => '⭐', 'accent' => '#c2185b' ),
-			'especial'      => array( 'label' => 'Especial', 'color' => '#f44336', 'text_color' => '#ffffff', 'icon' => '🎉', 'accent' => '#d32f2f' ),
+			'naturaleza'    => array( 'label' => __( 'Naturaleza', 'convoca-core' ), 'color' => '#4caf50', 'text_color' => '#ffffff', 'icon' => '🌿', 'accent' => '#2e7d32' ),
+			'familiar'      => array( 'label' => __( 'Familiar', 'convoca-core' ), 'color' => '#ff9800', 'text_color' => '#ffffff', 'icon' => '👨‍👩‍👧‍👦', 'accent' => '#e65100' ),
+			'formacion'     => array( 'label' => __( 'Formación', 'convoca-core' ), 'color' => '#2196f3', 'text_color' => '#ffffff', 'icon' => '🎓', 'accent' => '#1565c0' ),
+			'adultos'       => array( 'label' => __( 'Adultos', 'convoca-core' ), 'color' => '#9c27b0', 'text_color' => '#ffffff', 'icon' => '🧑', 'accent' => '#6a1b9a' ),
+			'voluntariado'  => array( 'label' => __( 'Voluntariado', 'convoca-core' ), 'color' => '#009688', 'text_color' => '#ffffff', 'icon' => '🤝', 'accent' => '#00695c' ),
+			'infantil'      => array( 'label' => __( 'Infantil', 'convoca-core' ), 'color' => '#ff5722', 'text_color' => '#ffffff', 'icon' => '🧒', 'accent' => '#bf360c' ),
+			'online'        => array( 'label' => __( 'Online', 'convoca-core' ), 'color' => '#607d8b', 'text_color' => '#ffffff', 'icon' => '💻', 'accent' => '#37474f' ),
+			'ruta'          => array( 'label' => __( 'Ruta interpretada', 'convoca-core' ), 'color' => '#8bc34a', 'text_color' => '#ffffff', 'icon' => '🚶', 'accent' => '#558b2f' ),
+			'taller'        => array( 'label' => __( 'Taller', 'convoca-core' ), 'color' => '#795548', 'text_color' => '#ffffff', 'icon' => '🔧', 'accent' => '#4e342e' ),
+			'socios'        => array( 'label' => __( 'Exclusiva socios', 'convoca-core' ), 'color' => '#e91e63', 'text_color' => '#ffffff', 'icon' => '⭐', 'accent' => '#c2185b' ),
+			'especial'      => array( 'label' => __( 'Especial', 'convoca-core' ), 'color' => '#f44336', 'text_color' => '#ffffff', 'icon' => '🎉', 'accent' => '#d32f2f' ),
 		);
 	}
 

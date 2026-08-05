@@ -71,7 +71,7 @@ class LicenseManagerTest extends TestCase
      */
     public function test_pro_features_has_nine_keys(): void
     {
-        $features = License_Manager::PRO_FEATURES;
+        $features = License_Manager::pro_features();
         $this->assertCount(11, $features, 'PRO_FEATURES should contain exactly 11 features.');
     }
 
@@ -82,7 +82,7 @@ class LicenseManagerTest extends TestCase
      */
     public function test_pro_features_expected_keys(): void
     {
-        $features = License_Manager::PRO_FEATURES;
+        $features = License_Manager::pro_features();
 
         $expected = [
             'members',
@@ -110,7 +110,7 @@ class LicenseManagerTest extends TestCase
      */
     public function test_pro_features_values_are_non_empty(): void
     {
-        $features = License_Manager::PRO_FEATURES;
+        $features = License_Manager::pro_features();
 
         foreach ($features as $key => $label) {
             $this->assertIsString($label, "PRO_FEATURES['$key'] should be a string.");
@@ -146,7 +146,7 @@ class LicenseManagerTest extends TestCase
     {
         self::$mockLicense['key'] = '';
 
-        foreach (array_keys(License_Manager::PRO_FEATURES) as $feature) {
+        foreach (array_keys(License_Manager::pro_features()) as $feature) {
             $this->assertFalse(
                 License_Manager::has_pro($feature),
                 "has_pro('$feature') should return false when no license key."
@@ -223,7 +223,7 @@ class LicenseManagerTest extends TestCase
         self::$mockLicense['key']  = 'TEST-KEY-UNLIMITED-2';
         self::$mockLicense['type'] = 'unlimited';
 
-        foreach (array_keys(License_Manager::PRO_FEATURES) as $feature) {
+        foreach (array_keys(License_Manager::pro_features()) as $feature) {
             $this->assertTrue(
                 License_Manager::has_pro($feature),
                 "has_pro('$feature') should return true for unlimited license."

@@ -38,19 +38,21 @@ class License_Manager {
 	/**
 	 * Available PRO features.
 	 */
-	const PRO_FEATURES = array(
-		'members'      => 'Convoca Members PRO',
-		'enroll'       => 'Convoca Enroll PRO',
-		'gateway'      => 'Convoca Gateway PRO',
-		'shifts'       => 'Convoca Shifts PRO',
-		'gamification' => 'Gamificación Voluntariado',
-		'pdf_memories' => 'Memorias PDF automáticas',
-		'pwa_checkin'  => 'PWA Check-in QR',
-		'analytics'    => 'Analytics avanzados',
-		'webhooks'     => 'Webhooks salientes',
-		'publisher'    => 'Convoca Publisher PRO',
-		'theme'        => 'Convoca Theme PRO',
-	);
+	public static function pro_features(): array {
+		return array(
+			'members'      => __( 'Convoca Members PRO', 'convoca-core' ),
+			'enroll'       => __( 'Convoca Enroll PRO', 'convoca-core' ),
+			'gateway'      => __( 'Convoca Gateway PRO', 'convoca-core' ),
+			'shifts'       => __( 'Convoca Shifts PRO', 'convoca-core' ),
+			'gamification' => __( 'Gamificación Voluntariado', 'convoca-core' ),
+			'pdf_memories' => __( 'Memorias PDF automáticas', 'convoca-core' ),
+			'pwa_checkin'  => __( 'PWA Check-in QR', 'convoca-core' ),
+			'analytics'    => __( 'Analytics avanzados', 'convoca-core' ),
+			'webhooks'     => __( 'Webhooks salientes', 'convoca-core' ),
+			'publisher'    => __( 'Convoca Publisher PRO', 'convoca-core' ),
+			'theme'        => __( 'Convoca Theme PRO', 'convoca-core' ),
+		);
+	}
 
 	/**
 	 * API endpoint for license validation.
@@ -286,7 +288,7 @@ class License_Manager {
 		}
 
 		$license  = self::get_license();
-		$features = self::PRO_FEATURES;
+		$features = self::pro_features();
 		$has_pro  = $license['status'] === 'active';
 		?>
 		<div class="wrap">
