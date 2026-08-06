@@ -66,6 +66,14 @@ Yes, for PDF generation with Dompdf.
 
 The plugin includes an optional license validation system that contacts getconvoca.app only when the administrator manually enters a license key. Without this action, no external connection is made.
 
+== Screenshots ==
+
+1. Convoca Dashboard with system metrics
+2. Log viewer with filters
+3. Setup Wizard step
+4. License settings page
+5. Backup/Restore panel
+
 == Changelog ==
 
 = 2.1.4 =
