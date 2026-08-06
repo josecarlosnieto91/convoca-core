@@ -38,27 +38,27 @@ class Blocks_Common {
 		$new_categories = array(
 			array(
 				'slug'  => 'convoca-enroll',
-				'title' => get_bloginfo('name') . ': ' . __('Inscripciones', 'convoca-core'),
+				'title' => get_bloginfo( 'name' ) . ': ' . __( 'Inscripciones', 'convoca-core' ),
 				'icon'  => 'clipboard',
 			),
 			array(
 				'slug'  => 'convoca-members',
-				'title' => get_bloginfo('name') . ': ' . __('Socios', 'convoca-core'),
+				'title' => get_bloginfo( 'name' ) . ': ' . __( 'Socios', 'convoca-core' ),
 				'icon'  => 'admin-users',
 			),
 			array(
 				'slug'  => 'convoca-turnos',
-				'title' => get_bloginfo('name') . ': ' . __('Turnos', 'convoca-core'),
+				'title' => get_bloginfo( 'name' ) . ': ' . __( 'Turnos', 'convoca-core' ),
 				'icon'  => 'calendar-alt',
 			),
 			array(
 				'slug'  => 'convoca-gateway',
-				'title' => get_bloginfo('name') . ': ' . __('Pagos', 'convoca-core'),
+				'title' => get_bloginfo( 'name' ) . ': ' . __( 'Pagos', 'convoca-core' ),
 				'icon'  => 'money-alt',
 			),
 			array(
 				'slug'  => 'convoca-core',
-				'title' => get_bloginfo('name') . ': ' . __('General', 'convoca-core'),
+				'title' => get_bloginfo( 'name' ) . ': ' . __( 'General', 'convoca-core' ),
 				'icon'  => 'admin-settings',
 			),
 		);

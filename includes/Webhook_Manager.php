@@ -323,7 +323,7 @@ class Webhook_Manager {
 		$body        = wp_json_encode( $payload );
 		$delivery_id = wp_generate_uuid4();
 		$headers     = array(
-			'Content-Type'     => 'application/json',
+			'Content-Type'       => 'application/json',
 			'X-Convoca-Event'    => $payload['event'],
 			'X-Convoca-Delivery' => $delivery_id,
 		);
@@ -671,7 +671,7 @@ class Webhook_Manager {
 				'timestamp' => current_time( 'c' ),
 				'site_url'  => home_url(),
 				'data'      => array(
-					'message'    => __( 'Test ping from ', 'convoca-core' ) . get_bloginfo('name'),
+					'message'    => __( 'Test ping from ', 'convoca-core' ) . get_bloginfo( 'name' ),
 					'webhook_id' => $id,
 				),
 			)

@@ -186,7 +186,7 @@ function convoca_health_page(): void {
 	$tables = array( 'convoca_logs', 'convoca_locks', 'convoca_webhook_retries' );
 	foreach ( $tables as $t ) {
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — SHOW TABLES LIKE requires a literal string, prepare() percent-escapes break it
-		$exists       = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $wpdb->prefix . $t ) ) === $wpdb->prefix . $t;
+		$exists       = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->prefix . $t ) ) === $wpdb->prefix . $t;
 		$all_checks[] = array(
 			/* translators: %s: database table name */
 			'title'   => sprintf( __( 'Tabla %s', 'convoca-core' ), $t ),
@@ -254,13 +254,14 @@ endif;
 			<?php
 			echo wp_kses_post(
 				paginate_links(
-				array(
-					'base'    => add_query_arg( 'paged', '%#%' ),
-					'format'  => '',
-					'total'   => ceil( $total / $per_page ),
-					'current' => $paged,
-				)
-			) );
+					array(
+						'base'    => add_query_arg( 'paged', '%#%' ),
+						'format'  => '',
+						'total'   => ceil( $total / $per_page ),
+						'current' => $paged,
+					)
+				) 
+			);
 			?>
 		</div></div>
 		<?php endif; ?>

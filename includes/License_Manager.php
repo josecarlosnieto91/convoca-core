@@ -150,9 +150,9 @@ class License_Manager {
 
 		// V-6 anti-replay: HMAC-signed request (nonce + timestamp).
 		// The license key itself is the HMAC secret (matches the server).
-		$timestamp   = time();
-		$action      = 'activate';
-		$nonce       = hash_hmac( 'sha256', $key . '|' . $site_url . '|' . $action . '|' . $timestamp, $key );
+		$timestamp = time();
+		$action    = 'activate';
+		$nonce     = hash_hmac( 'sha256', $key . '|' . $site_url . '|' . $action . '|' . $timestamp, $key );
 
 		$response = wp_remote_post(
 			$api_url,
@@ -179,7 +179,7 @@ class License_Manager {
 			}
 			// Store pending validation. Keep existing type/features intact
 			// (do NOT downgrade an active license to free on a network hiccup).
-			$current = self::get_license();
+			$current        = self::get_license();
 			$current['key'] = $key;
 			if ( empty( $current['status'] ) || $current['status'] === 'inactive' ) {
 				$current['status'] = 'pending';

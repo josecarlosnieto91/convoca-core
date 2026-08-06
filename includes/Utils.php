@@ -160,7 +160,7 @@ class Utils {
 		// BOM for Excel.
 		fprintf( $out, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) );
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose — closing php://output stream after BOM write, no WP_Filesystem equivalent for CSV streams
-	fclose( $out );
+		fclose( $out );
 	}
 	/**
 	 * Generate a unique alphanumeric access code.
@@ -337,7 +337,7 @@ class Utils {
 		$expires  = time() + $ttl;
 
 		// Try dedicated locks table first.
-		$locks_table  = self::locks_table();
+		$locks_table = self::locks_table();
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name, not user input
 		$table_exists = $wpdb->get_var( "SHOW TABLES LIKE '$locks_table'" ) === $locks_table;
 
@@ -418,7 +418,7 @@ class Utils {
 		global $wpdb;
 		$lock_key = 'convoca_lock_' . $key;
 
-		$locks_table  = self::locks_table();
+		$locks_table = self::locks_table();
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name
 		$table_exists = $wpdb->get_var( "SHOW TABLES LIKE '$locks_table'" ) === $locks_table;
 
@@ -451,7 +451,7 @@ class Utils {
 		$now   = time();
 		$total = 0;
 
-		$locks_table  = self::locks_table();
+		$locks_table = self::locks_table();
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name
 		$table_exists = $wpdb->get_var( "SHOW TABLES LIKE '$locks_table'" ) === $locks_table;
 

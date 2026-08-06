@@ -297,7 +297,7 @@ class Admin_Backup {
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile — serving binary ZIP file, no escaping needed
-	readfile( $tmp_file );
+		readfile( $tmp_file );
 		$cleanup();
 		exit;
 	}
@@ -376,7 +376,7 @@ class Admin_Backup {
 		$token  = wp_generate_password( 24, false );
 		$target = $import_dir . '/import-' . $token . '.zip';
 		// phpcs:ignore Generic.PHP.ForbiddenFunctions.Found — WP_Filesystem does not handle uploaded files; move_uploaded_file is the standard approach
-	if ( ! move_uploaded_file( $file['tmp_name'], $target ) ) {
+		if ( ! move_uploaded_file( $file['tmp_name'], $target ) ) {
 			wp_die( esc_html__( 'Error al guardar el temporal.', 'convoca-core' ) );
 		}
 
@@ -417,7 +417,8 @@ class Admin_Backup {
 		);
 		foreach ( $selected as $entity ) {
 			if ( isset( $cap_checks[ $entity ] ) && ! current_user_can( $cap_checks[ $entity ] ) ) {
-				/* translators: %s: entity type name */
+				/*
+				translators: %s: entity type name */
 				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — $entity is a safe internal slug, not user input
 				wp_die( sprintf( esc_html__( 'No tienes permisos para importar %s.', 'convoca-core' ), $entity ) );
 			}
@@ -507,7 +508,7 @@ class Admin_Backup {
 					}
 					$this->apply_meta( $entity, $new_id, $data );
 					++$results['total'];
-					}
+				}
 					// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose — ZipArchive stream cleanup
 					fclose( $stream );
 			}

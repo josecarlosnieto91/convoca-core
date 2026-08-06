@@ -13,20 +13,22 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       convoca-core
  * Domain Path:       /languages
-
  */
 
 namespace Convoca\Core;
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 }
 
 // Load translations.
-add_action( 'init', function () {
-	wp_set_script_translations( 'convoca-core-scripts', 'convoca-core', plugin_dir_path( __FILE__ ) . 'languages/' );
-	load_plugin_textdomain( 'convoca-core', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
-} );
+add_action(
+	'init',
+	function () {
+		wp_set_script_translations( 'convoca-core-scripts', 'convoca-core', plugin_dir_path( __FILE__ ) . 'languages/' );
+		load_plugin_textdomain( 'convoca-core', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+	} 
+);
 
 if ( ! defined( 'CONVOCA_COMMON_VERSION' ) ) {
 	define( 'CONVOCA_COMMON_VERSION', '2.1.4' );
@@ -164,15 +166,15 @@ add_action(
 			array(
 				'methods'             => 'GET',
 				'callback'            => function () {
-				return new \WP_REST_Response(
-					array(
-						'timestamp'   => current_time( 'mysql' ),
-						'php_version' => PHP_VERSION,
-						'wp_version'  => get_bloginfo( 'version' ),
-					),
-					200
-				);
-			},
+					return new \WP_REST_Response(
+						array(
+							'timestamp'   => current_time( 'mysql' ),
+							'php_version' => PHP_VERSION,
+							'wp_version'  => get_bloginfo( 'version' ),
+						),
+						200
+					);
+				},
 				'permission_callback' => function () {
 					return current_user_can( 'manage_options' );
 				},

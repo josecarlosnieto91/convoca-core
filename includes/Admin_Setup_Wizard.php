@@ -219,7 +219,7 @@ class Admin_Setup_Wizard {
 
 		foreach ( array( 'convoca_logs', 'convoca_locks' ) as $t ) {
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — SHOW TABLES LIKE requires a literal string
-			$exists   = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $wpdb->prefix . $t ) ) === $wpdb->prefix . $t;
+			$exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->prefix . $t ) ) === $wpdb->prefix . $t;
 			/* translators: %s: database table name */
 			$checks[] = $this->check_item( sprintf( __( 'Tabla %s', 'convoca-core' ), $t ), $exists, __( 'Correcto.', 'convoca-core' ), __( 'No encontrada.', 'convoca-core' ) );
 		}

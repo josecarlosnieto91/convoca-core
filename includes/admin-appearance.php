@@ -41,7 +41,7 @@ function convoca_hide_screen_options( bool $show_screen, \WP_Screen $screen ): b
  */
 function convoca_admin_footer( string $text ): string {
 	return sprintf(
-		'© %d <a href="%s" target="_blank">' . get_bloginfo('name') . '</a> — %s',
+		'© %d <a href="%s" target="_blank">' . get_bloginfo( 'name' ) . '</a> — %s',
 		wp_date( 'Y' ),
 		apply_filters( 'convoca_admin_appearance_url', 'https://getconvoca.app' ), 
 		__( 'Plataforma de gestión de la asociación.', 'convoca-core' )
@@ -167,7 +167,7 @@ function convoca_export_pdf( string $title, array $headers, array $rows, string 
 		$html .= '</tr>';
 	}
 	$html .= '</tbody></table>';
-	$html .= '<div class="footer">' . get_bloginfo( 'name' ) . ' — ' . get_bloginfo('name') . ' — ' . wp_date( 'Y' ) . '</div>';
+	$html .= '<div class="footer">' . get_bloginfo( 'name' ) . ' — ' . get_bloginfo( 'name' ) . ' — ' . wp_date( 'Y' ) . '</div>';
 	$html .= '</body></html>';
 
 	$dompdf_options = new \Dompdf\Options();

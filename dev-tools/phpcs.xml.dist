@@ -2,7 +2,7 @@
 <ruleset name="Convoca">
   <description>WordPress Coding Standards for Convoca plugins</description>
   
-  <file>.</file>
+  <file>../</file>
   <exclude-pattern>*/vendor/*</exclude-pattern>
   <exclude-pattern>*/node_modules/*</exclude-pattern>
   <exclude-pattern>*/tests/*</exclude-pattern>

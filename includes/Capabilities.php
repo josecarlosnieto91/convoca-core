@@ -40,67 +40,67 @@ class Capabilities {
 	public static function get_all(): array {
 		return array(
 			// Convoca Shifts.
-			'gestionar_mis_turnos'              => array(
+			'gestionar_mis_turnos'         => array(
 				'description' => __( 'Gestionar mis turnos (voluntarios)', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad', 'voluntario_aprobado' ),
 			),
-			'convoca_shifts_manage_turnos'       => array(
+			'convoca_shifts_manage_turnos' => array(
 				'description' => __( 'Gestionar turnos del calendario (crear, editar)', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'convoca_shifts_view_stats'          => array(
+			'convoca_shifts_view_stats'    => array(
 				'description' => __( 'Ver estadísticas de turnos', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'convoca_shifts_audit_hours'         => array(
+			'convoca_shifts_audit_hours'   => array(
 				'description' => __( 'Auditoría de horas de voluntarios', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
 
 			// Convoca Enroll.
-			'convoca_manage_checkin'     => array(
+			'convoca_manage_checkin'       => array(
 				'description' => __( 'Hacer check-in de asistentes', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'convoca_manage_evaluations' => array(
+			'convoca_manage_evaluations'   => array(
 				'description' => __( 'Gestionar evaluaciones', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'convoca_view_reports'       => array(
+			'convoca_view_reports'         => array(
 				'description' => __( 'Ver informes de actividades', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
 
 			// Convoca Members.
-			'convoca_manage_hours'       => array(
+			'convoca_manage_hours'         => array(
 				'description' => __( 'Gestionar horas de voluntarios (aprobar)', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'convoca_export_members'     => array(
+			'convoca_export_members'       => array(
 				'description' => __( 'Exportar listado de socios', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
-			'convoca_manage_webhooks'    => array(
+			'convoca_manage_webhooks'      => array(
 				'description' => __( 'Gestionar webhooks', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
 
 			// Convoca Gateway.
-			'convoca_view_payments'      => array(
+			'convoca_view_payments'        => array(
 				'description' => __( 'Ver pagos y dashboard', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
-			'convoca_manage_payments'    => array(
+			'convoca_manage_payments'      => array(
 				'description' => __( 'Gestionar pagos manualmente', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
 
 			// Common.
-			'common_view_logs'        => array(
+			'common_view_logs'             => array(
 				'description' => __( 'Ver logs del sistema', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
-			'common_manage_backup'    => array(
+			'common_manage_backup'         => array(
 				'description' => __( 'Gestionar copias de seguridad', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),

@@ -36,8 +36,8 @@ class Settings_Helper {
 		'convoca_shifts_hora_apertura'     => 'convoca_centro_hora_apertura',
 		'convoca_shifts_hora_cierre'       => 'convoca_centro_hora_cierre',
 		'convoca_shifts_calendar_page_url' => 'convoca_centro_calendar_page_url',
-		'convoca_gateway_settings' => 'convoca_gateway_settings',
-		'convoca_enroll_settings'  => 'convoca_enroll_settings',
+		'convoca_gateway_settings'         => 'convoca_gateway_settings',
+		'convoca_enroll_settings'          => 'convoca_enroll_settings',
 	);
 
 	/**
