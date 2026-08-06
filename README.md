@@ -149,4 +149,51 @@ Prueba Convoca sin instalar nada:
 - [Convoca Gateway](https://github.com/josecarlosnieto91/convoca-gateway)
 - [Convoca Shifts](https://github.com/josecarlosnieto91/convoca-shifts)
 - [Convoca Publisher](https://github.com/josecarlosnieto91/convoca-publisher)
+- [Convoca Assistant](https://github.com/josecarlosnieto91/convoca-assistant)
+- [Convoca Theme](https://github.com/josecarlosnieto91/convoca-theme)
+
+## 🧑‍💻 Developer Guide — Hooks & Filters
+
+La API pública de Convoca para desarrolladores son los **hooks y filtros** que emiten los plugins.
+Referencia completa generada desde el código en [`docs/HOOKS.md`](docs/HOOKS.md).
+
+### Patrones de uso
+
+**Extender una funcionalidad (do_action):**
+
+```php
+// En tu plugin o theme: reaccionar a un evento de Convoca
+add_action( 'convoca_member_created', function ( int $member_id, array $data ) {
+    // e.g. notificar a un servicio externo
+}, 10, 2 );
+```
+
+**Modificar un valor (apply_filters):**
+
+```php
+// Cambiar la URL del logo en los emails
+add_filter( 'convoca_logo_url', function ( string $url ) {
+    return 'https://tusitio.es/mi-logo.png';
+} );
+
+// Pedir los assets comunes del frontend en una página custom
+add_filter( 'convoca_need_common_assets', function ( bool $needed ) {
+    return is_page( 'mi-pagina-convoca' ) ? true : $needed;
+} );
+```
+
+### Convenciones
+
+- Prefijo `convoca_` en todos los hooks (evita colisiones)
+- `do_action( 'convoca_{evento}', $args )` para eventos
+- `apply_filters( 'convoca_{nombre}', $value, $args )` para valores
+- Documenta los hooks nuevos en `docs/HOOKS.md` (regenerar: `python3 /tmp/p7-hooks.py`)
+
+### Pruebas
+
+```bash
+composer install
+composer test          # phpcs + phpstan + phpunit
+vendor/bin/phpunit     # solo unit tests
+```
 
