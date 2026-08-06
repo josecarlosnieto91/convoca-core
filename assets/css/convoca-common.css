@@ -551,3 +551,22 @@
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ── Dark Mode: form fields follow the theme ──── */
+.dark-mode .convoca-field label {
+    color: var(--dark-orange, #ff8700);
+}
+
+.dark-mode .convoca-field input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+.dark-mode .convoca-field select,
+.dark-mode .convoca-field textarea {
+    background: var(--dark-surface, #241019);
+    border-color: var(--dark-border, rgba(255, 135, 0, 0.15));
+    color: var(--dark-text, #F4F6F8);
+}
+
+.dark-mode .convoca-field input::placeholder,
+.dark-mode .convoca-field textarea::placeholder {
+    color: var(--dark-text-muted, #8A93A3);
+    opacity: 1;
+}
