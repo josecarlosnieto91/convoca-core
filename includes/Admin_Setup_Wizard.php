@@ -148,7 +148,7 @@ class Admin_Setup_Wizard {
 		}
 
 		$saved_progress = (int) get_option( self::PROGRESS_OPTION, 1 );
-		$step           = isset( $_GET['step'] ) ? min( 6, max( 1, (int) $_GET['step'] ) ) : $saved_progress;
+		$step           = isset( $_GET['step'] ) ? min( 7, max( 1, (int) $_GET['step'] ) ) : $saved_progress;
 
 		?>
 		<div class="wrap" style="max-width:850px;margin:40px auto;">
@@ -168,7 +168,8 @@ class Admin_Setup_Wizard {
 					3 => $this->step_plans(),
 					4 => $this->step_redsys(),
 					5 => $this->step_turnos(),
-					6 => $this->step_summary(),
+					6 => $this->step_ecosystem(),
+					7 => $this->step_summary(),
 					default => $this->step_database(),
 				};
 		?>
@@ -190,16 +191,17 @@ class Admin_Setup_Wizard {
 			3 => __( 'Membresía', 'convoca-core' ),
 			4 => __( 'Pagos', 'convoca-core' ),
 			5 => __( 'Turnos', 'convoca-core' ),
-			6 => __( 'Finalización', 'convoca-core' ),
+			6 => __( 'Ecosistema', 'convoca-core' ),
+			7 => __( 'Finalización', 'convoca-core' ),
 		);
 		echo '<div style="display:flex;justify-content:center;gap:0;margin-bottom:20px;background:#f8fafc;padding:20px;border-radius:12px;">';
-		for ( $i = 1; $i <= 6; $i++ ) {
+		for ( $i = 1; $i <= 7; $i++ ) {
 			$done    = $i < $current;
 			$active  = $i === $current;
 			$color   = $done ? '#10b981' : ( $active ? '#3b82f6' : '#94a3b8' );
 			$opacity = ( $done || $active ) ? '1' : '0.5';
 			echo '<div style="text-align:center;flex:1;position:relative;opacity:' . esc_attr( $opacity ) . ';">';
-			if ( $i < 6 ) {
+			if ( $i < 7 ) {
 				echo '<div style="position:absolute;top:16px;left:50%;width:100%;height:2px;background:' . ( $done ? '#10b981' : '#e2e8f0' ) . ';z-index:0;"></div>';
 			}
 			echo '<div style="background:' . esc_attr( $color ) . ';color:#fff;width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;margin-bottom:8px;position:relative;z-index:1;box-shadow:0 0 0 4px #fff;">' . esc_html( $done ? '✓' : $i ) . '</div>';
@@ -402,7 +404,71 @@ class Admin_Setup_Wizard {
 		$this->step_nav( 5, true );
 	}
 
-	/* ── Step 6: Summary ── */
+	/* ── Step 6: Ecosystem ── */
+
+	private function step_ecosystem(): void {
+		$modules = array(
+			'members'   => array(
+				'label' => __( 'Convoca Members', 'convoca-core' ),
+				'desc'  => __( 'Fichas de socios, cuotas, carnets digitales y área personal.', 'convoca-core' ),
+				'check' => class_exists( '\Convoca\Members\CPT_Miembro' ),
+			),
+			'enroll'    => array(
+				'label' => __( 'Convoca Enroll', 'convoca-core' ),
+				'desc'  => __( 'Inscripciones a actividades, listas de espera y asistencia.', 'convoca-core' ),
+				'check' => class_exists( '\Convoca\Enroll\Plugin' ) || class_exists( '\Convoca\Enroll\Enroll_Plugin' ),
+			),
+			'gateway'   => array(
+				'label' => __( 'Convoca Gateway', 'convoca-core' ),
+				'desc'  => __( 'Cobro de cuotas con tarjeta o Bizum vía Redsys.', 'convoca-core' ),
+				'check' => class_exists( '\Convoca\Gateway\Plugin' ),
+			),
+			'shifts'    => array(
+				'label' => __( 'Convoca Shifts', 'convoca-core' ),
+				'desc'  => __( 'Turnos de voluntariado con calendario y check-in.', 'convoca-core' ),
+				'check' => class_exists( '\Convoca\Shifts\Plugin' ),
+			),
+			'publisher' => array(
+				'label' => __( 'Convoca Publisher', 'convoca-core' ),
+				'desc'  => __( 'Publica en 7 redes sociales desde una sola entrada.', 'convoca-core' ),
+				'check' => class_exists( '\Convoca\Publisher\Plugin' ),
+			),
+			'assistant' => array(
+				'label' => __( 'Convoca Assistant', 'convoca-core' ),
+				'desc'  => __( 'Asistente conversacional local, sin IA, sin enviar datos.', 'convoca-core' ),
+				'check' => class_exists( '\Convoca\Assistant\Plugin' ),
+			),
+		);
+		?>
+		<h2><?php esc_html_e( '6. El Ecosistema Convoca', 'convoca-core' ); ?></h2>
+		<p style="color:#64748b;">
+			<?php esc_html_e( 'Cada módulo es un plugin independiente: funciona solo o en conjunto con el resto. Todo es open source y los datos viven en tu propia web.', 'convoca-core' ); ?>
+		</p>
+		<div style="margin:24px 0;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
+			<?php foreach ( $modules as $slug => $m ) : ?>
+				<div style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid #f1f5f9;">
+					<span style="font-size:18px;width:24px;text-align:center;"><?php echo $m['check'] ? '✅' : '⬜'; ?></span>
+					<div style="flex:1;">
+						<strong style="color:#1e293b;"><?php echo esc_html( $m['label'] ); ?></strong>
+						<div style="font-size:13px;color:#64748b;"><?php echo esc_html( $m['desc'] ); ?></div>
+					</div>
+					<span style="font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;background:<?php echo $m['check'] ? '#ecfdf5' : '#f8fafc'; ?>;color:<?php echo $m['check'] ? '#059669' : '#94a3b8'; ?>;">
+						<?php echo $m['check'] ? esc_html__( 'Activo', 'convoca-core' ) : esc_html__( 'No instalado', 'convoca-core' ); ?>
+					</span>
+				</div>
+			<?php endforeach; ?>
+		</div>
+		<p style="color:#64748b;">
+			<?php esc_html_e( '💡 Importar tus socios actuales: ve a Miembros → Importar CSV y arrastra tu hoja de Excel. En segundos tendrás todas las fichas digitales.', 'convoca-core' ); ?>
+		</p>
+		<p style="color:#64748b;">
+			<?php esc_html_e( '¿Necesitas instalar algún módulo? Encuéntralos en WordPress.org o en getconvoca.app — los módulos base son gratuitos para siempre.', 'convoca-core' ); ?>
+		</p>
+		<?php
+		$this->step_nav( 6, true );
+	}
+
+	/* ── Step 7: Summary ── */
 
 	private function step_summary(): void {
 		$status = $this->get_completion_status();
