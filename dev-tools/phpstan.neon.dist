@@ -1,9 +1,14 @@
 parameters:
 	level: 0
 	paths:
-		- .
+		- ../includes
+		- ../convoca-core.php
 	excludePaths:
-		- vendor/ (?)
-		- node_modules (?)
-		- tests (?)
-		- dev-tools/ (?)
+		analyseAndScan:
+			- ../vendor
+			- ../tests
+			- ../dev-tools
+			- ../node_modules (?)
+	bootstrapFiles:
+		- ../vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+		- ../phpstan-bootstrap.php
