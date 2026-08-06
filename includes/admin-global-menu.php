@@ -270,7 +270,23 @@ endif;
 }
 
 // Enqueue common assets (Public).
+// Solo en el frontend si la página contiene un shortcode/block de Convoca
+// o si un plugin hijo lo pide explícitamente (filtro convoca_need_common_assets).
 function convoca_common_enqueue_assets(): void {
+	$needed = (bool) apply_filters( 'convoca_need_common_assets', false );
+
+	if ( ! $needed ) {
+		$post = get_post();
+		if ( $post && ! empty( $post->post_content ) ) {
+			// Cualquier shortcode convoca_* en el contenido activa los assets comunes.
+			$needed = (bool) preg_match( '/\[convoca_[a-z_]+/i', $post->post_content );
+		}
+	}
+
+	if ( ! $needed ) {
+		return;
+	}
+
 	wp_enqueue_style(
 		'convoca-core',
 		CONVOCA_COMMON_URL . 'assets/css/convoca-common.css',
