@@ -146,11 +146,17 @@ add_action(
 
 		// Initialize license manager.
 		License_Manager::init();
+
+		// Initialize module registry (marketplace).
+		Module_Registry::init();
 	}
 );
 
 /* ── Global Convoca menu → extracted to includes/admin-global-menu.php ── */
 require_once __DIR__ . '/includes/admin-global-menu.php';
+
+/* ── Module Registry (marketplace) ── */
+require_once __DIR__ . '/includes/class-module-registry.php';
 
 /* ── Admin Appearance → extracted to includes/admin-appearance.php ── */
 require_once __DIR__ . '/includes/admin-appearance.php';
