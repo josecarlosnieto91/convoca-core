@@ -629,7 +629,7 @@ class Admin_Backup {
 			'miembros' => __( 'Miembros / Socios', 'convoca-core' ),
 			'inscripciones' => __( 'Inscripciones a Actividades', 'convoca-core' ),
 			'proyectos' => __( 'Proyectos y Actividades', 'convoca-core' ),
-			'turnos' => __( 'Turnos Centro Social', 'convoca-core' ),
+			'turnos' => __( 'Turnos', 'convoca-core' ),
 			default => ucfirst( $slug ),
 		};
 	}

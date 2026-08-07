@@ -82,7 +82,7 @@ Gestión de turnos y disponibilidad del local.
 
 | Hook | Parámetros | Descripción |
 | :--- | :--- | :--- |
-| `conv_voluntario_aprobado` | `$user_id` | Se dispara cuando un voluntario es aprobado para el Centro Social. |
+| `conv_voluntario_aprobado` | `$user_id` | Se dispara cuando un voluntario es aprobado. |
 
 ### Filtros
 
