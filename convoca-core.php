@@ -149,6 +149,9 @@ add_action(
 
 		// Initialize module registry (marketplace).
 		Module_Registry::init();
+
+		// Initialize performance probe (?convoca_probe=1).
+		Performance_Probe::init();
 	}
 );
 
