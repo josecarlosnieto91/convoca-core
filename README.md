@@ -22,6 +22,13 @@ Plugin base del ecosistema Convoca. Proporciona utilidades compartidas, logging 
 - Upgrade Manager
 - REST API
 
+
+## 📖 Documentación
+
+La documentación completa (manual de usuario, API REST, hooks, instalación) vive en la wiki:
+
+👉 **[Convoca core](https://docs.getconvoca.app/plugins/convoca-core/)**
+
 ## Dependencies
 
 WordPress 6.4+, PHP 8.1+
