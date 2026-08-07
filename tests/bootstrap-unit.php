@@ -167,8 +167,8 @@ if (!function_exists('wp_get_post_terms')) {
         if (isset($GLOBALS['_wp_stores']['post_terms'][(int) $id])) {
             return $GLOBALS['_wp_stores']['post_terms'][(int) $id];
         }
-        // Default: un término "Taller de Yoga" (lo que esperan los tests de shifts).
-        return [(object) ['name' => 'Taller de Yoga']];
+        // Default: sin términos.
+        return [];
     }
 }
 if (!function_exists('get_post_meta')) {
