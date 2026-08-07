@@ -85,12 +85,32 @@ if (!function_exists('do_action')) { function do_action($t, ...$a) {} }
 if (!function_exists('add_action')) { function add_action($t, $c, $p = 10, $a = 1) { return true; } }
 if (!function_exists('add_filter')) { function add_filter($t, $c, $p = 10, $a = 1) { return true; } }
 if (!function_exists('remove_action')) { function remove_action($t, $c, $p = 10) { return true; } }
+if (!function_exists('has_action')) { function has_action($t, $c = false) { return false; } }
+if (!function_exists('has_filter')) { function has_filter($t, $c = false) { return false; } }
+if (!function_exists('do_action_deprecated')) { function do_action_deprecated($t, $a = [], $v = '', $alt = '') {} }
+if (!function_exists('apply_filters_deprecated')) { function apply_filters_deprecated($t, $a = [], $v = '', $alt = '') { return $a[0] ?? null; } }
+if (!function_exists('did_action')) { function did_action($t) { return 0; } }
 
 // --- Auth ---
 if (!function_exists('current_user_can')) { function current_user_can($c, ...$a) { return true; } }
 if (!function_exists('get_current_user_id')) { function get_current_user_id() { return 1; } }
 if (!function_exists('wp_create_nonce')) { function wp_create_nonce($a = -1) { return md5($a . time()); } }
 if (!function_exists('wp_verify_nonce')) { function wp_verify_nonce($n, $a = -1) { return true; } }
+if (!function_exists('get_userdata')) {
+    function get_userdata($id) {
+        // Override por test: _test_users[id].
+        if (!empty($GLOBALS['_test_users'][(int) $id])) {
+            return $GLOBALS['_test_users'][(int) $id];
+        }
+        $u = new WP_User();
+        $u->ID = (int) $id;
+        $u->display_name = 'Test User';
+        $u->first_name = 'First' . (int) $id;
+        return $u;
+    }
+}
+if (!function_exists('get_user_by')) { function get_user_by($field, $value) { $u = new WP_User(); $u->ID = 1; $u->user_email = 'test@example.com'; return $u; } }
+if (!function_exists('wp_set_current_user')) { function wp_set_current_user($id, $name = '') { return new WP_User(); } }
 
 // --- HTTP ---
 if (!function_exists('wp_remote_get')) { function wp_remote_get($u, $a = []) { return ['response' => ['code' => 200], 'body' => '{}']; } }
@@ -112,6 +132,56 @@ if (!function_exists('wp_date')) { function wp_date($f, $ts = null) { return dat
 if (!function_exists('get_the_title')) { function get_the_title($id) { return "Post $id"; } }
 if (!function_exists('get_post_status')) { function get_post_status($id) { return 'publish'; } }
 if (!function_exists('post_type_exists')) { function post_type_exists($t) { return in_array($t, ['post', 'page', 'miembro'], true); } }
+if (!function_exists('get_post')) {
+    function get_post($id = null, $output = OBJECT, $filter = 'raw') {
+        // Convención de tests: _test_posts[id] permite mockear posts completos.
+        if (!empty($GLOBALS['_test_posts'][(int) $id])) {
+            return $GLOBALS['_test_posts'][(int) $id];
+        }
+        $p = new WP_Post();
+        $p->ID = (int) $id;
+        // Permitir que los tests configuren el tipo por ID (convención: _wp_post_type_{id}).
+        $type = $GLOBALS['_wp_stores']['post_types'][(int) $id] ?? 'miembro';
+        $p->post_type = $type;
+        $p->post_status = 'publish';
+        return $p;
+    }
+}
+if (!function_exists('wp_insert_post')) { function wp_insert_post($data, $error = false) { return 99; } }
+if (!function_exists('wp_update_post')) {
+    function wp_update_post($data) {
+        // Spy: registrar los datos pasados (convención usada por los tests).
+        $id = $data['ID'] ?? 0;
+        $GLOBALS['_wp_stores']['post_meta'][$id]['_wp_update_data'] = $data;
+        if (!empty($data['post_title'])) {
+            $GLOBALS['_wp_stores']['post_meta'][$id]['_wp_updated_title'] = $data['post_title'];
+        }
+        return $id;
+    }
+}
+if (!function_exists('wp_delete_post')) { function wp_delete_post($id, $force = false) { return true; } }
+if (!function_exists('get_posts')) { function get_posts($args = []) { return []; } }
+if (!function_exists('wp_get_post_terms')) {
+    function wp_get_post_terms($id, $tax, $args = []) {
+        // Override por test: _wp_stores['post_terms'][id].
+        if (isset($GLOBALS['_wp_stores']['post_terms'][(int) $id])) {
+            return $GLOBALS['_wp_stores']['post_terms'][(int) $id];
+        }
+        // Default: un término "Taller de Yoga" (lo que esperan los tests de shifts).
+        return [(object) ['name' => 'Taller de Yoga']];
+    }
+}
+if (!function_exists('get_post_meta')) {
+    function get_post_meta($id, $key = '', $single = false) {
+        $s = &$GLOBALS['_wp_stores']['post_meta'];
+        $v = $s[$id][$key] ?? null;
+        if ($v === null) return $single ? '' : [];
+        if ($single) return $v;
+        return is_array($v) ? $v : [$v];
+    }
+}
+if (!function_exists('update_post_meta')) { function update_post_meta($id, $key, $value) { $GLOBALS['_wp_stores']['post_meta'][$id][$key] = $value; return true; } }
+if (!function_exists('delete_post_meta')) { function delete_post_meta($id, $key) { unset($GLOBALS['_wp_stores']['post_meta'][$id][$key]); return true; } }
 
 // --- URL helpers ---
 if (!function_exists('home_url')) { function home_url($p = '') { return "https://example.com$p"; } }
@@ -157,7 +227,11 @@ if (!class_exists('WP_Post')) {
 if (!class_exists('WP_User')) {
     class WP_User {
         public $ID = 0; public $roles = ['administrator'];
+        public $display_name = 'Test User';
+        public $first_name = 'First';
+        public $user_email = 'test@example.com';
         public function exists() { return $this->ID > 0; }
+        public function has_cap($cap) { return true; }
     }
 }
 

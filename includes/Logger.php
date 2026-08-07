@@ -194,6 +194,23 @@ class Logger {
 	}
 
 	/**
+	 * Clear all logs (no retention). Utility for tests and manual cleanup.
+	 *
+	 * @return int Number of rows deleted.
+	 */
+	public static function clear(): int {
+		if ( ! self::table_exists() ) {
+			return 0;
+		}
+
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'convoca_logs';
+		$deleted    = $wpdb->query( "DELETE FROM $table_name" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- hardcoded table name.
+
+		return (int) $deleted;
+	}
+
+	/**
 	 * Clean up old logs (retention policy).
 	 * Default: keep logs for 90 days, errors for 1 year.
 	 * Called via daily cron.

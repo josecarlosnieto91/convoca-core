@@ -208,6 +208,7 @@ class Utils {
 	 * @param mixed  ...$args     The arguments to pass both hooks.
 	 */
 	public static function do_action( string $new_hook, string $old_hook = '', ...$args ): void {
+		self::record_fired( $new_hook );
 		do_action( $new_hook, ...$args );
 
 		if ( ! empty( $old_hook ) && has_action( $old_hook ) ) {
@@ -217,6 +218,32 @@ class Utils {
 				do_action( $old_hook, ...$args );
 			}
 		}
+	}
+
+	/**
+	 * Record a hook name as "fired" (used by unit tests to assert emissions).
+	 */
+	private static function record_fired( string $hook ): void {
+		$fired = self::get_fired();
+		$fired[ $hook ] = true;
+		update_option( 'convoca_utils_fired', $fired );
+	}
+
+	/**
+	 * Get the set of hooks fired via Utils::do_action.
+	 *
+	 * @return array<string,bool>
+	 */
+	public static function get_fired(): array {
+		$fired = get_option( 'convoca_utils_fired', array() );
+		return is_array( $fired ) ? $fired : array();
+	}
+
+	/**
+	 * Reset the fired-hooks registry (test utility).
+	 */
+	public static function clear_fired(): void {
+		delete_option( 'convoca_utils_fired' );
 	}
 
 	/**
