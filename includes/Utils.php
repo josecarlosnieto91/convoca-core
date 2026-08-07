@@ -255,10 +255,12 @@ class Utils {
 		$ip        = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 		$cache_key = 'convoca_rl_' . $action . '_' . md5( $ip );
 
-		// Try object cache first.
+		// Object cache fast-path: only a 0 (blocked) result short-circuits.
+		// A 1 (allowed) MUST fall through to the atomic INSERT so the DB
+		// counter keeps accumulating within the same request/window.
 		$cached = wp_cache_get( $cache_key, 'convoca_rate_limits' );
-		if ( $cached !== false ) {
-			return $cached > 0;
+		if ( $cached === 0 ) {
+			return false;
 		}
 
 		global $wpdb;
