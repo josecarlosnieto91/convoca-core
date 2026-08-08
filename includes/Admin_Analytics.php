@@ -98,7 +98,7 @@ class Admin_Analytics {
                 SUM(IF(pm.meta_value = 'pendiente_documentacion', 1, 0)) AS pendientes_doc
              FROM {$wpdb->postmeta} pm
              JOIN {$wpdb->posts} ON {$wpdb->posts}.ID = pm.post_id AND $campo
-             WHERE pm.meta_key = '_convoca_estado_miembro"
+             WHERE pm.meta_key = '_convoca_estado_miembro'"
 		);
 
 		$total = (int) $wpdb->get_var(
@@ -281,7 +281,7 @@ class Admin_Analytics {
 			$wpdb->prepare(
 				"SELECT DATE(p.post_date) AS day,
                     COUNT(*) AS cnt,
-                    COALESCE(SUM(CAST(pm.meta_value AS UNSIGNED)), 0) AS total
+                    COALESCE(SUM(CAST(ma.meta_value AS UNSIGNED)), 0) AS total
              FROM {$wpdb->posts} p
              JOIN {$wpdb->postmeta} ms ON p.ID = ms.post_id AND ms.meta_key = '_convoca_status' AND ms.meta_value = 'paid'
              JOIN {$wpdb->postmeta} ma ON p.ID = ma.post_id AND ma.meta_key = '_convoca_amount_cents'
