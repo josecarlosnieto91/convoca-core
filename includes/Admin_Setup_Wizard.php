@@ -258,7 +258,7 @@ class Admin_Setup_Wizard {
 		$pages = array(
 			'alta-socios' => array(
 				'title' => 'Alta de Socios',
-				'sc'    => '[convoca_alta]',
+				'sc'    => '[convoca_alta_socio]',
 				'req'   => true,
 			),
 			'panel-socio' => array(
@@ -309,7 +309,7 @@ class Admin_Setup_Wizard {
 			$pages = array(
 				'alta-socios' => array(
 					'title' => 'Alta de Socios',
-					'sc'    => '[convoca_alta]',
+					'sc'    => '[convoca_alta_socio]',
 				),
 				'panel-socio' => array(
 					'title' => 'Mi Panel de Socio',
