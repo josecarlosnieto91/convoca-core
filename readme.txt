@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 2.1.4
+Stable tag: 2.1.5
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,11 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.1.5 =
+* Fix: contador de socios activos en el Panel de Control (comilla SQL faltante en Admin_Analytics).
+* Fix: alias SQL en consulta last_7_days de pagos (Notice).
+* Fix: shortcode correcto [convoca_alta_socio] en el asistente de configuración.
 
 = 2.1.4 =
 * Added: MANUAL_USUARIO.md with complete guide
