@@ -378,13 +378,14 @@ class Admin_Setup_Wizard {
 				<?php wp_nonce_field( 'convoca_wizard_save' ); ?>
 				<input type="hidden" name="action" value="convoca_wizard_save">
 				<input type="hidden" name="wizard_step" value="3">
-				<table class="widefat striped" style="max-width:900px;">
+				<table class="widefat striped" style="max-width:1000px;">
 					<thead>
 						<tr>
 							<th style="width:45px;"><?php esc_html_e( 'Activo', 'convoca-core' ); ?></th>
-							<th><?php esc_html_e( 'Plan', 'convoca-core' ); ?></th>
-							<th style="width:130px;"><?php esc_html_e( 'Modalidad', 'convoca-core' ); ?></th>
-							<th style="width:110px;"><?php esc_html_e( 'Precio (€)', 'convoca-core' ); ?></th>
+							<th><?php esc_html_e( 'Nombre visible', 'convoca-core' ); ?></th>
+							<th style="width:140px;"><?php esc_html_e( 'ID corto', 'convoca-core' ); ?></th>
+							<th style="width:125px;"><?php esc_html_e( 'Modalidad', 'convoca-core' ); ?></th>
+							<th style="width:100px;"><?php esc_html_e( 'Precio (€)', 'convoca-core' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -404,7 +405,9 @@ class Admin_Setup_Wizard {
 							<td><input type="checkbox" name="convoca_plans[<?php echo esc_attr( $key ); ?>][active]" value="1" <?php checked( $checked ); ?>></td>
 							<td>
 								<input type="text" name="convoca_plans[<?php echo esc_attr( $key ); ?>][label]" value="<?php echo esc_attr( $p_label ); ?>" class="regular-text" style="width:100%;">
-								<code style="opacity:0.5;"><?php echo esc_html( $key ); ?></code>
+							</td>
+							<td>
+								<input type="text" name="convoca_plans[<?php echo esc_attr( $key ); ?>][slug]" value="<?php echo esc_attr( $key ); ?>" style="width:100%;" pattern="[a-z0-9-]+" title="<?php esc_attr_e( 'Solo minúsculas, números y guiones', 'convoca-core' ); ?>">
 							</td>
 							<td>
 								<select name="convoca_plans[<?php echo esc_attr( $key ); ?>][modalidad]" style="width:100%;">
@@ -737,36 +740,81 @@ class Admin_Setup_Wizard {
 		check_admin_referer( 'convoca_wizard_save' );
 		$step = (int) $_POST['wizard_step'];
 		if ( $step === 3 ) {
-			// Guardar planes de membresía: actualiza active/price de los planes editables
-			// y conserva intactos los selectores de modalidad (familiar/juvenil).
+			// Guardar planes de membresía: activo, nombre visible, id corto (slug),
+			// modalidad y precio. Al renombrar un slug se migran los miembros que lo usan.
 			if ( class_exists( '\Convoca\Members\CPT_Miembro' ) ) {
 				$plans = \Convoca\Members\CPT_Miembro::get_plans();
 				$post  = isset( $_POST['convoca_plans'] ) ? (array) wp_unslash( $_POST['convoca_plans'] ) : array();
 				// Los planes editables son los de modalidad real (Numerario/Familiar/Juvenil).
-				$real_mods = array( 'Numerario', 'Familiar', 'Juvenil' );
-				foreach ( $plans as $key => &$plan ) {
+				$real_mods   = array( 'Numerario', 'Familiar', 'Juvenil' );
+				$new_plans   = array();
+				$slug_moves  = array(); // slug_viejo => slug_nuevo para migrar metas.
+				$used_slugs  = array( 'familiar', 'juvenil' ); // Selectores internos: reservados.
+				$collision   = '';
+
+				foreach ( $plans as $key => $plan ) {
 					$mod = $plan['modalidad'] ?? 'Numerario';
 					if ( ! in_array( $mod, $real_mods, true ) ) {
-						continue; // Selectores de modalidad (familiar/juvenil): intactos.
+						$new_plans[ $key ] = $plan; // Selectores: intactos.
+						continue;
 					}
-					if ( isset( $post[ $key ] ) ) {
-						$plan['active'] = ! empty( $post[ $key ]['active'] );
-						if ( isset( $post[ $key ]['label'] ) ) {
-							$plan['label'] = sanitize_text_field( $post[ $key ]['label'] );
+					if ( ! isset( $post[ $key ] ) ) {
+						$plan['active'] = false; // Checkbox desmarcado → no viaja → desactivar.
+						$new_plans[ $key ] = $plan;
+						continue;
+					}
+					$data = $post[ $key ];
+					// Slug nuevo: validar formato y unicidad.
+					$new_slug = isset( $data['slug'] ) ? sanitize_key( $data['slug'] ) : $key;
+					if ( '' === $new_slug ) {
+						$new_slug = $key;
+					}
+					if ( $new_slug !== $key ) {
+						if ( in_array( $new_slug, $used_slugs, true ) || isset( $new_plans[ $new_slug ] ) || isset( $plans[ $new_slug ] ) ) {
+							$collision = $new_slug;
+							break;
 						}
-						if ( isset( $post[ $key ]['modalidad'] ) && in_array( $post[ $key ]['modalidad'], $real_mods, true ) ) {
-							$plan['modalidad'] = $post[ $key ]['modalidad'];
-						}
-						if ( isset( $post[ $key ]['price'] ) && is_numeric( $post[ $key ]['price'] ) ) {
-							$plan['price'] = (float) $post[ $key ]['price'];
-						}
-					} else {
-						// Checkbox desmarcado → no viaja en POST → desactivar.
-						$plan['active'] = false;
+						$slug_moves[ $key ] = $new_slug;
+					}
+					$used_slugs[] = $new_slug;
+
+					$plan['active'] = ! empty( $data['active'] );
+					if ( isset( $data['label'] ) ) {
+						$plan['label'] = sanitize_text_field( $data['label'] );
+					}
+					if ( isset( $data['modalidad'] ) && in_array( $data['modalidad'], $real_mods, true ) ) {
+						$plan['modalidad'] = $data['modalidad'];
+					}
+					if ( isset( $data['price'] ) && is_numeric( $data['price'] ) ) {
+						$plan['price'] = (float) $data['price'];
+					}
+					$new_plans[ $new_slug ] = $plan;
+				}
+
+				if ( '' !== $collision ) {
+					// No guardar; volver al paso 3 con aviso.
+					add_settings_error( 'convoca_wizard', 'slug_collision', sprintf( /* translators: %s: slug en conflicto */ __( 'El ID corto «%s» ya está en uso. Elige otro.', 'convoca-core' ), $collision ), 'error' );
+					set_transient( 'convoca_wizard_plans_notice', __( 'No se guardó: el ID corto introducido ya existe.', 'convoca-core' ), 30 );
+					wp_safe_redirect( admin_url( 'admin.php?page=conv-setup-wizard&step=3&plans_error=1' ) );
+					exit;
+				}
+
+				// Migrar miembros que referencien el slug antiguo.
+				if ( ! empty( $slug_moves ) && function_exists( 'update_post_meta' ) ) {
+					global $wpdb;
+					foreach ( $slug_moves as $old => $new ) {
+						// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- migración puntual de metas.
+						$wpdb->query(
+							$wpdb->prepare(
+								"UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE meta_key IN ('_convoca_plan','_convoca_sub_plan') AND meta_value = %s",
+								$new,
+								$old
+							)
+						);
 					}
 				}
-				unset( $plan );
-				update_option( 'convoca_members_plans', $plans );
+
+				update_option( 'convoca_members_plans', $new_plans );
 			}
 		}
 		if ( $step === 4 ) {
