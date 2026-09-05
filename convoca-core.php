@@ -85,6 +85,7 @@ register_deactivation_hook(
 		wp_clear_scheduled_hook( 'convoca_log_cleanup' );
 		wp_clear_scheduled_hook( 'convoca_log_purge' );
 		wp_clear_scheduled_hook( 'convoca_continue_access_codes' );
+		wp_clear_scheduled_hook( 'convoca_security_digest' );
 	}
 );
 
@@ -100,6 +101,15 @@ add_action(
 	function () {
 		\Convoca\Core\Installer::continue_access_codes();
 	}
+);
+
+// Security Monitor: observabilidad de eventos críticos (digest diario).
+add_action(
+	'plugins_loaded',
+	function (): void {
+		\Convoca\Core\Security_Monitor::init();
+	},
+	20
 );
 
 // Initialize basic hooks if needed.
