@@ -738,6 +738,9 @@ class Admin_Setup_Wizard {
 
 	public function handle_save(): void {
 		check_admin_referer( 'convoca_wizard_save' );
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Acceso denegado.', 'convoca-core' ) );
+		}
 		$step = (int) $_POST['wizard_step'];
 		if ( $step === 3 ) {
 			// Guardar planes de membresía: activo, nombre visible, id corto (slug),
@@ -834,6 +837,9 @@ class Admin_Setup_Wizard {
 
 	public function handle_complete(): void {
 		check_admin_referer( 'convoca_wizard_complete' );
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Acceso denegado.', 'convoca-core' ) );
+		}
 		update_option( self::COMPLETED_OPTION, 1 );
 		delete_option( self::PROGRESS_OPTION );
 		wp_safe_redirect( admin_url() );

@@ -386,7 +386,7 @@ class Utils {
                      ELSE expires END",
 					$lock_key,
 					$expires,
-					$expires,
+					time(),
 					$expires
 				)
 			);

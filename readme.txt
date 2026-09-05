@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 2.2.1
+Stable tag: 2.2.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,11 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.2.2 =
+* Security: fix crítico en acquire_lock — la comparación de expiración usaba $expires (futuro) en vez de time(), permitiendo que dos procesos obtuvieran el mismo lock (exclusión mutua rota; dedup de pagos/cron ineficaz).
+* Security: handle_save/handle_complete del wizard ahora exigen manage_options (antes solo nonce).
+* Security: ajax_dismiss de notificaciones exige is_user_logged_in().
 
 = 2.2.1 =
 * Feat: paso 3 del wizard permite editar el ID corto (slug) de cada plan. Al renombrarlo se migran automáticamente los miembros que lo referencian (_convoca_plan / _convoca_sub_plan). Slugs reservados: familiar, juvenil.

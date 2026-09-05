@@ -346,6 +346,9 @@ class Notifications {
 
 	public static function ajax_dismiss(): void {
 		check_ajax_referer( 'convoca_notifications_ajax', 'nonce' );
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
 		$id = sanitize_text_field( wp_unslash( $_POST['id'] ?? '' ) );
 		if ( ! $id ) {
 			return;
