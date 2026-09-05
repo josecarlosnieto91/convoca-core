@@ -194,18 +194,25 @@ class Admin_Setup_Wizard {
 			6 => __( 'Ecosistema', 'convoca-core' ),
 			7 => __( 'Finalización', 'convoca-core' ),
 		);
+		$base_url = admin_url( 'admin.php?page=conv-setup-wizard' );
 		echo '<div style="display:flex;justify-content:center;gap:0;margin-bottom:20px;background:#f8fafc;padding:20px;border-radius:12px;">';
 		for ( $i = 1; $i <= 7; $i++ ) {
-			$done    = $i < $current;
-			$active  = $i === $current;
-			$color   = $done ? '#10b981' : ( $active ? '#3b82f6' : '#94a3b8' );
-			$opacity = ( $done || $active ) ? '1' : '0.5';
+			$done      = $i < $current;
+			$active    = $i === $current;
+			$reachable = $i <= $current; // Se puede volver a cualquier paso ya recorrido.
+			$color     = $done ? '#10b981' : ( $active ? '#3b82f6' : '#94a3b8' );
+			$opacity   = ( $done || $active ) ? '1' : '0.5';
+			$cursor    = $reachable && ! $active ? 'cursor:pointer;' : 'cursor:default;';
+			$tag_open  = $reachable && ! $active ? '<a href="' . esc_url( $base_url . '&step=' . $i ) . '" style="text-decoration:none;display:block;" title="' . esc_attr__( 'Volver a este paso', 'convoca-core' ) . '">' : '<div style="display:block;">';
+			$tag_close = $reachable && ! $active ? '</a>' : '</div>';
 			echo '<div style="text-align:center;flex:1;position:relative;opacity:' . esc_attr( $opacity ) . ';">';
 			if ( $i < 7 ) {
 				echo '<div style="position:absolute;top:16px;left:50%;width:100%;height:2px;background:' . ( $done ? '#10b981' : '#e2e8f0' ) . ';z-index:0;"></div>';
 			}
-			echo '<div style="background:' . esc_attr( $color ) . ';color:#fff;width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;margin-bottom:8px;position:relative;z-index:1;box-shadow:0 0 0 4px #fff;">' . esc_html( $done ? '✓' : $i ) . '</div>';
+			echo $tag_open; // phpcs:ignore WordPress.Security.EscapeOutput — HTML construido con esc_url/esc_attr.
+			echo '<div style="background:' . esc_attr( $color ) . ';color:#fff;width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;margin-bottom:8px;position:relative;z-index:1;box-shadow:0 0 0 4px #fff;' . esc_attr( $cursor ) . '">' . esc_html( $done ? '✓' : $i ) . '</div>';
 			echo '<div style="font-size:12px;color:' . ( $active ? '#1e293b' : '#64748b' ) . ';font-weight:' . ( $active ? '700' : '500' ) . ';">' . esc_html( $labels[ $i ] ) . '</div>';
+			echo $tag_close;
 			echo '</div>';
 		}
 		echo '</div>';
@@ -559,7 +566,7 @@ class Admin_Setup_Wizard {
 		</div>
 
 		<?php if ( $status['is_ready'] ) : ?>
-			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-bottom:15px;">
 				<?php wp_nonce_field( 'convoca_wizard_complete' ); ?>
 				<input type="hidden" name="action" value="convoca_wizard_complete">
 				<button type="submit" class="button button-primary button-hero"><?php esc_html_e( 'Finalizar configuración', 'convoca-core' ); ?></button>
@@ -567,6 +574,7 @@ class Admin_Setup_Wizard {
 		<?php else : ?>
 			<p>⚠ <?php esc_html_e( 'Faltan requisitos obligatorios. Revisa los pasos marcados en ámbar.', 'convoca-core' ); ?></p>
 		<?php endif; ?>
+		<?php $this->step_nav( 7, true ); ?>
 		<?php
 	}
 
