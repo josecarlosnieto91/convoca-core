@@ -72,7 +72,9 @@ jobs:
       - name: Create build directory
         run: mkdir -p build
       - name: Run unit tests
-        run: vendor/bin/phpunit -c phpunit-unit.xml --coverage-clover build/clover.xml --log-junit build/junit.xml
+        # Sin --coverage-clover: no hay umbral/badge de cobertura y PHPUnit 10.5
+        # exige <source> filter + @covers válidos que no aportan aquí.
+        run: vendor/bin/phpunit -c phpunit-unit.xml --log-junit build/junit.xml
 
   plugin-check:
     name: Plugin Check (PCP)
