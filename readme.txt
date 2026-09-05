@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 2.1.7
+Stable tag: 2.1.8
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.1.8 =
+* Fix: paso 3 del wizard permite activar/desactivar planes y editar su precio (se guarda en convoca_members_plans; los selectores Familiar/Juvenil del alta quedan intactos).
+* Fix: resumen (paso 7) muestra solo planes activos reales con su precio, sin los selectores de modalidad.
 
 = 2.1.7 =
 * Fix: paso 7 Finalización muestra resumen de los 6 pasos configurados (estado ✓/⚠ + detalle) y título "7. Finalización".

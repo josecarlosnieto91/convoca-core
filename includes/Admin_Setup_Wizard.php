@@ -351,21 +351,54 @@ class Admin_Setup_Wizard {
 	/* ── Step 3: Membership ── */
 
 	private function step_plans(): void {
-		$plans = class_exists( '\\Convoca\\Members\\CPT_Miembro' ) ? \Convoca\Members\CPT_Miembro::get_plans() : array();
+		$plans = class_exists( '\Convoca\Members\CPT_Miembro' ) ? \Convoca\Members\CPT_Miembro::get_plans() : array();
+		// Solo modalidades reales de pago (Numerario/Familiar/Juvenil) — excluye artefactos 'Virtual'.
+		$real_mods = array( 'Numerario', 'Familiar', 'Juvenil' );
+		$editable  = array();
+		foreach ( $plans as $key => $p ) {
+			$mod = $p['modalidad'] ?? 'Numerario';
+			if ( in_array( $mod, $real_mods, true ) ) {
+				$editable[ $key ] = $p;
+			}
+		}
 		?>
 		<h2><?php esc_html_e( '3. Planes de Membresía', 'convoca-core' ); ?></h2>
-		<?php if ( empty( $plans ) ) : ?>
-			<p>⚠ <?php esc_html_e( 'No se han detectado planes. Configúralos en Ajustes → Miembros.', 'convoca-core' ); ?></p>
+		<?php if ( empty( $editable ) ) : ?>
+			<p>⚠ <?php esc_html_e( 'No se han detectado planes. Activa Convoca Members para configurarlos.', 'convoca-core' ); ?></p>
 		<?php else : ?>
-			<p><?php esc_html_e( 'Planes detectados:', 'convoca-core' ); ?></p>
-			<ul>
-			<?php
-			foreach ( $plans as $p ) {
-				echo '<li>' . esc_html( $p['label'] ) . '</li>';}
-			?>
-			</ul>
+			<p><?php esc_html_e( 'Marca los planes disponibles y ajusta su precio anual:', 'convoca-core' ); ?></p>
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<?php wp_nonce_field( 'convoca_wizard_save' ); ?>
+				<input type="hidden" name="action" value="convoca_wizard_save">
+				<input type="hidden" name="wizard_step" value="3">
+				<table class="widefat striped" style="max-width:720px;">
+					<thead>
+						<tr>
+							<th style="width:45px;"><?php esc_html_e( 'Activo', 'convoca-core' ); ?></th>
+							<th><?php esc_html_e( 'Plan', 'convoca-core' ); ?></th>
+							<th style="width:90px;"><?php esc_html_e( 'Modalidad', 'convoca-core' ); ?></th>
+							<th style="width:110px;"><?php esc_html_e( 'Precio (€)', 'convoca-core' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php foreach ( $editable as $key => $p ) : ?>
+						<?php $checked = ( isset( $p['active'] ) && false === $p['active'] ) ? false : true; ?>
+						<tr>
+							<td><input type="checkbox" name="convoca_plans[<?php echo esc_attr( $key ); ?>][active]" value="1" <?php checked( $checked ); ?>></td>
+							<td><strong><?php echo esc_html( $p['label'] ?? $key ); ?></strong></td>
+							<td><?php echo esc_html( $p['modalidad'] ?? '' ); ?></td>
+							<td><input type="number" step="0.01" min="0" name="convoca_plans[<?php echo esc_attr( $key ); ?>][price]" value="<?php echo esc_attr( $p['price'] ?? 0 ); ?>" style="width:100%;"></td>
+						</tr>
+					<?php endforeach; ?>
+					</tbody>
+				</table>
+				<p style="margin-top:15px;">
+					<button type="submit" class="button button-primary"><?php esc_html_e( 'Guardar planes', 'convoca-core' ); ?></button>
+				</p>
+			</form>
+			<p style="color:#64748b;font-size:13px;"><?php esc_html_e( 'Los planes se guardan en Convoca Members (Ajustes → Miembros → Planes) y se aplican al formulario de alta.', 'convoca-core' ); ?></p>
 		<?php endif; ?>
-		<?php $this->step_nav( 3, ! empty( $plans ) ); ?>
+		<?php $this->step_nav( 3, ! empty( $editable ) ); ?>
 		<?php
 	}
 
@@ -587,14 +620,30 @@ class Admin_Setup_Wizard {
 		);
 
 		// ── 3. Planes de membresía ──
-		$plans = class_exists( '\Convoca\Members\CPT_Miembro' ) ? \Convoca\Members\CPT_Miembro::get_plans() : array();
+		$plans     = class_exists( '\Convoca\Members\CPT_Miembro' ) ? \Convoca\Members\CPT_Miembro::get_plans() : array();
+		$real_mods = array( 'Numerario', 'Familiar', 'Juvenil' );
+		$active_plans = array();
+		foreach ( $plans as $key => $p ) {
+			$mod = $p['modalidad'] ?? 'Numerario';
+			if ( ! in_array( $mod, $real_mods, true ) ) {
+				continue; // Selectores de modalidad, no planes de cobro.
+			}
+			$is_active = ! isset( $p['active'] ) || false !== $p['active'];
+			if ( $is_active ) {
+				$price         = isset( $p['price'] ) ? (float) $p['price'] : 0;
+				$active_plans[] = ( $p['label'] ?? $key ) . ' · ' . number_format_i18n( $price, 2 ) . ' €';
+			}
+		}
 		$rows['3'] = array(
 			'title'  => __( '3. Planes de Membresía', 'convoca-core' ),
-			'ok'     => ! empty( $plans ),
-			'detail' => empty( $plans )
-				? array( __( 'Sin planes detectados.', 'convoca-core' ) )
-				: array( __( 'Planes:', 'convoca-core' ) . ' ' . implode( ', ', wp_list_pluck( $plans, 'label' ) ) ),
-			'missing' => empty( $plans ) ? __( 'Crea planes en Ajustes → Miembros.', 'convoca-core' ) : '',
+			'ok'     => ! empty( $active_plans ),
+			'detail' => empty( $active_plans )
+				? array( __( 'Sin planes activos.', 'convoca-core' ) )
+				: array_merge(
+					array( /* translators: %d: número de planes activos */ sprintf( __( '%d planes activos:', 'convoca-core' ), count( $active_plans ) ) ),
+					$active_plans
+				),
+			'missing' => empty( $active_plans ) ? __( 'Activa al menos un plan en el paso 3.', 'convoca-core' ) : '',
 		);
 
 		// ── 4. Redsys / Pagos ──
@@ -660,6 +709,33 @@ class Admin_Setup_Wizard {
 	public function handle_save(): void {
 		check_admin_referer( 'convoca_wizard_save' );
 		$step = (int) $_POST['wizard_step'];
+		if ( $step === 3 ) {
+			// Guardar planes de membresía: actualiza active/price de los planes editables
+			// y conserva intactos los selectores de modalidad (familiar/juvenil).
+			if ( class_exists( '\Convoca\Members\CPT_Miembro' ) ) {
+				$plans = \Convoca\Members\CPT_Miembro::get_plans();
+				$post  = isset( $_POST['convoca_plans'] ) ? (array) wp_unslash( $_POST['convoca_plans'] ) : array();
+				// Los planes editables son los de modalidad real (Numerario/Familiar/Juvenil).
+				$real_mods = array( 'Numerario', 'Familiar', 'Juvenil' );
+				foreach ( $plans as $key => &$plan ) {
+					$mod = $plan['modalidad'] ?? 'Numerario';
+					if ( ! in_array( $mod, $real_mods, true ) ) {
+						continue; // Selectores de modalidad (familiar/juvenil): intactos.
+					}
+					if ( isset( $post[ $key ] ) ) {
+						$plan['active'] = ! empty( $post[ $key ]['active'] );
+						if ( isset( $post[ $key ]['price'] ) && is_numeric( $post[ $key ]['price'] ) ) {
+							$plan['price'] = (float) $post[ $key ]['price'];
+						}
+					} else {
+						// Checkbox desmarcado → no viaja en POST → desactivar.
+						$plan['active'] = false;
+					}
+				}
+				unset( $plan );
+				update_option( 'convoca_members_plans', $plans );
+			}
+		}
 		if ( $step === 4 ) {
 			$settings                  = get_option( 'convoca_gateway_settings', array() );
 			$settings['merchant_code'] = sanitize_text_field( wp_unslash( $_POST['merchant_code'] ) );
