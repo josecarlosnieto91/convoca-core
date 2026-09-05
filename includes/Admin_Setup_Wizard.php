@@ -544,7 +544,7 @@ class Admin_Setup_Wizard {
 		} else {
 			echo '<div></div>';
 		}
-		if ( $can_continue && $current < 6 ) {
+		if ( $can_continue && $current < 7 ) {
 			echo '<a href="' . esc_url( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $current + 1 ) ) ) . '" class="button button-primary">' . esc_html__( 'Siguiente', 'convoca-core' ) . '</a>';
 		}
 		echo '</div>';
