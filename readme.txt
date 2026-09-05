@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 2.1.5
+Stable tag: 2.1.6
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.1.6 =
+* Fix: wizard Ecosistema detecta módulos con is_plugin_active (antes class_exists con nombres incorrectos → solo veía Members).
+* Fix: campos y botones del wizard con clases CSS de WordPress (form-table, regular-text, button).
 
 = 2.1.5 =
 * Fix: contador de socios activos en el Panel de Control (comilla SQL faltante en Admin_Analytics).

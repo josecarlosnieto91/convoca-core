@@ -288,7 +288,7 @@ class Admin_Setup_Wizard {
 		}
 		echo '</table>';
 		if ( ! $all_mand ) {
-			submit_button( __( 'Crear páginas faltantes', 'convoca-core' ), 'convoca-btn convoca-btn-primary', '', false );
+			submit_button( __( 'Crear páginas faltantes', 'convoca-core' ), 'primary', '', false );
 		}
 		echo '</form>';
 
@@ -379,9 +379,17 @@ class Admin_Setup_Wizard {
 			<?php wp_nonce_field( 'convoca_wizard_save' ); ?>
 			<input type="hidden" name="action" value="convoca_wizard_save">
 			<input type="hidden" name="wizard_step" value="4">
-			<p><label>Merchant Code:</label><input type="text" name="merchant_code" value="<?php echo esc_attr( $settings['merchant_code'] ?? '' ); ?>"></p>
-			<p><label>Secret Key:</label><input type="password" name="secret_key" value="<?php echo esc_attr( $settings['secret_key'] ?? '' ); ?>"></p>
-			<button type="submit" class="convoca-btn convoca-btn-primary"><?php esc_html_e( 'Guardar', 'convoca-core' ); ?></button>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row"><label for="merchant_code"><?php esc_html_e( 'Merchant Code', 'convoca-core' ); ?></label></th>
+					<td><input type="text" id="merchant_code" name="merchant_code" class="regular-text" value="<?php echo esc_attr( $settings['merchant_code'] ?? '' ); ?>"></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="secret_key"><?php esc_html_e( 'Secret Key', 'convoca-core' ); ?></label></th>
+					<td><input type="password" id="secret_key" name="secret_key" class="regular-text" value="<?php echo esc_attr( $settings['secret_key'] ?? '' ); ?>"></td>
+				</tr>
+			</table>
+			<?php submit_button( __( 'Guardar', 'convoca-core' ) ); ?>
 		</form>
 		<?php
 		$this->step_nav( 4, true );
@@ -396,9 +404,17 @@ class Admin_Setup_Wizard {
 			<?php wp_nonce_field( 'convoca_wizard_save' ); ?>
 			<input type="hidden" name="action" value="convoca_wizard_save">
 			<input type="hidden" name="wizard_step" value="5">
-			<p><label>Hora Apertura:</label><input type="time" name="convoca_apertura" value="<?php echo esc_attr( get_option( 'convoca_shifts_hora_apertura', '09:00' ) ); ?>"></p>
-			<p><label>Hora Cierre:</label><input type="time" name="convoca_cierre" value="<?php echo esc_attr( get_option( 'convoca_shifts_hora_cierre', '22:00' ) ); ?>"></p>
-			<button type="submit" class="convoca-btn convoca-btn-primary"><?php esc_html_e( 'Guardar', 'convoca-core' ); ?></button>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row"><label for="convoca_apertura"><?php esc_html_e( 'Hora de apertura', 'convoca-core' ); ?></label></th>
+					<td><input type="time" id="convoca_apertura" name="convoca_apertura" value="<?php echo esc_attr( get_option( 'convoca_shifts_hora_apertura', '09:00' ) ); ?>"></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="convoca_cierre"><?php esc_html_e( 'Hora de cierre', 'convoca-core' ); ?></label></th>
+					<td><input type="time" id="convoca_cierre" name="convoca_cierre" value="<?php echo esc_attr( get_option( 'convoca_shifts_hora_cierre', '22:00' ) ); ?>"></td>
+				</tr>
+			</table>
+			<?php submit_button( __( 'Guardar', 'convoca-core' ) ); ?>
 		</form>
 		<?php
 		$this->step_nav( 5, true );
@@ -407,36 +423,41 @@ class Admin_Setup_Wizard {
 	/* ── Step 6: Ecosystem ── */
 
 	private function step_ecosystem(): void {
+		// Detección robusta de módulos: usa is_plugin_active() con las rutas reales
+		// (las clases PHP varían entre versiones; la ruta del plugin es estable).
+		$hc_module_active = static function ( string $slug ): bool {
+			return is_plugin_active( "convoca-{$slug}/convoca-{$slug}.php" );
+		};
 		$modules = array(
 			'members'   => array(
 				'label' => __( 'Convoca Members', 'convoca-core' ),
 				'desc'  => __( 'Fichas de socios, cuotas, carnets digitales y área personal.', 'convoca-core' ),
-				'check' => class_exists( '\Convoca\Members\CPT_Miembro' ),
+				'check' => $hc_module_active( 'members' ),
 			),
 			'enroll'    => array(
 				'label' => __( 'Convoca Enroll', 'convoca-core' ),
 				'desc'  => __( 'Inscripciones a actividades, listas de espera y asistencia.', 'convoca-core' ),
-				'check' => class_exists( '\Convoca\Enroll\Plugin' ) || class_exists( '\Convoca\Enroll\Enroll_Plugin' ),
+				'check' => $hc_module_active( 'enroll' ),
 			),
 			'gateway'   => array(
 				'label' => __( 'Convoca Gateway', 'convoca-core' ),
 				'desc'  => __( 'Cobro de cuotas con tarjeta o Bizum vía Redsys.', 'convoca-core' ),
-				'check' => class_exists( '\Convoca\Gateway\Plugin' ),
+				'check' => $hc_module_active( 'gateway' ),
 			),
 			'shifts'    => array(
 				'label' => __( 'Convoca Shifts', 'convoca-core' ),
 				'desc'  => __( 'Turnos de voluntariado con calendario y check-in.', 'convoca-core' ),
-				'check' => class_exists( '\Convoca\Shifts\Plugin' ),
+				'check' => $hc_module_active( 'shifts' ),
 			),
 			'publisher' => array(
 				'label' => __( 'Convoca Publisher', 'convoca-core' ),
 				'desc'  => __( 'Publica en 7 redes sociales desde una sola entrada.', 'convoca-core' ),
-				'check' => class_exists( '\Convoca\Publisher\Plugin' ),
+				'check' => $hc_module_active( 'publisher' ),
 			),
 			'assistant' => array(
 				'label' => __( 'Convoca Assistant', 'convoca-core' ),
 				'desc'  => __( 'Asistente conversacional local, sin IA, sin enviar datos.', 'convoca-core' ),
-				'check' => class_exists( '\Convoca\Assistant\Plugin' ),
+				'check' => $hc_module_active( 'assistant' ),
 			),
 		);
 		?>
@@ -478,7 +499,7 @@ class Admin_Setup_Wizard {
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<?php wp_nonce_field( 'convoca_wizard_complete' ); ?>
 				<input type="hidden" name="action" value="convoca_wizard_complete">
-				<button type="submit" class="convoca-btn convoca-btn-primary"><?php esc_html_e( 'Finalizar configuración', 'convoca-core' ); ?></button>
+				<button type="submit" class="button button-primary"><?php esc_html_e( 'Finalizar configuración', 'convoca-core' ); ?></button>
 			</form>
 		<?php else : ?>
 			<p>⚠ <?php esc_html_e( 'Faltan requisitos obligatorios.', 'convoca-core' ); ?></p>
@@ -519,12 +540,12 @@ class Admin_Setup_Wizard {
 	private function step_nav( int $current, bool $can_continue ): void {
 		echo '<div style="margin-top:35px;display:flex;justify-content:space-between;">';
 		if ( $current > 1 ) {
-			echo '<a href="' . esc_url( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $current - 1 ) ) ) . '" class="convoca-btn convoca-btn-outline">' . esc_html__( 'Anterior', 'convoca-core' ) . '</a>';
+			echo '<a href="' . esc_url( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $current - 1 ) ) ) . '" class="button button-secondary">' . esc_html__( 'Anterior', 'convoca-core' ) . '</a>';
 		} else {
 			echo '<div></div>';
 		}
 		if ( $can_continue && $current < 6 ) {
-			echo '<a href="' . esc_url( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $current + 1 ) ) ) . '" class="convoca-btn convoca-btn-primary">' . esc_html__( 'Siguiente', 'convoca-core' ) . '</a>';
+			echo '<a href="' . esc_url( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $current + 1 ) ) ) . '" class="button button-primary">' . esc_html__( 'Siguiente', 'convoca-core' ) . '</a>';
 		}
 		echo '</div>';
 	}
