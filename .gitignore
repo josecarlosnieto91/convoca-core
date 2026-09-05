@@ -11,3 +11,6 @@
 
 # Entorno de desarrollo local (descontinuado)
 wp-tests-config.php
+
+# Artefactos locales
+build/
