@@ -164,7 +164,7 @@ class Signature {
 			$dompdf->render();
 
 			$output = $dompdf->output();
-			if ( $output === null ) {
+			if ( '' === $output ) {
 				$this->last_error = __( 'Error al renderizar el PDF (salida vacía).', 'convoca-core' );
 				return false;
 			}

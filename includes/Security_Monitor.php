@@ -79,7 +79,8 @@ class Security_Monitor {
 	 * @return mixed
 	 */
 	public static function watch_rest_response( $response, $server, $request ) {
-		$route = $request instanceof \WP_REST_Request ? (string) $request->get_route() : '';
+		// rest_post_dispatch siempre recibe un WP_REST_Request real.
+		$route = (string) $request->get_route();
 		// Solo rutas del ecosistema Convoca.
 		if ( false === strpos( $route, '/convoca' ) && false === strpos( $route, 'convoca-' ) ) {
 			return $response;
@@ -203,8 +204,13 @@ class Security_Monitor {
 					"SELECT COUNT(*) FROM {$table}
 					WHERE created_at > %s AND level = 'error'
 					AND context IN ('Gateway/Redsys','Gateway/Notification')
-					AND (message LIKE '%%firma%%' OR message LIKE '%%Firma%%' OR message LIKE '%%versión%%' OR message LIKE '%%version%%' OR message LIKE '%%IP de origen%%')",
-					$since
+					AND (message LIKE %s OR message LIKE %s OR message LIKE %s OR message LIKE %s OR message LIKE %s)",
+					$since,
+					'%firma%',
+					'%Firma%',
+					'%versión%',
+					'%version%',
+					'%IP de origen%'
 				)
 			),
 			// Contención de locks.
@@ -218,15 +224,17 @@ class Security_Monitor {
 			'rest_unauthorized' => (int) $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(*) FROM {$table} WHERE created_at > %s AND context = 'Common/Security'
-					AND message LIKE '%%Acceso REST no autorizado%%'",
-					$since
+					AND message LIKE %s",
+					$since,
+					'%Acceso REST no autorizado%'
 				)
 			),
 			'rate_limit_exceeded' => (int) $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(*) FROM {$table} WHERE created_at > %s AND context = 'Common/Security'
-					AND message LIKE '%%Rate limit exceeded%%'",
-					$since
+					AND message LIKE %s",
+					$since,
+					'%Rate limit exceeded%'
 				)
 			),
 		);

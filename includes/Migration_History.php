@@ -133,11 +133,9 @@ class Migration_History {
 		callable $validator,
 		?callable $rollback = null
 	): bool {
-		$start   = microtime( true );
-		$started = false;
+		$start = microtime( true );
 
 		try {
-			$started = true;
 			call_user_func( $migration );
 
 			$ok = (bool) call_user_func( $validator );
@@ -158,7 +156,9 @@ class Migration_History {
 			return true;
 
 		} catch ( \Throwable $e ) {
-			if ( $started && $rollback ) {
+			// El try solo contiene la migración y validación; si algo lanzó,
+			// intentamos el rollback cuando está definido.
+			if ( $rollback ) {
 				try {
 					call_user_func( $rollback );
 				} catch ( \Throwable $re ) {

@@ -598,7 +598,7 @@ class Utils {
 		$salt = get_option( 'convoca_persistent_salt' );
 		if ( ! $salt ) {
 			$salt = wp_generate_password( 64, true, true );
-			update_option( 'convoca_persistent_salt', $salt, 'no' );
+			update_option( 'convoca_persistent_salt', $salt, false );
 		}
 		return $salt;
 	}
@@ -785,7 +785,7 @@ class Utils {
 			'members' => '\\Convoca\\Members\\CPT_Miembro',
 			'enroll'  => '\\Convoca\\Enroll\\CPT_Inscripcion',
 			'gateway' => '\\Convoca\\Gateway\\CPT_Pago',
-			'turnos'  => '\\Convoca\\Gateway\\Redsys_Client', // Downs: Gateway has Redsys.
+			'turnos'  => '\\Convoca\\Shifts\\Convoca_Shifts_Upgrade_Manager',
 		);
 		$class = $map[ $feature ] ?? '';
 		return $class && class_exists( $class );
@@ -803,7 +803,7 @@ class Utils {
 			return '';
 		}
 		$data = get_plugin_data( $full_path );
-		return $data['Version'] ?? '';
+		return (string) $data['Version'];
 	}
 
 	/* ── REST Cache ────────────────────────────────── */

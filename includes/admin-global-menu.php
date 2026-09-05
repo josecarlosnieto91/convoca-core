@@ -136,16 +136,16 @@ function convoca_health_page(): void {
 
 	// ── Gateway ──
 	if ( class_exists( '\\Convoca\\Gateway\\Diagnostic' ) ) {
-		$results = \Convoca\Gateway\Diagnostic::run_all( $force );
+		$plugin_names['gateway'] = __( 'Convoca Gateway', 'convoca-core' );
+		$results                 = \Convoca\Gateway\Diagnostic::run_all( $force );
 		foreach ( $results as $r ) {
 			$all_checks[] = array(
-				'title'   => ( $plugin_names['gateway'] ?? 'Gateway' ) . ': ' . $r['title'],
+				'title'   => $plugin_names['gateway'] . ': ' . $r['title'],
 				'status'  => $r['severity'] === 'ok' ? 'ok' : $r['severity'],
 				'message' => $r['message'],
 				'fix'     => $r['fix'] ?? '',
 			);
 		}
-		$plugin_names['gateway'] = __( 'Convoca Gateway', 'convoca-core' );
 	} else {
 		$all_checks[] = array(
 			'title'   => 'Convoca Gateway',

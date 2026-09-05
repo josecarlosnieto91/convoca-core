@@ -110,9 +110,9 @@ class Blocks_Common {
 	 * Render a post meta field as a formatted block attribute.
 	 * Properly escapes output to prevent XSS.
 	 *
-	 * @param array    $attributes Block attributes.
-	 * @param string   $content Inner content.
-	 * @param WP_Block $block Block instance.
+	 * @param array          $attributes Block attributes.
+	 * @param string         $content Inner content.
+	 * @param \WP_Block|null $block Block instance.
 	 * @return string Rendered HTML.
 	 */
 	public static function render_post_meta_field( $attributes, $content, $block ) {

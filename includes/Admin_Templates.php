@@ -220,12 +220,8 @@ class Admin_Templates {
 			return true;
 		}
 
-		// Size limit: 500KB.
-		$max_size = 500000;
-		if ( strlen( $content ) > $max_size ) {
-			error_log( 'BDV Template Validation Error: Content exceeds max size of ' . $max_size . ' bytes' );
-			return false;
-		}
+		// Size limit: 500KB (validado arriba — el chequeo inicial ya retorna
+		// si strlen > 500000; este bloque duplicado era código muerto).
 
 		// Tag count limit.
 		$max_iterations = 10000;

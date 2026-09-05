@@ -133,11 +133,10 @@ class Logger {
 	}
 
 	/**
-	 * Retrieve logs from the database.
-	 * Includes max limit protection.
+	 * Log a debug-level message.
 	 *
-	 * @param array $args Filter arguments (context, object_id, level, limit).
-	 * @return array
+	 * @param string $message The message to log.
+	 * @param string $context The component or action taking place.
 	 */
 	public static function debug( string $message, string $context = 'General' ): void {
 		self::log( $message, 'debug', $context );

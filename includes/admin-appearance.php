@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function convoca_hide_screen_options( bool $show_screen, \WP_Screen $screen ): bool {
 	$convoca_slugs = array( 'conv-', 'convoca-' );
 	foreach ( $convoca_slugs as $prefix ) {
-		if ( str_contains( $screen->id, $prefix ) || str_contains( $screen->base ?? '', $prefix ) ) {
+		if ( str_contains( $screen->id, $prefix ) || str_contains( $screen->base, $prefix ) ) {
 			return false;
 		}
 	}
@@ -65,7 +65,7 @@ function convoca_remove_help_tab(): void {
 	}
 	$convoca_slugs = array( 'conv-', 'convoca-' );
 	foreach ( $convoca_slugs as $prefix ) {
-		if ( str_contains( $screen->id, $prefix ) || str_contains( $screen->base ?? '', $prefix ) ) {
+		if ( str_contains( $screen->id, $prefix ) || str_contains( $screen->base, $prefix ) ) {
 			$screen->remove_help_tabs();
 			return;
 		}

@@ -27,6 +27,14 @@ class Admin_Backup {
 	private const IMPORT_DIR   = 'convoca-imports';
 	private const PREVIEW_TTL  = 600;
 
+	/** Mapa entidad CSV export/import → CPT destino. */
+	private const ENTITY_CPT_MAP = array(
+		'miembros'      => 'miembro',
+		'proyectos'     => 'proyecto',
+		'inscripciones' => 'inscripcion',
+		'turnos'        => 'centro_turno',
+	);
+
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
 		add_action( 'admin_post_convoca_export_backup', array( $this, 'handle_export' ) );
@@ -187,7 +195,7 @@ class Admin_Backup {
 		$batch_size = 500;
 
 		// Helper to export all posts of a type in batches.
-		$export_all = function ( $post_type, $headers, $fields_fn ) use ( $zip, $add_csv, $batch_size ) {
+		$export_all = function ( $post_type, $headers, $fields_fn ) use ( $add_csv, $batch_size ) {
 			$all_rows = array();
 			$page     = 1;
 			do {
@@ -417,8 +425,7 @@ class Admin_Backup {
 		);
 		foreach ( $selected as $entity ) {
 			if ( isset( $cap_checks[ $entity ] ) && ! current_user_can( $cap_checks[ $entity ] ) ) {
-				/*
-				translators: %s: entity type name */
+				// translators: %s: entity type name.
 				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — $entity is a safe internal slug, not user input
 				wp_die( sprintf( esc_html__( 'No tienes permisos para importar %s.', 'convoca-core' ), $entity ) );
 			}
@@ -474,14 +481,11 @@ class Admin_Backup {
 					fclose( $stream );
 					continue; }
 
-				$post_type = match ( $entity ) {
-					'miembros' => 'miembro', 'proyectos' => 'proyecto', 'inscripciones' => 'inscripcion', 'turnos' => 'centro_turno',
-					default => false
-				};
-				if ( ! $post_type ) {
-					// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose — ZipArchive stream cleanup
-					fclose( $stream );
-					continue; }
+				// $entity proviene del literal $order (settings hace continue
+				// antes); el mapa cubre todos los valores restantes. Si se
+				// añade una entidad nueva, PHPStan marcará el offset como
+				// inexistente — mejor que un guard silencioso.
+				$post_type = self::ENTITY_CPT_MAP[ $entity ];
 
 				while ( ( $data = fgetcsv( $stream, 0, ',', '"' ) ) !== false ) {
 					if ( empty( array_filter( $data ) ) ) {
@@ -497,8 +501,9 @@ class Admin_Backup {
 						)
 					);
 
-					if ( is_wp_error( $new_id ) ) {
-						throw new \RuntimeException( $new_id->get_error_message() );
+					if ( ! $new_id ) {
+						// wp_insert_post devuelve 0 en error (no WP_Error en WP moderno).
+						throw new \RuntimeException( __( 'Error al crear el post importado.', 'convoca-core' ) );
 					}
 
 					$imported_posts[] = $new_id;
@@ -567,7 +572,7 @@ class Admin_Backup {
 						array(
 							'post_type'      => 'proyecto',
 							'meta_key'       => '_convoca_old_import_id',
-							'meta_value'     => $old_pid,
+							'meta_value'     => (string) $old_pid,
 							'fields'         => 'ids',
 							'posts_per_page' => 1,
 							'post_status'    => 'any',

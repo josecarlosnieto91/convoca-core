@@ -189,7 +189,8 @@ img{display:block;border:0;height:auto;line-height:100%;outline:none;text-decora
 		foreach ( $rows as $row ) {
 			$label = $row['label'] ?? '';
 			$value = $row['value'] ?? '';
-			if ( $value === '' || $value === null ) {
+			// El ?? '' ya normaliza null a string vacío.
+			if ( '' === $value ) {
 				continue;
 			}
 			$html .= '<tr>'

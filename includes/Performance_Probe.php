@@ -136,9 +136,13 @@ class Performance_Probe {
 			// Formato WP: [query, elapsed, caller] o [query, elapsed, caller, ...]
 			$elapsed = isset( $q[1] ) ? (float) $q[1] : 0;
 			if ( $elapsed >= 0.02 ) { // 20ms threshold
-				$sql = isset( $q[0] ) ? preg_replace( '/\s+/', ' ', (string) $q[0] ) : '?';
-				$caller = isset( $q[2] ) ? (string) $q[2] : '';
-				self::$slow_queries[] = array( 'sql' => substr( $sql, 0, 120 ), 'ms' => round( $elapsed * 1000, 1 ), 'caller' => $caller );
+				$sql                  = isset( $q[0] ) ? preg_replace( '/\s+/', ' ', (string) $q[0] ) : '?';
+				$caller               = isset( $q[2] ) ? (string) $q[2] : '';
+				self::$slow_queries[] = array(
+					'sql'    => substr( $sql, 0, 120 ),
+					'ms'     => round( $elapsed * 1000, 1 ),
+					'caller' => $caller,
+				);
 			}
 		}
 	}

@@ -67,7 +67,8 @@ class Admin_Logs_List extends \WP_List_Table {
 	}
 
 	protected function column_cb( $item ): string {
-		return sprintf( '<input type="checkbox" name="log_ids[]" value="%d">', $item->id );
+		$id = is_object( $item ) ? (int) $item->id : (int) ( $item['id'] ?? 0 );
+		return sprintf( '<input type="checkbox" name="log_ids[]" value="%d">', $id );
 	}
 
 	protected function column_created_at( $item ): string {

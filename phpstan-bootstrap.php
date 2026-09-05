@@ -15,3 +15,10 @@ define( 'ARRAY_A', 'ARRAY_A' );
 define( 'OBJECT', 'OBJECT' );
 define( 'OBJECT_K', 'OBJECT_K' );
 define( 'WP_DEBUG', true );
+
+// Constantes del propio plugin (definidas en convoca-core.php en runtime).
+define( 'CONVOCA_COMMON_VERSION', '2.1.4' );
+define( 'CONVOCA_COMMON_DB_VERSION', '1.1.0' );
+define( 'CONVOCA_COMMON_DIR', '/tmp/wp/wp-content/plugins/convoca-core/' );
+define( 'CONVOCA_COMMON_URL', 'https://example.org/wp-content/plugins/convoca-core/' );
+define( 'CONVOCA_IMAGES_URL', CONVOCA_COMMON_URL . 'assets/images/' );

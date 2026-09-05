@@ -67,11 +67,6 @@ class Webhook_Manager {
 	private const BACKOFF_BASE = 60; // 1 minute
 
 	/**
-	 * Timeout for webhook delivery in seconds.
-	 */
-	private const TIMEOUT = 15;
-
-	/**
 	 * Get the database table name for webhook retries.
 	 */
 	private static function get_retry_table_name(): string {

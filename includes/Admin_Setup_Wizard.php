@@ -339,9 +339,9 @@ class Admin_Setup_Wizard {
 							'post_type'    => 'page',
 						)
 					);
-					if ( is_wp_error( $page_id ) ) {
+					if ( ! $page_id ) {
 						\Convoca\Core\Logger::error(
-							sprintf( 'Error creando pagina %s: %s', $slug, $page_id->get_error_message() ),
+							sprintf( 'Error creando página %s (wp_insert_post devolvió 0).', $slug ),
 							'Common/SetupWizard'
 						);
 					}

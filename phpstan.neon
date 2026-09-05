@@ -1,6 +1,3 @@
-includes:
-    - phpstan-baseline.neon
-
 parameters:
     level: 5
     paths:
@@ -15,3 +12,55 @@ parameters:
     bootstrapFiles:
         - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
         - phpstan-bootstrap.php
+    ignoreErrors:
+        # ── Falsos positivos del harness de análisis (NO deuda de código) ──
+        # El bootstrap define ABSPATH=/tmp/wp/ (inexistente fuera de un WP real);
+        # estos require_once de wp-admin son legítimos en runtime.
+        -
+            message: '#Path in require_once\(\) "/tmp/wp/wp-admin/#'
+            identifier: requireOnce.fileNotFound
+            path: includes/Admin_Logs_List.php
+        -
+            message: '#Path in require_once\(\) "/tmp/wp/wp-admin/#'
+            identifier: requireOnce.fileNotFound
+            path: includes/Installer.php
+        -
+            message: '#Path in require_once\(\) "/tmp/wp/wp-admin/#'
+            identifier: requireOnce.fileNotFound
+            path: includes/Webhook_Manager.php
+        -
+            message: '#Path in require_once\(\) "/tmp/wp/wp-admin/#'
+            identifier: requireOnce.fileNotFound
+            path: includes/Utils.php
+        -
+            message: '#Path in require_once\(\) "/tmp/wp/wp-content/plugins/convoca-core/vendor/autoload.php"#'
+            identifier: requireOnce.fileNotFound
+            path: includes/Signature.php
+        # add_submenu_page(null) es el patrón WP documentado para páginas
+        # standalone (sin entrada en el menú padre); el stub exige string.
+        -
+            message: '#Parameter \#1 \$parent_slug of function add_submenu_page expects string, null given#'
+            identifier: argument.type
+        # class_exists sobre clases de plugins hermanos: en runtime pueden estar
+        # instalados o no — es exactamente el propósito de has_feature().
+        -
+            message: '#Call to function class_exists\(\) with.*Convoca.*will always evaluate to false#'
+            identifier: function.impossibleType
+            path: includes/Utils.php
+        # WP_DEBUG se fija a true en el bootstrap de análisis; en producción es
+        # configurable. El chequeo definido&&WP_DEBUG es correcto en runtime.
+        -
+            message: '#Right side of && is always true#'
+            identifier: booleanAnd.rightAlwaysTrue
+            path: includes/Logger.php
+        # WP_Admin_Bar::add_node acepta WP_Admin_Bar_Node (objeto) en runtime;
+        # el stub solo declara array.
+        -
+            message: '#Parameter \#1 \$args of method WP_Admin_Bar::add_node\(\)#'
+            identifier: argument.type
+            path: includes/admin-appearance.php
+        # paginate_links: total como float procede de ceil(); WP lo castea a int.
+        -
+            message: '#Parameter \#1 \$args of function paginate_links#'
+            identifier: argument.type
+            path: includes/admin-global-menu.php
