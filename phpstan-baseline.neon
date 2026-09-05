@@ -109,56 +109,8 @@ parameters:
 			path: includes/Migration_History.php
 
 		-
-			message: '#^Call to method get_error_code\(\) on an unknown class Convoca\\Core\\WP_Error\.$#'
-			identifier: class.notFound
-			count: 1
-			path: includes/Security_Monitor.php
-
-		-
-			message: '#^Call to method get_error_code\(\) on an unknown class Convoca\\Core\\WP_REST_Response\.$#'
-			identifier: class.notFound
-			count: 1
-			path: includes/Security_Monitor.php
-
-		-
-			message: '#^Call to method get_error_data\(\) on an unknown class Convoca\\Core\\WP_Error\.$#'
-			identifier: class.notFound
-			count: 1
-			path: includes/Security_Monitor.php
-
-		-
-			message: '#^Call to method get_error_data\(\) on an unknown class Convoca\\Core\\WP_REST_Response\.$#'
-			identifier: class.notFound
-			count: 1
-			path: includes/Security_Monitor.php
-
-		-
-			message: '#^Call to method get_route\(\) on an unknown class Convoca\\Core\\WP_REST_Request\.$#'
-			identifier: class.notFound
-			count: 1
-			path: includes/Security_Monitor.php
-
-		-
-			message: '#^Expression on left side of \?\? is not nullable\.$#'
-			identifier: nullCoalesce.expr
-			count: 1
-			path: includes/Security_Monitor.php
-
-		-
-			message: '#^Parameter \$request of method Convoca\\Core\\Security_Monitor\:\:watch_rest_response\(\) has invalid type Convoca\\Core\\WP_REST_Request\.$#'
-			identifier: class.notFound
-			count: 1
-			path: includes/Security_Monitor.php
-
-		-
-			message: '#^Parameter \$response of method Convoca\\Core\\Security_Monitor\:\:watch_rest_response\(\) has invalid type Convoca\\Core\\WP_Error\.$#'
-			identifier: class.notFound
-			count: 1
-			path: includes/Security_Monitor.php
-
-		-
-			message: '#^Parameter \$response of method Convoca\\Core\\Security_Monitor\:\:watch_rest_response\(\) has invalid type Convoca\\Core\\WP_REST_Response\.$#'
-			identifier: class.notFound
+			message: '#^Instanceof between WP_REST_Request and WP_REST_Request will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
 			count: 1
 			path: includes/Security_Monitor.php
 

@@ -404,7 +404,13 @@ class Utils {
 				)
 			);
 
-			return (int) $current === $expires;
+			if ( (int) $current !== $expires ) {
+				// Contención real: otro proceso retiene el lock (no caducó).
+				self::report_lock_contention( $key );
+				return false;
+			}
+
+			return true;
 		}
 
 		// Fallback: wp_options.
@@ -434,7 +440,24 @@ class Utils {
 			)
 		);
 
-		return (int) $current === $expires;
+		if ( (int) $current !== $expires ) {
+			self::report_lock_contention( $key );
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Report a real lock contention to the Security Monitor (observabilidad).
+	 * The logger has internal rate limiting (50/min) so bursts cannot flood.
+	 *
+	 * @param string $key Lock identifier (without the convoca_lock_ prefix).
+	 */
+	private static function report_lock_contention( string $key ): void {
+		if ( class_exists( '\Convoca\Core\Security_Monitor' ) ) {
+			Security_Monitor::lock_contended( $key );
+		}
 	}
 
 	/**

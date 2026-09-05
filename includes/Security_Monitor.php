@@ -51,7 +51,7 @@ class Security_Monitor {
 	 * Register hooks.
 	 */
 	public static function init(): void {
-		add_action( 'rest_request_after_callbacks', array( __CLASS__, 'watch_rest_response' ), 10, 3 );
+		add_filter( 'rest_post_dispatch', array( __CLASS__, 'watch_rest_response' ), 10, 3 );
 		add_action( self::CRON_DIGEST, array( __CLASS__, 'run_digest' ) );
 		self::ensure_cron();
 	}
@@ -67,33 +67,39 @@ class Security_Monitor {
 
 	/**
 	 * Watch REST responses: log 401/403 on Convoca routes as warnings.
-	 * Internal logger rate-limiting (50/min) prevents flood.
+	 * Se usa rest_post_dispatch (no rest_request_after_callbacks) porque este
+	 * último NO se invoca cuando la autenticación falla o la ruta no matchea,
+	 * y la permission_callback se evalúa DESPUÉS de él — es decir, los 403 de
+	 * permisos jamás llegarían al monitor con el hook equivocado.
+	 * El logger interno (50/min) evita inundaciones.
 	 *
-	 * @param WP_REST_Response|WP_Error $response Result to send to the client.
-	 * @param array                     $handler  Route handler data.
-	 * @param WP_REST_Request           $request  Request used to generate the response.
+	 * @param mixed                     $response Result to send to the client.
+	 * @param \WP_REST_Server            $server   Server instance.
+	 * @param \WP_REST_Request           $request  Request used to generate the response.
 	 * @return mixed
 	 */
-	public static function watch_rest_response( $response, $handler, $request ) {
-		if ( ! is_wp_error( $response ) ) {
-			return $response;
-		}
-
-		$route = (string) $request->get_route();
+	public static function watch_rest_response( $response, $server, $request ) {
+		$route = $request instanceof \WP_REST_Request ? (string) $request->get_route() : '';
 		// Solo rutas del ecosistema Convoca.
 		if ( false === strpos( $route, '/convoca' ) && false === strpos( $route, 'convoca-' ) ) {
 			return $response;
 		}
 
-		$status = (int) $response->get_error_data()['status'] ?? 0;
+		// La respuesta puede ser WP_Error (aún sin convertir) o \WP_REST_Response.
+		$status = 0;
+		if ( is_wp_error( $response ) ) {
+			$data   = $response->get_error_data();
+			$status = (int) ( is_array( $data ) ? ( $data['status'] ?? 0 ) : 0 );
+		} elseif ( $response instanceof \WP_REST_Response ) {
+			$status = (int) $response->get_status();
+		}
+
 		if ( 401 !== $status && 403 !== $status ) {
 			return $response;
 		}
 
-		$code = $response->get_error_code();
-		// Evitar ruido de bots benignos en rutas públicas: solo registrar si
-		// la ruta requiere permisos de gestión o es un endpoint de datos.
-		$ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ?? 'unknown' ) );
+		$code = is_wp_error( $response ) ? $response->get_error_code() : 'http_' . $status;
+		$ip   = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ?? 'unknown' ) );
 
 		Logger::warning(
 			sprintf( 'Acceso REST no autorizado (%s) a %s desde %s', $code, $route, $ip ),
