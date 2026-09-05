@@ -53,6 +53,13 @@ parameters:
             message: '#Right side of && is always true#'
             identifier: booleanAnd.rightAlwaysTrue
             path: includes/Logger.php
+        # check_admin_referer() muere (wp_die) si el nonce falla: el stub lo tipa
+        # como siempre-true con stubs recientes; el patrón isset&&check_admin_referer
+        # es el estándar WP de verificación de nonce en POST.
+        -
+            message: '#Right side of && is always true#'
+            identifier: booleanAnd.rightAlwaysTrue
+            path: includes/Admin_Templates.php
         # WP_Admin_Bar::add_node acepta WP_Admin_Bar_Node (objeto) en runtime;
         # el stub solo declara array.
         -

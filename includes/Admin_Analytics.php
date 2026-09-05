@@ -434,7 +434,7 @@ class Admin_Analytics {
 			return;
 		}
 		// Chart.js servido localmente (wp.org prohíbe offloading a CDNs externos).
-		wp_enqueue_script( 'chart-js', CONVOCA_CORE_URL . 'assets/js/chart.umd.min.js', array(), '4.4.1', true );
+		wp_enqueue_script( 'chart-js', CONVOCA_COMMON_URL . 'assets/js/chart.umd.min.js', array(), '4.4.1', true );
 	}
 
 	/**
