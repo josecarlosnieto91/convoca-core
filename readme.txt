@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 2.2.3
+Stable tag: 2.2.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.2.4 =
+* Fix: la contención de locks ahora se reporta al Security Monitor (Utils::acquire_lock) — la alerta de bloqueos recurrentes del digest diario funcionaba sobre un hook que nadie invocaba.
+* Fix: el Security Monitor usa rest_post_dispatch, no rest_request_after_callbacks — los 403 por permission_callback (el caso principal de acceso no autorizado) jamás llegaban al monitor con el hook anterior.
 
 = 2.2.3 =
 * New: Security Monitor — observabilidad de eventos críticos: registra accesos no autorizados a rutas REST de Convoca (401/403), cuenta en ventanas de 24h los fallos de firma Redsys (Ds_Signature), la contención de locks en convoca_locks y los rate limits excedidos, y envía un digest diario por email con umbrales configurables y cooldown anti-spam.
