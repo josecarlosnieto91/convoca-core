@@ -1,0 +1,259 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Anonymous function has an unused use \$zip\.$#'
+			identifier: closure.unusedUse
+			count: 1
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Call to function is_wp_error\(\) with int\<0, max\> will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Match arm comparison between ''turnos'' and ''turnos'' is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 1
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Parameter \#1 \$args of function get_posts expects array\{numberposts\?\: int, category\?\: int\|string, include\?\: array\<int\>, exclude\?\: array\<int\>, suppress_filters\?\: bool, attachment_id\?\: int, author\?\: int\|string, author_name\?\: string, \.\.\.\}\|null, array\{post_type\: ''proyecto'', meta_key\: ''_convoca_old_import…'', meta_value\: int\<min, \-1\>\|int\<1, max\>, fields\: ''ids'', posts_per_page\: 1, post_status\: ''any''\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Cannot access property \$id on array\|object\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: includes/Admin_Logs_List.php
+
+		-
+			message: '#^Path in require_once\(\) "/tmp/wp/wp\-admin/includes/class\-wp\-list\-table\.php" is not a file or it does not exist\.$#'
+			identifier: requireOnce.fileNotFound
+			count: 1
+			path: includes/Admin_Logs_List.php
+
+		-
+			message: '#^Call to function is_wp_error\(\) with int\<0, max\> will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: includes/Admin_Setup_Wizard.php
+
+		-
+			message: '#^Parameter \#1 \$parent_slug of function add_submenu_page expects string, null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Admin_Setup_Wizard.php
+
+		-
+			message: '#^Comparison operation "\>" between int\<0, 500000\> and 500000 is always false\.$#'
+			identifier: greater.alwaysFalse
+			count: 1
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Constant CONVOCA_COMMON_DIR not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Access to property \$context on an unknown class Convoca\\Core\\WP_Block\.$#'
+			identifier: class.notFound
+			count: 1
+			path: includes/Blocks_Common.php
+
+		-
+			message: '#^Parameter \$block of method Convoca\\Core\\Blocks_Common\:\:render_post_meta_field\(\) has invalid type Convoca\\Core\\WP_Block\.$#'
+			identifier: class.notFound
+			count: 1
+			path: includes/Blocks_Common.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between mixed and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: includes/Email_Layout.php
+
+		-
+			message: '#^Path in require_once\(\) "/tmp/wp/wp\-admin/includes/upgrade\.php" is not a file or it does not exist\.$#'
+			identifier: requireOnce.fileNotFound
+			count: 1
+			path: includes/Installer.php
+
+		-
+			message: '#^PHPDoc tag @param references unknown parameter\: \$args$#'
+			identifier: parameter.notFound
+			count: 1
+			path: includes/Logger.php
+
+		-
+			message: '#^PHPDoc tag @return with type array is incompatible with native type void\.$#'
+			identifier: return.phpDocType
+			count: 1
+			path: includes/Logger.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: includes/Logger.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: includes/Migration_History.php
+
+		-
+			message: '#^Call to method get_error_code\(\) on an unknown class Convoca\\Core\\WP_Error\.$#'
+			identifier: class.notFound
+			count: 1
+			path: includes/Security_Monitor.php
+
+		-
+			message: '#^Call to method get_error_code\(\) on an unknown class Convoca\\Core\\WP_REST_Response\.$#'
+			identifier: class.notFound
+			count: 1
+			path: includes/Security_Monitor.php
+
+		-
+			message: '#^Call to method get_error_data\(\) on an unknown class Convoca\\Core\\WP_Error\.$#'
+			identifier: class.notFound
+			count: 1
+			path: includes/Security_Monitor.php
+
+		-
+			message: '#^Call to method get_error_data\(\) on an unknown class Convoca\\Core\\WP_REST_Response\.$#'
+			identifier: class.notFound
+			count: 1
+			path: includes/Security_Monitor.php
+
+		-
+			message: '#^Call to method get_route\(\) on an unknown class Convoca\\Core\\WP_REST_Request\.$#'
+			identifier: class.notFound
+			count: 1
+			path: includes/Security_Monitor.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: includes/Security_Monitor.php
+
+		-
+			message: '#^Parameter \$request of method Convoca\\Core\\Security_Monitor\:\:watch_rest_response\(\) has invalid type Convoca\\Core\\WP_REST_Request\.$#'
+			identifier: class.notFound
+			count: 1
+			path: includes/Security_Monitor.php
+
+		-
+			message: '#^Parameter \$response of method Convoca\\Core\\Security_Monitor\:\:watch_rest_response\(\) has invalid type Convoca\\Core\\WP_Error\.$#'
+			identifier: class.notFound
+			count: 1
+			path: includes/Security_Monitor.php
+
+		-
+			message: '#^Parameter \$response of method Convoca\\Core\\Security_Monitor\:\:watch_rest_response\(\) has invalid type Convoca\\Core\\WP_REST_Response\.$#'
+			identifier: class.notFound
+			count: 1
+			path: includes/Security_Monitor.php
+
+		-
+			message: '#^Constant CONVOCA_COMMON_DIR not found\.$#'
+			identifier: constant.notFound
+			count: 2
+			path: includes/Signature.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between string and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Call to function class_exists\(\) with ''\\\\Convoca\\\\Enroll\\\\CPT…''\|''\\\\Convoca\\\\Gateway…''\|''\\\\Convoca\\\\Members…'' will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Constant CONVOCA_COMMON_DIR not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Constant CONVOCA_COMMON_URL not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Offset ''Version'' on array\{Name\: string, PluginURI\: string, Version\: string, Description\: string, Author\: string, AuthorURI\: string, TextDomain\: string, DomainPath\: string, \.\.\.\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Parameter \#3 \$autoload of function update_option expects bool\|null, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Path in require_once\(\) "/tmp/wp/wp\-admin/includes/plugin\.php" is not a file or it does not exist\.$#'
+			identifier: requireOnce.fileNotFound
+			count: 2
+			path: includes/Utils.php
+
+		-
+			message: '#^Constant Convoca\\Core\\Webhook_Manager\:\:TIMEOUT is unused\.$#'
+			identifier: classConstant.unused
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Path in require_once\(\) "/tmp/wp/wp\-admin/includes/upgrade\.php" is not a file or it does not exist\.$#'
+			identifier: requireOnce.fileNotFound
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Parameter \#1 \$args of method WP_Admin_Bar\:\:add_node\(\) expects array\{id\?\: string, title\?\: string, parent\?\: string, href\?\: string, group\?\: bool, meta\?\: array\}, object given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/admin-appearance.php
+
+		-
+			message: '#^Property WP_Screen\:\:\$base \(string\) on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.property
+			count: 2
+			path: includes/admin-appearance.php
+
+		-
+			message: '#^Constant CONVOCA_COMMON_URL not found\.$#'
+			identifier: constant.notFound
+			count: 3
+			path: includes/admin-global-menu.php
+
+		-
+			message: '#^Offset ''gateway'' on array\{\}\|array\{members\?\: string, enroll\?\: string\} on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: includes/admin-global-menu.php
+
+		-
+			message: '#^Parameter \#1 \$args of function paginate_links expects array\{base\?\: string, format\?\: string, total\?\: int, current\?\: int, aria_current\?\: string, show_all\?\: bool, end_size\?\: int, mid_size\?\: int, \.\.\.\}, array\{base\: string, format\: '''', total\: float, current\: int\<1, max\>\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/admin-global-menu.php
+
+		-
+			message: '#^Parameter \#1 \$parent_slug of function add_submenu_page expects string, null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/admin-global-menu.php

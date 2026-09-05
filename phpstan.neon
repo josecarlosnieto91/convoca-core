@@ -1,11 +1,14 @@
+includes:
+    - phpstan-baseline.neon
+
 parameters:
     level: 5
     paths:
         - ./
     excludePaths:
         analyseAndScan:
-            - vendor (?)
-            - tests (?)
+            - vendor
+            - tests
             - node_modules (?)
     scanFiles:
         - vendor/wp-phpunit/wp-phpunit/includes/functions.php
