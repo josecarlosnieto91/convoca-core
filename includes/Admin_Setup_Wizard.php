@@ -494,17 +494,163 @@ class Admin_Setup_Wizard {
 	private function step_summary(): void {
 		$status = $this->get_completion_status();
 		?>
-		<h2><?php esc_html_e( '6. Finalización', 'convoca-core' ); ?></h2>
+		<h2><?php esc_html_e( '7. Finalización', 'convoca-core' ); ?></h2>
+
+		<div style="margin:30px 0;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
+
+			<?php
+			$rows = $this->summary_rows();
+			foreach ( $rows as $r ) :
+				$ok  = $r['ok'];
+				$ico = $ok ? '✓' : '⚠';
+				$col = $ok ? '#10b981' : '#f59e0b';
+				?>
+				<div style="display:flex;align-items:flex-start;gap:15px;padding:16px 18px;background:<?php echo $ok ? '#ffffff' : '#fffbeb'; ?>;border-bottom:1px solid #f1f5f9;">
+					<span style="font-size:18px;line-height:1.4;color:<?php echo esc_attr( $col ); ?>;"><?php echo esc_html( $ico ); ?></span>
+					<div style="flex:1;">
+						<strong style="color:#1e293b;"><?php echo esc_html( $r['title'] ); ?></strong>
+						<div style="margin-top:4px;color:#475569;font-size:13px;line-height:1.6;">
+							<?php
+							foreach ( $r['detail'] as $line ) {
+								echo '<div>' . esc_html( $line ) . '</div>';
+							}
+							if ( ! $ok && ! empty( $r['missing'] ) ) {
+								echo '<div style="color:#b45309;margin-top:2px;">⚠ ' . esc_html( $r['missing'] ) . '</div>';
+							}
+							?>
+						</div>
+					</div>
+				</div>
+			<?php endforeach; ?>
+
+		</div>
+
 		<?php if ( $status['is_ready'] ) : ?>
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<?php wp_nonce_field( 'convoca_wizard_complete' ); ?>
 				<input type="hidden" name="action" value="convoca_wizard_complete">
-				<button type="submit" class="button button-primary"><?php esc_html_e( 'Finalizar configuración', 'convoca-core' ); ?></button>
+				<button type="submit" class="button button-primary button-hero"><?php esc_html_e( 'Finalizar configuración', 'convoca-core' ); ?></button>
 			</form>
 		<?php else : ?>
-			<p>⚠ <?php esc_html_e( 'Faltan requisitos obligatorios.', 'convoca-core' ); ?></p>
+			<p>⚠ <?php esc_html_e( 'Faltan requisitos obligatorios. Revisa los pasos marcados en ámbar.', 'convoca-core' ); ?></p>
 		<?php endif; ?>
 		<?php
+	}
+
+	/**
+	 * Construye las filas del resumen: un bloque por paso del asistente.
+	 *
+	 * @return array[] Cada fila: title, ok, detail[], missing.
+	 */
+	private function summary_rows(): array {
+		global $wpdb;
+		$rows = array();
+
+		// ── 1. Infraestructura ──
+		$tables_ok = true;
+		foreach ( array( 'convoca_logs', 'convoca_locks' ) as $t ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			if ( $wpdb->get_var( "SHOW TABLES LIKE '{$wpdb->prefix}{$t}'" ) !== $wpdb->prefix . $t ) {
+				$tables_ok = false;
+			}
+		}
+		$rows['1'] = array(
+			'title'   => __( '1. Infraestructura', 'convoca-core' ),
+			'ok'      => $tables_ok && class_exists( '\Convoca\Core\Utils' ),
+			'detail'  => array(
+				class_exists( '\Convoca\Core\Utils' ) ? __( 'Convoca Common activo.', 'convoca-core' ) : __( 'Convoca Common NO activo.', 'convoca-core' ),
+				$tables_ok ? __( 'Tablas de base de datos creadas.', 'convoca-core' ) : __( 'Faltan tablas de base de datos.', 'convoca-core' ),
+			),
+			'missing' => $tables_ok ? '' : __( 'Ejecuta el paso 1 para crear la infraestructura.', 'convoca-core' ),
+		);
+
+		// ── 2. Páginas ──
+		$page_defs = array(
+			'alta-socios' => __( 'Alta de Socios', 'convoca-core' ),
+			'panel-socio' => __( 'Mi Panel de Socio', 'convoca-core' ),
+			'pago'        => __( 'Página de Pago', 'convoca-core' ),
+		);
+		$pages_ok   = true;
+		$pages_line = array();
+		foreach ( $page_defs as $slug => $title ) {
+			$p = get_page_by_path( $slug );
+			if ( ! $p ) {
+				$pages_ok = false;
+			}
+			$pages_line[] = ( $p ? '✅' : '⚠' ) . ' ' . $title;
+		}
+		$rows['2'] = array(
+			'title'   => __( '2. Páginas del Sistema', 'convoca-core' ),
+			'ok'      => $pages_ok,
+			'detail'  => $pages_line,
+			'missing' => $pages_ok ? '' : __( 'Crea las páginas pendientes en el paso 2.', 'convoca-core' ),
+		);
+
+		// ── 3. Planes de membresía ──
+		$plans = class_exists( '\Convoca\Members\CPT_Miembro' ) ? \Convoca\Members\CPT_Miembro::get_plans() : array();
+		$rows['3'] = array(
+			'title'  => __( '3. Planes de Membresía', 'convoca-core' ),
+			'ok'     => ! empty( $plans ),
+			'detail' => empty( $plans )
+				? array( __( 'Sin planes detectados.', 'convoca-core' ) )
+				: array( __( 'Planes:', 'convoca-core' ) . ' ' . implode( ', ', wp_list_pluck( $plans, 'label' ) ) ),
+			'missing' => empty( $plans ) ? __( 'Crea planes en Ajustes → Miembros.', 'convoca-core' ) : '',
+		);
+
+		// ── 4. Redsys / Pagos ──
+		$gw      = get_option( 'convoca_gateway_settings', array() );
+		$mc      = $gw['merchant_code'] ?? '';
+		$gw_ok   = ! empty( $mc );
+		$rows['4'] = array(
+			'title'   => __( '4. Pagos (Redsys)', 'convoca-core' ),
+			'ok'      => $gw_ok,
+			'detail'  => array( $gw_ok ? __( 'Merchant Code configurado.', 'convoca-core' ) : __( 'Merchant Code vacío.', 'convoca-core' ) ),
+			'missing' => $gw_ok ? '' : __( 'Completa la configuración de Redsys en el paso 4.', 'convoca-core' ),
+		);
+
+		// ── 5. Turnos ──
+		$ap = get_option( 'convoca_shifts_hora_apertura', '' );
+		$ci = get_option( 'convoca_shifts_hora_cierre', '' );
+		$rows['5'] = array(
+			'title'  => __( '5. Turnos de Voluntariado', 'convoca-core' ),
+			'ok'     => ! empty( $ap ) && ! empty( $ci ),
+			'detail' => array( sprintf( __( 'Horario del centro: %1$s – %2$s', 'convoca-core' ), $ap ?: '--:--', $ci ?: '--:--' ) ),
+			'missing' => ( empty( $ap ) || empty( $ci ) ) ? __( 'Define el horario en el paso 5.', 'convoca-core' ) : '',
+		);
+
+		// ── 6. Ecosistema de módulos ──
+		$hc_module_active = static function ( string $slug ): bool {
+			return is_plugin_active( "convoca-{$slug}/convoca-{$slug}.php" );
+		};
+		$mod_defs = array(
+			'members'   => __( 'Convoca Members', 'convoca-core' ),
+			'enroll'    => __( 'Convoca Enroll', 'convoca-core' ),
+			'gateway'   => __( 'Convoca Gateway', 'convoca-core' ),
+			'shifts'    => __( 'Convoca Shifts', 'convoca-core' ),
+			'publisher' => __( 'Convoca Publisher', 'convoca-core' ),
+			'assistant' => __( 'Convoca Assistant', 'convoca-core' ),
+		);
+		$active_mods = array();
+		foreach ( $mod_defs as $slug => $label ) {
+			if ( $hc_module_active( $slug ) ) {
+				$active_mods[] = $label;
+			}
+		}
+		$all_active = count( $active_mods ) === count( $mod_defs );
+		$rows['6'] = array(
+			'title'  => __( '6. Ecosistema Convoca', 'convoca-core' ),
+			'ok'     => $all_active,
+			'detail' => array(
+				$all_active
+					? __( 'Los 6 módulos están instalados y activos.', 'convoca-core' )
+					/* translators: %d: número de módulos activos de 6 */
+					: sprintf( __( '%d de 6 módulos activos.', 'convoca-core' ), count( $active_mods ) ),
+				$all_active ? '' : __( 'Faltan: ', 'convoca-core' ) . implode( ', ', array_diff( array_values( $mod_defs ), $active_mods ) ),
+			),
+			'missing' => $all_active ? '' : __( 'Activa los módulos restantes en el paso 6.', 'convoca-core' ),
+		);
+
+		return $rows;
 	}
 
 	private function get_completion_status(): array {
