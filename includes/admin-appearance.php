@@ -189,7 +189,7 @@ function convoca_export_pdf( string $title, array $headers, array $rows, string 
 	header( 'Content-Type: application/pdf' );
 	header( 'Content-Disposition: attachment; filename="' . $filename . '-' . wp_date( 'Y-m-d' ) . '.pdf"' );
 	header( 'Pragma: no-cache' );
-	echo $dompdf->output(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — binary PDF output, escaping would corrupt the file
+	echo $dompdf->output(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- binary PDF output, escaping would corrupt the file
 	exit;
 }
 
@@ -370,7 +370,7 @@ function convoca_dashboard_page(): void {
 			<div class="conv-chart-card">
 				<h3>📈 <?php esc_html_e( 'Tendencia (6 meses)', 'convoca-core' ); ?></h3>
 				<?php
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — chart.js data is numeric, render_chart returns safe HTML with inline JS
+				// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- render_chart() devuelve HTML con wp_json_encode (escape contexto JS); salida segura.
 				echo \Convoca\Core\Admin_Analytics::render_chart(
 					'chartTrends',
 					'line',
@@ -390,12 +390,13 @@ function convoca_dashboard_page(): void {
 						),
 					)
 				);
+				// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 				?>
 			</div>
 			<div class="conv-chart-card">
 				<h3>💰 <?php esc_html_e( 'Ingresos mensuales', 'convoca-core' ); ?></h3>
 				<?php
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — chart.js data is numeric, render_chart returns safe HTML with inline JS
+				// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- render_chart() devuelve HTML con wp_json_encode (escape contexto JS); salida segura.
 				echo \Convoca\Core\Admin_Analytics::render_chart(
 					'chartPayments',
 					'bar',
@@ -409,12 +410,13 @@ function convoca_dashboard_page(): void {
 						),
 					)
 				);
+				// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 				?>
 			</div>
 			<div class="conv-chart-card">
 				<h3>📊 <?php esc_html_e( 'Inscripciones por estado', 'convoca-core' ); ?></h3>
 				<?php
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — chart.js data is numeric, render_chart returns safe HTML with inline JS
+				// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- render_chart() devuelve HTML con wp_json_encode (escape contexto JS); salida segura.
 				echo \Convoca\Core\Admin_Analytics::render_chart(
 					'chartInscriptionStates',
 					'doughnut',
@@ -427,12 +429,13 @@ function convoca_dashboard_page(): void {
 						),
 					)
 				);
+				// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 				?>
 			</div>
 			<div class="conv-chart-card">
 				<h3>💳 <?php esc_html_e( 'Métodos de pago (mes)', 'convoca-core' ); ?></h3>
 				<?php
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — chart.js data is numeric, render_chart returns safe HTML with inline JS
+				// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- render_chart() devuelve HTML con wp_json_encode (escape contexto JS); salida segura.
 				echo \Convoca\Core\Admin_Analytics::render_chart(
 					'chartPayMethods',
 					'doughnut',
@@ -445,12 +448,13 @@ function convoca_dashboard_page(): void {
 						),
 					)
 				);
+				// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 				?>
 			</div>
 			<div class="conv-chart-card conv-chart-card--wide">
 				<h3>📋 <?php esc_html_e( 'Últimos 7 días — Pagos', 'convoca-core' ); ?></h3>
 				<?php
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — chart.js data is numeric, render_chart returns safe HTML with inline JS
+				// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- render_chart() devuelve HTML con wp_json_encode (escape contexto JS); salida segura.
 				echo \Convoca\Core\Admin_Analytics::render_chart(
 					'chart7days',
 					'bar',
@@ -465,6 +469,7 @@ function convoca_dashboard_page(): void {
 					),
 					array( 'height' => '160px' )
 				);
+				// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 				?>
 			</div>
 		</div>

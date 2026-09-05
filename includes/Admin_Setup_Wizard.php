@@ -209,10 +209,12 @@ class Admin_Setup_Wizard {
 			if ( $i < 7 ) {
 				echo '<div style="position:absolute;top:16px;left:50%;width:100%;height:2px;background:' . ( $done ? '#10b981' : '#e2e8f0' ) . ';z-index:0;"></div>';
 			}
-			echo $tag_open; // phpcs:ignore WordPress.Security.EscapeOutput — HTML construido con esc_url/esc_attr.
+			// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML construido con esc_url()/esc_attr(); cierre literal seguro.
+			echo $tag_open;
 			echo '<div style="background:' . esc_attr( $color ) . ';color:#fff;width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;margin-bottom:8px;position:relative;z-index:1;box-shadow:0 0 0 4px #fff;' . esc_attr( $cursor ) . '">' . esc_html( $done ? '✓' : $i ) . '</div>';
 			echo '<div style="font-size:12px;color:' . ( $active ? '#1e293b' : '#64748b' ) . ';font-weight:' . ( $active ? '700' : '500' ) . ';">' . esc_html( $labels[ $i ] ) . '</div>';
 			echo $tag_close;
+			// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo '</div>';
 		}
 		echo '</div>';
@@ -227,7 +229,7 @@ class Admin_Setup_Wizard {
 		$checks[] = $this->check_item( __( 'Convoca Common', 'convoca-core' ), class_exists( '\\Convoca\\Core\\Utils' ), __( 'Plugin activo.', 'convoca-core' ), __( 'Activa Convoca Common.', 'convoca-core' ) );
 
 		foreach ( array( 'convoca_logs', 'convoca_locks' ) as $t ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — SHOW TABLES LIKE requires a literal string
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- SHOW TABLES LIKE requires a literal string
 			$exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->prefix . $t ) ) === $wpdb->prefix . $t;
 			/* translators: %s: database table name */
 			$checks[] = $this->check_item( sprintf( __( 'Tabla %s', 'convoca-core' ), $t ), $exists, __( 'Correcto.', 'convoca-core' ), __( 'No encontrada.', 'convoca-core' ) );
@@ -693,7 +695,7 @@ class Admin_Setup_Wizard {
 		$rows['5'] = array(
 			'title'  => __( '5. Turnos de Voluntariado', 'convoca-core' ),
 			'ok'     => ! empty( $ap ) && ! empty( $ci ),
-			'detail' => array( sprintf( __( 'Horario del centro: %1$s – %2$s', 'convoca-core' ), $ap ?: '--:--', $ci ?: '--:--' ) ),
+			'detail' => array( sprintf( /* translators: 1: opening time, 2: closing time. */ __( 'Horario del centro: %1$s – %2$s', 'convoca-core' ), $ap ?: '--:--', $ci ?: '--:--' ) ),
 			'missing' => ( empty( $ap ) || empty( $ci ) ) ? __( 'Define el horario en el paso 5.', 'convoca-core' ) : '',
 		);
 

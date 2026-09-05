@@ -174,27 +174,34 @@ class Installer {
 		try {
 			do {
 				$ids = $wpdb->get_col(
-					"SELECT p.ID FROM {$wpdb->posts} p
-                     LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '{$meta_key}'
-                     WHERE p.post_type = 'miembro' AND pm.meta_id IS NULL
-                     LIMIT {$batch_size}"
+					$wpdb->prepare(
+						"SELECT p.ID FROM %i p
+				LEFT JOIN %i pm ON p.ID = pm.post_id AND pm.meta_key = %s
+				WHERE p.post_type = 'miembro' AND pm.meta_id IS NULL
+				LIMIT %d",
+						$wpdb->posts,
+						$wpdb->postmeta,
+						$meta_key,
+						$batch_size
+					)
 				);
 
 				if ( empty( $ids ) ) {
 					return;
 				}
 
-				$values = array();
+				// Insert por fila con $wpdb->insert() (el lock acquire_lock de arriba
+				// ya serializa; INSERT IGNORE multi-row no lo acepta PCP).
 				foreach ( $ids as $member_id ) {
-					$code     = Utils::generate_access_code();
-					$values[] = $wpdb->prepare( '(%d, %s, %s)', $member_id, $meta_key, $code );
-				}
-
-				if ( ! empty( $values ) ) {
-					// Use INSERT IGNORE to handle race conditions gracefully.
-					// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared — $values are individually built with $wpdb->prepare(), implode only joins already-prepared placeholders
-					$wpdb->query(
-						"INSERT IGNORE INTO {$wpdb->postmeta} (post_id, meta_key, meta_value) VALUES " . implode( ',', $values )
+					$code = Utils::generate_access_code();
+					$wpdb->insert(
+						$wpdb->postmeta,
+						array(
+							'post_id'    => (int) $member_id,
+							'meta_key'   => $meta_key,
+							'meta_value' => $code,
+						),
+						array( '%d', '%s', '%s' )
 					);
 				}
 

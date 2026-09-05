@@ -159,7 +159,7 @@ class Utils {
 		$out = fopen( 'php://output', 'w' );
 		// BOM for Excel.
 		fprintf( $out, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) );
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose — closing php://output stream after BOM write, no WP_Filesystem equivalent for CSV streams
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- closing php://output stream after BOM write, no WP_Filesystem equivalent for CSV streams
 		fclose( $out );
 	}
 	/**
@@ -367,15 +367,15 @@ class Utils {
 
 		// Try dedicated locks table first.
 		$locks_table = self::locks_table();
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name, not user input
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $locks_table is a hardcoded internal name, not user input
 		$table_exists = $wpdb->get_var( "SHOW TABLES LIKE '$locks_table'" ) === $locks_table;
 
 		if ( $table_exists ) {
 			// Clean expired locks first.
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $locks_table is a hardcoded internal name
 			$wpdb->query( $wpdb->prepare( "DELETE FROM $locks_table WHERE expires < %d", time() ) );
 
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $locks_table is a hardcoded internal name
 			$result = $wpdb->query(
 				$wpdb->prepare(
 					"INSERT INTO $locks_table (lock_key, expires, created_at)
@@ -404,7 +404,7 @@ class Utils {
 			}
 
 			// Verify we got the lock.
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $locks_table is a hardcoded internal name
 			$current = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT expires FROM $locks_table WHERE lock_key = %s",
@@ -486,11 +486,11 @@ class Utils {
 		$lock_key = 'convoca_lock_' . $key;
 
 		$locks_table = self::locks_table();
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $locks_table is a hardcoded internal name
 		$table_exists = $wpdb->get_var( "SHOW TABLES LIKE '$locks_table'" ) === $locks_table;
 
 		if ( $table_exists ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $locks_table is a hardcoded internal name
 			$wpdb->query(
 				$wpdb->prepare(
 					"DELETE FROM $locks_table WHERE lock_key = %s",
@@ -519,11 +519,11 @@ class Utils {
 		$total = 0;
 
 		$locks_table = self::locks_table();
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $locks_table is a hardcoded internal name
 		$table_exists = $wpdb->get_var( "SHOW TABLES LIKE '$locks_table'" ) === $locks_table;
 
 		if ( $table_exists ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — $locks_table is a hardcoded internal name
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $locks_table is a hardcoded internal name
 			$total += (int) $wpdb->query( $wpdb->prepare( "DELETE FROM $locks_table WHERE expires < %d", $now ) );
 		}
 

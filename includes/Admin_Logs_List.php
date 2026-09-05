@@ -165,7 +165,7 @@ class Admin_Logs_List extends \WP_List_Table {
 
 		$sql       = "SELECT * FROM $table WHERE $where_clause ORDER BY $orderby $order LIMIT %d OFFSET %d";
 		$full_args = array_merge( $args, array( $per_page, $offset ) );
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared — $sql is dynamically built with placeholders; $wpdb->prepare handles all $full_args via spread
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is dynamically built with placeholders; $wpdb->prepare handles all $full_args via spread
 		$results     = $wpdb->get_results( $wpdb->prepare( $sql, $full_args ) );
 		$this->items = is_array( $results ) ? $results : array();
 

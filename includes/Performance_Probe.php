@@ -164,21 +164,21 @@ class Performance_Probe {
 
 		echo "\n<!-- Convoca Performance Probe -->\n";
 		echo '<pre style="background:#1e1e1e;color:#00ff88;padding:12px;font-size:11px;overflow:auto;max-height:400px;direction:ltr;text-align:left">';
-		echo "CONVOCA PERFORMANCE PROBE\n";
-		printf( "Tiempo total: %.2fs | Memoria pico: %.1f MB | Queries: %d\n", $elapsed, $mem, (int) ( $wpdb->num_queries ?? 0 ) );
-		echo "\n-- HOOKS LENTOS (>" . ( self::$hook_threshold * 1000 ) . "ms) --\n";
+		echo esc_html( "CONVOCA PERFORMANCE PROBE\n" );
+		printf( esc_html( "Tiempo total: %.2fs | Memoria pico: %.1f MB | Queries: %d\n" ), (float) $elapsed, (float) $mem, (int) ( $wpdb->num_queries ?? 0 ) );
+		echo "\n-- HOOKS LENTOS (> " . esc_html( (string) ( self::$hook_threshold * 1000 ) ) . "ms) --\n";
 		if ( empty( $top_hooks ) ) {
 			echo "  (ninguno)\n";
 		}
 		foreach ( $top_hooks as $hook => $dur ) {
-			printf( "  %.3fs  %s\n", $dur, $hook );
+			printf( esc_html( "  %.3fs  %s\n" ), (float) $dur, esc_html( (string) $hook ) );
 		}
 		echo "\n-- QUERIES LENTAS (>20ms) --\n";
 		if ( empty( self::$slow_queries ) ) {
 			echo "  (ninguna)\n";
 		}
 		foreach ( array_slice( self::$slow_queries, 0, 10 ) as $q ) {
-			printf( "  %.1fms  %s  [%s]\n", $q['ms'], $q['sql'], $q['caller'] );
+			printf( esc_html( "  %.1fms  %s  [%s]\n" ), (float) $q['ms'], esc_html( (string) $q['sql'] ), esc_html( (string) $q['caller'] ) );
 		}
 		echo "</pre>\n";
 		echo "<!-- /Convoca Performance Probe -->\n";

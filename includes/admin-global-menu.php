@@ -185,7 +185,7 @@ function convoca_health_page(): void {
 	global $wpdb;
 	$tables = array( 'convoca_logs', 'convoca_locks', 'convoca_webhook_retries' );
 	foreach ( $tables as $t ) {
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared — SHOW TABLES LIKE requires a literal string, prepare() percent-escapes break it
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- SHOW TABLES LIKE requires a literal string, prepare() percent-escapes break it
 		$exists       = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->prefix . $t ) ) === $wpdb->prefix . $t;
 		$all_checks[] = array(
 			/* translators: %s: database table name */
@@ -225,7 +225,7 @@ function convoca_notifications_page(): void {
 	?>
 	<div class="wrap">
 		<h1><?php esc_html_e( 'Notificaciones', 'convoca-core' ); ?></h1>
-		<p><?php printf( esc_html__( 'Total: %d notificaciones', 'convoca-core' ), (int) $total ); ?></p>
+		<p><?php printf( /* translators: %d: total number of notifications. */ esc_html__( 'Total: %d notificaciones', 'convoca-core' ), (int) $total ); ?></p>
 		<table class="wp-list-table widefat fixed striped">
 			<thead><tr><th><?php esc_html_e( 'Tipo', 'convoca-core' ); ?></th><th><?php esc_html_e( 'Mensaje', 'convoca-core' ); ?></th><th><?php esc_html_e( 'Fecha', 'convoca-core' ); ?></th><th><?php esc_html_e( 'Estado', 'convoca-core' ); ?></th></tr></thead>
 			<tbody>

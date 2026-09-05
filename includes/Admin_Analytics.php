@@ -433,7 +433,8 @@ class Admin_Analytics {
 		if ( wp_script_is( 'chart-js', 'registered' ) ) {
 			return;
 		}
-		wp_enqueue_script( 'chart-js', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '4.4.1', true );
+		// Chart.js servido localmente (wp.org prohíbe offloading a CDNs externos).
+		wp_enqueue_script( 'chart-js', CONVOCA_CORE_URL . 'assets/js/chart.umd.min.js', array(), '4.4.1', true );
 	}
 
 	/**
@@ -464,7 +465,9 @@ class Admin_Analytics {
 			$json_data[] = $entry;
 		}
 
-		$chart_opts = json_encode(
+		// wp_json_encode escapa <, >, &, ' para contexto JS (evita XSS vía
+		// labels/datos con </script>). json_encode crudo permitiría inyección.
+		$chart_opts = wp_json_encode(
 			array(
 				'responsive'          => true,
 				'maintainAspectRatio' => true,
@@ -478,25 +481,27 @@ class Admin_Analytics {
 			JSON_THROW_ON_ERROR
 		);
 
-		$labels_json = json_encode( $labels, JSON_THROW_ON_ERROR );
-		$data_json   = json_encode( $json_data, JSON_THROW_ON_ERROR );
+		$labels_json = wp_json_encode( $labels, JSON_THROW_ON_ERROR );
+		$data_json   = wp_json_encode( $json_data, JSON_THROW_ON_ERROR );
 
 		$extra_css = $opts['css'] ?? '';
 		$height    = $opts['height'] ?? '200px';
 
-		return <<<HTML
-<canvas id="{$canvas_id}" style="height:{$height};width:100%;{$extra_css}"></canvas>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var ctx = document.getElementById('{$canvas_id}');
-    if (!ctx) return;
-    new Chart(ctx, {
-        type: '{$type}',
-        data: { labels: {$labels_json}, datasets: {$data_json} },
-        options: {$chart_opts}
-    });
-});
-</script>
-HTML;
+		// Heredoc prohibido por PCP. HTML construido por líneas con wp_json_encode
+		// ya aplicado a los datos (escape contexto JS) y esc_attr/esc_js en el resto.
+		$out  = '<canvas id="' . esc_attr( $canvas_id ) . '" style="height:' . esc_attr( $height ) . ';width:100%;' . esc_attr( $extra_css ) . '"></canvas>' . "\n";
+		$out .= "<script>\n";
+		$out .= "document.addEventListener('DOMContentLoaded', function() {\n";
+		$out .= "    var ctx = document.getElementById('" . esc_js( $canvas_id ) . "');\n";
+		$out .= "    if (!ctx) return;\n";
+		$out .= "    new Chart(ctx, {\n";
+		$out .= "        type: '" . esc_js( $type ) . "',\n";
+		$out .= "        data: { labels: {$labels_json}, datasets: {$data_json} },\n";
+		$out .= "        options: {$chart_opts}\n";
+		$out .= "    });\n";
+		$out .= "});\n";
+		$out .= "</script>\n";
+
+		return $out;
 	}
 }

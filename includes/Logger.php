@@ -184,11 +184,11 @@ class Logger {
 		}
 
 		if ( ! empty( $params ) ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared — $query is dynamically built with placeholders; $wpdb->prepare handles all args via spread
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query is dynamically built with placeholders; $wpdb->prepare handles all args via spread
 			return $wpdb->get_results( $wpdb->prepare( $query, ...$params ), ARRAY_A );
 		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared — $query has no placeholders when $params is empty; no user input involved
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query has no placeholders when $params is empty; no user input involved
 		return $wpdb->get_results( $query, ARRAY_A );
 	}
 
