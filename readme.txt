@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 2.2.2
+Stable tag: 2.2.3
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.2.3 =
+* New: Security Monitor — observabilidad de eventos críticos: registra accesos no autorizados a rutas REST de Convoca (401/403), cuenta en ventanas de 24h los fallos de firma Redsys (Ds_Signature), la contención de locks en convoca_locks y los rate limits excedidos, y envía un digest diario por email con umbrales configurables y cooldown anti-spam.
+* CI: PHPUnit/PHPStan/PHPCS bloqueantes en GitHub Actions (antes con || true no detectaban regresiones).
 
 = 2.2.2 =
 * Security: fix crítico en acquire_lock — la comparación de expiración usaba $expires (futuro) en vez de time(), permitiendo que dos procesos obtuvieran el mismo lock (exclusión mutua rota; dedup de pagos/cron ineficaz).
