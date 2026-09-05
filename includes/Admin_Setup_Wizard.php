@@ -373,27 +373,46 @@ class Admin_Setup_Wizard {
 		<?php if ( empty( $editable ) ) : ?>
 			<p>⚠ <?php esc_html_e( 'No se han detectado planes. Activa Convoca Members para configurarlos.', 'convoca-core' ); ?></p>
 		<?php else : ?>
-			<p><?php esc_html_e( 'Marca los planes disponibles y ajusta su precio anual:', 'convoca-core' ); ?></p>
+			<p><?php esc_html_e( 'Marca los planes disponibles, edita su nombre, modalidad y precio anual:', 'convoca-core' ); ?></p>
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<?php wp_nonce_field( 'convoca_wizard_save' ); ?>
 				<input type="hidden" name="action" value="convoca_wizard_save">
 				<input type="hidden" name="wizard_step" value="3">
-				<table class="widefat striped" style="max-width:720px;">
+				<table class="widefat striped" style="max-width:900px;">
 					<thead>
 						<tr>
 							<th style="width:45px;"><?php esc_html_e( 'Activo', 'convoca-core' ); ?></th>
 							<th><?php esc_html_e( 'Plan', 'convoca-core' ); ?></th>
-							<th style="width:90px;"><?php esc_html_e( 'Modalidad', 'convoca-core' ); ?></th>
+							<th style="width:130px;"><?php esc_html_e( 'Modalidad', 'convoca-core' ); ?></th>
 							<th style="width:110px;"><?php esc_html_e( 'Precio (€)', 'convoca-core' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
 					<?php foreach ( $editable as $key => $p ) : ?>
-						<?php $checked = ( isset( $p['active'] ) && false === $p['active'] ) ? false : true; ?>
+						<?php
+						$checked = ( isset( $p['active'] ) && false === $p['active'] ) ? false : true;
+						$mod     = $p['modalidad'] ?? 'Numerario';
+						$p_label = $p['label'] ?? $key;
+						// Los defaults incluyen el emoji al inicio del label ("🥉 Bronce").
+						// Si además existe el campo emoji separado, lo anteponemos.
+						$p_emoji_sep = $p['emoji'] ?? '';
+						if ( '' !== $p_emoji_sep && ! str_starts_with( $p_label, $p_emoji_sep ) ) {
+							$p_label = $p_emoji_sep . ' ' . $p_label;
+						}
+						?>
 						<tr>
 							<td><input type="checkbox" name="convoca_plans[<?php echo esc_attr( $key ); ?>][active]" value="1" <?php checked( $checked ); ?>></td>
-							<td><strong><?php echo esc_html( $p['label'] ?? $key ); ?></strong></td>
-							<td><?php echo esc_html( $p['modalidad'] ?? '' ); ?></td>
+							<td>
+								<input type="text" name="convoca_plans[<?php echo esc_attr( $key ); ?>][label]" value="<?php echo esc_attr( $p_label ); ?>" class="regular-text" style="width:100%;">
+								<code style="opacity:0.5;"><?php echo esc_html( $key ); ?></code>
+							</td>
+							<td>
+								<select name="convoca_plans[<?php echo esc_attr( $key ); ?>][modalidad]" style="width:100%;">
+									<?php foreach ( $real_mods as $rm ) : ?>
+										<option value="<?php echo esc_attr( $rm ); ?>" <?php selected( $mod, $rm ); ?>><?php echo esc_html( $rm ); ?></option>
+									<?php endforeach; ?>
+								</select>
+							</td>
 							<td><input type="number" step="0.01" min="0" name="convoca_plans[<?php echo esc_attr( $key ); ?>][price]" value="<?php echo esc_attr( $p['price'] ?? 0 ); ?>" style="width:100%;"></td>
 						</tr>
 					<?php endforeach; ?>
@@ -732,6 +751,12 @@ class Admin_Setup_Wizard {
 					}
 					if ( isset( $post[ $key ] ) ) {
 						$plan['active'] = ! empty( $post[ $key ]['active'] );
+						if ( isset( $post[ $key ]['label'] ) ) {
+							$plan['label'] = sanitize_text_field( $post[ $key ]['label'] );
+						}
+						if ( isset( $post[ $key ]['modalidad'] ) && in_array( $post[ $key ]['modalidad'], $real_mods, true ) ) {
+							$plan['modalidad'] = $post[ $key ]['modalidad'];
+						}
 						if ( isset( $post[ $key ]['price'] ) && is_numeric( $post[ $key ]['price'] ) ) {
 							$plan['price'] = (float) $post[ $key ]['price'];
 						}
