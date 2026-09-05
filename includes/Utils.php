@@ -391,7 +391,15 @@ class Utils {
 				)
 			);
 
-			if ( ! $result ) {
+			if ( false === $result ) {
+				// Error real de BD (query falló): no es contención.
+				return false;
+			}
+
+			if ( 0 === $result ) {
+				// 0 filas afectadas: el UPDATE condicional no cambió nada
+				// porque otro proceso retiene el lock (expires futuro).
+				self::report_lock_contention( $key );
 				return false;
 			}
 
@@ -429,7 +437,14 @@ class Utils {
 			)
 		);
 
-		if ( ! $result ) {
+		if ( false === $result ) {
+			// Error real de BD: no es contención.
+			return false;
+		}
+
+		if ( 0 === $result ) {
+			// 0 filas afectadas: lock retenido por otro proceso.
+			self::report_lock_contention( $key );
 			return false;
 		}
 

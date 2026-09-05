@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 2.2.4
+Stable tag: 2.2.5
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,9 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.2.5 =
+* Fix: contención de locks reportada también cuando el UPDATE condicional afecta 0 filas (MySQL devuelve 0, no error) — antes solo se reportaba en la verificación posterior, dejando muda la contención más común (mismo segundo).
 
 = 2.2.4 =
 * Fix: la contención de locks ahora se reporta al Security Monitor (Utils::acquire_lock) — la alerta de bloqueos recurrentes del digest diario funcionaba sobre un hook que nadie invocaba.
