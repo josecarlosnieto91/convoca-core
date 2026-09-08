@@ -94,4 +94,32 @@ class UtilsTest extends TestCase
         $this->assertFalse(\Convoca\Core\Utils::validate_dni('ABC'));
         $this->assertFalse(\Convoca\Core\Utils::validate_dni('12.345.678Z'));
     }
+
+    // ── Document theme (light/dark) ─────────────
+
+    private function stubThemeOption(string $value): void
+    {
+        // El bootstrap unit (tests/bootstrap-unit.php) mockea get_option (con _wp_stores)
+        // y apply_filters (paso-identidad). Aquí solo fijamos la opción a probar.
+        $GLOBALS['_wp_stores']['options']['convoca_document_theme'] = $value;
+    }
+
+    public function test_document_theme_defaults_to_light(): void
+    {
+        // Sin opción seteada → default 'light'.
+        unset($GLOBALS['_wp_stores']['options']['convoca_document_theme']);
+        $this->assertSame('light', \Convoca\Core\Utils::get_document_theme());
+    }
+
+    public function test_document_theme_dark(): void
+    {
+        $this->stubThemeOption('dark');
+        $this->assertSame('dark', \Convoca\Core\Utils::get_document_theme('card'));
+    }
+
+    public function test_document_theme_invalid_falls_back_to_light(): void
+    {
+        $this->stubThemeOption('neon');
+        $this->assertSame('light', \Convoca\Core\Utils::get_document_theme());
+    }
 }

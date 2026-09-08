@@ -42,11 +42,12 @@ class Email_Layout {
 	 * @param string $subject     Email subject (used in <title>).
 	 * @param array  $opts        {
 	 *     Optional overrides.
+	 *     @type string $theme          'light'|'dark'. Default: opción global convoca_document_theme (light).
 	 *     @type string $preheader      Hidden preview text (max 150 chars).
 	 *     @type string $footer_text    Custom footer text.
 	 *     @type string $button_url     Primary CTA button URL.
 	 *     @type string $button_text    Primary CTA button label.
-	 *     @type string $header_color   Header background (default: #320028).
+	 *     @type string $header_color   Header background (default: #ffffff light / #320028 dark).
 	 *     @type string $accent_color   Accent color for buttons/links (default: #FF8700).
 	 * }
 	 * @return string Complete <html> document.
@@ -57,11 +58,21 @@ class Email_Layout {
 		$preheader    = $opts['preheader'] ?? '';
 		$button_url   = $opts['button_url'] ?? '';
 		$button_text  = $opts['button_text'] ?? '';
-		$header_color = $opts['header_color'] ?? '#320028';
-		$accent_color = $opts['accent_color'] ?? '#FF8700';
 		$footer_text  = $opts['footer_text'] ?? 'Has recibido este email porque formas parte de ' . esc_html( $site_name ) . '.';
 
-		$logo_html = Utils::get_branding_html( 'email', '', 'max-width:180px;height:auto;display:block;margin:0 auto;' );
+		// Theme del documento: explícito en $opts, o el global (convoca_document_theme).
+		// light = cabecera clara con nombre en púrpura; dark = cabecera púrpura (clásica).
+		$raw_theme = $opts['theme'] ?? Utils::get_document_theme( 'email' );
+		$theme     = in_array( $raw_theme, array( 'light', 'dark' ), true ) ? $raw_theme : 'light';
+
+		$header_color = $opts['header_color'] ?? ( 'light' === $theme ? '#ffffff' : '#320028' );
+		$header_text  = 'light' === $theme ? '#320028' : '#ffffff';
+		$accent_color = $opts['accent_color'] ?? '#FF8700';
+		// Bajo la cabecera, una línea naranja mantiene la familia visual en ambos temas.
+		$header_border = '4px solid ' . $accent_color;
+
+		$logo_style = 'max-width:180px;height:auto;display:block;margin:0 auto;color:' . $header_text . ';';
+		$logo_html  = Utils::get_branding_html( 'email', '', $logo_style );
 
 		// Convert plain text line breaks to <p> if body has no HTML tags.
 		if ( $body === wp_strip_all_tags( $body ) ) {
@@ -91,12 +102,12 @@ img{display:block;border:0;height:auto;line-height:100%;outline:none;text-decora
 /* ── Wrapper ────────────────────────────────────── */
 .email-wrapper{max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(50,0,40,0.08)}
 /* ── Header ─────────────────────────────────────── */
-.email-header{background:<?php echo esc_attr( $header_color ); ?>;padding:32px 24px;text-align:center}
+.email-header{background:<?php echo esc_attr( $header_color ); ?>;border-bottom:<?php echo esc_attr( $header_border ); ?>;padding:32px 24px;text-align:center}
 .email-header img{max-width:180px;height:auto;display:block;margin:0 auto}
 /* ── Body ───────────────────────────────────────── */
 .email-body{padding:36px 32px;color:#1e293b;font-size:16px;line-height:1.7}
-.email-body h1{color:<?php echo esc_attr( $header_color ); ?>;font-size:26px;margin:0 0 20px;font-weight:700}
-.email-body h2{color:<?php echo esc_attr( $header_color ); ?>;font-size:20px;margin:24px 0 12px;font-weight:600}
+.email-body h1{color:#320028;font-size:26px;margin:0 0 20px;font-weight:700}
+.email-body h2{color:#320028;font-size:20px;margin:24px 0 12px;font-weight:600}
 .email-body p{margin:0 0 18px}
 .email-body a{color:<?php echo esc_attr( $accent_color ); ?>;font-weight:600;text-decoration:underline}
 /* ── Meta box (detalles de actividad/socio) ────── */
@@ -111,7 +122,7 @@ img{display:block;border:0;height:auto;line-height:100%;outline:none;text-decora
 /* ── Divider ────────────────────────────────────── */
 .email-divider{border:none;border-top:2px solid #f0eae6;margin:28px 0}
 /* ── Badge / highlight ────────────────────────── */
-.email-badge{display:inline-block;background:<?php echo esc_attr( $accent_color ); ?>20;color:<?php echo esc_attr( $header_color ); ?>;padding:4px 12px;border-radius:20px;font-size:14px;font-weight:600}
+.email-badge{display:inline-block;background:<?php echo esc_attr( $accent_color ); ?>20;color:#320028;padding:4px 12px;border-radius:20px;font-size:14px;font-weight:600}
 /* ── Footer ─────────────────────────────────────── */
 .email-footer{background:#faf8f6;padding:24px 32px;text-align:center;font-size:12px;color:#94a3b8;line-height:1.6;border-top:1px solid #f0eae6}
 .email-footer a{color:<?php echo esc_attr( $accent_color ); ?>;text-decoration:none}
@@ -122,16 +133,6 @@ img{display:block;border:0;height:auto;line-height:100%;outline:none;text-decora
 .email-meta .label{width:100%!important;padding-right:0}
 .email-header{padding:24px 16px!important}
 .email-btn{display:block;width:100%;box-sizing:border-box}
-}
-/* ── Dark mode (prefers-color-scheme) ──────────── */
-@media(prefers-color-scheme:dark){
-.email-wrapper{background:#1a1a1a!important}
-.email-body{color:#e2e8f0!important}
-.email-body h1,.email-body h2{color:#ffab00!important}
-.email-meta{background:#262626!important}
-.email-meta .value{color:#e2e8f0!important}
-.email-footer{background:#1a1a1a!important;border-color:#333!important;color:#64748b!important}
-.email-divider{border-color:#333!important}
 }
 </style>
 </head>

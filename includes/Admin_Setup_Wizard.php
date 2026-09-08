@@ -526,6 +526,11 @@ class Admin_Setup_Wizard {
 		);
 		?>
 		<h2><?php esc_html_e( '6. El Ecosistema Convoca', 'convoca-core' ); ?></h2>
+		<?php if ( isset( $_GET['theme_saved'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- solo feedback visual ?>
+		<div style="margin:14px 0;padding:12px 16px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;color:#065f46;font-weight:600;">
+			✓ <?php esc_html_e( 'Tema de los documentos guardado.', 'convoca-core' ); ?>
+		</div>
+		<?php endif; ?>
 		<p style="color:#64748b;">
 			<?php esc_html_e( 'Cada módulo es un plugin independiente: funciona solo o en conjunto con el resto. Todo es open source y los datos viven en tu propia web.', 'convoca-core' ); ?>
 		</p>
@@ -549,6 +554,32 @@ class Admin_Setup_Wizard {
 		<p style="color:#64748b;">
 			<?php esc_html_e( '¿Necesitas instalar algún módulo? Encuéntralos en WordPress.org o en getconvoca.app — los módulos base son gratuitos para siempre.', 'convoca-core' ); ?>
 		</p>
+		<hr style="border:none;border-top:1px solid #e2e8f0;margin:28px 0;">
+		<h3 style="color:#320028;margin:0 0 6px;"><?php esc_html_e( 'Tema de los documentos', 'convoca-core' ); ?></h3>
+		<p style="color:#64748b;margin:0 0 16px;">
+			<?php esc_html_e( 'Elige el estilo por defecto de carnets, certificados y emails transaccionales. Podrás cambiarlo después en Ajustes → Documentos.', 'convoca-core' ); ?>
+		</p>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0 0 8px;">
+			<?php wp_nonce_field( 'convoca_wizard_save' ); ?>
+			<input type="hidden" name="action" value="convoca_wizard_save">
+			<input type="hidden" name="wizard_step" value="6">
+			<fieldset>
+				<legend class="screen-reader-text"><?php esc_html_e( 'Tema de los documentos', 'convoca-core' ); ?></legend>
+				<label style="display:inline-flex;align-items:center;gap:8px;margin-right:22px;cursor:pointer;">
+					<input type="radio" name="document_theme" value="light" <?php checked( \Convoca\Core\Utils::get_document_theme(), 'light' ); ?>>
+					<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid #320028;"></span>
+					<?php esc_html_e( 'Claro (por defecto)', 'convoca-core' ); ?>
+				</label>
+				<label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;">
+					<input type="radio" name="document_theme" value="dark" <?php checked( \Convoca\Core\Utils::get_document_theme(), 'dark' ); ?>>
+					<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#320028;border:2px solid #320028;"></span>
+					<?php esc_html_e( 'Oscuro', 'convoca-core' ); ?>
+				</label>
+			</fieldset>
+			<p style="margin-top:14px;">
+				<button type="submit" class="button button-secondary"><?php esc_html_e( 'Guardar tema', 'convoca-core' ); ?></button>
+			</p>
+		</form>
 		<?php
 		$this->step_nav( 6, true );
 	}
@@ -831,6 +862,14 @@ class Admin_Setup_Wizard {
 		if ( $step === 5 ) {
 			update_option( 'convoca_shifts_hora_apertura', sanitize_text_field( wp_unslash( $_POST['convoca_apertura'] ) ) );
 			update_option( 'convoca_shifts_hora_cierre', sanitize_text_field( wp_unslash( $_POST['convoca_cierre'] ) ) );
+		}
+		if ( $step === 6 && isset( $_POST['document_theme'] ) ) {
+			// Tema de documentos (claro/oscuro) guardado desde el paso 6 (Ecosistema).
+			$theme = sanitize_key( wp_unslash( $_POST['document_theme'] ) );
+			update_option( 'convoca_document_theme', in_array( $theme, array( 'light', 'dark' ), true ) ? $theme : 'light' );
+			set_transient( 'convoca_wizard_theme_saved', 1, 30 );
+			wp_safe_redirect( admin_url( 'admin.php?page=conv-setup-wizard&step=6&theme_saved=1' ) );
+			exit;
 		}
 		update_option( self::PROGRESS_OPTION, $step + 1 );
 		wp_safe_redirect( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $step + 1 ) ) );

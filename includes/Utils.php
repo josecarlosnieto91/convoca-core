@@ -555,13 +555,9 @@ class Utils {
 			}
 		}
 
-		// Fallback to internal logo if it exists.
-		if ( empty( $logo_url ) ) {
-			$logo_path = CONVOCA_COMMON_DIR . 'assets/images/logo.png';
-			if ( file_exists( $logo_path ) ) {
-				$logo_url = CONVOCA_COMMON_URL . 'assets/images/logo.png';
-			}
-		}
+		// NO hay fallback a logo interno del plugin: el branding debe ser siempre
+		// el del sitio WordPress (custom_logo) o, si no existe, el nombre del sitio
+		// (lo decide get_branding_html). Evita logos de otras organizaciones.
 
 		return (string) apply_filters( "convoca_{$filter_suffix}_logo_url", $logo_url );
 	}
@@ -585,6 +581,27 @@ class Utils {
 		}
 
 		return '<h1 style="' . esc_attr( $style ) . '">' . esc_html( $site_name ) . '</h1>';
+	}
+
+	/**
+	 * Document theme used across PDFs, cards and transactional emails.
+	 *
+	 * Option: 'convoca_document_theme' — 'light' (default) or 'dark'.
+	 * Also filterable per-context: convoca_document_theme_{suffix}.
+	 *
+	 * @param string $suffix Optional context suffix (card|certificate|email).
+	 * @return string 'light'|'dark'
+	 */
+	public static function get_document_theme( string $suffix = '' ): string {
+		$theme = \get_option( 'convoca_document_theme', 'light' );
+		if ( ! in_array( $theme, array( 'light', 'dark' ), true ) ) {
+			$theme = 'light';
+		}
+		if ( $suffix ) {
+			$theme = (string) apply_filters( 'convoca_document_theme_' . $suffix, $theme );
+		}
+		$theme = (string) apply_filters( 'convoca_document_theme', $theme );
+		return in_array( $theme, array( 'light', 'dark' ), true ) ? $theme : 'light';
 	}
 
 	/**
