@@ -65,6 +65,12 @@ class Logger {
 			return;
 		}
 
+		// Respect the configured minimum log level (convoca_log_level, default 'info').
+		// Levels below the threshold (i.e. 'debug') are skipped entirely.
+		if ( self::level_rank( $level ) < self::level_rank( self::get_log_level() ) ) {
+			return;
+		}
+
 		// Rate limiting.
 		$now                  = time();
 		self::$log_timestamps = array_filter(
@@ -140,6 +146,45 @@ class Logger {
 	 */
 	public static function debug( string $message, string $context = 'General' ): void {
 		self::log( $message, 'debug', $context );
+	}
+
+	/**
+	 * Get the configured minimum log level.
+	 *
+	 * Defaults to 'info'. Reads the option convoca_log_level (exposed read-only
+	 * in the system health screen) and allows programmatic override through the
+	 * 'convoca_log_level' filter.
+	 *
+	 * @return string One of debug|info|warning|error.
+	 */
+	public static function get_log_level(): string {
+		$default = 'info';
+		$level   = get_option( 'convoca_log_level', $default );
+		$level   = apply_filters( 'convoca_log_level', $level );
+
+		$allowed = array( 'debug', 'info', 'warning', 'error' );
+
+		return in_array( $level, $allowed, true ) ? $level : $default;
+	}
+
+	/**
+	 * Map a log level to its severity rank (lower = less severe).
+	 *
+	 * @param string $level Log level.
+	 * @return int Rank.
+	 */
+	private static function level_rank( string $level ): int {
+		$level = strtolower( $level );
+
+		$ranks = array(
+			'debug'   => 0,
+			'info'    => 1,
+			'success' => 1,
+			'warning' => 2,
+			'error'   => 3,
+		);
+
+		return $ranks[ $level ] ?? 1;
 	}
 
 	public static function get_logs( array $args = array() ): array {

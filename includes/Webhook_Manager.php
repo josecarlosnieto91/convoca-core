@@ -57,14 +57,14 @@ class Webhook_Manager {
 	}
 
 	/**
-	 * Maximum webhook delivery attempts.
+	 * Maximum webhook delivery attempts (initial delivery + retries).
 	 */
 	private const MAX_RETRIES = 3;
 
 	/**
-	 * Base delay for exponential backoff in seconds.
+	 * Default retry backoff schedule in seconds.
 	 */
-	private const BACKOFF_BASE = 60; // 1 minute
+	private const DEFAULT_BACKOFF = array( 60, 120, 240 );
 
 	/**
 	 * Get the database table name for webhook retries.
@@ -72,6 +72,52 @@ class Webhook_Manager {
 	private static function get_retry_table_name(): string {
 		global $wpdb;
 		return $wpdb->prefix . 'convoca_webhook_retries';
+	}
+
+	/**
+	 * Get the retry backoff schedule (seconds) for failed webhook deliveries.
+	 *
+	 * Filterable via 'convoca_webhook_retry_backoff'. Values are sanitized to
+	 * positive integers; an empty or invalid schedule falls back to the default.
+	 *
+	 * @return int[] Non-empty list of positive delays in seconds.
+	 */
+	public static function get_backoff(): array {
+		$default = self::DEFAULT_BACKOFF;
+		$backoff = apply_filters( 'convoca_webhook_retry_backoff', $default );
+
+		if ( ! is_array( $backoff ) ) {
+			$backoff = $default;
+		}
+
+		$backoff = array_values( array_filter( array_map( 'absint', $backoff ) ) );
+
+		return empty( $backoff ) ? $default : $backoff;
+	}
+
+	/**
+	 * Compute the delay (seconds) before the next retry after a failed attempt.
+	 *
+	 * @param int        $failed_attempt 1-based attempt number that just failed.
+	 * @param int[]|null $backoff        Optional backoff schedule (defaults to get_backoff()).
+	 * @return int|null Seconds to wait, or null when retries are exhausted.
+	 */
+	public static function get_retry_delay( int $failed_attempt, ?array $backoff = null ): ?int {
+		if ( $failed_attempt >= self::MAX_RETRIES ) {
+			return null;
+		}
+
+		$backoff = $backoff ?? self::get_backoff();
+		$index   = $failed_attempt - 1;
+
+		if ( isset( $backoff[ $index ] ) ) {
+			return (int) $backoff[ $index ];
+		}
+
+		// Schedule shorter than expected: repeat the last configured delay.
+		$last = end( $backoff );
+
+		return false !== $last ? (int) $last : null;
 	}
 
 	public function __construct() {
@@ -298,17 +344,29 @@ class Webhook_Manager {
 				continue;
 			}
 
-			$this->deliver( $webhook, $full_payload );
+			$delivered = $this->deliver( $webhook, $full_payload );
+
+			// On failure, queue the first retry using the configured backoff.
+			if ( ! $delivered ) {
+				$delay = self::get_retry_delay( 1 );
+				if ( null !== $delay ) {
+					$this->schedule_retry( $webhook, $full_payload, 2, $delay );
+				}
+			}
 		}
 	}
 
 	/**
 	 * Deliver a webhook payload to a single URL.
-	 * On failure, schedules a retry with exponential backoff.
 	 *
+	 * Performs the HTTP POST, logs the outcome and stores a delivery log entry.
+	 * Retry scheduling is handled by the caller (dispatch() / process_retries()).
+	 *
+	 * @param array $webhook Webhook definition (url, secret, id).
+	 * @param array $payload Full payload (event, timestamp, site_url, data).
 	 * @return bool True if delivery succeeded, false otherwise.
 	 */
-	private function deliver( array $webhook, array $payload, int $attempt = 1 ): bool {
+	private function deliver( array $webhook, array $payload ): bool {
 		$url = $webhook['url'] ?? '';
 		if ( empty( $url ) || ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
 			return false;
@@ -362,12 +420,6 @@ class Webhook_Manager {
 		// Store delivery log.
 		self::log_delivery( $webhook['id'] ?? '', $payload['event'], $success, $log_msg );
 
-		// Schedule retry with exponential backoff on failure.
-		if ( ! $success && $attempt < self::MAX_RETRIES ) {
-			$delay = self::BACKOFF_BASE * pow( 2, $attempt - 1 ); // 60s, 120s, 240s
-			$this->schedule_retry( $webhook, $payload, $attempt + 1, $delay );
-		}
-
 		return $success;
 	}
 
@@ -392,12 +444,14 @@ class Webhook_Manager {
                 webhook_url text NOT NULL,
                 webhook_secret text DEFAULT NULL,
                 payload longtext NOT NULL,
+                status varchar(20) DEFAULT 'pending' NOT NULL,
                 attempt int(11) DEFAULT 1 NOT NULL,
                 scheduled_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
                 created_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
                 PRIMARY KEY  (id),
                 KEY webhook_id (webhook_id),
-                KEY scheduled_at (scheduled_at)
+                KEY scheduled_at (scheduled_at),
+                KEY status (status)
             ) $charset_collate;";
 			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 			dbDelta( $sql );
@@ -474,21 +528,21 @@ class Webhook_Manager {
 				$payload = json_decode( $retry->payload, true );
 				$success = false;
 				if ( $payload ) {
-					$success = $manager->deliver( $webhook, $payload, (int) $retry->attempt );
+					$success = $manager->deliver( $webhook, $payload );
 				}
 
 				// Delete on success, update retry count on failure.
 				if ( $success ) {
 					$wpdb->delete( $table_name, array( 'id' => $retry->id ) );
 				} else {
-					$next_attempt = (int) $retry->attempt + 1;
+					$delay = self::get_retry_delay( (int) $retry->attempt );
 
-					// Si supera los reintentos máximos, eliminar y loguear agotamiento.
-					if ( $next_attempt > self::MAX_RETRIES ) {
+					// Sin más reintentos disponibles: agotado, eliminar y loguear.
+					if ( null === $delay ) {
 						$wpdb->delete( $table_name, array( 'id' => $retry->id ) );
 						Logger::warning(
 							sprintf(
-								'Webhook %s agotó los %d reintentos a %s. Eliminado de la cola.',
+								'Webhook %s agotó los %d intentos a %s. Eliminado de la cola.',
 								$retry->webhook_id,
 								self::MAX_RETRIES,
 								$retry->webhook_url
@@ -498,7 +552,8 @@ class Webhook_Manager {
 						continue;
 					}
 
-					$next_scheduled = gmdate( 'Y-m-d H:i:s', time() + pow( 2, $next_attempt ) * 300 );
+					$next_attempt   = (int) $retry->attempt + 1;
+					$next_scheduled = gmdate( 'Y-m-d H:i:s', time() + $delay );
 					$wpdb->update(
 						$table_name,
 						array(

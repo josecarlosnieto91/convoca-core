@@ -182,6 +182,15 @@ function convoca_health_page(): void {
 		'status'  => 'ok',
 		'message' => 'v' . CONVOCA_COMMON_VERSION,
 	);
+	$all_checks[] = array(
+		'title'   => __( 'Convoca Common — Nivel de log', 'convoca-core' ),
+		'status'  => 'ok',
+		'message' => sprintf(
+			/* translators: %s: configured log level */
+			__( 'Nivel: %s (opción convoca_log_level, solo lectura).', 'convoca-core' ),
+			strtoupper( \Convoca\Core\Logger::get_log_level() )
+		),
+	);
 	global $wpdb;
 	$tables = array( 'convoca_logs', 'convoca_locks', 'convoca_webhook_retries' );
 	foreach ( $tables as $t ) {
