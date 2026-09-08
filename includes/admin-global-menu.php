@@ -270,9 +270,29 @@ endif;
 }
 
 // Enqueue common assets (Public).
-// Solo en el frontend si la página contiene un shortcode/block de Convoca
-// o si un plugin hijo lo pide explícitamente (filtro convoca_need_common_assets).
+// Solo se ENCOLAN en el frontend si la página contiene un shortcode/block de
+// Convoca o si un plugin hijo lo pide explícitamente (filtro convoca_need_common_assets).
+// Pero el handle se REGISTRA siempre (E2E-8): los plugins encolan sus propios
+// scripts con dependencia 'convoca-common-js' DURANTE el render (p. ej. un
+// shortcode dentro de una template FSE, que corre tras wp_enqueue_scripts);
+// si el handle no está registrado, WordPress descarta el script dependiente en
+// silencio. Registrarlo sin encolarlo no añade peso a páginas no-Convoca.
 function convoca_common_enqueue_assets(): void {
+	// Registro incondicional (no imprime nada por sí mismo).
+	wp_register_style(
+		'convoca-core',
+		CONVOCA_COMMON_URL . 'assets/css/convoca-common.css',
+		array(),
+		CONVOCA_COMMON_VERSION
+	);
+	wp_register_script(
+		'convoca-common-js',
+		CONVOCA_COMMON_URL . 'assets/js/convoca-common.js',
+		array(),
+		CONVOCA_COMMON_VERSION,
+		true
+	);
+
 	$needed = (bool) apply_filters( 'convoca_need_common_assets', false );
 
 	if ( ! $needed ) {
@@ -287,20 +307,8 @@ function convoca_common_enqueue_assets(): void {
 		return;
 	}
 
-	wp_enqueue_style(
-		'convoca-core',
-		CONVOCA_COMMON_URL . 'assets/css/convoca-common.css',
-		array(),
-		CONVOCA_COMMON_VERSION
-	);
-
-	wp_enqueue_script(
-		'convoca-common-js',
-		CONVOCA_COMMON_URL . 'assets/js/convoca-common.js',
-		array(),
-		CONVOCA_COMMON_VERSION,
-		true
-	);
+	wp_enqueue_style( 'convoca-core' );
+	wp_enqueue_script( 'convoca-common-js' );
 }
 add_action( 'wp_enqueue_scripts', 'Convoca\\Core\\convoca_common_enqueue_assets' );
 
