@@ -183,6 +183,130 @@ class LoggerTest extends TestCase
     }
 
     /**
+     * Test the default per-level retention policy.
+     *
+     * @covers \Convoca\Core\Logger::get_log_retention_days
+     */
+    public function test_log_retention_defaults(): void
+    {
+        delete_option('convoca_log_retention_days');
+        $this->assertSame(
+            array('info' => 14, 'warning' => 30, 'error' => 90),
+            Logger::get_log_retention_days()
+        );
+    }
+
+    /**
+     * Test custom per-level retention values are honored.
+     *
+     * @covers \Convoca\Core\Logger::get_log_retention_days
+     */
+    public function test_log_retention_custom(): void
+    {
+        update_option('convoca_log_retention_days', array('info' => 7, 'warning' => 15, 'error' => 45));
+        $this->assertSame(
+            array('info' => 7, 'warning' => 15, 'error' => 45),
+            Logger::get_log_retention_days()
+        );
+    }
+
+    /**
+     * Test invalid retention values fall back to defaults.
+     *
+     * @covers \Convoca\Core\Logger::get_log_retention_days
+     */
+    public function test_log_retention_invalid_falls_back(): void
+    {
+        update_option('convoca_log_retention_days', array('info' => 0, 'warning' => -5, 'error' => 'abc'));
+        $this->assertSame(
+            array('info' => 14, 'warning' => 30, 'error' => 90),
+            Logger::get_log_retention_days()
+        );
+    }
+
+    /**
+     * Test a non-array retention option falls back to defaults.
+     *
+     * @covers \Convoca\Core\Logger::get_log_retention_days
+     */
+    public function test_log_retention_non_array_falls_back(): void
+    {
+        update_option('convoca_log_retention_days', 'not-an-array');
+        $this->assertSame(
+            array('info' => 14, 'warning' => 30, 'error' => 90),
+            Logger::get_log_retention_days()
+        );
+    }
+
+    /**
+     * Test partial retention config keeps defaults for missing levels.
+     *
+     * @covers \Convoca\Core\Logger::get_log_retention_days
+     */
+    public function test_log_retention_partial(): void
+    {
+        update_option('convoca_log_retention_days', array('info' => 3));
+        $this->assertSame(
+            array('info' => 3, 'warning' => 30, 'error' => 90),
+            Logger::get_log_retention_days()
+        );
+    }
+
+    /**
+     * Test cleanup deletes per level using the configured retention days.
+     *
+     * @covers \Convoca\Core\Logger::cleanup
+     */
+    public function test_cleanup_uses_per_level_retention(): void
+    {
+        update_option('convoca_log_retention_days', array('info' => 14, 'warning' => 30, 'error' => 90));
+        set_transient('convoca_logger_table_exists', 1);
+
+        $spy = new class {
+            public $prefix = 'wp_';
+            public $last_error = '';
+            public $queries = array();
+            public function query($sql) {
+                $this->queries[] = $sql;
+                return 1;
+            }
+            public function prepare($sql, ...$args) {
+                foreach ($args as $arg) {
+                    $p = strpos($sql, '%');
+                    if ($p !== false) {
+                        $sql = substr_replace($sql, (string) $arg, $p, 2);
+                    }
+                }
+                return $sql;
+            }
+            public function insert($table, $data, $format = null) {
+                return 1;
+            }
+            public function get_var($q = null) {
+                return '0';
+            }
+        };
+
+        $original_wpdb = $GLOBALS['wpdb'];
+        $GLOBALS['wpdb'] = $spy;
+
+        try {
+            Logger::cleanup();
+        } finally {
+            $GLOBALS['wpdb'] = $original_wpdb;
+            delete_transient('convoca_logger_table_exists');
+        }
+
+        $this->assertCount(3, $spy->queries);
+        $this->assertStringContainsString('INTERVAL 14 DAY', $spy->queries[0]);
+        $this->assertStringContainsString('level = info', $spy->queries[0]);
+        $this->assertStringContainsString('INTERVAL 30 DAY', $spy->queries[1]);
+        $this->assertStringContainsString('level = warning', $spy->queries[1]);
+        $this->assertStringContainsString('INTERVAL 90 DAY', $spy->queries[2]);
+        $this->assertStringContainsString('level = error', $spy->queries[2]);
+    }
+
+    /**
      * Test rapid successive log calls (rate limiting check).
      *
      * @covers \Convoca\Core\Logger::log

@@ -37,6 +37,15 @@ class Logger {
 	const MAX_LIMIT     = 1000;
 
 	/**
+	 * Default retention (in days) per log level.
+	 */
+	const DEFAULT_RETENTION_DAYS = array(
+		'info'    => 14,
+		'warning' => 30,
+		'error'   => 90,
+	);
+
+	/**
 	 * Track logging depth to prevent recursion.
 	 */
 	private static $log_depth = 0;
@@ -168,6 +177,49 @@ class Logger {
 	}
 
 	/**
+	 * Get the configured log retention (days per level).
+	 *
+	 * Reads the option convoca_log_retention_days (array level => days) and
+	 * allows programmatic override through the 'convoca_log_retention_days'
+	 * filter. Falls back to defaults for missing or invalid values.
+	 *
+	 * @return array<string,int> Map of level => retention days.
+	 */
+	public static function get_log_retention_days(): array {
+		$defaults = self::DEFAULT_RETENTION_DAYS;
+		$stored   = get_option( 'convoca_log_retention_days', $defaults );
+		$stored   = apply_filters( 'convoca_log_retention_days', $stored );
+
+		if ( ! is_array( $stored ) ) {
+			return $defaults;
+		}
+
+		$retention = array();
+		foreach ( array_keys( $defaults ) as $level ) {
+			$retention[ $level ] = self::sanitize_retention_days( $stored[ $level ] ?? $defaults[ $level ], $defaults[ $level ] );
+		}
+
+		return $retention;
+	}
+
+	/**
+	 * Sanitize a single retention value (positive integer, 1..3650 days).
+	 *
+	 * @param mixed $days    Raw value read from configuration.
+	 * @param int   $default Fallback used when the raw value is invalid.
+	 * @return int Sanitized retention in days.
+	 */
+	private static function sanitize_retention_days( $days, int $default ): int {
+		$days = (int) $days;
+
+		if ( $days < 1 || $days > 3650 ) {
+			$days = $default;
+		}
+
+		return $days;
+	}
+
+	/**
 	 * Map a log level to its severity rank (lower = less severe).
 	 *
 	 * @param string $level Log level.
@@ -255,8 +307,9 @@ class Logger {
 	}
 
 	/**
-	 * Clean up old logs (retention policy).
-	 * Default: keep logs for 90 days, errors for 1 year.
+	 * Clean up old logs (configurable per-level retention policy).
+	 * Defaults: info 14 days, warning 30 days, error 90 days.
+	 * Rows are deleted per level based on their age and configured retention.
 	 * Called via daily cron.
 	 */
 	public static function cleanup(): void {
@@ -272,40 +325,25 @@ class Logger {
 		$batch_size    = 1000;
 		$total_deleted = 0;
 
-		// Delete old info/warning logs (90 days) in batches.
-		do {
-			$batch_size = max( 1, $batch_size );
-			$affected   = $wpdb->query(
-				$wpdb->prepare(
-					"DELETE FROM $table_name 
-                 WHERE created_at < DATE_SUB(%s, INTERVAL 90 DAY) 
-                 AND level IN ('info', 'warning')
-                 LIMIT %d",
-					$today,
-					$batch_size
-				)
-			);
-			if ( $affected ) {
-				$total_deleted += $affected;
-			}
-		} while ( $affected !== false && $affected > 0 && $affected >= $batch_size );
-
-		// Delete old error logs (1 year) in batches.
-		do {
-			$affected = $wpdb->query(
-				$wpdb->prepare(
-					"DELETE FROM $table_name 
-                 WHERE created_at < DATE_SUB(%s, INTERVAL 1 YEAR) 
-                 AND level = 'error'
-                 LIMIT %d",
-					$today,
-					$batch_size
-				)
-			);
-			if ( $affected ) {
-				$total_deleted += $affected;
-			}
-		} while ( $affected !== false && $affected > 0 && $affected >= $batch_size );
+		foreach ( self::get_log_retention_days() as $level => $days ) {
+			do {
+				$affected = $wpdb->query(
+					$wpdb->prepare(
+						"DELETE FROM $table_name
+						 WHERE created_at < DATE_SUB(%s, INTERVAL %d DAY)
+						 AND level = %s
+						 LIMIT %d",
+						$today,
+						$days,
+						$level,
+						$batch_size
+					)
+				);
+				if ( $affected ) {
+					$total_deleted += $affected;
+				}
+			} while ( $affected !== false && $affected > 0 && $affected >= $batch_size );
+		}
 
 		if ( $total_deleted > 0 ) {
 			self::info( "Log cleanup: $total_deleted registros eliminados", 'System' );
@@ -313,36 +351,11 @@ class Logger {
 	}
 
 	/**
-	 * Purge old logs with a 60-day retention (daily cron).
-	 * Logs the number of rows deleted after each run.
+	 * Purge old logs (delegates to the configurable per-level retention policy).
+	 * Kept as a stable alias for the convoca_log_purge daily cron callback.
 	 */
 	public static function purge_old_logs(): void {
-		if ( ! self::table_exists() ) {
-			return;
-		}
-
-		@set_time_limit( 30 );
-
-		global $wpdb;
-		$table_name    = $wpdb->prefix . 'convoca_logs';
-		$cutoff        = current_time( 'mysql' );
-		$batch_size    = 1000;
-		$total_deleted = 0;
-
-		do {
-			$affected = $wpdb->query(
-				$wpdb->prepare(
-					"DELETE FROM $table_name WHERE created_at < DATE_SUB(%s, INTERVAL 60 DAY) LIMIT %d",
-					$cutoff,
-					$batch_size
-				)
-			);
-			if ( $affected ) {
-				$total_deleted += $affected;
-			}
-		} while ( $affected !== false && $affected > 0 && $affected >= $batch_size );
-
-		self::info( "Purga automática: $total_deleted registros antiguos eliminados (60 días).", 'System' );
+		self::cleanup();
 	}
 
 	/**

@@ -533,5 +533,12 @@ function get_option(string $option, $default = [])
         return $mock;
     }
 
+    // Fall back to the global WordPress stub (reads $_wp_stores['options'])
+    // for any option this mock doesn't own, so other Convoca\Core classes
+    // (Logger, etc.) can read their own options in unit tests.
+    if (function_exists('\\get_option')) {
+        return \get_option($option, $default);
+    }
+
     return $default;
 }

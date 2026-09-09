@@ -234,21 +234,161 @@ add_action(
 );
 
 /**
+ * Admin POST handler: Export current logs as CSV.
+ */
+add_action(
+	'admin_post_convoca_export_logs_csv',
+	function () {
+		if ( ! wp_verify_nonce( $_GET['_wpnonce'] ?? '', 'convoca_export_logs_csv' ) ) {
+			wp_die( esc_html__( 'Nonce inválido.', 'convoca-core' ) );
+		}
+		if ( ! current_user_can( Utils::CAP_MANAGE_LOGS ) && ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'No tienes permisos.', 'convoca-core' ) );
+		}
+
+		// Buffer everything so stray output can be discarded before headers.
+		ob_start();
+
+		global $wpdb;
+		$table = $wpdb->prefix . 'convoca_logs';
+
+		$where = array( '1=1' );
+		$args  = array();
+
+		$filter_context   = sanitize_text_field( wp_unslash( $_GET['filter_context'] ?? '' ) );
+		$filter_level     = sanitize_text_field( wp_unslash( $_GET['filter_level'] ?? '' ) );
+		$filter_date_from = sanitize_text_field( wp_unslash( $_GET['filter_date_from'] ?? '' ) );
+		$filter_date_to   = sanitize_text_field( wp_unslash( $_GET['filter_date_to'] ?? '' ) );
+		$search           = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
+
+		if ( $filter_context ) {
+			$where[] = 'context = %s';
+			$args[]  = $filter_context;
+		}
+		if ( $filter_level ) {
+			$where[] = 'level = %s';
+			$args[]  = $filter_level;
+		}
+		if ( $filter_date_from ) {
+			$where[] = 'created_at >= %s';
+			$args[]  = $filter_date_from . ' 00:00:00';
+		}
+		if ( $filter_date_to ) {
+			$where[] = 'created_at <= %s';
+			$args[]  = $filter_date_to . ' 23:59:59';
+		}
+		if ( $search ) {
+			$where[] = '(message LIKE %s OR context LIKE %s)';
+			$args[]  = '%' . $wpdb->esc_like( $search ) . '%';
+			$args[]  = '%' . $wpdb->esc_like( $search ) . '%';
+		}
+
+		$where_clause = implode( ' AND ', $where );
+		$sql          = "SELECT created_at, level, context, message, user_id, object_id FROM $table WHERE $where_clause ORDER BY created_at DESC";
+
+		if ( ! empty( $args ) ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql built with placeholders; $wpdb->prepare handles all $args via spread.
+			$rows = $wpdb->get_results( $wpdb->prepare( $sql, ...$args ), ARRAY_A );
+		} else {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- no placeholders present; no user input interpolated.
+			$rows = $wpdb->get_results( $sql, ARRAY_A );
+		}
+
+		// Discard any buffered output to keep the CSV stream clean.
+		ob_end_clean();
+
+		header( 'Content-Type: text/csv; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename="convoca-logs-' . wp_date( 'Ymd' ) . '.csv"' );
+		header( 'Pragma: no-cache' );
+		header( 'Expires: 0' );
+
+		$out = fopen( 'php://output', 'wb' );
+		fwrite( $out, "\xEF\xBB\xBF" ); // BOM UTF-8.
+		fputcsv( $out, array( 'created_at', 'level', 'context', 'message', 'user_id', 'object_id' ) );
+		foreach ( (array) $rows as $row ) {
+			fputcsv(
+				$out,
+				array(
+					$row['created_at'] ?? '',
+					$row['level'] ?? '',
+					$row['context'] ?? '',
+					$row['message'] ?? '',
+					$row['user_id'] ?? '',
+					$row['object_id'] ?? '',
+				)
+			);
+		}
+		fclose( $out );
+		die();
+	}
+);
+
+/**
  * Centralized Logs page.
  */
 function convoca_logs_page(): void {
 	if ( ! current_user_can( 'manage_convoca_logs' ) && ! current_user_can( 'manage_options' ) ) {
 		wp_die( esc_html__( 'No tienes permisos.', 'convoca-core' ) );
 	}
+
+	// Guardar ajustes de retención por nivel.
+	if ( isset( $_POST['convoca_log_retention_save'] ) ) {
+		check_admin_referer( 'convoca_log_retention' );
+		$retention = array(
+			'info'    => absint( wp_unslash( $_POST['retention_info'] ?? 14 ) ),
+			'warning' => absint( wp_unslash( $_POST['retention_warning'] ?? 30 ) ),
+			'error'   => absint( wp_unslash( $_POST['retention_error'] ?? 90 ) ),
+		);
+		update_option( 'convoca_log_retention_days', $retention );
+	}
+
 	// [PSR-4] Admin_Logs_List is autoloaded from includes/Admin_Logs_List.php
 	$table = new \Convoca\Core\Admin_Logs_List();
 	$table->prepare_items();
+
+	$retention = \Convoca\Core\Logger::get_log_retention_days();
+
+	// URL de exportación preservando los filtros actuales.
+	$export_args = array( 'action' => 'convoca_export_logs_csv' );
+	foreach ( array( 'filter_context', 'filter_level', 'filter_date_from', 'filter_date_to', 's' ) as $f ) {
+		if ( isset( $_GET[ $f ] ) && '' !== $_GET[ $f ] ) {
+			$export_args[ $f ] = sanitize_text_field( wp_unslash( $_GET[ $f ] ) );
+		}
+	}
+	$export_url = wp_nonce_url( add_query_arg( $export_args, admin_url( 'admin-post.php' ) ), 'convoca_export_logs_csv' );
 	?>
 	<div class="wrap">
 		<h1>📋 <?php esc_html_e( 'Registros del Sistema', 'convoca-core' ); ?></h1>
 		<?php if ( $table->approx_total ) : ?>
 			<p class="description"><?php esc_html_e( '⚠️ El contador de registros es aproximado para tablas grandes (>10.000 filas). Usa filtros para obtener un recuento exacto.', 'convoca-core' ); ?></p>
 		<?php endif; ?>
+		<div class="convoca-log-toolbar" style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin:8px 0 16px;">
+			<div style="flex:1;min-width:320px;">
+				<form method="post" style="background:#fff;border:1px solid #c3c4c7;border-radius:4px;padding:16px;">
+					<h2 style="margin-top:0;"><?php esc_html_e( 'Retención de logs por nivel', 'convoca-core' ); ?></h2>
+					<p class="description" style="margin-top:0;"><?php esc_html_e( 'Días que se conservan los registros de cada nivel antes de su borrado automático.', 'convoca-core' ); ?></p>
+					<?php wp_nonce_field( 'convoca_log_retention' ); ?>
+					<table class="form-table" role="presentation">
+						<tr>
+							<th scope="row"><label for="retention_info"><?php esc_html_e( 'Info (días)', 'convoca-core' ); ?></label></th>
+							<td><input type="number" min="1" max="3650" step="1" id="retention_info" name="retention_info" value="<?php echo esc_attr( (string) $retention['info'] ); ?>"></td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="retention_warning"><?php esc_html_e( 'Warning (días)', 'convoca-core' ); ?></label></th>
+							<td><input type="number" min="1" max="3650" step="1" id="retention_warning" name="retention_warning" value="<?php echo esc_attr( (string) $retention['warning'] ); ?>"></td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="retention_error"><?php esc_html_e( 'Error (días)', 'convoca-core' ); ?></label></th>
+							<td><input type="number" min="1" max="3650" step="1" id="retention_error" name="retention_error" value="<?php echo esc_attr( (string) $retention['error'] ); ?>"></td>
+						</tr>
+					</table>
+					<?php submit_button( __( 'Guardar retención', 'convoca-core' ), 'primary', 'convoca_log_retention_save', false ); ?>
+				</form>
+			</div>
+			<div style="display:flex;align-items:center;padding-top:16px;">
+				<a class="button button-secondary" href="<?php echo esc_url( $export_url ); ?>"><?php esc_html_e( 'Exportar CSV', 'convoca-core' ); ?></a>
+			</div>
+		</div>
 		<form method="get">
 			<input type="hidden" name="page" value="conv-logs-central">
 			<?php $table->search_box( __( 'Buscar en logs', 'convoca-core' ), 'log_search' ); ?>
