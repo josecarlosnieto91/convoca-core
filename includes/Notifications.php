@@ -43,6 +43,11 @@ class Notifications {
 		add_action( 'wp_ajax_convoca_notifications_mark_read', array( __CLASS__, 'ajax_mark_read' ) );
 		add_action( 'wp_ajax_convoca_notifications_dismiss', array( __CLASS__, 'ajax_dismiss' ) );
 
+		// CSS del dropdown — registrado AQUÍ (no dentro de admin_bar_bell, que corre
+		// al final del body vía admin_bar_menu y ya es tarde para admin_head/wp_head).
+		add_action( 'wp_head', array( __CLASS__, 'enqueue_styles' ) );
+		add_action( 'admin_head', array( __CLASS__, 'enqueue_styles' ) );
+
 		// Event hooks.
 		add_action( 'convoca_member_created', array( __CLASS__, 'on_member_created' ), 10, 2 );
 		add_action( 'convoca_payment_failed', array( __CLASS__, 'on_payment_failed' ), 10, 2 );
@@ -194,10 +199,6 @@ class Notifications {
 				'title'  => self::render_dropdown( $unread, $count ),
 			)
 		);
-
-		// Enqueue CSS.
-		add_action( 'wp_head', array( __CLASS__, 'enqueue_styles' ) );
-		add_action( 'admin_head', array( __CLASS__, 'enqueue_styles' ) );
 	}
 
 	private static function render_dropdown( array $notifications, int $total ): string {
@@ -253,22 +254,23 @@ class Notifications {
 			padding: 1px 6px; font-size: 10px; font-weight: 700; line-height: 16px;
 			min-width: 16px; text-align: center; vertical-align: top; margin-left: -2px;
 		}
-		.conv-notif-dropdown { width: 320px; max-height: 400px; overflow-y: auto; font-size: 13px; }
-		.conv-notif-header { padding: 10px 12px; border-bottom: 1px solid #e0e0e0; background: #f8f9fa; }
-		.conv-notif-header a { text-decoration: none; }
-		.conv-notif-list { max-height: 300px; overflow-y: auto; }
-		.conv-notif-empty { padding: 20px; text-align: center; color: #999; }
-		.conv-notif-item { display: flex; align-items: center; border-bottom: 1px solid #f0f0f1; padding: 0; }
-		.conv-notif-unread { background: #f0f7ff; }
-		.conv-notif-link { display: flex; align-items: center; gap: 8px; padding: 10px 12px; text-decoration: none; flex: 1; color: #1d2327; min-width: 0; }
-		.conv-notif-link:hover { background: #f0f0f1; }
-		.conv-notif-icon { flex-shrink: 0; font-size: 16px; }
-		.conv-notif-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 1.3; }
-		.conv-notif-time { flex-shrink: 0; display: block; font-size: 10px; color: #999; margin-top: 2px; }
-		.conv-notif-dismiss { padding: 10px; color: #999; text-decoration: none; cursor: pointer; }
-		.conv-notif-dismiss:hover { color: #dc3232; }
-		.conv-notif-footer { padding: 8px 12px; text-align: center; border-top: 1px solid #e0e0e0; background: #f8f9fa; }
-		.conv-notif-footer a { text-decoration: none; font-weight: 600; }
+		#wpadminbar .conv-notif-dropdown { width: 320px !important; max-width: 320px; max-height: 400px; overflow-y: auto; font-size: 13px; position: relative; z-index: 99999; }
+		#wpadminbar .conv-notif-dropdown, #wpadminbar .conv-notif-dropdown * { box-sizing: border-box; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-header { padding: 10px 12px; border-bottom: 1px solid #e0e0e0; background: #f8f9fa; white-space: normal; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-header a { text-decoration: none; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-list { max-height: 300px; overflow-y: auto; white-space: normal; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-empty { padding: 20px; text-align: center; color: #999; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-item { display: flex; align-items: center; border-bottom: 1px solid #f0f0f1; padding: 0; width: 100%; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-unread { background: #f0f7ff; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-link { display: flex; align-items: center; gap: 8px; padding: 10px 12px; text-decoration: none; flex: 1; color: #1d2327; min-width: 0; max-width: 100%; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-link:hover { background: #f0f0f1; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-icon { flex-shrink: 0; font-size: 16px; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 1.3; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-time { flex-shrink: 0; display: block; font-size: 10px; color: #999; margin-top: 2px; white-space: nowrap; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-dismiss { padding: 10px; color: #999; text-decoration: none; cursor: pointer; flex-shrink: 0; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-dismiss:hover { color: #dc3232; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-footer { padding: 8px 12px; text-align: center; border-top: 1px solid #e0e0e0; background: #f8f9fa; white-space: normal; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-footer a { text-decoration: none; font-weight: 600; }
 		</style>
 		<script>
 		(function() {
