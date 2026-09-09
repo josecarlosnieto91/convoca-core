@@ -254,23 +254,47 @@ class Notifications {
 			padding: 1px 6px; font-size: 10px; font-weight: 700; line-height: 16px;
 			min-width: 16px; text-align: center; vertical-align: top; margin-left: -2px;
 		}
-		#wpadminbar .conv-notif-dropdown { width: 320px !important; max-width: 320px; max-height: 400px; overflow-y: auto; font-size: 13px; position: relative; z-index: 99999; }
+		#wpadminbar .conv-notif-dropdown { width: 320px !important; max-width: 320px; max-height: 400px; overflow-y: auto; font-size: 13px; }
 		#wpadminbar .conv-notif-dropdown, #wpadminbar .conv-notif-dropdown * { box-sizing: border-box; }
+		/* Neutralizar la estructura de submenú nativa de la admin bar para este menú:
+		   el .ab-item interno tiene height fija (26px) y el .ab-sub-wrapper pinta su
+		   fondo negro sin crecer -> se veía un segundo marco negro bajo el panel. */
+		#wp-admin-bar-conv-notifications .ab-sub-wrapper,
+		#wp-admin-bar-conv-notifications .ab-sub-wrapper .ab-submenu,
+		#wp-admin-bar-conv-notifications .ab-sub-wrapper .ab-submenu li,
+		#wp-admin-bar-conv-notifications .ab-sub-wrapper .ab-submenu li .ab-item {
+			background: transparent !important;
+			box-shadow: none !important;
+			border: 0 !important;
+			height: auto !important;
+			min-height: 0 !important;
+			line-height: normal !important;
+			padding: 0 !important;
+			margin: 0 !important;
+			overflow: visible !important;
+			width: auto !important;
+			min-width: 0 !important;
+			color: #1d2327 !important;
+		}
+		#wp-admin-bar-conv-notifications .ab-sub-wrapper { position: absolute; left: auto; right: 0; }
+		#wpadminbar .conv-notif-dropdown { background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25); }
 		#wpadminbar .conv-notif-dropdown .conv-notif-header { padding: 10px 12px; border-bottom: 1px solid #e0e0e0; background: #f8f9fa; white-space: normal; }
 		#wpadminbar .conv-notif-dropdown .conv-notif-header a { text-decoration: none; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-header strong { color: #1d2327; }
 		#wpadminbar .conv-notif-dropdown .conv-notif-list { max-height: 300px; overflow-y: auto; white-space: normal; }
 		#wpadminbar .conv-notif-dropdown .conv-notif-empty { padding: 20px; text-align: center; color: #999; }
 		#wpadminbar .conv-notif-dropdown .conv-notif-item { display: flex; align-items: center; border-bottom: 1px solid #f0f0f1; padding: 0; width: 100%; }
 		#wpadminbar .conv-notif-dropdown .conv-notif-unread { background: #f0f7ff; }
 		#wpadminbar .conv-notif-dropdown .conv-notif-link { display: flex; align-items: center; gap: 8px; padding: 10px 12px; text-decoration: none; flex: 1; color: #1d2327; min-width: 0; max-width: 100%; }
 		#wpadminbar .conv-notif-dropdown .conv-notif-link:hover { background: #f0f0f1; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-link, #wpadminbar .conv-notif-dropdown .conv-notif-link * { color: #1d2327 !important; }
 		#wpadminbar .conv-notif-dropdown .conv-notif-icon { flex-shrink: 0; font-size: 16px; }
 		#wpadminbar .conv-notif-dropdown .conv-notif-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 1.3; }
 		#wpadminbar .conv-notif-dropdown .conv-notif-time { flex-shrink: 0; display: block; font-size: 10px; color: #999; margin-top: 2px; white-space: nowrap; }
 		#wpadminbar .conv-notif-dropdown .conv-notif-dismiss { padding: 10px; color: #999; text-decoration: none; cursor: pointer; flex-shrink: 0; }
 		#wpadminbar .conv-notif-dropdown .conv-notif-dismiss:hover { color: #dc3232; }
 		#wpadminbar .conv-notif-dropdown .conv-notif-footer { padding: 8px 12px; text-align: center; border-top: 1px solid #e0e0e0; background: #f8f9fa; white-space: normal; }
-		#wpadminbar .conv-notif-dropdown .conv-notif-footer a { text-decoration: none; font-weight: 600; }
+		#wpadminbar .conv-notif-dropdown .conv-notif-footer a { text-decoration: none; font-weight: 600; color: #2271b1; }
 		</style>
 		<script>
 		(function() {
