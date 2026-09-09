@@ -196,8 +196,15 @@ class Admin_Backup {
 
 		// Helper to export all posts of a type in batches.
 		$export_all = function ( $post_type, $headers, $fields_fn ) use ( $add_csv, $batch_size ) {
-			$all_rows = array();
-			$page     = 1;
+			// El archivo CSV se nombra con la ENTIDAD (plural, la clave del
+			// mapa ENTITY_CPT_MAP), que es lo que el importador busca:
+			// miembros.csv, proyectos.csv, inscripciones.csv, turnos.csv.
+			// Antes se usaba el CPT (miembro.csv…) y el importador nunca
+			// encontraba los CSVs → solo importaba settings.json.
+			$entity_key = array_search( $post_type, self::ENTITY_CPT_MAP, true );
+			$file_base  = $entity_key ? $entity_key : $post_type;
+			$all_rows   = array();
+			$page       = 1;
 			do {
 				$posts = get_posts(
 					array(
@@ -219,7 +226,7 @@ class Admin_Backup {
 				}
 				++$page;
 			} while ( count( $ids ) === $batch_size );
-			$add_csv( $post_type, $headers, $all_rows );
+			$add_csv( $file_base, $headers, $all_rows );
 		};
 
 		// Members.
