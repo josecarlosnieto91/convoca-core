@@ -68,7 +68,7 @@ window.convocaAdmin = window.convocaAdmin || {};
           }
       })
       .catch(err => {
-          console.error("Convoca JS.ajaxPost Admin Fetch Error:', err);
+          console.error("Convoca JS.ajaxPost Admin Fetch Error:", err);
           if (onError) onError({ success: false, data: 'Error HTTP Fetch al portal wp-admin /admin-ajax.php' });
       });
   };
@@ -83,7 +83,7 @@ window.convocaAdmin = window.convocaAdmin || {};
     navigator.clipboard.writeText(text).then(() => {
       if (onSuccess) onSuccess();
     }).catch(err => {
-      console.error("Convoca JS.copyToClipboard Admin Error:', err);
+      console.error("Convoca JS.copyToClipboard Admin Error:", err);
     });
   };
 
