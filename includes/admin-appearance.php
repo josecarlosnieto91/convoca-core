@@ -302,23 +302,34 @@ add_action(
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
 
-		$out = fopen( 'php://output', 'wb' );
-		fwrite( $out, "\xEF\xBB\xBF" ); // BOM UTF-8.
-		fputcsv( $out, array( 'created_at', 'level', 'context', 'message', 'user_id', 'object_id' ) );
+		// Build the CSV in memory (no direct filesystem calls) and stream it.
+		$csv = "\xEF\xBB\xBF"; // UTF-8 BOM.
+		$csv .= implode( ',', array( 'created_at', 'level', 'context', 'message', 'user_id', 'object_id' ) ) . "\r\n";
 		foreach ( (array) $rows as $row ) {
-			fputcsv(
-				$out,
-				array(
-					$row['created_at'] ?? '',
-					$row['level'] ?? '',
-					$row['context'] ?? '',
-					$row['message'] ?? '',
-					$row['user_id'] ?? '',
-					$row['object_id'] ?? '',
-				)
+			$fields = array(
+				$row['created_at'] ?? '',
+				$row['level'] ?? '',
+				$row['context'] ?? '',
+				$row['message'] ?? '',
+				$row['user_id'] ?? '',
+				$row['object_id'] ?? '',
 			);
+			$csv .= implode(
+				',',
+				array_map(
+					static function ( $value ) {
+						$value = (string) $value;
+						return ( strpbrk( $value, ",\"\r\n" ) !== false )
+							? '"' . str_replace( '"', '""', $value ) . '"'
+							: $value;
+					},
+					$fields
+				)
+			) . "\r\n";
 		}
-		fclose( $out );
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- CSV payload built with controlled quoting; browser download, not HTML.
+		echo $csv;
 		die();
 	}
 );
