@@ -435,6 +435,12 @@
     font-style: italic;
 }
 
+.convoca-diagnostic-fix-btn {
+    margin-left: 8px;
+    font-style: normal;
+    vertical-align: baseline;
+}
+
 /* ── Rating Stars ──────────────────────────────── */
 .convoca-rating-stars {
     display: flex;

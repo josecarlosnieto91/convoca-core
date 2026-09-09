@@ -144,6 +144,7 @@ function convoca_health_page(): void {
 				'status'  => $r['severity'] === 'ok' ? 'ok' : $r['severity'],
 				'message' => $r['message'],
 				'fix'     => $r['fix'] ?? '',
+				'fix_url' => $r['fix_url'] ?? '',
 			);
 		}
 	} else {
