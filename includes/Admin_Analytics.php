@@ -449,6 +449,26 @@ class Admin_Analytics {
 	 */
 	public static function render_chart( string $canvas_id, string $type, array $labels, array $datasets, array $opts = array() ): string {
 		$json_data = array();
+
+		// Si TODOS los valores de TODOS los datasets son 0, no hay nada que
+		// dibujar: Chart.js deja el canvas en blanco (parece roto). Renderizar
+		// un placeholder «Sin datos» en su lugar.
+		$all_zero = true;
+		foreach ( $datasets as $ds ) {
+			$data = $ds['data'] ?? array();
+			foreach ( (array) $data as $v ) {
+				if ( (float) $v !== 0.0 ) {
+					$all_zero = false;
+					break 2;
+				}
+			}
+		}
+		if ( $all_zero && ! empty( $datasets ) ) {
+			$height = $opts['height'] ?? '200px';
+			return '<div class="conv-chart-empty" style="height:' . esc_attr( $height ) . ';display:flex;align-items:center;justify-content:center;color:#999;font-style:italic;border:1px dashed #dcdcde;border-radius:8px;">'
+				. esc_html__( 'Sin datos todavía', 'convoca-core' ) . '</div>';
+		}
+
 		foreach ( $datasets as $ds ) {
 			$entry = array(
 				'label'           => $ds['label'] ?? '',

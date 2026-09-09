@@ -208,7 +208,7 @@ class Memory_Report {
             </div>
 
             <div class="section">
-                <h2>📊 Datos generales</h2>
+                <h2>Datos generales</h2>
                 <table>
                     <tr><th>Indicador</th><th>Valor</th></tr>
                     <tr><td>Socios activos</td><td><strong>' . $m['activos'] . '</strong> de ' . $m['total'] . ' totales</td></tr>
@@ -224,7 +224,7 @@ class Memory_Report {
             </div>
 
             <div class="section">
-                <h2>📈 Evolución últimos 6 meses</h2>
+                <h2>Evolución últimos 6 meses</h2>
                 <table>
                     <tr><th>Mes</th><th>Altas socios</th><th>Inscripciones</th><th>Ingresos</th></tr>';
 
@@ -242,17 +242,17 @@ class Memory_Report {
             </div>
 
             <div class="section">
-                <h2>💳 Métodos de pago</h2>
+                <h2>Métodos de pago</h2>
                 <table>
                     <tr><th>Método</th><th>Porcentaje</th></tr>
-                    <tr><td>💳 Tarjeta</td><td>' . ( $p['methods_pct']['tarjeta'] ?? 0 ) . '%</td></tr>
-                    <tr><td>📱 Bizum</td><td>' . ( $p['methods_pct']['bizum'] ?? 0 ) . '%</td></tr>
+                    <tr><td>Tarjeta</td><td>' . ( $p['methods_pct']['tarjeta'] ?? 0 ) . '%</td></tr>
+                    <tr><td>Bizum</td><td>' . ( $p['methods_pct']['bizum'] ?? 0 ) . '%</td></tr>
                 </table>
             </div>
 
             <div class="footer">
-                <p>Generado automáticamente por " . esc_html(get_bloginfo("name")) . " — ' . wp_date( 'd/m/Y H:i' ) . '</p>
-                <p>" . esc_html(get_bloginfo("name")) . "</p>
+                <p>Generado automáticamente por ' . esc_html( get_bloginfo( 'name' ) ) . ' — ' . wp_date( 'd/m/Y H:i' ) . '</p>
+                <p>' . esc_html( get_bloginfo( 'name' ) ) . '</p>
             </div>
         </body>
         </html>';
