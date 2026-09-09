@@ -155,8 +155,12 @@ function convoca_health_page(): void {
 	}
 
 	// ── Turnos ──
-	if ( function_exists( 'convoca_shifts_get_system_checks' ) ) {
-		$checks = convoca_shifts_get_system_checks( $force );
+	// La funcion vive en el namespace Convoca\Shifts (admin-settings.php se carga
+	// con require_once DESDE convoca-shifts.php que declara el namespace) -> buscar
+	// la version namespaced, no la global (function_exists global daba siempre false
+	// y mostraba 'Plugin no activo o sin funcion de diagnostico' con el plugin activo).
+	if ( function_exists( 'Convoca\\Shifts\\convoca_shifts_get_system_checks' ) ) {
+		$checks = \Convoca\Shifts\convoca_shifts_get_system_checks( $force );
 		if ( is_array( $checks ) ) {
 			foreach ( $checks as $c ) {
 				$all_checks[] = array(
