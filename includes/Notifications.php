@@ -260,11 +260,11 @@ class Notifications {
 		.conv-notif-empty { padding: 20px; text-align: center; color: #999; }
 		.conv-notif-item { display: flex; align-items: center; border-bottom: 1px solid #f0f0f1; padding: 0; }
 		.conv-notif-unread { background: #f0f7ff; }
-		.conv-notif-link { display: flex; align-items: center; gap: 8px; padding: 10px 12px; text-decoration: none; flex: 1; color: #1d2327; }
+		.conv-notif-link { display: flex; align-items: center; gap: 8px; padding: 10px 12px; text-decoration: none; flex: 1; color: #1d2327; min-width: 0; }
 		.conv-notif-link:hover { background: #f0f0f1; }
 		.conv-notif-icon { flex-shrink: 0; font-size: 16px; }
-		.conv-notif-title { flex: 1; font-size: 12px; line-height: 1.3; }
-		.conv-notif-time { display: block; font-size: 10px; color: #999; margin-top: 2px; }
+		.conv-notif-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 1.3; }
+		.conv-notif-time { flex-shrink: 0; display: block; font-size: 10px; color: #999; margin-top: 2px; }
 		.conv-notif-dismiss { padding: 10px; color: #999; text-decoration: none; cursor: pointer; }
 		.conv-notif-dismiss:hover { color: #dc3232; }
 		.conv-notif-footer { padding: 8px 12px; text-align: center; border-top: 1px solid #e0e0e0; background: #f8f9fa; }
