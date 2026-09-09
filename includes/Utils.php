@@ -633,7 +633,7 @@ class Utils {
 		if ( $has_errors ) {
 			$icon          = '✗';
 			$level         = 'error';
-			$text          = __( 'Se han detectado problemas críticos que impediment el funcionamiento.', 'convoca-core' );
+			$text          = __( 'Se han detectado problemas críticos que impiden el funcionamiento.', 'convoca-core' );
 			$default_title = __( 'Estado: Errores detectados', 'convoca-core' );
 		} elseif ( $has_warnings ) {
 			$icon          = '⚠';

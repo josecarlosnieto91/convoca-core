@@ -323,8 +323,19 @@ add_action( 'wp_enqueue_scripts', 'Convoca\\Core\\convoca_common_enqueue_assets'
 
 // Enqueue common assets (Admin).
 function convoca_common_enqueue_admin_assets(): void {
-	// Also load the CSS on admin.
-	convoca_common_enqueue_assets();
+	// En el admin el CSS común SIEMPRE se encola: las páginas propias de Convoca
+	// (Salud, Panel, Registros, notificaciones…) usan las clases convoca-diagnostic,
+	// conv-badge, convoca-alert, convoca-btn; depender del shortcode del post ($needed)
+	// dejaba la página de Salud sin estilos (lista plana sin formato).
+	// El registro vive en convoca_common_enqueue_assets() (hook wp_enqueue_scripts),
+	// que en páginas admin NO dispara -> registrar aquí también antes de encolar.
+	wp_register_style(
+		'convoca-core',
+		CONVOCA_COMMON_URL . 'assets/css/convoca-common.css',
+		array(),
+		CONVOCA_COMMON_VERSION
+	);
+	wp_enqueue_style( 'convoca-core' );
 
 	wp_enqueue_script(
 		'convoca-common-admin-js',
