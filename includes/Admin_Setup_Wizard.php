@@ -47,7 +47,7 @@ class Admin_Setup_Wizard {
 
 	public function register_page(): void {
 		add_submenu_page(
-			null,
+			'convoca-core',
 			__( 'Asistente de Configuración Convoca', 'convoca-core' ),
 			__( 'Asistente', 'convoca-core' ),
 			'manage_options',

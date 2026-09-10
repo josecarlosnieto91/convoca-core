@@ -218,7 +218,7 @@ function convoca_health_page(): void {
 add_action( 'admin_menu', 'Convoca\Core\convoca_notifications_menu' );
 function convoca_notifications_menu(): void {
 	add_submenu_page(
-		null,
+		'convoca-core',
 		__( 'Notificaciones', 'convoca-core' ),
 		__( 'Notificaciones', 'convoca-core' ),
 		'manage_options',
