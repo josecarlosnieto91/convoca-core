@@ -13,12 +13,20 @@ $GLOBALS['_wp_stores'] = [
     'post_meta'  => [],
     'transients' => [],
     'user_meta'  => [],
+    'emails'     => [],
 ];
 
 // --- WP constants ---
 if (!defined('ABSPATH')) { define('ABSPATH', dirname(__DIR__) . '/'); }
 if (!defined('WP_DEBUG')) { define('WP_DEBUG', true); }
 if (!defined('OBJECT')) { define('OBJECT', 'OBJECT'); }
+// Constantes de tiempo de WP (las usan crons, ventanas y retenciones).
+if (!defined('MINUTE_IN_SECONDS')) { define('MINUTE_IN_SECONDS', 60); }
+if (!defined('HOUR_IN_SECONDS')) { define('HOUR_IN_SECONDS', 3600); }
+if (!defined('DAY_IN_SECONDS')) { define('DAY_IN_SECONDS', 86400); }
+if (!defined('WEEK_IN_SECONDS')) { define('WEEK_IN_SECONDS', 604800); }
+if (!defined('MONTH_IN_SECONDS')) { define('MONTH_IN_SECONDS', 2592000); }
+if (!defined('YEAR_IN_SECONDS')) { define('YEAR_IN_SECONDS', 31536000); }
 
 // --- WordPress option functions ---
 if (!function_exists('get_option')) {
@@ -65,6 +73,40 @@ if (!function_exists('get_post_meta')) {
     }
 }
 
+// --- User meta (voluntariado, no-show, turnos) ---
+if (!function_exists('get_user_meta')) {
+    function get_user_meta($user_id, $key = '', $single = false) {
+        $s = &$GLOBALS['_wp_stores']['user_meta'];
+        $meta = $s[$user_id] ?? [];
+        if ('' === $key) return $meta;
+        $v = $meta[$key] ?? null;
+        if ($v === null) return $single ? '' : [];
+        if ($single) return $v;
+        return is_array($v) ? $v : [$v];
+    }
+    function update_user_meta($user_id, $key, $value) {
+        $GLOBALS['_wp_stores']['user_meta'][$user_id][$key] = $value; return true;
+    }
+    function delete_user_meta($user_id, $key) {
+        unset($GLOBALS['_wp_stores']['user_meta'][$user_id][$key]); return true;
+    }
+}
+if (!function_exists('add_user_meta')) {
+    function add_user_meta($user_id, $key, $value, $unique = false) {
+        return update_user_meta($user_id, $key, $value);
+    }
+}
+if (!function_exists('get_users')) { function get_users($args = []) { return []; } }
+if (!function_exists('is_user_logged_in')) { function is_user_logged_in() { return false; } }
+if (!function_exists('wp_get_current_user')) {
+    function wp_get_current_user() {
+        $u = new WP_User();
+        $u->ID = get_current_user_id();
+        $u->user_email = 'test@example.com';
+        return $u;
+    }
+}
+
 // --- Common WP functions ---
 if (!function_exists('__')) { function __($t, $d = 'default') { return $t; } }
 if (!function_exists('_e')) { function _e($t, $d = 'default') { echo $t; } }
@@ -72,6 +114,53 @@ if (!function_exists('_x')) { function _x($t, $c, $d = 'default') { return $t; }
 if (!function_exists('esc_html')) { function esc_html($t) { return htmlspecialchars($t, ENT_QUOTES, 'UTF-8'); } }
 if (!function_exists('esc_attr')) { function esc_attr($t) { return htmlspecialchars($t, ENT_QUOTES, 'UTF-8'); } }
 if (!function_exists('esc_url')) { function esc_url($u) { return filter_var($u, FILTER_SANITIZE_URL); } }
+if (!function_exists('_n')) { function _n($s, $p, $n, $d = 'default') { return 1 === (int) $n ? $s : $p; } }
+if (!function_exists('esc_html__')) { function esc_html__($t, $d = 'default') { return $t; } }
+if (!function_exists('esc_attr__')) { function esc_attr__($t, $d = 'default') { return $t; } }
+if (!function_exists('esc_html_e')) { function esc_html_e($t, $d = 'default') { echo $t; } }
+if (!function_exists('esc_attr_e')) { function esc_attr_e($t, $d = 'default') { echo $t; } }
+if (!function_exists('is_ssl')) { function is_ssl() { return false; } }
+if (!function_exists('wp_parse_url')) { function wp_parse_url($url, $component = -1) { return parse_url($url, $component); } }
+if (!function_exists('esc_url_raw')) { function esc_url_raw($u) { return (string) $u; } }
+if (!function_exists('add_query_arg')) {
+    function add_query_arg($args, $url = '') {
+        if (!is_array($args)) { return $url; }
+        $sep = (false === strpos($url, '?')) ? '?' : '&';
+        return $url . $sep . http_build_query($args);
+    }
+}
+if (!function_exists('set_url_scheme')) { function set_url_scheme($url, $scheme = null) { return $url; } }
+if (!function_exists('wp_kses_post')) { function wp_kses_post($s) { return $s; } }
+if (!function_exists('wp_strip_all_tags')) { function wp_strip_all_tags($s, $rb = true) { return strip_tags((string) $s); } }
+if (!function_exists('wp_parse_args')) {
+    function wp_parse_args($args, $defaults = []) {
+        if (is_object($args)) { $args = get_object_vars($args); }
+        return array_merge((array) $defaults, (array) $args);
+    }
+}
+if (!function_exists('shortcode_atts')) { function shortcode_atts($pairs, $atts, $sc = '') { return wp_parse_args($atts, $pairs); } }
+if (!function_exists('wp_mail')) {
+    function wp_mail($to, $subject, $message, $headers = '', $attachments = []) {
+        // Los tests afirman sobre $GLOBALS['_wp_stores']['emails'] (lo limpian en
+        // su setUp); guardamos ahí para que 'to'/'subject' sean comprobables.
+        $GLOBALS['_wp_stores']['emails'][] = compact('to', 'subject', 'message', 'headers', 'attachments');
+        return true;
+    }
+}
+if (!function_exists('sanitize_key')) { function sanitize_key($k) { return preg_replace('/[^a-z0-9_\-]/', '', strtolower((string) $k)); } }
+if (!function_exists('number_format_i18n')) { function number_format_i18n($n, $dec = 0) { return number_format((float) $n, (int) $dec); } }
+if (!function_exists('date_i18n')) { function date_i18n($f, $ts = null) { return gmdate($f, $ts ?? time()); } }
+if (!function_exists('wp_list_pluck')) {
+    function wp_list_pluck($list, $field, $index_key = null) {
+        $out = [];
+        foreach ((array) $list as $k => $v) {
+            $val = is_object($v) ? ($v->$field ?? null) : ($v[$field] ?? null);
+            $key = $index_key ? (is_object($v) ? ($v->$index_key ?? $k) : ($v[$index_key] ?? $k)) : $k;
+            $out[$key] = $val;
+        }
+        return $out;
+    }
+}
 // Los emails de Convoca llevan el nombre del sitio en asuntos y textos.
 if (!function_exists('get_bloginfo')) { function get_bloginfo($show = 'name') { return 'Sitio de Prueba'; } }
 if (!function_exists('sanitize_text_field')) { function sanitize_text_field($s) { return trim(strip_tags($s)); } }
@@ -108,6 +197,8 @@ if (!function_exists('get_userdata')) {
         $u->ID = (int) $id;
         $u->display_name = 'Test User';
         $u->first_name = 'First' . (int) $id;
+        // Derivado del ID: los tests afirman sobre el email del usuario.
+        $u->user_email = 'user' . (int) $id . '@example.com';
         return $u;
     }
 }
@@ -246,7 +337,27 @@ if (!isset($GLOBALS['wpdb'])) {
         public function get_var($q = null, $x = 0, $y = 0) { return '0'; }
         public function get_results($q = null, $o = 'OBJECT') { return []; }
         public function get_row($q = null) { return null; }
-        public function query($q) { return 1; }
+        public function query($q) {
+            // Los flujos atómicos (p. ej. Hours_Manager::process_approval) cambian
+            // el estado con un UPDATE condicional sobre wp_postmeta y solo caen al
+            // update_post_meta() si ese UPDATE no afectó a ninguna fila. Sin
+            // simularlo, el store de metadatos no cambiaba y los tests veían el
+            // estado antiguo. Se aplica el UPDATE al store y se devuelve el número
+            // de filas realmente afectadas.
+            if (preg_match('/UPDATE\s+\S*postmeta\s+SET\s+meta_value\s*=\s*(\S+)\s+WHERE\s+post_id\s*=\s*(\d+)\s+AND\s+meta_key\s*=\s*\'([^\']+)\'/i', (string) $q, $m)) {
+                $new   = $m[1];
+                $post  = (int) $m[2];
+                $key   = $m[3];
+                $store = &$GLOBALS['_wp_stores']['post_meta'];
+                $cur   = $store[$post][$key] ?? null;
+                if ($cur === null || (string) $cur === $new) {
+                    return 0;
+                }
+                $store[$post][$key] = $new;
+                return 1;
+            }
+            return 1;
+        }
         public function insert($t, $d, $f = []) { $this->insert_id = 42; return 1; }
         public function update($t, $d, $w) { return 1; }
         public function delete($t, $w) { return 1; }
