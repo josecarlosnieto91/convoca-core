@@ -113,7 +113,7 @@ PDF. Se solicita confirmación antes de proceder.
 
 ## Version
 
-2.1.1
+2.2.5
 
 ## Changelog
 
@@ -162,7 +162,7 @@ Prueba Convoca sin instalar nada:
 ## 🧑‍💻 Developer Guide — Hooks & Filters
 
 La API pública de Convoca para desarrolladores son los **hooks y filtros** que emiten los plugins.
-Referencia completa generada desde el código en [`docs/HOOKS.md`](docs/HOOKS.md).
+Referencia completa generada desde el código en [`HOOKS.md`](HOOKS.md).
 
 ### Patrones de uso
 
@@ -194,7 +194,7 @@ add_filter( 'convoca_need_common_assets', function ( bool $needed ) {
 - Prefijo `convoca_` en todos los hooks (evita colisiones)
 - `do_action( 'convoca_{evento}', $args )` para eventos
 - `apply_filters( 'convoca_{nombre}', $value, $args )` para valores
-- Documenta los hooks nuevos en `docs/HOOKS.md` (regenerar: `python3 /tmp/p7-hooks.py`)
+- Documenta los hooks nuevos en `HOOKS.md`.
 
 ### Pruebas
 
