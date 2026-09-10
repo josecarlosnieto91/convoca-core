@@ -31,7 +31,12 @@ add_action(
 );
 
 if ( ! defined( 'CONVOCA_COMMON_VERSION' ) ) {
-	define( 'CONVOCA_COMMON_VERSION', '2.1.4' );
+	// Cache-buster de los assets comunes. Debe seguir la versión del plugin: si se
+	// queda fija, la caché del servidor y la del navegador sirven JS/CSS viejos
+	// indefinidamente para esa misma URL (?ver=...).
+	$convoca_core_header  = get_file_data( __FILE__, array( 'Version' => 'Version' ), 'plugin' );
+	$convoca_core_version = ! empty( $convoca_core_header['Version'] ) ? $convoca_core_header['Version'] : '2.2.5';
+	define( 'CONVOCA_COMMON_VERSION', $convoca_core_version );
 }
 if ( ! defined( 'CONVOCA_COMMON_DB_VERSION' ) ) {
 	define( 'CONVOCA_COMMON_DB_VERSION', '1.1.0' );
