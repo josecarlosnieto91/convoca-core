@@ -670,13 +670,13 @@ class Utils {
 						<strong><?php echo esc_html( $check['title'] ); ?></strong>
 						<span class="convoca-diagnostic-message"><?php echo esc_html( $check['message'] ); ?></span>
 						<?php if ( ! empty( $check['fix'] ) ) : ?>
-						<?php if ( ! empty( $check['fix_url'] ) ) : ?>
-							<span class="convoca-diagnostic-fix">💡 <?php echo esc_html( $check['fix'] ); ?>
-								<a class="button button-small convoca-diagnostic-fix-btn" href="<?php echo esc_url( $check['fix_url'] ); ?>"><?php esc_html_e( 'Reparar', 'convoca-core' ); ?> →</a>
-							</span>
-						<?php else : ?>
-							<span class="convoca-diagnostic-fix">💡 <?php echo esc_html( $check['fix'] ); ?></span>
-						<?php endif; ?>
+							<?php if ( ! empty( $check['fix_url'] ) ) : ?>
+								<span class="convoca-diagnostic-fix">💡 <?php echo esc_html( $check['fix'] ); ?>
+									<a class="button button-small convoca-diagnostic-fix-btn" href="<?php echo esc_url( $check['fix_url'] ); ?>"><?php esc_html_e( 'Reparar', 'convoca-core' ); ?> →</a>
+								</span>
+							<?php else : ?>
+								<span class="convoca-diagnostic-fix">💡 <?php echo esc_html( $check['fix'] ); ?></span>
+							<?php endif; ?>
 						<?php endif; ?>
 					</div>
 				</div>

@@ -36,11 +36,6 @@ parameters:
             message: '#Path in require_once\(\) "/tmp/wp/wp-content/plugins/convoca-core/vendor/autoload.php"#'
             identifier: requireOnce.fileNotFound
             path: includes/Signature.php
-        # add_submenu_page(null) es el patrón WP documentado para páginas
-        # standalone (sin entrada en el menú padre); el stub exige string.
-        -
-            message: '#Parameter \#1 \$parent_slug of function add_submenu_page expects string, null given#'
-            identifier: argument.type
         # class_exists sobre clases de plugins hermanos: en runtime pueden estar
         # instalados o no — es exactamente el propósito de has_feature().
         -
