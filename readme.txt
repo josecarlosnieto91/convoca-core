@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.2.5
+Stable tag: 2.2.6
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,9 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.2.6 =
+* Nuevo ajuste «Conservar datos al desinstalar» (menú Convoca → Desinstalación): los uninstall.php de todos los plugins leen esa opción; la constante CONVOCA_KEEP_DATA_ON_UNINSTALL sigue mandando como override.
 
 = 2.2.5 =
 * Fix: contención de locks reportada también cuando el UPDATE condicional afecta 0 filas (MySQL devuelve 0, no error) — antes solo se reportaba en la verificación posterior, dejando muda la contención más común (mismo segundo).
