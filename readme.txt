@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.2.6
+Stable tag: 2.2.7
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,12 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.2.7 =
+* La revalidación semanal de la licencia se programa de verdad. El evento existía, pero nadie lo programaba: la licencia no se revalidaba nunca.
+* Sin licencia no se programa nada: un sitio recién instalado no intenta ninguna conexión. Al activar la licencia empieza la revalidación; al desactivarla, se retira.
+* Las pruebas de licencia dejan de definir su propio get_option dentro del espacio de nombres del plugin, que interceptaba las lecturas de opciones de todo el ecosistema durante la suite.
+
 
 = 2.2.6 =
 * Nuevo ajuste «Conservar datos al desinstalar» (menú Convoca → Desinstalación): los uninstall.php de todos los plugins leen esa opción; la constante CONVOCA_KEEP_DATA_ON_UNINSTALL sigue mandando como override.

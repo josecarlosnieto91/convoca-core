@@ -75,6 +75,32 @@ class License_Manager {
 
 		// Weekly cron validation.
 		add_action( 'convoca_license_validate', array( __CLASS__, 'validate_remote' ) );
+		self::ensure_cron();
+	}
+
+	/**
+	 * Programa o quita la revalidación semanal según haya licencia.
+	 *
+	 * Sin clave de licencia no se llama a ninguna parte: ni evento programado ni
+	 * petición pendiente. Es lo que un sitio recién instalado debe hacer, y lo que
+	 * se espera de un plugin que habla con un servicio externo: nada hasta que la
+	 * persona que lo usa pide una licencia.
+	 *
+	 * @param int|null $now Base de tiempo (para pruebas).
+	 */
+	public static function ensure_cron( ?int $now = null ): void {
+		$license = self::get_license();
+		$tiene = '' !== trim( (string) ( $license['key'] ?? '' ) );
+
+		if ( $tiene ) {
+			if ( ! wp_next_scheduled( 'convoca_license_validate' ) ) {
+				wp_schedule_event( ( $now ?? time() ) + HOUR_IN_SECONDS, 'weekly', 'convoca_license_validate' );
+			}
+
+			return;
+		}
+
+		wp_clear_scheduled_hook( 'convoca_license_validate' );
 	}
 
 	/**
@@ -408,6 +434,7 @@ class License_Manager {
 		}
 
 		$result = self::validate_key( $key );
+		self::ensure_cron();
 		set_transient( 'convoca_license_message', $result['message'], 30 );
 
 		wp_redirect( add_query_arg( 'message', $result['success'] ? 'activated' : 'error', wp_get_referer() ) );
@@ -426,6 +453,7 @@ class License_Manager {
 		}
 
 		self::deactivate();
+		self::ensure_cron();
 		set_transient( 'convoca_license_message', __( 'Licencia desactivada.', 'convoca-core' ), 30 );
 
 		wp_redirect( wp_get_referer() );

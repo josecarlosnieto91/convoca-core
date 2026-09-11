@@ -8,6 +8,7 @@
  */
 
 // Global stores for mocks
+$GLOBALS['_wp_cron'] = ['programados' => [], 'agendados' => [], 'limpiados' => [], 'consultados' => []];
 $GLOBALS['_wp_stores'] = [
     'options'    => [],
     'post_meta'  => [],
@@ -283,8 +284,26 @@ if (!function_exists('plugin_basename')) { function plugin_basename($f) { return
 if (!function_exists('plugin_dir_path')) { function plugin_dir_path($f) { return dirname($f) . '/'; } }
 
 // --- Misc ---
-if (!function_exists('wp_next_scheduled')) { function wp_next_scheduled($h) { return false; } }
-if (!function_exists('wp_schedule_event')) { function wp_schedule_event($ts, $r, $h, $a = []) { return true; } }
+if (!function_exists('wp_next_scheduled')) {
+    function wp_next_scheduled($h) {
+        $GLOBALS['_wp_cron']['consultados'][] = $h;
+        return $GLOBALS['_wp_cron']['programados'][$h] ?? false;
+    }
+}
+if (!function_exists('wp_schedule_event')) {
+    function wp_schedule_event($ts, $r, $h, $a = []) {
+        $GLOBALS['_wp_cron']['programados'][$h] = $ts;
+        $GLOBALS['_wp_cron']['agendados'][] = ['hook' => $h, 'ts' => $ts, 'recurrencia' => $r];
+        return true;
+    }
+}
+if (!function_exists('wp_clear_scheduled_hook')) {
+    function wp_clear_scheduled_hook($h, $a = []) {
+        $GLOBALS['_wp_cron']['limpiados'][] = $h;
+        unset($GLOBALS['_wp_cron']['programados'][$h]);
+        return 0;
+    }
+}
 if (!function_exists('register_post_type')) { function register_post_type($s, $a) { return null; } }
 if (!function_exists('register_taxonomy')) { function register_taxonomy($s, $t, $a) { return null; } }
 if (!function_exists('register_rest_route')) { function register_rest_route($n, $r, $a) { return true; } }

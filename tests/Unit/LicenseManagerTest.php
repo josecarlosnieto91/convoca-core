@@ -27,7 +27,30 @@ class LicenseManagerTest extends TestCase
      * @var array<string, mixed> Stored license data returned by mocked get_option.
      * @internal Public so the namespace-level get_option() mock can read it.
      */
-    public static array $mockLicense = [];
+    /** Nombre de la opción que estas pruebas manejan. */
+    private const OPCION = 'convoca_license';
+
+    /**
+     * La licencia con la que trabaja cada prueba.
+     *
+     * Devuelve por referencia el valor guardado en el almacén de opciones del arnés, para
+     * que estas pruebas no tengan que definir una función get_option() propia: definirla
+     * dentro de Convoca\Core interceptaba las lecturas de opciones de TODO el plugin
+     * durante la suite (cualquier otra clase leía [] en vez de lo que hubiera guardado).
+     *
+     * @return array<string, mixed>
+     */
+    private static function &licencia(): array {
+        if ( ! isset( $GLOBALS['_wp_stores']['options'][ self::OPCION ] ) ) {
+            $GLOBALS['_wp_stores']['options'][ self::OPCION ] = array();
+        }
+        return $GLOBALS['_wp_stores']['options'][ self::OPCION ];
+    }
+
+    /** Deja una licencia entera de una vez. */
+    private static function ponLicencia( array $licencia ): void {
+        $GLOBALS['_wp_stores']['options'][ self::OPCION ] = $licencia;
+    }
 
     /**
      * Set up mocks before the class is autoloaded.
@@ -35,14 +58,14 @@ class LicenseManagerTest extends TestCase
      */
     public static function setUpBeforeClass(): void
     {
-        self::$mockLicense = [
+        self::ponLicencia( [
             'key'      => '',
             'status'   => 'inactive',
             'type'     => 'free',
             'features' => [],
             'expires'  => '',
             'email'    => '',
-        ];
+        ] );
     }
 
     /**
@@ -50,14 +73,14 @@ class LicenseManagerTest extends TestCase
      */
     protected function setUp(): void
     {
-        self::$mockLicense = [
+        self::ponLicencia( [
             'key'      => '',
             'status'   => 'inactive',
             'type'     => 'free',
             'features' => [],
             'expires'  => '',
             'email'    => '',
-        ];
+        ] );
     }
 
     // ────────────────────────────────────────────
@@ -129,7 +152,7 @@ class LicenseManagerTest extends TestCase
      */
     public function test_has_pro_false_when_no_license_key(): void
     {
-        self::$mockLicense['key'] = '';
+        self::licencia()['key'] = '';
 
         $this->assertFalse(
             License_Manager::has_pro('members'),
@@ -144,7 +167,7 @@ class LicenseManagerTest extends TestCase
      */
     public function test_has_pro_false_for_all_features_when_no_key(): void
     {
-        self::$mockLicense['key'] = '';
+        self::licencia()['key'] = '';
 
         foreach (array_keys(License_Manager::pro_features()) as $feature) {
             $this->assertFalse(
@@ -165,9 +188,9 @@ class LicenseManagerTest extends TestCase
      */
     public function test_has_pro_false_when_expired(): void
     {
-        self::$mockLicense['key']     = 'TEST-KEY-EXPIRED';
-        self::$mockLicense['type']    = 'single';
-        self::$mockLicense['expires'] = '2020-01-01 00:00:00'; // Far in the past
+        self::licencia()['key']     = 'TEST-KEY-EXPIRED';
+        self::licencia()['type']    = 'single';
+        self::licencia()['expires'] = '2020-01-01 00:00:00'; // Far in the past
 
         $this->assertFalse(
             License_Manager::has_pro('members'),
@@ -182,10 +205,10 @@ class LicenseManagerTest extends TestCase
      */
     public function test_has_pro_false_when_expired_even_with_matching_feature(): void
     {
-        self::$mockLicense['key']      = 'TEST-KEY-EXPIRED-2';
-        self::$mockLicense['type']     = 'single';
-        self::$mockLicense['features'] = ['members', 'enroll'];
-        self::$mockLicense['expires']  = '2020-06-15 12:00:00'; // Far in the past
+        self::licencia()['key']      = 'TEST-KEY-EXPIRED-2';
+        self::licencia()['type']     = 'single';
+        self::licencia()['features'] = ['members', 'enroll'];
+        self::licencia()['expires']  = '2020-06-15 12:00:00'; // Far in the past
 
         $this->assertFalse(
             License_Manager::has_pro('members'),
@@ -204,8 +227,8 @@ class LicenseManagerTest extends TestCase
      */
     public function test_has_pro_true_when_unlimited(): void
     {
-        self::$mockLicense['key']  = 'TEST-KEY-UNLIMITED';
-        self::$mockLicense['type'] = 'unlimited';
+        self::licencia()['key']  = 'TEST-KEY-UNLIMITED';
+        self::licencia()['type'] = 'unlimited';
 
         $this->assertTrue(
             License_Manager::has_pro('members'),
@@ -220,8 +243,8 @@ class LicenseManagerTest extends TestCase
      */
     public function test_has_pro_true_for_all_features_when_unlimited(): void
     {
-        self::$mockLicense['key']  = 'TEST-KEY-UNLIMITED-2';
-        self::$mockLicense['type'] = 'unlimited';
+        self::licencia()['key']  = 'TEST-KEY-UNLIMITED-2';
+        self::licencia()['type'] = 'unlimited';
 
         foreach (array_keys(License_Manager::pro_features()) as $feature) {
             $this->assertTrue(
@@ -239,9 +262,9 @@ class LicenseManagerTest extends TestCase
      */
     public function test_has_pro_false_when_unlimited_with_past_expiry(): void
     {
-        self::$mockLicense['key']     = 'TEST-KEY-UNLIMITED-3';
-        self::$mockLicense['type']    = 'unlimited';
-        self::$mockLicense['expires'] = '2020-01-01 00:00:00';
+        self::licencia()['key']     = 'TEST-KEY-UNLIMITED-3';
+        self::licencia()['type']    = 'unlimited';
+        self::licencia()['expires'] = '2020-01-01 00:00:00';
 
         // Expiry is checked BEFORE the unlimited type check.
         $this->assertFalse(
@@ -262,9 +285,9 @@ class LicenseManagerTest extends TestCase
      */
     public function test_has_pro_true_when_feature_in_array(): void
     {
-        self::$mockLicense['key']      = 'TEST-KEY-SINGLE';
-        self::$mockLicense['type']     = 'single';
-        self::$mockLicense['features'] = ['members', 'shifts'];
+        self::licencia()['key']      = 'TEST-KEY-SINGLE';
+        self::licencia()['type']     = 'single';
+        self::licencia()['features'] = ['members', 'shifts'];
 
         $this->assertTrue(
             License_Manager::has_pro('members'),
@@ -284,9 +307,9 @@ class LicenseManagerTest extends TestCase
      */
     public function test_has_pro_false_when_feature_not_in_array(): void
     {
-        self::$mockLicense['key']      = 'TEST-KEY-SINGLE-2';
-        self::$mockLicense['type']     = 'single';
-        self::$mockLicense['features'] = ['members', 'enroll'];
+        self::licencia()['key']      = 'TEST-KEY-SINGLE-2';
+        self::licencia()['type']     = 'single';
+        self::licencia()['features'] = ['members', 'enroll'];
 
         $this->assertFalse(
             License_Manager::has_pro('gateway'),
@@ -306,9 +329,9 @@ class LicenseManagerTest extends TestCase
      */
     public function test_has_pro_false_with_empty_features_array(): void
     {
-        self::$mockLicense['key']      = 'TEST-KEY-EMPTY';
-        self::$mockLicense['type']     = 'single';
-        self::$mockLicense['features'] = [];
+        self::licencia()['key']      = 'TEST-KEY-EMPTY';
+        self::licencia()['type']     = 'single';
+        self::licencia()['features'] = [];
 
         $this->assertFalse(
             License_Manager::has_pro('members'),
@@ -323,9 +346,9 @@ class LicenseManagerTest extends TestCase
      */
     public function test_has_pro_false_for_unknown_feature(): void
     {
-        self::$mockLicense['key']      = 'TEST-KEY-SINGLE-3';
-        self::$mockLicense['type']     = 'single';
-        self::$mockLicense['features'] = ['members'];
+        self::licencia()['key']      = 'TEST-KEY-SINGLE-3';
+        self::licencia()['type']     = 'single';
+        self::licencia()['features'] = ['members'];
 
         $this->assertFalse(
             License_Manager::has_pro('nonexistent_feature'),
@@ -344,7 +367,7 @@ class LicenseManagerTest extends TestCase
      */
     public function test_status_label_activa(): void
     {
-        self::$mockLicense['status'] = 'active';
+        self::licencia()['status'] = 'active';
 
         $this->assertEquals(
             'Activa',
@@ -360,7 +383,7 @@ class LicenseManagerTest extends TestCase
      */
     public function test_status_label_expirada(): void
     {
-        self::$mockLicense['status'] = 'expired';
+        self::licencia()['status'] = 'expired';
 
         $this->assertEquals(
             'Expirada',
@@ -376,7 +399,7 @@ class LicenseManagerTest extends TestCase
      */
     public function test_status_label_invalida(): void
     {
-        self::$mockLicense['status'] = 'invalid';
+        self::licencia()['status'] = 'invalid';
 
         $this->assertEquals(
             'Invalida',
@@ -392,7 +415,7 @@ class LicenseManagerTest extends TestCase
      */
     public function test_status_label_inactiva(): void
     {
-        self::$mockLicense['status'] = 'inactive';
+        self::licencia()['status'] = 'inactive';
 
         $this->assertEquals(
             'Inactiva',
@@ -408,7 +431,7 @@ class LicenseManagerTest extends TestCase
      */
     public function test_status_label_default_for_unknown_status(): void
     {
-        self::$mockLicense['status'] = 'some_unknown_value';
+        self::licencia()['status'] = 'some_unknown_value';
 
         $this->assertEquals(
             'Inactiva',
@@ -424,7 +447,7 @@ class LicenseManagerTest extends TestCase
      */
     public function test_status_label_default_when_status_missing(): void
     {
-        unset(self::$mockLicense['status']);
+        unset(self::licencia()['status']);
 
         $this->assertEquals(
             'Inactiva',
@@ -440,16 +463,16 @@ class LicenseManagerTest extends TestCase
      */
     public function test_status_label_returns_string(): void
     {
-        self::$mockLicense['status'] = 'active';
+        self::licencia()['status'] = 'active';
         $this->assertIsString(License_Manager::get_status_label());
 
-        self::$mockLicense['status'] = 'expired';
+        self::licencia()['status'] = 'expired';
         $this->assertIsString(License_Manager::get_status_label());
 
-        self::$mockLicense['status'] = 'invalid';
+        self::licencia()['status'] = 'invalid';
         $this->assertIsString(License_Manager::get_status_label());
 
-        self::$mockLicense['status'] = 'inactive';
+        self::licencia()['status'] = 'inactive';
         $this->assertIsString(License_Manager::get_status_label());
     }
 
@@ -464,9 +487,9 @@ class LicenseManagerTest extends TestCase
      */
     public function test_has_pro_false_for_free_type(): void
     {
-        self::$mockLicense['key']      = 'TEST-KEY-FREE';
-        self::$mockLicense['type']     = 'free';
-        self::$mockLicense['features'] = [];
+        self::licencia()['key']      = 'TEST-KEY-FREE';
+        self::licencia()['type']     = 'free';
+        self::licencia()['features'] = [];
 
         $this->assertFalse(License_Manager::has_pro('members'));
     }
@@ -479,9 +502,9 @@ class LicenseManagerTest extends TestCase
      */
     public function test_has_pro_false_for_free_type_with_features(): void
     {
-        self::$mockLicense['key']      = 'TEST-KEY-FREE-2';
-        self::$mockLicense['type']     = 'free';
-        self::$mockLicense['features'] = ['members', 'enroll'];
+        self::licencia()['key']      = 'TEST-KEY-FREE-2';
+        self::licencia()['type']     = 'free';
+        self::licencia()['features'] = ['members', 'enroll'];
 
         // free !== 'unlimited', so falls through to features array check.
         // 'members' IS in features, so this will return TRUE — documenting
@@ -512,33 +535,3 @@ class LicenseManagerTest extends TestCase
 //
 // This must be defined AFTER the test class so the static property reference
 // resolves correctly.
-
-namespace Convoca\Core;
-
-/**
- * Mock for WordPress get_option().
- *
- * When running unit tests without WordPress, this function intercepts calls
- * to get_option() from within the Convoca\Core namespace.
- *
- * @param string $option  Option name.
- * @param mixed  $default Default value if option not found.
- * @return mixed
- */
-function get_option(string $option, $default = [])
-{
-    $mock = \Convoca\Core\Tests\LicenseManagerTest::$mockLicense ?? [];
-
-    if ($option === 'convoca_license') {
-        return $mock;
-    }
-
-    // Fall back to the global WordPress stub (reads $_wp_stores['options'])
-    // for any option this mock doesn't own, so other Convoca\Core classes
-    // (Logger, etc.) can read their own options in unit tests.
-    if (function_exists('\\get_option')) {
-        return \get_option($option, $default);
-    }
-
-    return $default;
-}
