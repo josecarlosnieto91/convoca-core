@@ -4,56 +4,58 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Convoca Core 2.2.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-core\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Last-Translator: Jose Carlos Nieto Ramos\n"
+"Language-Team: English (United States)\n"
+"Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-09-11T11:41:19+00:00\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.12.0\n"
+"PO-Revision-Date: 2026-09-11 13:41+0200\n"
+"X-Generator: manual\n"
 "X-Domain: convoca-core\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Plugin Name of the plugin
 #: convoca-core.php
 msgid "Convoca Core"
-msgstr ""
+msgstr "Convoca Core"
 
 #. Plugin URI of the plugin
 #. Author URI of the plugin
 #: convoca-core.php
 msgid "https://getconvoca.app"
-msgstr ""
+msgstr "https://getconvoca.app"
 
 #. Description of the plugin
 #: convoca-core.php
 msgid "Common functions, validation, logging, and shared infrastructure."
-msgstr ""
+msgstr "Common functions, validation, logging, and shared infrastructure."
 
 #. Author of the plugin
 #: convoca-core.php
 msgid "Jose Carlos Nieto Ramos"
-msgstr ""
+msgstr "Jose Carlos Nieto Ramos"
 
 #: includes/admin-appearance.php:47
 msgid "Plataforma de gestión de la asociación."
-msgstr ""
+msgstr "Association management platform."
 
 #: includes/admin-appearance.php:125
 msgid "Asistente Convoca"
-msgstr ""
+msgstr "Convoca Wizard"
 
 #: includes/admin-appearance.php:142
 msgid "La librería Dompdf no está instalada. Contacta con el administrador."
-msgstr ""
+msgstr "The Dompdf library is not installed. Contact the administrator."
 
 #: includes/admin-appearance.php:156
 msgid "Generado el"
-msgstr ""
+msgstr "Generated on"
 
 #: includes/admin-appearance.php:186
 msgid "Error al generar el PDF. Contacta con el administrador."
-msgstr ""
+msgstr "Error generating the PDF. Contact the administrator."
 
 #: includes/admin-appearance.php:203
 #: includes/admin-appearance.php:243
@@ -62,7 +64,7 @@ msgstr ""
 #: includes/License_Manager.php:449
 #: includes/Memory_Report.php:92
 msgid "Nonce inválido."
-msgstr ""
+msgstr "Invalid nonce."
 
 #: includes/admin-appearance.php:206
 #: includes/admin-appearance.php:246
@@ -81,1471 +83,1471 @@ msgstr ""
 #: includes/Uninstall_Settings.php:53
 #: includes/Uninstall_Settings.php:66
 msgid "No tienes permisos."
-msgstr ""
+msgstr "You do not have permission."
 
 #: includes/admin-appearance.php:216
 msgid "Order ID"
-msgstr ""
+msgstr "Order ID"
 
 #: includes/admin-appearance.php:216
 msgid "Importe"
-msgstr ""
+msgstr "Amount"
 
 #: includes/admin-appearance.php:216
 #: includes/admin-global-menu.php:244
 #: includes/License_Manager.php:333
 msgid "Estado"
-msgstr ""
+msgstr "Status"
 
 #: includes/admin-appearance.php:216
 msgid "Método"
-msgstr ""
+msgstr "Method"
 
 #: includes/admin-appearance.php:216
 #: includes/admin-global-menu.php:244
 #: includes/Admin_Logs_List.php:52
 msgid "Fecha"
-msgstr ""
+msgstr "Date"
 
 #: includes/admin-appearance.php:232
 msgid "Listado de Pagos"
-msgstr ""
+msgstr "Payment List"
 
 #: includes/admin-appearance.php:372
 #: includes/admin-global-menu.php:58
 msgid "Registros del Sistema"
-msgstr ""
+msgstr "System Logs"
 
 #: includes/admin-appearance.php:374
 msgid "⚠️ El contador de registros es aproximado para tablas grandes (>10.000 filas). Usa filtros para obtener un recuento exacto."
-msgstr ""
+msgstr "⚠️ The log count is approximate for large tables (>10,000 rows). Use filters to get an exact count."
 
 #: includes/admin-appearance.php:379
 msgid "Retención de logs por nivel"
-msgstr ""
+msgstr "Log retention by level"
 
 #: includes/admin-appearance.php:380
 msgid "Días que se conservan los registros de cada nivel antes de su borrado automático."
-msgstr ""
+msgstr "Number of days each log level is kept before being automatically deleted."
 
 #: includes/admin-appearance.php:384
 msgid "Info (días)"
-msgstr ""
+msgstr "Info (days)"
 
 #: includes/admin-appearance.php:388
 msgid "Warning (días)"
-msgstr ""
+msgstr "Warning (days)"
 
 #: includes/admin-appearance.php:392
 msgid "Error (días)"
-msgstr ""
+msgstr "Error (days)"
 
 #: includes/admin-appearance.php:396
 msgid "Guardar retención"
-msgstr ""
+msgstr "Save retention"
 
 #: includes/admin-appearance.php:400
 msgid "Exportar CSV"
-msgstr ""
+msgstr "Export CSV"
 
 #: includes/admin-appearance.php:405
 msgid "Buscar en logs"
-msgstr ""
+msgstr "Search logs"
 
 #: includes/admin-appearance.php:411
 msgid "Detalle del Log"
-msgstr ""
+msgstr "Log Detail"
 
 #: includes/admin-appearance.php:413
 msgid "Cerrar"
-msgstr ""
+msgstr "Close"
 
 #: includes/admin-appearance.php:457
 msgid "Socios activos"
-msgstr ""
+msgstr "Active members"
 
 #: includes/admin-appearance.php:464
 msgid "Altas este mes"
-msgstr ""
+msgstr "New signups this month"
 
 #: includes/admin-appearance.php:471
 msgid "Inscripciones confirmadas"
-msgstr ""
+msgstr "Confirmed enrollments"
 
 #: includes/admin-appearance.php:478
 msgid "En lista de espera"
-msgstr ""
+msgstr "On the waitlist"
 
 #: includes/admin-appearance.php:485
 msgid "Ingresos este mes"
-msgstr ""
+msgstr "Revenue this month"
 
 #: includes/admin-appearance.php:492
 msgid "Turnos sin cubrir"
-msgstr ""
+msgstr "Uncovered shifts"
 
 #: includes/admin-appearance.php:500
 msgid "Panel de Control Convoca"
-msgstr ""
+msgstr "Convoca Dashboard"
 
 #: includes/admin-appearance.php:502
 msgid "Actualizar datos"
-msgstr ""
+msgstr "Update data"
 
 #: includes/admin-appearance.php:503
 msgid "Generar memoria PDF"
-msgstr ""
+msgstr "Generate PDF report"
 
 #: includes/admin-appearance.php:522
 msgid "Tendencia (6 meses)"
-msgstr ""
+msgstr "Trend (6 months)"
 
 #: includes/admin-appearance.php:548
 msgid "Ingresos mensuales"
-msgstr ""
+msgstr "Monthly revenue"
 
 #: includes/admin-appearance.php:568
 msgid "Inscripciones por estado"
-msgstr ""
+msgstr "Enrollments by status"
 
 #: includes/admin-appearance.php:587
 msgid "Métodos de pago (mes)"
-msgstr ""
+msgstr "Payment methods (month)"
 
 #: includes/admin-appearance.php:606
 msgid "Últimos 7 días — Pagos"
-msgstr ""
+msgstr "Last 7 days — Payments"
 
 #: includes/admin-global-menu.php:39
 #: includes/admin-global-menu.php:40
 msgid "Salud del Sistema"
-msgstr ""
+msgstr "System Health"
 
 #: includes/admin-global-menu.php:49
 #: includes/admin-global-menu.php:50
 msgid "Panel de Control"
-msgstr ""
+msgstr "Dashboard"
 
 #: includes/admin-global-menu.php:59
 #: includes/Admin_Backup.php:110
 msgid "Registros"
-msgstr ""
+msgstr "Logs"
 
 #: includes/admin-global-menu.php:78
 msgid "Salud del Sistema Convoca"
-msgstr ""
+msgstr "Convoca System Health"
 
 #: includes/admin-global-menu.php:79
 msgid "Diagnóstico consolidado de todos los plugins del ecosistema."
-msgstr ""
+msgstr "Consolidated diagnostics for all plugins in the ecosystem."
 
 #: includes/admin-global-menu.php:80
 msgid "Forzar comprobación"
-msgstr ""
+msgstr "Force check"
 
 #: includes/admin-global-menu.php:95
 #: includes/Admin_Setup_Wizard.php:497
 #: includes/Admin_Setup_Wizard.php:738
 msgid "Convoca Members"
-msgstr ""
+msgstr "Convoca Members"
 
 #: includes/admin-global-menu.php:108
 #: includes/admin-global-menu.php:133
 #: includes/admin-global-menu.php:154
 msgid "Plugin no activo."
-msgstr ""
+msgstr "Plugin is not active."
 
 #: includes/admin-global-menu.php:120
 #: includes/Admin_Setup_Wizard.php:502
 #: includes/Admin_Setup_Wizard.php:739
 msgid "Convoca Enroll"
-msgstr ""
+msgstr "Convoca Enroll"
 
 #: includes/admin-global-menu.php:139
 #: includes/Admin_Setup_Wizard.php:507
 #: includes/Admin_Setup_Wizard.php:740
 msgid "Convoca Gateway"
-msgstr ""
+msgstr "Convoca Gateway"
 
 #: includes/admin-global-menu.php:174
 #: includes/Admin_Setup_Wizard.php:512
 #: includes/Admin_Setup_Wizard.php:741
 msgid "Convoca Shifts"
-msgstr ""
+msgstr "Convoca Shifts"
 
 #: includes/admin-global-menu.php:180
 msgid "Plugin no activo o sin función de diagnóstico."
-msgstr ""
+msgstr "Plugin not active or has no diagnostics function."
 
 #: includes/admin-global-menu.php:186
 msgid "Convoca Common — Versión"
-msgstr ""
+msgstr "Convoca Common — Version"
 
 #: includes/admin-global-menu.php:191
 msgid "Convoca Common — Nivel de log"
-msgstr ""
+msgstr "Convoca Common — Log Level"
 
 #. translators: %s: configured log level
 #: includes/admin-global-menu.php:195
 #, php-format
 msgid "Nivel: %s (opción convoca_log_level, solo lectura)."
-msgstr ""
+msgstr "Level: %s (convoca_log_level option, read-only)."
 
 #. translators: %s: database table name
 #: includes/admin-global-menu.php:206
 #: includes/Admin_Setup_Wizard.php:235
 #, php-format
 msgid "Tabla %s"
-msgstr ""
+msgstr "Table %s"
 
 #: includes/admin-global-menu.php:208
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: includes/admin-global-menu.php:208
 msgid "No encontrada. Desactiva y reactiva Convoca Common."
-msgstr ""
+msgstr "Not found. Deactivate and reactivate Convoca Common."
 
 #: includes/admin-global-menu.php:212
 msgid "Diagnóstico completo del ecosistema"
-msgstr ""
+msgstr "Full ecosystem diagnostics"
 
 #: includes/admin-global-menu.php:222
 #: includes/admin-global-menu.php:223
 #: includes/admin-global-menu.php:241
 msgid "Notificaciones"
-msgstr ""
+msgstr "Notifications"
 
 #: includes/admin-global-menu.php:232
 msgid "Access denied."
-msgstr ""
+msgstr "Access denied."
 
 #. translators: %d: total number of notifications.
 #: includes/admin-global-menu.php:242
 #, php-format
 msgid "Total: %d notificaciones"
-msgstr ""
+msgstr "Total: %d notifications"
 
 #: includes/admin-global-menu.php:244
 #: includes/License_Manager.php:355
 msgid "Tipo"
-msgstr ""
+msgstr "Type"
 
 #: includes/admin-global-menu.php:244
 #: includes/Admin_Logs_List.php:55
 msgid "Mensaje"
-msgstr ""
+msgstr "Message"
 
 #: includes/admin-global-menu.php:247
 #: includes/Notifications.php:216
 msgid "No hay notificaciones."
-msgstr ""
+msgstr "There are no notifications."
 
 #: includes/admin-global-menu.php:258
 msgid "No leída"
-msgstr ""
+msgstr "Unread"
 
 #: includes/admin-global-menu.php:258
 msgid "Leída"
-msgstr ""
+msgstr "Read"
 
 #: includes/Admin_Analytics.php:469
 msgid "Sin datos todavía"
-msgstr ""
+msgstr "No data yet"
 
 #: includes/Admin_Backup.php:46
 msgid "Copia de Seguridad"
-msgstr ""
+msgstr "Backup"
 
 #: includes/Admin_Backup.php:59
 msgid "Copia de Seguridad y Mantenimiento"
-msgstr ""
+msgstr "Backup & Maintenance"
 
 #: includes/Admin_Backup.php:60
 msgid "Gestión de datos masivos e infraestructura."
-msgstr ""
+msgstr "Bulk data and infrastructure management."
 
 #: includes/Admin_Backup.php:73
 msgid "Exportar Datos"
-msgstr ""
+msgstr "Export Data"
 
 #: includes/Admin_Backup.php:74
 msgid "Genera un archivo ZIP con CSVs de todas las entidades y un JSON con la configuración."
-msgstr ""
+msgstr "Generates a ZIP file with CSVs of all entities and a JSON file with the configuration."
 
 #: includes/Admin_Backup.php:76
 msgid "Descargar ZIP de Seguridad"
-msgstr ""
+msgstr "Download Backup ZIP"
 
 #: includes/Admin_Backup.php:81
 msgid "Importar Datos"
-msgstr ""
+msgstr "Import Data"
 
 #: includes/Admin_Backup.php:82
 msgid "Restaura entidades o configuraciones desde un archivo ZIP oficial."
-msgstr ""
+msgstr "Restores entities or settings from an official ZIP file."
 
 #: includes/Admin_Backup.php:91
 msgid "Validar archivo y previsualizar"
-msgstr ""
+msgstr "Validate file and preview"
 
 #: includes/Admin_Backup.php:100
 msgid "Modo de Importación Atómica:"
-msgstr ""
+msgstr "Atomic Import Mode:"
 
 #: includes/Admin_Backup.php:100
 msgid "Se crearán nuevos registros. Los IDs originales se perderán y se generarán nuevos. El sistema intentará remapear las relaciones internas."
-msgstr ""
+msgstr "New records will be created. Original IDs will be lost and new ones generated. The system will attempt to remap internal relationships."
 
 #: includes/Admin_Backup.php:108
 msgid "Contenido Detectado"
-msgstr ""
+msgstr "Detected Content"
 
 #: includes/Admin_Backup.php:110
 msgid "Entidad"
-msgstr ""
+msgstr "Entity"
 
 #: includes/Admin_Backup.php:123
 msgid "¿Confirmas la importación de los datos seleccionados?"
-msgstr ""
+msgstr "Confirm importing the selected data?"
 
 #: includes/Admin_Backup.php:123
 msgid "Ejecutar Importación"
-msgstr ""
+msgstr "Run Import"
 
 #: includes/Admin_Backup.php:124
 msgid "Cancelar y borrar temporal"
-msgstr ""
+msgstr "Cancel and delete temporary file"
 
 #: includes/Admin_Backup.php:149
 msgid "ZipArchive no disponible."
-msgstr ""
+msgstr "ZipArchive is not available."
 
 #: includes/Admin_Backup.php:177
 msgid "No se pudo crear el archivo temporal ZIP."
-msgstr ""
+msgstr "Could not create the temporary ZIP file."
 
 #: includes/Admin_Backup.php:306
 msgid "Error fatal: ZIP no generado."
-msgstr ""
+msgstr "Fatal error: ZIP was not generated."
 
 #: includes/Admin_Backup.php:329
 msgid "No se ha subido ningún archivo."
-msgstr ""
+msgstr "No file was uploaded."
 
 #: includes/Admin_Backup.php:334
 msgid "Error en la subida: "
-msgstr ""
+msgstr "Upload error: "
 
 #: includes/Admin_Backup.php:337
 msgid "Formato inválido. Solo ZIP."
-msgstr ""
+msgstr "Invalid format. ZIP only."
 
 #: includes/Admin_Backup.php:340
 msgid "Archivo demasiado grande."
-msgstr ""
+msgstr "File is too large."
 
 #: includes/Admin_Backup.php:345
 msgid "No se pudo abrir el ZIP."
-msgstr ""
+msgstr "Could not open the ZIP."
 
 #: includes/Admin_Backup.php:368
 msgid "Configuración del Sistema"
-msgstr ""
+msgstr "System Settings"
 
 #: includes/Admin_Backup.php:375
 msgid "El archivo ZIP no contiene datos compatibles de Convoca."
-msgstr ""
+msgstr "The ZIP file does not contain compatible Convoca data."
 
 #: includes/Admin_Backup.php:395
 msgid "Error al guardar el temporal."
-msgstr ""
+msgstr "Error saving the temporary file."
 
 #: includes/Admin_Backup.php:422
 msgid "Token de sesión inválido o expirado."
-msgstr ""
+msgstr "Invalid or expired session token."
 
 #. translators: %s: entity type name.
 #: includes/Admin_Backup.php:436
 #, php-format
 msgid "No tienes permisos para importar %s."
-msgstr ""
+msgstr "You do not have permission to import %s."
 
 #: includes/Admin_Backup.php:444
 msgid "Archivo temporal no encontrado."
-msgstr ""
+msgstr "Temporary file not found."
 
 #: includes/Admin_Backup.php:449
 msgid "No se pudo procesar el ZIP."
-msgstr ""
+msgstr "Could not process the ZIP."
 
 #: includes/Admin_Backup.php:457
 msgid "Otra importación está en curso. Espera a que termine."
-msgstr ""
+msgstr "Another import is in progress. Wait for it to finish."
 
 #: includes/Admin_Backup.php:505
 msgid "Importado"
-msgstr ""
+msgstr "Imported"
 
 #: includes/Admin_Backup.php:512
 msgid "Error al crear el post importado."
-msgstr ""
+msgstr "Error creating the imported post."
 
 #. translators: %d: number of records processed
 #: includes/Admin_Backup.php:550
 #, php-format
 msgid "Importación finalizada. %d registros procesados."
-msgstr ""
+msgstr "Import finished. %d records processed."
 
 #: includes/Admin_Backup.php:640
 msgid "Miembros / Socios"
-msgstr ""
+msgstr "Members"
 
 #: includes/Admin_Backup.php:641
 msgid "Inscripciones a Actividades"
-msgstr ""
+msgstr "Activity Enrollments"
 
 #: includes/Admin_Backup.php:642
 msgid "Proyectos y Actividades"
-msgstr ""
+msgstr "Projects and Activities"
 
 #: includes/Admin_Backup.php:643
 #: includes/Admin_Setup_Wizard.php:193
 #: includes/Blocks_Common.php:51
 msgid "Turnos"
-msgstr ""
+msgstr "Shifts"
 
 #: includes/Admin_Logs_List.php:51
 msgid "<input type=\"checkbox\">"
-msgstr ""
+msgstr "<input type=\"checkbox\">"
 
 #: includes/Admin_Logs_List.php:53
 msgid "Nivel"
-msgstr ""
+msgstr "Level"
 
 #: includes/Admin_Logs_List.php:54
 msgid "Plugin"
-msgstr ""
+msgstr "Plugin"
 
 #: includes/Admin_Logs_List.php:56
 msgid "Usuario"
-msgstr ""
+msgstr "User"
 
 #: includes/Admin_Logs_List.php:57
 msgid "ID Objeto"
-msgstr ""
+msgstr "Object ID"
 
 #: includes/Admin_Logs_List.php:89
 msgid "ver más"
-msgstr ""
+msgstr "view more"
 
 #: includes/Admin_Logs_List.php:108
 msgid "Eliminar seleccionados"
-msgstr ""
+msgstr "Delete selected"
 
 #: includes/Admin_Logs_List.php:109
 msgid "Purgar > 30 días"
-msgstr ""
+msgstr "Purge > 30 days"
 
 #: includes/Admin_Logs_List.php:217
 msgid "La vista de logs requiere el panel de administración."
-msgstr ""
+msgstr "The log view requires the admin dashboard."
 
 #: includes/Admin_Logs_List.php:241
 msgid "Todos los plugins"
-msgstr ""
+msgstr "All plugins"
 
 #: includes/Admin_Logs_List.php:247
 msgid "Todos los niveles"
-msgstr ""
+msgstr "All levels"
 
 #: includes/Admin_Logs_List.php:254
 msgid "Filtrar"
-msgstr ""
+msgstr "Filter"
 
 #: includes/Admin_Setup_Wizard.php:51
 msgid "Asistente de Configuración Convoca"
-msgstr ""
+msgstr "Convoca Setup Wizard"
 
 #: includes/Admin_Setup_Wizard.php:52
 msgid "Asistente"
-msgstr ""
+msgstr "Wizard"
 
 #: includes/Admin_Setup_Wizard.php:138
 #: includes/Admin_Setup_Wizard.php:310
 #: includes/Admin_Setup_Wizard.php:775
 #: includes/Admin_Setup_Wizard.php:882
 msgid "Acceso denegado."
-msgstr ""
+msgstr "Access denied."
 
 #: includes/Admin_Setup_Wizard.php:157
 msgid "Configuración del Ecosistema"
-msgstr ""
+msgstr "Ecosystem Setup"
 
 #: includes/Admin_Setup_Wizard.php:158
 msgid "Sigue los pasos para asegurar que tu plataforma Convoca esté lista."
-msgstr ""
+msgstr "Follow the steps to make sure your Convoca platform is ready."
 
 #: includes/Admin_Setup_Wizard.php:180
 msgid "Omitir asistente y configurar manualmente"
-msgstr ""
+msgstr "Skip the wizard and set up manually"
 
 #: includes/Admin_Setup_Wizard.php:189
 msgid "Infraestructura"
-msgstr ""
+msgstr "Infrastructure"
 
 #: includes/Admin_Setup_Wizard.php:190
 msgid "Páginas"
-msgstr ""
+msgstr "Pages"
 
 #: includes/Admin_Setup_Wizard.php:191
 msgid "Membresía"
-msgstr ""
+msgstr "Membership"
 
 #: includes/Admin_Setup_Wizard.php:192
 #: includes/Blocks_Common.php:56
 msgid "Pagos"
-msgstr ""
+msgstr "Payments"
 
 #: includes/Admin_Setup_Wizard.php:194
 msgid "Ecosistema"
-msgstr ""
+msgstr "Ecosystem"
 
 #: includes/Admin_Setup_Wizard.php:195
 msgid "Finalización"
-msgstr ""
+msgstr "Finish"
 
 #: includes/Admin_Setup_Wizard.php:206
 msgid "Volver a este paso"
-msgstr ""
+msgstr "Return to this step"
 
 #: includes/Admin_Setup_Wizard.php:229
 msgid "Convoca Common"
-msgstr ""
+msgstr "Convoca Common"
 
 #: includes/Admin_Setup_Wizard.php:229
 msgid "Plugin activo."
-msgstr ""
+msgstr "Plugin is active."
 
 #: includes/Admin_Setup_Wizard.php:229
 msgid "Activa Convoca Common."
-msgstr ""
+msgstr "Activate Convoca Common."
 
 #. translators: %s: database table name
 #: includes/Admin_Setup_Wizard.php:235
 msgid "Correcto."
-msgstr ""
+msgstr "Correct."
 
 #. translators: %s: database table name
 #: includes/Admin_Setup_Wizard.php:235
 msgid "No encontrada."
-msgstr ""
+msgstr "Not found."
 
 #: includes/Admin_Setup_Wizard.php:239
 msgid "1. Infraestructura y Base de Datos"
-msgstr ""
+msgstr "1. Infrastructure and Database"
 
 #: includes/Admin_Setup_Wizard.php:266
 #: includes/Admin_Setup_Wizard.php:679
 msgid "2. Páginas del Sistema"
-msgstr ""
+msgstr "2. System Pages"
 
 #: includes/Admin_Setup_Wizard.php:300
 msgid "Crear páginas faltantes"
-msgstr ""
+msgstr "Create missing pages"
 
 #: includes/Admin_Setup_Wizard.php:314
 msgid "Otra operación de creación de páginas está en curso."
-msgstr ""
+msgstr "Another page creation operation is in progress."
 
 #: includes/Admin_Setup_Wizard.php:374
 #: includes/Admin_Setup_Wizard.php:701
 msgid "3. Planes de Membresía"
-msgstr ""
+msgstr "3. Membership Plans"
 
 #: includes/Admin_Setup_Wizard.php:376
 msgid "No se han detectado planes. Activa Convoca Members para configurarlos."
-msgstr ""
+msgstr "No plans detected. Activate Convoca Members to set them up."
 
 #: includes/Admin_Setup_Wizard.php:378
 msgid "Marca los planes disponibles, edita su nombre, modalidad y precio anual:"
-msgstr ""
+msgstr "Check the available plans and edit their name, type, and annual price:"
 
 #: includes/Admin_Setup_Wizard.php:386
 #: includes/Admin_Setup_Wizard.php:546
 msgid "Activo"
-msgstr ""
+msgstr "Active"
 
 #: includes/Admin_Setup_Wizard.php:387
 msgid "Nombre visible"
-msgstr ""
+msgstr "Display name"
 
 #: includes/Admin_Setup_Wizard.php:388
 msgid "ID corto"
-msgstr ""
+msgstr "Short ID"
 
 #: includes/Admin_Setup_Wizard.php:389
 msgid "Modalidad"
-msgstr ""
+msgstr "Type"
 
 #: includes/Admin_Setup_Wizard.php:390
 msgid "Precio (€)"
-msgstr ""
+msgstr "Price (€)"
 
 #: includes/Admin_Setup_Wizard.php:412
 msgid "Solo minúsculas, números y guiones"
-msgstr ""
+msgstr "Lowercase letters, numbers, and hyphens only"
 
 #: includes/Admin_Setup_Wizard.php:427
 msgid "Guardar planes"
-msgstr ""
+msgstr "Save plans"
 
 #: includes/Admin_Setup_Wizard.php:430
 msgid "Los planes se guardan en Convoca Members (Ajustes → Miembros → Planes) y se aplican al formulario de alta."
-msgstr ""
+msgstr "Plans are saved in Convoca Members (Settings → Members → Plans) and applied to the signup form."
 
 #: includes/Admin_Setup_Wizard.php:441
 msgid "4. Configuración de Redsys"
-msgstr ""
+msgstr "4. Redsys Setup"
 
 #: includes/Admin_Setup_Wizard.php:448
 msgid "Merchant Code"
-msgstr ""
+msgstr "Merchant Code"
 
 #: includes/Admin_Setup_Wizard.php:452
 msgid "Secret Key"
-msgstr ""
+msgstr "Secret Key"
 
 #: includes/Admin_Setup_Wizard.php:456
 #: includes/Admin_Setup_Wizard.php:481
 msgid "Guardar"
-msgstr ""
+msgstr "Save"
 
 #: includes/Admin_Setup_Wizard.php:466
 msgid "5. Convoca Shifts"
-msgstr ""
+msgstr "5. Convoca Shifts"
 
 #: includes/Admin_Setup_Wizard.php:473
 msgid "Hora de apertura"
-msgstr ""
+msgstr "Opening time"
 
 #: includes/Admin_Setup_Wizard.php:477
 msgid "Hora de cierre"
-msgstr ""
+msgstr "Closing time"
 
 #: includes/Admin_Setup_Wizard.php:498
 msgid "Fichas de socios, cuotas, carnets digitales y área personal."
-msgstr ""
+msgstr "Member records, dues, digital cards, and personal area."
 
 #: includes/Admin_Setup_Wizard.php:503
 msgid "Inscripciones a actividades, listas de espera y asistencia."
-msgstr ""
+msgstr "Activity enrollments, waitlists, and attendance."
 
 #: includes/Admin_Setup_Wizard.php:508
 msgid "Cobro de cuotas con tarjeta o Bizum vía Redsys."
-msgstr ""
+msgstr "Dues collection via card or Bizum through Redsys."
 
 #: includes/Admin_Setup_Wizard.php:513
 msgid "Turnos de voluntariado con calendario y check-in."
-msgstr ""
+msgstr "Volunteer shifts with calendar and check-in."
 
 #: includes/Admin_Setup_Wizard.php:517
 #: includes/Admin_Setup_Wizard.php:742
 msgid "Convoca Publisher"
-msgstr ""
+msgstr "Convoca Publisher"
 
 #: includes/Admin_Setup_Wizard.php:518
 msgid "Publica en 7 redes sociales desde una sola entrada."
-msgstr ""
+msgstr "Publish to 7 social networks from a single post."
 
 #: includes/Admin_Setup_Wizard.php:522
 #: includes/Admin_Setup_Wizard.php:743
 msgid "Convoca Assistant"
-msgstr ""
+msgstr "Convoca Assistant"
 
 #: includes/Admin_Setup_Wizard.php:523
 msgid "Asistente conversacional local, sin IA, sin enviar datos."
-msgstr ""
+msgstr "Local conversational assistant, no AI, no data sent."
 
 #: includes/Admin_Setup_Wizard.php:528
 msgid "6. El Ecosistema Convoca"
-msgstr ""
+msgstr "6. The Convoca Ecosystem"
 
 #: includes/Admin_Setup_Wizard.php:531
 msgid "Tema de los documentos guardado."
-msgstr ""
+msgstr "Document theme saved."
 
 #: includes/Admin_Setup_Wizard.php:535
 msgid "Cada módulo es un plugin independiente: funciona solo o en conjunto con el resto. Todo es open source y los datos viven en tu propia web."
-msgstr ""
+msgstr "Each module is an independent plugin: it works on its own or together with the rest. Everything is open source and your data stays on your own site."
 
 #: includes/Admin_Setup_Wizard.php:546
 msgid "No instalado"
-msgstr ""
+msgstr "Not installed"
 
 #: includes/Admin_Setup_Wizard.php:552
 msgid "💡 Importar tus socios actuales: ve a Miembros → Importar CSV y arrastra tu hoja de Excel. En segundos tendrás todas las fichas digitales."
-msgstr ""
+msgstr "💡 Import your current members: go to Members → Import CSV and drag in your Excel sheet. In seconds you'll have all the digital records."
 
 #: includes/Admin_Setup_Wizard.php:555
 msgid "¿Necesitas instalar algún módulo? Encuéntralos en WordPress.org o en getconvoca.app — los módulos base son gratuitos para siempre."
-msgstr ""
+msgstr "Need to install a module? Find them on WordPress.org or at getconvoca.app — the base modules are free forever."
 
 #: includes/Admin_Setup_Wizard.php:558
 #: includes/Admin_Setup_Wizard.php:567
 msgid "Tema de los documentos"
-msgstr ""
+msgstr "Document theme"
 
 #: includes/Admin_Setup_Wizard.php:560
 msgid "Elige el estilo por defecto de carnets, certificados y emails transaccionales. Podrás cambiarlo después en Ajustes → Documentos."
-msgstr ""
+msgstr "Choose the default style for cards, certificates, and transactional emails. You can change it later in Settings → Documents."
 
 #: includes/Admin_Setup_Wizard.php:571
 msgid "Claro (por defecto)"
-msgstr ""
+msgstr "Light (default)"
 
 #: includes/Admin_Setup_Wizard.php:576
 msgid "Oscuro"
-msgstr ""
+msgstr "Dark"
 
 #: includes/Admin_Setup_Wizard.php:580
 msgid "Guardar tema"
-msgstr ""
+msgstr "Save theme"
 
 #: includes/Admin_Setup_Wizard.php:592
 msgid "7. Finalización"
-msgstr ""
+msgstr "7. Finish"
 
 #: includes/Admin_Setup_Wizard.php:627
 msgid "Finalizar configuración"
-msgstr ""
+msgstr "Finish setup"
 
 #: includes/Admin_Setup_Wizard.php:630
 msgid "Faltan requisitos obligatorios. Revisa los pasos marcados en ámbar."
-msgstr ""
+msgstr "Required items are missing. Review the steps marked in amber."
 
 #: includes/Admin_Setup_Wizard.php:654
 msgid "1. Infraestructura"
-msgstr ""
+msgstr "1. Infrastructure"
 
 #: includes/Admin_Setup_Wizard.php:657
 msgid "Convoca Common activo."
-msgstr ""
+msgstr "Convoca Common is active."
 
 #: includes/Admin_Setup_Wizard.php:657
 msgid "Convoca Common NO activo."
-msgstr ""
+msgstr "Convoca Common is NOT active."
 
 #: includes/Admin_Setup_Wizard.php:658
 msgid "Tablas de base de datos creadas."
-msgstr ""
+msgstr "Database tables created."
 
 #: includes/Admin_Setup_Wizard.php:658
 msgid "Faltan tablas de base de datos."
-msgstr ""
+msgstr "Database tables are missing."
 
 #: includes/Admin_Setup_Wizard.php:660
 msgid "Ejecuta el paso 1 para crear la infraestructura."
-msgstr ""
+msgstr "Run step 1 to create the infrastructure."
 
 #: includes/Admin_Setup_Wizard.php:665
 msgid "Alta de Socios"
-msgstr ""
+msgstr "Member Signup"
 
 #: includes/Admin_Setup_Wizard.php:666
 msgid "Mi Panel de Socio"
-msgstr ""
+msgstr "My Member Dashboard"
 
 #: includes/Admin_Setup_Wizard.php:667
 msgid "Página de Pago"
-msgstr ""
+msgstr "Payment Page"
 
 #: includes/Admin_Setup_Wizard.php:682
 msgid "Crea las páginas pendientes en el paso 2."
-msgstr ""
+msgstr "Create the pending pages in step 2."
 
 #: includes/Admin_Setup_Wizard.php:704
 msgid "Sin planes activos."
-msgstr ""
+msgstr "No active plans."
 
 #. translators: %d: número de planes activos
 #: includes/Admin_Setup_Wizard.php:706
 #, php-format
 msgid "%d planes activos:"
-msgstr ""
+msgstr "%d active plans:"
 
 #: includes/Admin_Setup_Wizard.php:709
 msgid "Activa al menos un plan en el paso 3."
-msgstr ""
+msgstr "Activate at least one plan in step 3."
 
 #: includes/Admin_Setup_Wizard.php:717
 msgid "4. Pagos (Redsys)"
-msgstr ""
+msgstr "4. Payments (Redsys)"
 
 #: includes/Admin_Setup_Wizard.php:719
 msgid "Merchant Code configurado."
-msgstr ""
+msgstr "Merchant Code is configured."
 
 #: includes/Admin_Setup_Wizard.php:719
 msgid "Merchant Code vacío."
-msgstr ""
+msgstr "Merchant Code is empty."
 
 #: includes/Admin_Setup_Wizard.php:720
 msgid "Completa la configuración de Redsys en el paso 4."
-msgstr ""
+msgstr "Complete the Redsys setup in step 4."
 
 #: includes/Admin_Setup_Wizard.php:727
 msgid "5. Turnos de Voluntariado"
-msgstr ""
+msgstr "5. Volunteer Shifts"
 
 #. translators: 1: opening time, 2: closing time.
 #: includes/Admin_Setup_Wizard.php:729
 #, php-format
 msgid "Horario del centro: %1$s – %2$s"
-msgstr ""
+msgstr "Center hours: %1$s – %2$s"
 
 #. translators: 1: opening time, 2: closing time.
 #: includes/Admin_Setup_Wizard.php:730
 msgid "Define el horario en el paso 5."
-msgstr ""
+msgstr "Set the hours in step 5."
 
 #: includes/Admin_Setup_Wizard.php:753
 msgid "6. Ecosistema Convoca"
-msgstr ""
+msgstr "6. Convoca Ecosystem"
 
 #: includes/Admin_Setup_Wizard.php:757
 msgid "Los 6 módulos están instalados y activos."
-msgstr ""
+msgstr "All 6 modules are installed and active."
 
 #. translators: %d: número de módulos activos de 6
 #: includes/Admin_Setup_Wizard.php:759
 #, php-format
 msgid "%d de 6 módulos activos."
-msgstr ""
+msgstr "%d of 6 modules active."
 
 #: includes/Admin_Setup_Wizard.php:760
 msgid "Faltan: "
-msgstr ""
+msgstr "Missing: "
 
 #: includes/Admin_Setup_Wizard.php:762
 msgid "Activa los módulos restantes en el paso 6."
-msgstr ""
+msgstr "Activate the remaining modules in step 6."
 
 #. translators: %s: slug en conflicto
 #: includes/Admin_Setup_Wizard.php:832
 #, php-format
 msgid "El ID corto «%s» ya está en uso. Elige otro."
-msgstr ""
+msgstr "The short ID \"%s\" is already in use. Choose another one."
 
 #. translators: %s: slug en conflicto
 #: includes/Admin_Setup_Wizard.php:833
 msgid "No se guardó: el ID corto introducido ya existe."
-msgstr ""
+msgstr "Not saved: the short ID entered already exists."
 
 #: includes/Admin_Setup_Wizard.php:893
 msgid "Anterior"
-msgstr ""
+msgstr "Previous"
 
 #: includes/Admin_Setup_Wizard.php:898
 msgid "Siguiente"
-msgstr ""
+msgstr "Next"
 
 #: includes/Admin_Templates.php:43
 msgid "Plantillas PDF (Convoca)"
-msgstr ""
+msgstr "PDF Templates (Convoca)"
 
 #: includes/Admin_Templates.php:44
 msgid "Plantillas PDF"
-msgstr ""
+msgstr "PDF Templates"
 
 #: includes/Admin_Templates.php:63
 msgid "Plantillas restauradas a sus valores por defecto."
-msgstr ""
+msgstr "Templates restored to their default values."
 
 #. translators: %s: template name
 #: includes/Admin_Templates.php:85
 #, php-format
 msgid "Error: La plantilla \"%s\" contiene HTML inválido o peligroso."
-msgstr ""
+msgstr "Error: The \"%s\" template contains invalid or dangerous HTML."
 
 #: includes/Admin_Templates.php:101
 msgid "Plantillas actualizadas correctamente."
-msgstr ""
+msgstr "Templates updated successfully."
 
 #: includes/Admin_Templates.php:392
 msgid "Convoca: Las plantillas PDF se han restaurado a sus valores por defecto debido a datos corruptos. Se ha guardado una copia de seguridad."
-msgstr ""
+msgstr "Convoca: The PDF templates have been restored to their default values due to corrupted data. A backup has been saved."
 
 #: includes/Admin_Templates.php:414
 msgid "Convoca: Algunas plantillas PDF estaban corruptas. Se han restaurado a sus valores por defecto. Se ha guardado una copia de seguridad."
-msgstr ""
+msgstr "Convoca: Some PDF templates were corrupted. They have been restored to their default values. A backup has been saved."
 
 #: includes/Admin_Templates.php:436
 msgid "Acuerdo de Incorporación"
-msgstr ""
+msgstr "Enrollment Agreement"
 
 #: includes/Admin_Templates.php:437
 msgid "Anexo de Voluntariado"
-msgstr ""
+msgstr "Volunteering Annex"
 
 #: includes/Admin_Templates.php:438
 msgid "Certificado"
-msgstr ""
+msgstr "Certificate"
 
 #: includes/Admin_Templates.php:439
 msgid "Acuerdo de Desvinculación"
-msgstr ""
+msgstr "Withdrawal Agreement"
 
 #: includes/Admin_Templates.php:476
 msgid "Plantillas de Documentos (PDF)"
-msgstr ""
+msgstr "Document Templates (PDF)"
 
 #: includes/Admin_Templates.php:477
 msgid "Utilidades comunes e infraestructura de documentos"
-msgstr ""
+msgstr "Common utilities and document infrastructure"
 
 #: includes/Admin_Templates.php:482
 msgid "Aquí puedes modificar el diseño HTML de los documentos generados por el sistema de firmas (Convoca Common)."
-msgstr ""
+msgstr "Here you can modify the HTML design of the documents generated by the signing system (Convoca Common)."
 
 #. translators: %1$s, %2$s, %3$s: template placeholder examples like {{nombre}}, {{dni}}, {{fecha}}
 #: includes/Admin_Templates.php:486
 #, php-format
 msgid "Utiliza etiquetas como %1$s, %2$s, %3$s para que se rellenen automáticamente según el contexto."
-msgstr ""
+msgstr "Use tags like %1$s, %2$s, %3$s so they are filled in automatically based on the context."
 
 #: includes/Admin_Templates.php:513
 msgid "Código HTML:"
-msgstr ""
+msgstr "HTML code:"
 
 #: includes/Admin_Templates.php:523
 msgid "Guardar Cambios"
-msgstr ""
+msgstr "Save Changes"
 
 #: includes/Admin_Templates.php:529
 msgid "¿Estás seguro de que deseas restaurar las plantillas por defecto? Perderás cualquier cambio que hayas hecho en el HTML."
-msgstr ""
+msgstr "Are you sure you want to restore the default templates? You will lose any changes you made to the HTML."
 
 #: includes/Admin_Templates.php:532
 msgid "Restaurar Plantillas por Defecto"
-msgstr ""
+msgstr "Restore Default Templates"
 
 #: includes/Blocks_Common.php:41
 msgid "Inscripciones"
-msgstr ""
+msgstr "Enrollments"
 
 #: includes/Blocks_Common.php:46
 msgid "Socios"
-msgstr ""
+msgstr "Members"
 
 #: includes/Blocks_Common.php:61
 msgid "General"
-msgstr ""
+msgstr "General"
 
 #: includes/Blocks_Common.php:83
 msgid "Metadato de Post"
-msgstr ""
+msgstr "Post Metadata"
 
 #: includes/Capabilities.php:44
 msgid "Gestionar mis turnos (voluntarios)"
-msgstr ""
+msgstr "Manage my shifts (volunteers)"
 
 #: includes/Capabilities.php:48
 msgid "Gestionar turnos del calendario (crear, editar)"
-msgstr ""
+msgstr "Manage calendar shifts (create, edit)"
 
 #: includes/Capabilities.php:52
 msgid "Ver estadísticas de turnos"
-msgstr ""
+msgstr "View shift statistics"
 
 #: includes/Capabilities.php:56
 msgid "Auditoría de horas de voluntarios"
-msgstr ""
+msgstr "Volunteer hours audit"
 
 #: includes/Capabilities.php:62
 msgid "Hacer check-in de asistentes"
-msgstr ""
+msgstr "Check in attendees"
 
 #: includes/Capabilities.php:66
 msgid "Gestionar evaluaciones"
-msgstr ""
+msgstr "Manage evaluations"
 
 #: includes/Capabilities.php:70
 msgid "Ver informes de actividades"
-msgstr ""
+msgstr "View activity reports"
 
 #: includes/Capabilities.php:76
 msgid "Gestionar horas de voluntarios (aprobar)"
-msgstr ""
+msgstr "Manage volunteer hours (approve)"
 
 #: includes/Capabilities.php:80
 msgid "Exportar listado de socios"
-msgstr ""
+msgstr "Export member list"
 
 #: includes/Capabilities.php:84
 msgid "Gestionar webhooks"
-msgstr ""
+msgstr "Manage webhooks"
 
 #: includes/Capabilities.php:90
 msgid "Ver pagos y dashboard"
-msgstr ""
+msgstr "View payments and dashboard"
 
 #: includes/Capabilities.php:94
 msgid "Gestionar pagos manualmente"
-msgstr ""
+msgstr "Manage payments manually"
 
 #: includes/Capabilities.php:100
 msgid "Ver logs del sistema"
-msgstr ""
+msgstr "View system logs"
 
 #: includes/Capabilities.php:104
 msgid "Gestionar copias de seguridad"
-msgstr ""
+msgstr "Manage backups"
 
 #. translators: 1: module slug, 2: incompatibility type, 3: required value
 #: includes/class-module-registry.php:173
 #, php-format
 msgid "Convoca module \"%1$s\" is incompatible (%2$s: %3$s) and will not run."
-msgstr ""
+msgstr "Convoca module \"%1$s\" is incompatible (%2$s: %3$s) and will not run."
 
 #: includes/License_Manager.php:43
 msgid "Convoca Members PRO"
-msgstr ""
+msgstr "Convoca Members PRO"
 
 #: includes/License_Manager.php:44
 msgid "Convoca Enroll PRO"
-msgstr ""
+msgstr "Convoca Enroll PRO"
 
 #: includes/License_Manager.php:45
 msgid "Convoca Gateway PRO"
-msgstr ""
+msgstr "Convoca Gateway PRO"
 
 #: includes/License_Manager.php:46
 msgid "Convoca Shifts PRO"
-msgstr ""
+msgstr "Convoca Shifts PRO"
 
 #: includes/License_Manager.php:47
 msgid "Gamificación Voluntariado"
-msgstr ""
+msgstr "Volunteering Gamification"
 
 #: includes/License_Manager.php:48
 msgid "Memorias PDF automáticas"
-msgstr ""
+msgstr "Automatic PDF reports"
 
 #: includes/License_Manager.php:49
 msgid "PWA Check-in QR"
-msgstr ""
+msgstr "PWA QR Check-in"
 
 #: includes/License_Manager.php:50
 msgid "Analytics avanzados"
-msgstr ""
+msgstr "Advanced analytics"
 
 #: includes/License_Manager.php:51
 msgid "Webhooks salientes"
-msgstr ""
+msgstr "Outgoing webhooks"
 
 #: includes/License_Manager.php:52
 msgid "Convoca Publisher PRO"
-msgstr ""
+msgstr "Convoca Publisher PRO"
 
 #: includes/License_Manager.php:53
 msgid "Convoca Theme PRO"
-msgstr ""
+msgstr "Convoca Theme PRO"
 
 #: includes/License_Manager.php:160
 msgid "Activa"
-msgstr ""
+msgstr "Active"
 
 #: includes/License_Manager.php:161
 msgid "Expirada"
-msgstr ""
+msgstr "Expired"
 
 #: includes/License_Manager.php:162
 msgid "Invalida"
-msgstr ""
+msgstr "Invalid"
 
 #: includes/License_Manager.php:163
 msgid "Inactiva"
-msgstr ""
+msgstr "Inactive"
 
 #: includes/License_Manager.php:216
 msgid "Licencia guardada. La validación remota se realizará cuando el servidor esté disponible."
-msgstr ""
+msgstr "License saved. Remote validation will run when the server is available."
 
 #: includes/License_Manager.php:225
 msgid "Error de validación con el servidor."
-msgstr ""
+msgstr "Server validation error."
 
 #: includes/License_Manager.php:267
 msgid "Sin licencia activa."
-msgstr ""
+msgstr "No active license."
 
 #: includes/License_Manager.php:292
 #: includes/License_Manager.php:457
 msgid "Licencia desactivada."
-msgstr ""
+msgstr "License deactivated."
 
 #: includes/License_Manager.php:304
 #: includes/License_Manager.php:325
 msgid "Licencia Convoca"
-msgstr ""
+msgstr "Convoca License"
 
 #: includes/License_Manager.php:305
 msgid "Licencia"
-msgstr ""
+msgstr "License"
 
 #: includes/License_Manager.php:330
 msgid "Estado de la licencia"
-msgstr ""
+msgstr "License status"
 
 #: includes/License_Manager.php:343
 msgid "Clave"
-msgstr ""
+msgstr "Key"
 
 #: includes/License_Manager.php:349
 msgid "Válida hasta"
-msgstr ""
+msgstr "Valid until"
 
 #: includes/License_Manager.php:365
 msgid "Licencia activa"
-msgstr ""
+msgstr "Active license"
 
 #: includes/License_Manager.php:366
 msgid "Tu licencia está activa. Puedes desactivarla para moverla a otro sitio."
-msgstr ""
+msgstr "Your license is active. You can deactivate it to move it to another site."
 
 #: includes/License_Manager.php:370
 msgid "¿Desactivar la licencia de este sitio?"
-msgstr ""
+msgstr "Deactivate the license for this site?"
 
 #: includes/License_Manager.php:371
 msgid "Desactivar licencia"
-msgstr ""
+msgstr "Deactivate license"
 
 #: includes/License_Manager.php:375
 #: includes/License_Manager.php:386
 msgid "Activar licencia"
-msgstr ""
+msgstr "Activate license"
 
 #: includes/License_Manager.php:376
 msgid "Introduce tu clave de licencia para activar las funcionalidades PRO."
-msgstr ""
+msgstr "Enter your license key to activate the PRO features."
 
 #: includes/License_Manager.php:390
 msgid "¿Sin licencia?"
-msgstr ""
+msgstr "No license?"
 
 #: includes/License_Manager.php:391
 msgid "Adquiere una aquí"
-msgstr ""
+msgstr "Get one here"
 
 #: includes/License_Manager.php:399
 msgid "Funcionalidades"
-msgstr ""
+msgstr "Features"
 
 #: includes/Memory_Report.php:104
 msgid "Error al generar la memoria."
-msgstr ""
+msgstr "Error generating the report."
 
 #: includes/Notifications.php:189
 msgid "<span class=\"conv-bell-icon"
-msgstr ""
+msgstr "<span class=\"conv-bell-icon"
 
 #. translators: %d: number of notifications
 #: includes/Notifications.php:208
 #, php-format
 msgid "Notificaciones (%d)"
-msgstr ""
+msgstr "Notifications (%d)"
 
 #: includes/Notifications.php:210
 msgid "Marcar todas leídas"
-msgstr ""
+msgstr "Mark all as read"
 
 #: includes/Notifications.php:230
 msgid "atrás"
-msgstr ""
+msgstr "back"
 
 #: includes/Notifications.php:232
 msgid "Descartar"
-msgstr ""
+msgstr "Dismiss"
 
 #: includes/Notifications.php:239
 msgid "Ver todas"
-msgstr ""
+msgstr "View all"
 
 #. translators: %s: member name
 #: includes/Notifications.php:393
 #, php-format
 msgid "Nuevo socio pendiente: %s"
-msgstr ""
+msgstr "New member pending: %s"
 
 #: includes/Notifications.php:397
 msgid "Nuevo socio"
-msgstr ""
+msgstr "New member"
 
 #. translators: %s: order ID
 #: includes/Notifications.php:402
 #, php-format
 msgid "Pago fallido: %s"
-msgstr ""
+msgstr "Failed payment: %s"
 
 #: includes/Notifications.php:406
 #: includes/Webhook_Manager.php:49
 msgid "Pago fallido"
-msgstr ""
+msgstr "Failed payment"
 
 #. translators: %s: order ID
 #: includes/Notifications.php:414
 #, php-format
 msgid "❌ Tu pago (%s) no pudo procesarse. Revisa tu método de pago."
-msgstr ""
+msgstr "❌ Your payment (%s) could not be processed. Check your payment method."
 
 #. translators: %s: member name
 #: includes/Notifications.php:423
 #, php-format
 msgid "Horas pendientes de aprobar: %s"
-msgstr ""
+msgstr "Hours pending approval: %s"
 
 #: includes/Notifications.php:427
 msgid "Horas voluntariado"
-msgstr ""
+msgstr "Volunteer hours"
 
 #. translators: %s: person name
 #: includes/Notifications.php:432
 #, php-format
 msgid "Inscripción pendiente de pago: %s"
-msgstr ""
+msgstr "Enrollment pending payment: %s"
 
 #: includes/Notifications.php:436
 msgid "Pago pendiente"
-msgstr ""
+msgstr "Pending payment"
 
 #: includes/Notifications.php:457
 msgid "⚠️ Tienes una inscripción pendiente de pago. Revisa tu panel para completarla."
-msgstr ""
+msgstr "⚠️ You have an enrollment pending payment. Check your dashboard to complete it."
 
 #. translators: %s: user display name
 #: includes/Notifications.php:472
 #, php-format
 msgid "Nueva solicitud de voluntariado: %s"
-msgstr ""
+msgstr "New volunteering request: %s"
 
 #: includes/Notifications.php:476
 msgid "Voluntariado"
-msgstr ""
+msgstr "Volunteering"
 
 #. translators: %s: post title
 #: includes/Notifications.php:486
 #, php-format
 msgid "Solicitud de baja: %s"
-msgstr ""
+msgstr "Cancellation request: %s"
 
 #: includes/Notifications.php:490
 msgid "Solicitud de baja"
-msgstr ""
+msgstr "Cancellation request"
 
 #: includes/Notifications.php:521
 msgid "🎉 ¡Tu solicitud de voluntariado ha sido aprobada! Bienvenido/a al equipo."
-msgstr ""
+msgstr "🎉 Your volunteering request has been approved! Welcome to the team."
 
 #. translators: %s: error message from the push notification service
 #: includes/Push_Notifier.php:90
 #, php-format
 msgid "Push notification error: %s"
-msgstr ""
+msgstr "Push notification error: %s"
 
 #. translators: %s: notification title
 #: includes/Push_Notifier.php:100
 #, php-format
 msgid "Push notification sent: %s"
-msgstr ""
+msgstr "Push notification sent: %s"
 
 #. translators: %1$d: HTTP status code, %2$s: response body
 #: includes/Push_Notifier.php:108
 #, php-format
 msgid "Push notification HTTP %1$d: %2$s"
-msgstr ""
+msgstr "Push notification HTTP %1$d: %2$s"
 
 #: includes/Signature.php:68
 msgid "La librería Dompdf no está instalada. Por favor, contacta con el administrador."
-msgstr ""
+msgstr "The Dompdf library is not installed. Please contact the administrator."
 
 #: includes/Signature.php:168
 msgid "Error al renderizar el PDF (salida vacía)."
-msgstr ""
+msgstr "Error rendering the PDF (empty output)."
 
 #. translators: %s: directory path
 #: includes/Signature.php:183
 #, php-format
 msgid "No se pudo crear el directorio %s. Comprueba los permisos de escritura del servidor."
-msgstr ""
+msgstr "Could not create the directory %s. Check the server's write permissions."
 
 #. translators: %s: directory path
 #: includes/Signature.php:191
 #, php-format
 msgid "El directorio %s no tiene permisos de escritura."
-msgstr ""
+msgstr "The directory %s is not writable."
 
 #. translators: %s: file path
 #: includes/Signature.php:203
 #, php-format
 msgid "No se pudo escribir el archivo PDF en %s. Comprueba los permisos de escritura."
-msgstr ""
+msgstr "Could not write the PDF file to %s. Check the write permissions."
 
 #: includes/Signature.php:209
 msgid "Excepción durante la generación del PDF: "
-msgstr ""
+msgstr "Exception while generating the PDF: "
 
 #. translators: %s: directory path
 #: includes/Signature.php:286
 #, php-format
 msgid "No se pudo crear el archivo de protección .htaccess en %s."
-msgstr ""
+msgstr "Could not create the .htaccess protection file in %s."
 
 #. translators: %s: directory path
 #: includes/Signature.php:294
 #, php-format
 msgid "No se pudo crear el archivo de protección index.php en %s."
-msgstr ""
+msgstr "Could not create the index.php protection file in %s."
 
 #: includes/Uninstall_Settings.php:32
 #: includes/Uninstall_Settings.php:33
 msgid "Desinstalación"
-msgstr ""
+msgstr "Uninstall"
 
 #: includes/Uninstall_Settings.php:73
 msgid "Desinstalación de Convoca"
-msgstr ""
+msgstr "Convoca Uninstall"
 
 #: includes/Uninstall_Settings.php:76
 msgid "Qué debe pasar con los datos cuando se desinstale un plugin de Convoca."
-msgstr ""
+msgstr "What should happen to the data when a Convoca plugin is uninstalled."
 
 #: includes/Uninstall_Settings.php:82
 msgid "Aviso:"
-msgstr ""
+msgstr "Note:"
 
 #: includes/Uninstall_Settings.php:83
 msgid "la constante CONVOCA_KEEP_DATA_ON_UNINSTALL está definida en wp-config.php y fuerza «conservar los datos». Mientras esté puesta, este ajuste no tiene efecto."
-msgstr ""
+msgstr "the CONVOCA_KEEP_DATA_ON_UNINSTALL constant is defined in wp-config.php and forces \"keep the data\". While it is set, this setting has no effect."
 
 #: includes/Uninstall_Settings.php:93
 msgid "Al desinstalar"
-msgstr ""
+msgstr "On uninstall"
 
 #: includes/Uninstall_Settings.php:98
 msgid "Conservar los datos (recomendado si vas a reinstalar)"
-msgstr ""
+msgstr "Keep the data (recommended if you plan to reinstall)"
 
 #: includes/Uninstall_Settings.php:101
 msgid "Marcado: se borran los ficheros del plugin pero se quedan sus opciones, tablas, inscripciones y ficheros subidos. Sin marcar: la desinstalación borra todo y no se puede deshacer."
-msgstr ""
+msgstr "Checked: the plugin files are deleted but its options, tables, enrollments, and uploaded files remain. Unchecked: uninstalling deletes everything and cannot be undone."
 
 #: includes/Utils.php:115
 msgid "La pasarela de pago no está activa."
-msgstr ""
+msgstr "The payment gateway is not active."
 
 #: includes/Utils.php:636
 msgid "Se han detectado problemas críticos que impiden el funcionamiento."
-msgstr ""
+msgstr "Critical issues have been detected that prevent operation."
 
 #: includes/Utils.php:637
 msgid "Estado: Errores detectados"
-msgstr ""
+msgstr "Status: Errors detected"
 
 #: includes/Utils.php:641
 msgid "Hay advertencias que podrían afectar el funcionamiento."
-msgstr ""
+msgstr "There are warnings that could affect operation."
 
 #: includes/Utils.php:642
 msgid "Estado: Advertencias"
-msgstr ""
+msgstr "Status: Warnings"
 
 #: includes/Utils.php:646
 msgid "Todos los componentes están configurados correctamente."
-msgstr ""
+msgstr "All components are configured correctly."
 
 #: includes/Utils.php:647
 msgid "Estado: Todo correcto"
-msgstr ""
+msgstr "Status: All good"
 
 #: includes/Utils.php:675
 msgid "Reparar"
-msgstr ""
+msgstr "Repair"
 
 #: includes/Utils.php:868
 #: includes/Utils.php:875
 msgid "Aportación"
-msgstr ""
+msgstr "Contribution"
 
 #: includes/Utils.php:872
 msgctxt "plural"
 msgid "Aportaciones"
-msgstr ""
+msgstr "Contributions"
 
 #: includes/Utils.php:878
 msgctxt "trasgu"
 msgid "Aportación Trasgu"
-msgstr ""
+msgstr "Trasgu Contribution"
 
 #: includes/Utils.php:881
 msgctxt "socio"
 msgid "Aportación sugerida para socios"
-msgstr ""
+msgstr "Suggested contribution for members"
 
 #: includes/Utils.php:884
 msgctxt "no-socio"
 msgid "Aportación sugerida para no socios"
-msgstr ""
+msgstr "Suggested contribution for non-members"
 
 #: includes/Webhook_Manager.php:43
 msgid "Nuevo socio registrado"
-msgstr ""
+msgstr "New member registered"
 
 #: includes/Webhook_Manager.php:44
 msgid "Socio activado"
-msgstr ""
+msgstr "Member activated"
 
 #: includes/Webhook_Manager.php:45
 msgid "Socio suspendido"
-msgstr ""
+msgstr "Member suspended"
 
 #: includes/Webhook_Manager.php:46
 msgid "Membresía expirada"
-msgstr ""
+msgstr "Membership expired"
 
 #: includes/Webhook_Manager.php:47
 msgid "Membresía renovada"
-msgstr ""
+msgstr "Membership renewed"
 
 #: includes/Webhook_Manager.php:48
 msgid "Pago completado"
-msgstr ""
+msgstr "Payment completed"
 
 #: includes/Webhook_Manager.php:50
 msgid "Recordatorio de pago enviado"
-msgstr ""
+msgstr "Payment reminder sent"
 
 #: includes/Webhook_Manager.php:51
 msgid "Nueva inscripción"
-msgstr ""
+msgstr "New enrollment"
 
 #: includes/Webhook_Manager.php:52
 msgid "Inscripción cancelada"
-msgstr ""
+msgstr "Enrollment canceled"
 
 #: includes/Webhook_Manager.php:53
 msgid "Check-in realizado"
-msgstr ""
+msgstr "Check-in completed"
 
 #: includes/Webhook_Manager.php:54
 msgid "Horas de voluntariado registradas"
-msgstr ""
+msgstr "Volunteer hours logged"
 
 #: includes/Webhook_Manager.php:55
 msgid "Horas de voluntariado aprobadas"
-msgstr ""
+msgstr "Volunteer hours approved"
 
 #: includes/Webhook_Manager.php:724
 msgid "Test ping from "
-msgstr ""
+msgstr "Test ping from "
