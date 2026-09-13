@@ -42,6 +42,7 @@ class Security_Monitor {
 	/** Umbrales por ventana de 24h (configurables vía filtro). */
 	const THRESHOLDS = array(
 		'redsys_signature_failures' => 3,
+		'redsys_ip_rejections'      => 20,
 		'lock_contentions'          => 10,
 		'rest_unauthorized'         => 20,
 		'rate_limit_exceeded'       => 50,
@@ -134,6 +135,14 @@ class Security_Monitor {
 			);
 		}
 
+		if ( ( $counts['redsys_ip_rejections'] ?? 0 ) >= (int) $thresholds['redsys_ip_rejections'] ) {
+			$alerts[] = sprintf(
+				'🟡 Avisos de pago rechazados por IP no autorizada: %d en 24h (umbral %d). Lo normal es que sea alguien abriendo un enlace de pago desde su móvil; si no, revisa la lista de IPs de Redsys.',
+				$counts['redsys_ip_rejections'],
+				(int) $thresholds['redsys_ip_rejections']
+			);
+		}
+
 		if ( ( $counts['lock_contentions'] ?? 0 ) >= (int) $thresholds['lock_contentions'] ) {
 			$alerts[] = sprintf(
 				'🟠 Bloqueos recurrentes en convoca_locks: %d en 24h (umbral %d). Posible condición de carrera o proceso colgado.',
@@ -204,12 +213,25 @@ class Security_Monitor {
 					"SELECT COUNT(*) FROM {$table}
 					WHERE created_at > %s AND level = 'error'
 					AND context IN ('Gateway/Redsys','Gateway/Notification')
-					AND (message LIKE %s OR message LIKE %s OR message LIKE %s OR message LIKE %s OR message LIKE %s)",
+					AND (message LIKE %s OR message LIKE %s OR message LIKE %s OR message LIKE %s)",
 					$since,
 					'%firma%',
 					'%Firma%',
 					'%versión%',
-					'%version%',
+					'%version%'
+				)
+			),
+			// IPs no autorizadas en /notify: NO son fallos de firma, y contarlas como tales hacía
+			// que el aviso dijera «fallos de firma» y «posible ataque» cuando lo que había era
+			// alguien abriendo un enlace de pago desde su móvil (visto en producción). Se cuentan
+			// aparte y con su propio umbral, porque son ruido habitual.
+			'redsys_ip_rejections' => (int) $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(*) FROM {$table}
+					WHERE created_at > %s AND level = 'error'
+					AND context = 'Gateway/Notification'
+					AND message LIKE %s",
+					$since,
 					'%IP de origen%'
 				)
 			),
