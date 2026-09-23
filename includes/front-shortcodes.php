@@ -310,10 +310,12 @@ function shortcode_stats(): string {
 		if ( empty( $dato['value'] ) ) {
 			continue;
 		}
+		// El filtro ya garantiza 'value' y 'label' (lo que no viene bien formado se
+		// descarta en la fuente), así que aquí no hay nada que comprobar.
 		$salida .= sprintf(
 			'<p class="convoca-dato"><span class="convoca-dato__cifra">%s</span><span class="convoca-dato__etiqueta">%s</span></p>',
-			esc_html( $dato['value'] ),
-			esc_html( $dato['label'] ?? $clave )
+			esc_html( (string) $dato['value'] ),
+			esc_html( (string) $dato['label'] )
 		);
 	}
 
