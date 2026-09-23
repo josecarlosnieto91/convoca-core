@@ -349,28 +349,24 @@ class Admin_Setup_Wizard {
 				$all_mand = false;
 			}
 			if ( 'missing' === $state ) {
-				$notes[] = esc_html( __( 'No existe la página.', 'convoca-core' ) );
+				$notes[] = __( 'No existe la página.', 'convoca-core' );
 			} elseif ( 'no_shortcode' === $state ) {
-				$notes[] = esc_html(
-					sprintf(
-						/* translators: %s: shortcode esperado en la página */
-						__( 'Existe, pero su contenido no incluye %s.', 'convoca-core' ),
-						$info['sc']
-					)
+				$notes[] = sprintf(
+					/* translators: %s: shortcode esperado en la página */
+					__( 'Existe, pero su contenido no incluye %s.', 'convoca-core' ),
+					$info['sc']
 				);
 			}
 			if ( ! shortcode_exists( $tag ) ) {
-				$notes[] = esc_html(
-					sprintf(
-						/* translators: %s: plugin/shortcode name */
-						__( 'Ningún plugin activo registra %s: actívalo antes de crearla.', 'convoca-core' ),
-						$info['sc']
-					)
+				$notes[] = sprintf(
+					/* translators: %s: plugin/shortcode name */
+					__( 'Ningún plugin activo registra %s: actívalo antes de crearla.', 'convoca-core' ),
+					$info['sc']
 				);
 			}
 			echo '<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:15px 0;"><strong>' . esc_html( $info['title'] ) . '</strong>';
 			if ( $notes ) {
-				echo '<br><span style="color:#b32d2e;">' . implode( ' ', $notes ) . '</span>';
+				echo '<br><span style="color:#b32d2e;">' . esc_html( implode( ' ', $notes ) ) . '</span>';
 			}
 			echo '</td>';
 			echo '<td style="text-align:right;">' . ( 'ok' === $state ? '✅' : '⚠' ) . '</td></tr>';
