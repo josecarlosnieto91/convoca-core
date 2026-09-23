@@ -1,5 +1,19 @@
 # Changelog — convoca-core
 
+## v2.3.0 (2026-09-23)
+
+### 🏗️ Arquitectura
+- Los shortcodes de interfaz y contenido pasan a Core desde el mu-plugin privado de un sitio: `[convoca_menu]`, `[convoca_socials]`, `[convoca_relacionadas]`, `[convoca_stats]`, `[convoca_cuando]` y `[convoca_donde]` (`includes/front-shortcodes.php`). Con los plugins y el theme ya se pinta un sitio completo, sin código privado de nadie.
+- Los datos de evento de una entrada (marcarla como evento, fecha de inicio y fin, lugar) se gestionan desde Core (`includes/event-meta.php`): formulario, guardado y lectura. El theme sólo publica el schema.org y pinta lo que le da Core.
+- Redes del sitio: **una sola fuente**, el filtro `convoca_social_links`, que alimenta el shortcode y los tokens del theme (antes cada uno leía su filtro).
+- Cifras del sitio: `\Convoca\Core\site_stats()` con el filtro `convoca_site_stats` (antes `convoca_theme_stats`, en el theme).
+- Compatibilidad de datos: el mapa de claves heredadas de evento se declara desde el sitio con `convoca_event_meta_legacy_keys`; el nombre de una asociación no vive en el producto.
+
+### ⚠️ Migración
+- `convoca_theme_stats` → `convoca_site_stats`.
+- `convoca_theme_social_instagram/facebook/youtube/handle` → `convoca_social_links` (array servicio => URL, más `handle`).
+- `convoca_theme_get_stats()` → `\Convoca\Core\site_stats()`.
+
 ## v2.2.9 (2026-09-23)
 
 ### 🐛 Correcciones

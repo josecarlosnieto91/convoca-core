@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.2.9
+Stable tag: 2.3.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,13 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.3.0 =
+* Los shortcodes de interfaz y contenido (`[convoca_menu]`, `[convoca_socials]`, `[convoca_relacionadas]`, `[convoca_stats]`, `[convoca_cuando]`, `[convoca_donde]`) pasan a Core: vivían en un mu-plugin privado de un sitio, así que un sitio con los plugins y el theme no podía pintar su cabecera ni su pie.
+* Los datos de evento de una entrada (marcar un contenido como evento, fecha de inicio y fin, lugar) se gestionan desde Core, con su propio formulario en la ficha de edición.
+* Redes del sitio: filtro `convoca_social_links` (una sola fuente para el shortcode y para los tokens del theme).
+* Cifras del sitio: `convoca_site_stats()` y su filtro (antes `convoca_theme_stats`, del theme).
+* Claves heredadas de evento: el sitio las declara con el filtro `convoca_event_meta_legacy_keys` (Core no cablea el nombre de ninguna asociación).
 
 = 2.2.9 =
 * Corrección: el asistente de configuración escribía `[mi_panel]` en la página «Mi Panel de Socio». Nadie registra ese shortcode, así que la página se publicaba con el texto literal a la vista del visitante. Ahora escribe `[convoca_mi_area]`.
