@@ -221,8 +221,29 @@ window.convocaAdmin = window.convocaAdmin || {};
       previewSubject.textContent = replaceVariables(subjectEl.value);
     }
     if (bodyEl && previewBody) {
-      previewBody.innerHTML = replaceVariables(bodyEl.value);
+      renderPreviewFrame(previewBody, replaceVariables(bodyEl.value));
     }
+  }
+
+  /**
+   * Pinta el HTML del correo en el iframe de vista previa.
+   *
+   * El cuerpo de la plantilla ES HTML (es un correo), así que no se puede
+   * escapar sin perder la previsualización. Se pinta dentro de un iframe con
+   * `sandbox` (sin scripts) y a través de un blob: así el HTML del correo nunca
+   * entra en el documento del panel, que era el aviso de CodeQL.
+   */
+  function renderPreviewFrame(frame, html) {
+    const doc = '<!doctype html><html><head><meta charset="utf-8"><style>'
+      + 'body{margin:0;font-family:Arial,sans-serif;color:#1a1a1a}'
+      + 'h1,h2,h3{margin-top:0}</style></head><body>' + html + '</body></html>';
+
+    if (frame.dataset.convBlobUrl) {
+      URL.revokeObjectURL(frame.dataset.convBlobUrl);
+    }
+    const url = URL.createObjectURL(new Blob([doc], { type: 'text/html' }));
+    frame.dataset.convBlobUrl = url;
+    frame.src = url;
   }
 
   function initPreview(slug) {
@@ -249,14 +270,22 @@ window.convocaAdmin = window.convocaAdmin || {};
 
     if (subjectEl) {
       const subjLine = document.createElement('p');
-      subjLine.innerHTML = '<strong>Asunto:</strong> <span id="conv-preview-subject-' + slug + '">' + replaceVariables(subjectEl.value) + '</span>';
+      const subjLabel = document.createElement('strong');
+      subjLabel.textContent = 'Asunto: ';
+      const subjValue = document.createElement('span');
+      subjValue.id = 'conv-preview-subject-' + slug;
+      subjValue.textContent = replaceVariables(subjectEl.value);
+      subjLine.appendChild(subjLabel);
+      subjLine.appendChild(subjValue);
       previewCol.appendChild(subjLine);
     }
 
-    const frame = document.createElement('div');
+    const frame = document.createElement('iframe');
     frame.id = 'conv-preview-body-' + slug;
     frame.className = 'convoca-email-preview-frame';
-    frame.innerHTML = replaceVariables(bodyEl.value);
+    frame.setAttribute('sandbox', '');
+    frame.setAttribute('title', 'Vista previa del correo');
+    renderPreviewFrame(frame, replaceVariables(bodyEl.value));
     previewCol.appendChild(frame);
 
     // Mobile toggle button

@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [main]
 
+# Permisos mínimos del GITHUB_TOKEN: solo leer el repositorio
+# (CodeQL avisa si no se declaran).
+permissions:
+  contents: read
+
 jobs:
   phpcs:
     name: PHPCS

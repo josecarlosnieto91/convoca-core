@@ -484,6 +484,8 @@
 .convoca-email-preview { grid-column: 2; }
 
 .convoca-email-preview-frame {
+    display: block;
+    width: 100%;
     background: #fff;
     border: 1px solid var(--wp--preset--color--gris-medio, #e0e0e0);
     border-radius: var(--wp--custom--radius--small, 8px);
