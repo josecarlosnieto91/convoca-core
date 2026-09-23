@@ -19,7 +19,7 @@
  *
  * Responsabilidad: componentes de interfaz y de contenido comunes a cualquier
  * sitio (menú, redes, relacionadas, cifras) y los datos de evento del contenido.
- * Vivían en el mu-plugin privado de Biodevas, que hacía imposible instalar
+ * Vivían en el mu-plugin privado de un sitio, que hacía imposible instalar
  * plugins + theme sin ese fichero; ahora los registra Core, que es el plugin
  * base del producto.
  *
