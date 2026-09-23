@@ -1,5 +1,14 @@
 # Changelog — convoca-core
 
+## v2.3.1 (2026-09-23)
+
+### 🔒 Seguridad
+- **Vista previa de plantillas de correo**: el HTML del correo se pinta ahora en un iframe con `sandbox` (a través de un blob), en lugar de inyectarse en el documento del panel. Cierra tres avisos de CodeQL (`js/xss-through-dom`).
+- Los workflows (`ci.yml`, `deploy.yml`) declaran `permissions: contents: read`: el token del workflow sólo necesita leer el repositorio.
+
+### 🐛 Arreglado
+- `Admin_Setup_Wizard`: las notas del diagnóstico de páginas se escapan al imprimirse (no en el momento de construirlas), que es lo que exige la comprobación de Plugin Check.
+
 ## v2.3.0 (2026-09-23)
 
 ### 🏗️ Arquitectura

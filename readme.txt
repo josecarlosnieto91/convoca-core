@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.3.0
+Stable tag: 2.3.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,11 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.3.1 =
+* Seguridad: la vista previa de las plantillas de correo se pinta en un iframe aislado (sin scripts) en lugar de inyectar HTML en el panel de administración.
+* El asistente de configuración escapa las notas de diagnóstico al imprimirlas.
+* Los workflows declaran permisos mínimos para el token de GitHub.
 
 = 2.3.0 =
 * Los shortcodes de interfaz y contenido (`[convoca_menu]`, `[convoca_socials]`, `[convoca_relacionadas]`, `[convoca_stats]`, `[convoca_cuando]`, `[convoca_donde]`) pasan a Core: vivían en un mu-plugin privado de un sitio, así que un sitio con los plugins y el theme no podía pintar su cabecera ni su pie.
