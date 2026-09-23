@@ -122,9 +122,14 @@ class Admin_Setup_Wizard {
 			return false;
 		}
 
-		// 3. Mandatory Pages
-		foreach ( array( 'alta-socios', 'panel-socio', 'pago' ) as $slug ) {
-			if ( ! get_page_by_path( $slug ) ) {
+		// 3. Mandatory Pages: deben existir Y contener su shortcode. Una página con
+		// el shortcode mal escrito se publicaba con el texto literal a la vista del
+		// visitante y el asistente la daba por buena (solo miraba si existía).
+		foreach ( self::system_pages() as $slug => $info ) {
+			if ( empty( $info['req'] ) ) {
+				continue;
+			}
+			if ( 'ok' !== self::page_state( get_page_by_path( $slug ), $info['sc'] ) ) {
 				return false;
 			}
 		}
@@ -262,25 +267,74 @@ class Admin_Setup_Wizard {
 
 	/* ── Step 2: Pages ── */
 
+	/**
+	 * Páginas del sistema y shortcode que debe contener cada una.
+	 *
+	 * Única fuente de verdad: la usan el diagnóstico (step_pages), la creación y
+	 * reparación (handle_create_pages), el resumen (summary_rows) y el estado de
+	 * configuración (is_config_complete). Antes eran cuatro listas copiadas que
+	 * podían divergir — y divergieron: el asistente escribía `[mi_panel]`, un
+	 * shortcode que ningún plugin registra, así que la página se publicaba con el
+	 * texto literal a la vista del visitante.
+	 *
+	 * @return array<string, array{title: string, sc: string, req: bool}>
+	 */
+	public static function system_pages(): array {
+		return apply_filters(
+			'convoca_wizard_system_pages',
+			array(
+				'alta-socios' => array(
+					'title' => 'Alta de Socios',
+					'sc'    => '[convoca_alta_socio]',
+					'req'   => true,
+				),
+				'panel-socio' => array(
+					'title' => 'Mi Panel de Socio',
+					'sc'    => '[convoca_mi_area]',
+					'req'   => true,
+				),
+				'pago'        => array(
+					'title' => 'Página de Pago',
+					'sc'    => '[convoca_pago]',
+					'req'   => true,
+				),
+			)
+		);
+	}
+
+	/**
+	 * Shortcodes retirados o fallidos que versiones anteriores del asistente (u
+	 * otros diagnósticos) escribieron en las páginas del sistema. Al reparar se
+	 * sustituyen por los actuales sin tocar el resto del texto.
+	 *
+	 * @return array<string, string>
+	 */
+	private static function legacy_shortcodes(): array {
+		return apply_filters(
+			'convoca_wizard_legacy_shortcodes',
+			array(
+				'[mi_panel]' => '[convoca_mi_area]',
+			)
+		);
+	}
+
+	/**
+	 * Estado de una página del sistema según su contenido real.
+	 *
+	 * @param \WP_Post|null $page      Página encontrada por slug.
+	 * @param string        $shortcode Shortcode esperado, con corchetes.
+	 * @return string 'ok' | 'missing' | 'no_shortcode'
+	 */
+	private static function page_state( $page, string $shortcode ): string {
+		if ( ! $page instanceof \WP_Post ) {
+			return 'missing';
+		}
+		return has_shortcode( (string) $page->post_content, trim( $shortcode, '[]' ) ) ? 'ok' : 'no_shortcode';
+	}
+
 	private function step_pages(): void {
 		echo '<h2>' . esc_html__( '2. Páginas del Sistema', 'convoca-core' ) . '</h2>';
-		$pages = array(
-			'alta-socios' => array(
-				'title' => 'Alta de Socios',
-				'sc'    => '[convoca_alta_socio]',
-				'req'   => true,
-			),
-			'panel-socio' => array(
-				'title' => 'Mi Panel de Socio',
-				'sc'    => '[mi_panel]',
-				'req'   => true,
-			),
-			'pago'        => array(
-				'title' => 'Página de Pago',
-				'sc'    => '[convoca_pago]',
-				'req'   => true,
-			),
-		);
+		$pages = self::system_pages();
 
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
 		wp_nonce_field( 'convoca_wizard_create_pages' );
@@ -288,16 +342,42 @@ class Admin_Setup_Wizard {
 		echo '<table style="width:100%;margin-bottom:20px;">';
 		$all_mand = true;
 		foreach ( $pages as $slug => $info ) {
-			$exists = get_page_by_path( $slug );
-			if ( ! $exists ) {
+			$state = self::page_state( get_page_by_path( $slug ), $info['sc'] );
+			$tag   = trim( $info['sc'], '[]' );
+			$notes = array();
+			if ( 'ok' !== $state ) {
 				$all_mand = false;
 			}
-			echo '<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:15px 0;"><strong>' . esc_html( $info['title'] ) . '</strong></td>';
-			echo '<td style="text-align:right;">' . ( $exists ? '✅' : '⚠' ) . '</td></tr>';
+			if ( 'missing' === $state ) {
+				$notes[] = esc_html( __( 'No existe la página.', 'convoca-core' ) );
+			} elseif ( 'no_shortcode' === $state ) {
+				$notes[] = esc_html(
+					sprintf(
+						/* translators: %s: shortcode esperado en la página */
+						__( 'Existe, pero su contenido no incluye %s.', 'convoca-core' ),
+						$info['sc']
+					)
+				);
+			}
+			if ( ! shortcode_exists( $tag ) ) {
+				$notes[] = esc_html(
+					sprintf(
+						/* translators: %s: plugin/shortcode name */
+						__( 'Ningún plugin activo registra %s: actívalo antes de crearla.', 'convoca-core' ),
+						$info['sc']
+					)
+				);
+			}
+			echo '<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:15px 0;"><strong>' . esc_html( $info['title'] ) . '</strong>';
+			if ( $notes ) {
+				echo '<br><span style="color:#b32d2e;">' . implode( ' ', $notes ) . '</span>';
+			}
+			echo '</td>';
+			echo '<td style="text-align:right;">' . ( 'ok' === $state ? '✅' : '⚠' ) . '</td></tr>';
 		}
 		echo '</table>';
 		if ( ! $all_mand ) {
-			submit_button( __( 'Crear páginas faltantes', 'convoca-core' ), 'primary', '', false );
+			submit_button( __( 'Crear o reparar páginas', 'convoca-core' ), 'primary', '', false );
 		}
 		echo '</form>';
 
@@ -315,23 +395,26 @@ class Admin_Setup_Wizard {
 		}
 
 		try {
-			$pages = array(
-				'alta-socios' => array(
-					'title' => 'Alta de Socios',
-					'sc'    => '[convoca_alta_socio]',
-				),
-				'panel-socio' => array(
-					'title' => 'Mi Panel de Socio',
-					'sc'    => '[mi_panel]',
-				),
-				'pago'        => array(
-					'title' => 'Pago',
-					'sc'    => '[convoca_pago]',
-				),
-			);
+			foreach ( self::system_pages() as $slug => $info ) {
+				$tag = trim( $info['sc'], '[]' );
 
-			foreach ( $pages as $slug => $info ) {
-				if ( ! get_page_by_path( $slug ) ) {
+				// Un shortcode que nadie registra se pinta como texto literal: mejor
+				// dejarlo anotado en el log que publicar la página rota en silencio.
+				if ( ! shortcode_exists( $tag ) ) {
+					\Convoca\Core\Logger::warning(
+						sprintf( 'La página %s espera el shortcode [%s], que ningún plugin activo registra.', $slug, $tag ),
+						'Common/SetupWizard'
+					);
+				}
+
+				$page  = get_page_by_path( $slug );
+				$state = self::page_state( $page, $info['sc'] );
+
+				if ( 'ok' === $state ) {
+					continue;
+				}
+
+				if ( 'missing' === $state ) {
 					$page_id = wp_insert_post(
 						array(
 							'post_title'   => $info['title'],
@@ -347,6 +430,40 @@ class Admin_Setup_Wizard {
 							'Common/SetupWizard'
 						);
 					}
+					continue;
+				}
+
+				// La página existe pero le falta el shortcode correcto: se repara sin
+				// pisar el texto del autor — primero sustituye shortcodes retirados y,
+				// si aún falta, añade el correcto al final.
+				$content = (string) $page->post_content;
+				$legacy  = self::legacy_shortcodes();
+				if ( $legacy ) {
+					$content = str_ireplace( array_keys( $legacy ), array_values( $legacy ), $content );
+				}
+				if ( ! has_shortcode( $content, $tag ) ) {
+					$content = trim( $content );
+					$content = ( '' === $content ) ? $info['sc'] : $content . "\n\n" . $info['sc'];
+				}
+
+				$updated = wp_update_post(
+					array(
+						'ID'           => $page->ID,
+						'post_content' => $content,
+					),
+					true
+				);
+
+				if ( is_wp_error( $updated ) ) {
+					\Convoca\Core\Logger::error(
+						sprintf( 'Error reparando la página %s: %s', $slug, $updated->get_error_message() ),
+						'Common/SetupWizard'
+					);
+				} else {
+					\Convoca\Core\Logger::info(
+						sprintf( 'Página %s reparada: su contenido ya incluye %s.', $slug, $info['sc'] ),
+						'Common/SetupWizard'
+					);
 				}
 			}
 		} finally {
@@ -661,19 +778,15 @@ class Admin_Setup_Wizard {
 		);
 
 		// ── 2. Páginas ──
-		$page_defs = array(
-			'alta-socios' => __( 'Alta de Socios', 'convoca-core' ),
-			'panel-socio' => __( 'Mi Panel de Socio', 'convoca-core' ),
-			'pago'        => __( 'Página de Pago', 'convoca-core' ),
-		);
 		$pages_ok   = true;
 		$pages_line = array();
-		foreach ( $page_defs as $slug => $title ) {
-			$p = get_page_by_path( $slug );
-			if ( ! $p ) {
+		foreach ( self::system_pages() as $slug => $info ) {
+			$state = self::page_state( get_page_by_path( $slug ), $info['sc'] );
+			if ( 'ok' !== $state ) {
 				$pages_ok = false;
 			}
-			$pages_line[] = ( $p ? '✅' : '⚠' ) . ' ' . $title;
+			$mark         = ( 'ok' === $state ) ? '✅' : '⚠';
+			$pages_line[] = $mark . ' ' . $info['title'];
 		}
 		$rows['2'] = array(
 			'title'   => __( '2. Páginas del Sistema', 'convoca-core' ),

@@ -1,5 +1,18 @@
 # Changelog — convoca-core
 
+## v2.2.9 (2026-09-23)
+
+### 🐛 Correcciones
+- El asistente de configuración escribía `[mi_panel]` en la página «Mi Panel de Socio»: nadie registra ese shortcode, así que la página se publicaba con el texto literal a la vista del visitante (visto en producción). Ahora escribe `[convoca_mi_area]`.
+- El paso 2 (Páginas) comprueba el contenido real de cada página, no solo que exista: avisa si a la página le falta su shortcode y el botón «Crear o reparar páginas» la repara sin tocar el texto del autor.
+- El asistente anota en el registro cuándo el shortcode que va a escribir no lo registra ningún plugin activo (antes publicaba la página rota en silencio).
+- Las páginas del sistema viven en una única lista (`system_pages()`) que usan el diagnóstico, la creación, el resumen y el estado de configuración (antes eran cuatro copias que podían divergir).
+
+## v2.2.8 (2026-09-11)
+
+### 🐛 Correcciones
+- Monitor de pagos: deja de registrar como «fallo de firma» una notificación rechazada por IP.
+
 ## v2.2.7 (2026-09-11)
 
 ### ✨ Mejoras

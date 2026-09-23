@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.2.8
+Stable tag: 2.2.9
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,14 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.2.9 =
+* Corrección: el asistente de configuración escribía `[mi_panel]` en la página «Mi Panel de Socio». Nadie registra ese shortcode, así que la página se publicaba con el texto literal a la vista del visitante. Ahora escribe `[convoca_mi_area]`.
+* El paso 2 comprueba el contenido real de cada página, no solo que exista: avisa cuando la página existe pero le falta su shortcode, y el botón «Crear o reparar páginas» la arregla sin pisar el texto del autor.
+* El asistente deja constancia en el registro cuando un shortcode que va a escribir no lo registra ningún plugin activo.
+
+= 2.2.8 =
+* Monitor de pagos: deja de registrar como «fallo de firma» una notificación rechazada por IP.
 
 = 2.2.7 =
 * La revalidación semanal de la licencia se programa de verdad. El evento existía, pero nadie lo programaba: la licencia no se revalidaba nunca.
