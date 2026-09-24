@@ -53,12 +53,12 @@ class Email_Layout {
 	 * @return string Complete <html> document.
 	 */
 	public static function render( string $body, string $subject = '', array $opts = array() ): string {
-		$year         = wp_date( 'Y' );
-		$site_name    = get_bloginfo( 'name' );
-		$preheader    = $opts['preheader'] ?? '';
-		$button_url   = $opts['button_url'] ?? '';
-		$button_text  = $opts['button_text'] ?? '';
-		$footer_text  = $opts['footer_text'] ?? 'Has recibido este email porque formas parte de ' . esc_html( $site_name ) . '.';
+		$year        = wp_date( 'Y' );
+		$site_name   = get_bloginfo( 'name' );
+		$preheader   = $opts['preheader'] ?? '';
+		$button_url  = $opts['button_url'] ?? '';
+		$button_text = $opts['button_text'] ?? '';
+		$footer_text = $opts['footer_text'] ?? 'Has recibido este email porque formas parte de ' . esc_html( $site_name ) . '.';
 
 		// Theme del documento: explícito en $opts, o el global (convoca_document_theme).
 		// light = cabecera clara con nombre en púrpura; dark = cabecera púrpura (clásica).

@@ -81,7 +81,7 @@ abstract class Upgrade_Manager {
 		// Register shutdown handler to release lock if a Fatal Error kills the process.
 		$shutdown_release = function () use ( $lock_key ) {
 			$error = error_get_last();
-			if ( $error && in_array( $error['type'], array( E_ERROR, E_USER_ERROR, E_COMPILE_ERROR, E_PARSE ) ) ) {
+			if ( $error && in_array( $error['type'], array( E_ERROR, E_USER_ERROR, E_COMPILE_ERROR, E_PARSE ), true ) ) {
 				\Convoca\Core\Utils::release_lock( $lock_key );
 			}
 		};

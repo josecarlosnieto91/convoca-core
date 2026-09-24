@@ -257,8 +257,8 @@ class Notifications {
 		#wpadminbar .conv-notif-dropdown { width: 320px !important; max-width: 320px; max-height: 400px; overflow-y: auto; font-size: 13px; }
 		#wpadminbar .conv-notif-dropdown, #wpadminbar .conv-notif-dropdown * { box-sizing: border-box; }
 		/* Neutralizar la estructura de submenú nativa de la admin bar para este menú:
-		   el .ab-item interno tiene height fija (26px) y el .ab-sub-wrapper pinta su
-		   fondo negro sin crecer -> se veía un segundo marco negro bajo el panel. */
+			el .ab-item interno tiene height fija (26px) y el .ab-sub-wrapper pinta su
+			fondo negro sin crecer -> se veía un segundo marco negro bajo el panel. */
 		#wp-admin-bar-conv-notifications .ab-sub-wrapper,
 		#wp-admin-bar-conv-notifications .ab-sub-wrapper .ab-submenu,
 		#wp-admin-bar-conv-notifications .ab-sub-wrapper .ab-submenu li,

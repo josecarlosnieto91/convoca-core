@@ -224,7 +224,7 @@ class Utils {
 	 * Record a hook name as "fired" (used by unit tests to assert emissions).
 	 */
 	private static function record_fired( string $hook ): void {
-		$fired = self::get_fired();
+		$fired          = self::get_fired();
 		$fired[ $hook ] = true;
 		update_option( 'convoca_utils_fired', $fired );
 	}

@@ -190,7 +190,7 @@ class Admin_Setup_Wizard {
 	}
 
 	private function render_steps( int $current ): void {
-		$labels = array(
+		$labels   = array(
 			1 => __( 'Infraestructura', 'convoca-core' ),
 			2 => __( 'Páginas', 'convoca-core' ),
 			3 => __( 'Membresía', 'convoca-core' ),
@@ -605,7 +605,7 @@ class Admin_Setup_Wizard {
 		$hc_module_active = static function ( string $slug ): bool {
 			return is_plugin_active( "convoca-{$slug}/convoca-{$slug}.php" );
 		};
-		$modules = array(
+		$modules          = array(
 			'members'   => array(
 				'label' => __( 'Convoca Members', 'convoca-core' ),
 				'desc'  => __( 'Fichas de socios, cuotas, carnets digitales y área personal.', 'convoca-core' ),
@@ -792,8 +792,8 @@ class Admin_Setup_Wizard {
 		);
 
 		// ── 3. Planes de membresía ──
-		$plans     = class_exists( '\Convoca\Members\CPT_Miembro' ) ? \Convoca\Members\CPT_Miembro::get_plans() : array();
-		$real_mods = array( 'Numerario', 'Familiar', 'Juvenil' );
+		$plans        = class_exists( '\Convoca\Members\CPT_Miembro' ) ? \Convoca\Members\CPT_Miembro::get_plans() : array();
+		$real_mods    = array( 'Numerario', 'Familiar', 'Juvenil' );
 		$active_plans = array();
 		foreach ( $plans as $key => $p ) {
 			$mod = $p['modalidad'] ?? 'Numerario';
@@ -802,14 +802,14 @@ class Admin_Setup_Wizard {
 			}
 			$is_active = ! isset( $p['active'] ) || false !== $p['active'];
 			if ( $is_active ) {
-				$price         = isset( $p['price'] ) ? (float) $p['price'] : 0;
+				$price          = isset( $p['price'] ) ? (float) $p['price'] : 0;
 				$active_plans[] = ( $p['label'] ?? $key ) . ' · ' . number_format_i18n( $price, 2 ) . ' €';
 			}
 		}
 		$rows['3'] = array(
-			'title'  => __( '3. Planes de Membresía', 'convoca-core' ),
-			'ok'     => ! empty( $active_plans ),
-			'detail' => empty( $active_plans )
+			'title'   => __( '3. Planes de Membresía', 'convoca-core' ),
+			'ok'      => ! empty( $active_plans ),
+			'detail'  => empty( $active_plans )
 				? array( __( 'Sin planes activos.', 'convoca-core' ) )
 				: array_merge(
 					array( /* translators: %d: número de planes activos */ sprintf( __( '%d planes activos:', 'convoca-core' ), count( $active_plans ) ) ),
@@ -819,9 +819,9 @@ class Admin_Setup_Wizard {
 		);
 
 		// ── 4. Redsys / Pagos ──
-		$gw      = get_option( 'convoca_gateway_settings', array() );
-		$mc      = $gw['merchant_code'] ?? '';
-		$gw_ok   = ! empty( $mc );
+		$gw        = get_option( 'convoca_gateway_settings', array() );
+		$mc        = $gw['merchant_code'] ?? '';
+		$gw_ok     = ! empty( $mc );
 		$rows['4'] = array(
 			'title'   => __( '4. Pagos (Redsys)', 'convoca-core' ),
 			'ok'      => $gw_ok,
@@ -830,12 +830,12 @@ class Admin_Setup_Wizard {
 		);
 
 		// ── 5. Turnos ──
-		$ap = get_option( 'convoca_shifts_hora_apertura', '' );
-		$ci = get_option( 'convoca_shifts_hora_cierre', '' );
+		$ap        = get_option( 'convoca_shifts_hora_apertura', '' );
+		$ci        = get_option( 'convoca_shifts_hora_cierre', '' );
 		$rows['5'] = array(
-			'title'  => __( '5. Turnos de Voluntariado', 'convoca-core' ),
-			'ok'     => ! empty( $ap ) && ! empty( $ci ),
-			'detail' => array( sprintf( /* translators: 1: opening time, 2: closing time. */ __( 'Horario del centro: %1$s – %2$s', 'convoca-core' ), $ap ?: '--:--', $ci ?: '--:--' ) ),
+			'title'   => __( '5. Turnos de Voluntariado', 'convoca-core' ),
+			'ok'      => ! empty( $ap ) && ! empty( $ci ),
+			'detail'  => array( sprintf( /* translators: 1: opening time, 2: closing time. */ __( 'Horario del centro: %1$s – %2$s', 'convoca-core' ), $ap ?: '--:--', $ci ?: '--:--' ) ),
 			'missing' => ( empty( $ap ) || empty( $ci ) ) ? __( 'Define el horario en el paso 5.', 'convoca-core' ) : '',
 		);
 
@@ -843,7 +843,7 @@ class Admin_Setup_Wizard {
 		$hc_module_active = static function ( string $slug ): bool {
 			return is_plugin_active( "convoca-{$slug}/convoca-{$slug}.php" );
 		};
-		$mod_defs = array(
+		$mod_defs         = array(
 			'members'   => __( 'Convoca Members', 'convoca-core' ),
 			'enroll'    => __( 'Convoca Enroll', 'convoca-core' ),
 			'gateway'   => __( 'Convoca Gateway', 'convoca-core' ),
@@ -851,17 +851,17 @@ class Admin_Setup_Wizard {
 			'publisher' => __( 'Convoca Publisher', 'convoca-core' ),
 			'assistant' => __( 'Convoca Assistant', 'convoca-core' ),
 		);
-		$active_mods = array();
+		$active_mods      = array();
 		foreach ( $mod_defs as $slug => $label ) {
 			if ( $hc_module_active( $slug ) ) {
 				$active_mods[] = $label;
 			}
 		}
 		$all_active = count( $active_mods ) === count( $mod_defs );
-		$rows['6'] = array(
-			'title'  => __( '6. Ecosistema Convoca', 'convoca-core' ),
-			'ok'     => $all_active,
-			'detail' => array(
+		$rows['6']  = array(
+			'title'   => __( '6. Ecosistema Convoca', 'convoca-core' ),
+			'ok'      => $all_active,
+			'detail'  => array(
 				$all_active
 					? __( 'Los 6 módulos están instalados y activos.', 'convoca-core' )
 					/* translators: %d: número de módulos activos de 6 */
@@ -891,11 +891,11 @@ class Admin_Setup_Wizard {
 				$plans = \Convoca\Members\CPT_Miembro::get_plans();
 				$post  = isset( $_POST['convoca_plans'] ) ? (array) wp_unslash( $_POST['convoca_plans'] ) : array();
 				// Los planes editables son los de modalidad real (Numerario/Familiar/Juvenil).
-				$real_mods   = array( 'Numerario', 'Familiar', 'Juvenil' );
-				$new_plans   = array();
-				$slug_moves  = array(); // slug_viejo => slug_nuevo para migrar metas.
-				$used_slugs  = array( 'familiar', 'juvenil' ); // Selectores internos: reservados.
-				$collision   = '';
+				$real_mods  = array( 'Numerario', 'Familiar', 'Juvenil' );
+				$new_plans  = array();
+				$slug_moves = array(); // slug_viejo => slug_nuevo para migrar metas.
+				$used_slugs = array( 'familiar', 'juvenil' ); // Selectores internos: reservados.
+				$collision  = '';
 
 				foreach ( $plans as $key => $plan ) {
 					$mod = $plan['modalidad'] ?? 'Numerario';
@@ -904,7 +904,7 @@ class Admin_Setup_Wizard {
 						continue;
 					}
 					if ( ! isset( $post[ $key ] ) ) {
-						$plan['active'] = false; // Checkbox desmarcado → no viaja → desactivar.
+						$plan['active']    = false; // Checkbox desmarcado → no viaja → desactivar.
 						$new_plans[ $key ] = $plan;
 						continue;
 					}

@@ -228,7 +228,8 @@ class Memory_Report {
                 <table>
                     <tr><th>Mes</th><th>Altas socios</th><th>Inscripciones</th><th>Ingresos</th></tr>';
 
-		for ( $i = 0; $i < count( $trend['labels'] ); $i++ ) {
+		$total_labels = count( $trend['labels'] );
+		for ( $i = 0; $i < $total_labels; $i++ ) {
 			$html .= '<tr>'
 				. '<td>' . $trend['labels'][ $i ] . '</td>'
 				. '<td>' . ( $trend['members'][ $i ] ?? 0 ) . '</td>'

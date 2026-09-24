@@ -200,7 +200,7 @@ class Admin_Templates {
 		// Always validate structural limits regardless of Dompdf availability.
 		$max_size = 500000;
 		if ( strlen( $content ) > $max_size ) {
-			error_log( 'BDV Template Validation Error: Content exceeds max size of ' . $max_size . ' bytes' );
+			\Convoca\Core\Logger::warning( 'Plantilla PDF rechazada: el contenido supera los ' . $max_size . ' bytes permitidos', 'Plantillas' );
 			return false;
 		}
 
@@ -208,7 +208,7 @@ class Admin_Templates {
 		$open_tags      = substr_count( $content, '<' );
 		$close_tags     = substr_count( $content, '>' );
 		if ( $open_tags > $max_iterations || $close_tags > $max_iterations ) {
-			error_log( 'BDV Template Validation Error: Too many HTML tags' );
+			\Convoca\Core\Logger::warning( 'Plantilla PDF rechazada: Too many HTML tags', 'Plantillas' );
 			return false;
 		}
 
@@ -228,7 +228,7 @@ class Admin_Templates {
 		$open_tags      = substr_count( $content, '<' );
 		$close_tags     = substr_count( $content, '>' );
 		if ( $open_tags > $max_iterations || $close_tags > $max_iterations ) {
-			error_log( 'BDV Template Validation Error: Too many HTML tags' );
+			\Convoca\Core\Logger::warning( 'Plantilla PDF rechazada: Too many HTML tags', 'Plantillas' );
 			return false;
 		}
 
@@ -246,7 +246,7 @@ class Admin_Templates {
 			}
 		}
 		if ( $max_depth > 30 ) {
-			error_log( 'BDV Template Validation Error: DOM depth exceeds 30 levels' );
+			\Convoca\Core\Logger::warning( 'Plantilla PDF rechazada: DOM depth exceeds 30 levels', 'Plantillas' );
 			return false;
 		}
 
@@ -254,7 +254,7 @@ class Admin_Templates {
 		if ( preg_match_all( '/data:([^;]{0,40});base64,([a-zA-Z0-9\/+]{100,})/i', $content, $b64_matches ) ) {
 			foreach ( $b64_matches[2] as $b64 ) {
 				if ( strlen( $b64 ) > 50000 ) {
-					error_log( 'BDV Template Validation Error: Base64 content exceeds 50KB' );
+					\Convoca\Core\Logger::warning( 'Plantilla PDF rechazada: Base64 content exceeds 50KB', 'Plantillas' );
 					return false;
 				}
 			}
@@ -263,13 +263,13 @@ class Admin_Templates {
 		// Limit inline SVG embeds.
 		$svg_count = substr_count( $content, '<svg' );
 		if ( $svg_count > 5 ) {
-			error_log( 'BDV Template Validation Error: Too many SVG elements' );
+			\Convoca\Core\Logger::warning( 'Plantilla PDF rechazada: Too many SVG elements', 'Plantillas' );
 			return false;
 		}
 
 		// Check attribute length (individual).
 		if ( preg_match_all( '/\s[a-zA-Z-]+\s*=\s*"[^"]{500,}"/', $content, $long_attrs ) ) {
-			error_log( 'BDV Template Validation Error: Attribute exceeds 500 chars' );
+			\Convoca\Core\Logger::warning( 'Plantilla PDF rechazada: Attribute exceeds 500 chars', 'Plantillas' );
 			return false;
 		}
 
@@ -296,7 +296,7 @@ class Admin_Templates {
 		);
 		foreach ( $css_patterns as $pattern ) {
 			if ( preg_match( $pattern, $rendered_content ) ) {
-				error_log( 'BDV Template Validation: Rejected pathological CSS pattern' );
+				\Convoca\Core\Logger::warning( 'Plantilla PDF rechazada: patrón CSS desmesurado', 'Plantillas' );
 				return false;
 			}
 		}
@@ -304,7 +304,7 @@ class Admin_Templates {
 		// Limit inline style blocks count.
 		$style_blocks = substr_count( $rendered_content, '<style' );
 		if ( $style_blocks > 10 ) {
-			error_log( 'BDV Template Validation: Too many style blocks' );
+			\Convoca\Core\Logger::warning( 'Plantilla PDF rechazada: demasiados bloques de estilo', 'Plantillas' );
 			return false;
 		}
 
@@ -312,7 +312,7 @@ class Admin_Templates {
 		$table_nesting = substr_count( $rendered_content, '<table' );
 		$tr_count      = substr_count( $rendered_content, '<tr' );
 		if ( $table_nesting > 5 || $tr_count > 500 ) {
-			error_log( 'BDV Template Validation: Excessive table complexity' );
+			\Convoca\Core\Logger::warning( 'Plantilla PDF rechazada: tabla demasiado compleja', 'Plantillas' );
 			return false;
 		}
 
@@ -330,7 +330,7 @@ class Admin_Templates {
 				$dompdf->loadHtml( $rendered_content );
 				$dompdf->render();
 			} catch ( \Throwable $e ) {
-				error_log( 'BDV Template Validation Error: ' . $e->getMessage() );
+				\Convoca\Core\Logger::warning( 'Plantilla PDF rechazada: ' . $e->getMessage(), 'Plantillas' );
 				return false;
 			}
 		}
@@ -445,11 +445,11 @@ class Admin_Templates {
 			$file_path = CONVOCA_COMMON_DIR . 'assets/templates/' . $key . '.html';
 			$content   = "<h1>$name</h1>";
 			if ( file_exists( $file_path ) ) {
-				$loaded = @file_get_contents( $file_path );
+				$loaded = file_get_contents( $file_path );
 				if ( $loaded !== false ) {
 					$content = $loaded;
 				} else {
-					error_log( 'Convoca: Failed to read template file: ' . $file_path );
+					\Convoca\Core\Logger::warning( 'No se pudo leer el fichero de plantilla: ' . $file_path, 'Plantillas' );
 				}
 			}
 

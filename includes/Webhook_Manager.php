@@ -166,19 +166,19 @@ class Webhook_Manager {
 		);
 	}
 
-	public function on_member_state_change( int $member_id, string $new, string $old ): void {
+	public function on_member_state_change( int $member_id, string $new_state, string $old_state ): void {
 		$event_map = array(
 			'activo'     => 'member.activated',
 			'suspendido' => 'member.suspended',
 		);
 
-		$event = $event_map[ $new ] ?? null;
+		$event = $event_map[ $new_state ] ?? null;
 		if ( ! $event ) {
 			return;
 		}
 
 		// Special case: if previously suspended and now active => renewal.
-		if ( $old === 'suspendido' && $new === 'activo' ) {
+		if ( $old_state === 'suspendido' && $new_state === 'activo' ) {
 			$event = 'member.renewed';
 		}
 
@@ -187,8 +187,8 @@ class Webhook_Manager {
 			array(
 				'member_id'  => $member_id,
 				'nombre'     => get_the_title( $member_id ),
-				'old_status' => $old,
-				'new_status' => $new,
+				'old_status' => $old_state,
+				'new_status' => $new_state,
 			)
 		);
 	}

@@ -68,7 +68,7 @@ class Blocks_Common {
 		$filtered       = array_filter(
 			$new_categories,
 			function ( $cat ) use ( $existing_slugs ) {
-				return ! in_array( $cat['slug'], $existing_slugs );
+				return ! in_array( $cat['slug'], $existing_slugs, true );
 			}
 		);
 

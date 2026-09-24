@@ -1,5 +1,17 @@
 # Changelog — convoca-core
 
+## v2.3.2 (2026-09-23)
+
+### 🔒 Seguridad y robustez
+- `License_Manager`: las tres redirecciones de activación/desactivación pasan a `wp_safe_redirect` — el destino salía de `wp_get_referer()`, que es entrada del visitante.
+- `Admin_Logs_List`: respaldo de orden cuando `sanitize_sql_orderby()` no valida el valor pedido (antes quedaba `ORDER BY  DESC` y la consulta fallaba).
+
+### 🧹 Saneamiento
+- Los 14 `error_log` directos de `Admin_Templates` y `Signature` van al logger del plugin (`Logger::warning`/`error`), con contexto; se elimina el prefijo `BDV`, que era el nombre de un cliente dentro del producto.
+- `json_encode` → `wp_json_encode`; `@` retirado donde ya se comprobaba el retorno; `in_array` estricto; `urlencode` → `add_query_arg`; `prepare()` retirado de las consultas sin marcadores; parámetros `new`/`default` renombrados; `count()` fuera de la condición del `for`.
+- Alineación corregida con `phpcbf` (63 avisos cosméticos, sin cambios de comportamiento).
+- Avisos restantes de PHPCS **clasificados y justificados** en `docs/phpcs-warnings.md` (292 → 199; no se silencia ninguno).
+
 ## v2.3.1 (2026-09-23)
 
 ### 🔒 Seguridad

@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.3.1
+Stable tag: 2.3.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,12 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.3.2 =
+* Saneamiento: las redirecciones de la pantalla de licencia usan `wp_safe_redirect` (el referer es entrada del visitante).
+* Los avisos de validación de plantillas PDF van al log del propio plugin, no a `error_log`, y sin nombres de proyectos concretos.
+* Robustez: un valor no válido en el orden del listado de logs ya no deja la consulta sin orden.
+* Deuda de avisos de PHPCS clasificada y documentada en `docs/phpcs-warnings.md`.
 
 = 2.3.1 =
 * Seguridad: la vista previa de las plantillas de correo se pinta en un iframe aislado (sin scripts) en lugar de inyectar HTML en el panel de administración.

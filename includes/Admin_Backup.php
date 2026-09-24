@@ -298,7 +298,7 @@ class Admin_Backup {
 		foreach ( $allowed_options as $k ) {
 			$settings[ $k ] = get_option( $k );
 		}
-		$zip->addFromString( 'settings.json', json_encode( $settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) );
+		$zip->addFromString( 'settings.json', wp_json_encode( $settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) );
 
 		$zip->close();
 
@@ -533,7 +533,7 @@ class Admin_Backup {
 			unlink( $filepath );
 			delete_transient( 'convoca_import_preview_' . get_current_user_id() );
 			\Convoca\Core\Logger::error( 'Importación masiva fallida: ' . $e->getMessage(), 'System' );
-			wp_safe_redirect( admin_url( 'admin.php?page=conv-backup&import_result=' . urlencode( 'Error: ' . $e->getMessage() ) ) );
+			wp_safe_redirect( add_query_arg( 'import_result', 'Error: ' . $e->getMessage(), admin_url( 'admin.php?page=conv-backup' ) ) );
 			exit;
 		}
 
@@ -548,7 +548,7 @@ class Admin_Backup {
 
 		/* translators: %d: number of records processed */
 		$msg = sprintf( __( 'Importación finalizada. %d registros procesados.', 'convoca-core' ), $results['total'] );
-		wp_safe_redirect( admin_url( 'admin.php?page=conv-backup&import_result=' . urlencode( $msg ) ) );
+		wp_safe_redirect( add_query_arg( 'import_result', $msg, admin_url( 'admin.php?page=conv-backup' ) ) );
 		exit;
 	}
 

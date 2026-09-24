@@ -303,7 +303,7 @@ add_action(
 		header( 'Expires: 0' );
 
 		// Build the CSV in memory (no direct filesystem calls) and stream it.
-		$csv = "\xEF\xBB\xBF"; // UTF-8 BOM.
+		$csv  = "\xEF\xBB\xBF"; // UTF-8 BOM.
 		$csv .= implode( ',', array( 'created_at', 'level', 'context', 'message', 'user_id', 'object_id' ) ) . "\r\n";
 		foreach ( (array) $rows as $row ) {
 			$fields = array(
@@ -314,7 +314,7 @@ add_action(
 				$row['user_id'] ?? '',
 				$row['object_id'] ?? '',
 			);
-			$csv .= implode(
+			$csv   .= implode(
 				',',
 				array_map(
 					static function ( $value ) {
@@ -710,9 +710,7 @@ function convoca_build_metrics(): array {
 	}
 
 	$metrics['members_new_month'] = (int) $wpdb->get_var(
-		$wpdb->prepare(
-			"SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'miembro' AND post_status = 'publish' AND MONTH(post_date) = MONTH(NOW()) AND YEAR(post_date) = YEAR(NOW())"
-		)
+		"SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'miembro' AND post_status = 'publish' AND MONTH(post_date) = MONTH(NOW()) AND YEAR(post_date) = YEAR(NOW())"
 	);
 
 	if ( class_exists( '\Convoca\Enroll\CPT_Inscripcion' ) ) {
@@ -736,24 +734,20 @@ function convoca_build_metrics(): array {
 
 	if ( $wpdb->get_var( "SHOW TABLES LIKE '{$wpdb->prefix}postmeta'" ) ) {
 		$metrics['payments_month'] = (float) $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT SUM(meta_value + 0) FROM {$wpdb->postmeta} pm 
+			"SELECT SUM(meta_value + 0) FROM {$wpdb->postmeta} pm 
              JOIN {$wpdb->posts} p ON p.ID = pm.post_id 
              WHERE pm.meta_key = '_convoca_amount_cents' AND p.post_type = 'pago' 
              AND MONTH(p.post_date) = MONTH(NOW()) AND YEAR(p.post_date) = YEAR(NOW())"
-			)
 		) / 100;
 		$metrics['payments_url']   = admin_url( 'admin.php?page=conv-gateway-payments' );
 	}
 
 	$metrics['turnos_sin_cubrir'] = (int) $wpdb->get_var(
-		$wpdb->prepare(
-			"SELECT COUNT(*) FROM {$wpdb->postmeta} pm 
+		"SELECT COUNT(*) FROM {$wpdb->postmeta} pm 
          JOIN {$wpdb->posts} p ON p.ID = pm.post_id 
          WHERE pm.meta_key = '_estado' AND pm.meta_value = 'abierto_disponible' 
          AND p.post_type = 'centro_turno' AND p.post_status = 'publish'
          AND p.post_date >= NOW()"
-		)
 	);
 	$metrics['turnos_url']        = admin_url( 'edit.php?post_type=centro_turno&page=convoca-shifts-turnos-list' );
 

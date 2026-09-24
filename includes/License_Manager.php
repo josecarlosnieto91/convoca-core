@@ -90,7 +90,7 @@ class License_Manager {
 	 */
 	public static function ensure_cron( ?int $now = null ): void {
 		$license = self::get_license();
-		$tiene = '' !== trim( (string) ( $license['key'] ?? '' ) );
+		$tiene   = '' !== trim( (string) ( $license['key'] ?? '' ) );
 
 		if ( $tiene ) {
 			if ( ! wp_next_scheduled( 'convoca_license_validate' ) ) {
@@ -185,7 +185,7 @@ class License_Manager {
 			array(
 				'timeout' => 15,
 				'headers' => array( 'Content-Type' => 'application/json' ),
-				'body'    => json_encode(
+				'body'    => wp_json_encode(
 					array(
 						'license_key' => $key,
 						'site_url'    => $site_url,
@@ -274,7 +274,7 @@ class License_Manager {
 			array(
 				'timeout' => 10,
 				'headers' => array( 'Content-Type' => 'application/json' ),
-				'body'    => json_encode(
+				'body'    => wp_json_encode(
 					array(
 						'license_key' => $license['key'],
 						'site_url'    => home_url(),
@@ -429,7 +429,7 @@ class License_Manager {
 
 		$key = sanitize_text_field( $_POST['license_key'] ?? '' );
 		if ( empty( $key ) ) {
-			wp_redirect( add_query_arg( 'message', 'empty_key', wp_get_referer() ) );
+			wp_safe_redirect( add_query_arg( 'message', 'empty_key', wp_get_referer() ) );
 			exit;
 		}
 
@@ -437,7 +437,7 @@ class License_Manager {
 		self::ensure_cron();
 		set_transient( 'convoca_license_message', $result['message'], 30 );
 
-		wp_redirect( add_query_arg( 'message', $result['success'] ? 'activated' : 'error', wp_get_referer() ) );
+		wp_safe_redirect( add_query_arg( 'message', $result['success'] ? 'activated' : 'error', wp_get_referer() ) );
 		exit;
 	}
 
@@ -456,7 +456,7 @@ class License_Manager {
 		self::ensure_cron();
 		set_transient( 'convoca_license_message', __( 'Licencia desactivada.', 'convoca-core' ), 30 );
 
-		wp_redirect( wp_get_referer() );
+		wp_safe_redirect( wp_get_referer() );
 		exit;
 	}
 

@@ -206,14 +206,14 @@ class Logger {
 	 * Sanitize a single retention value (positive integer, 1..3650 days).
 	 *
 	 * @param mixed $days    Raw value read from configuration.
-	 * @param int   $default Fallback used when the raw value is invalid.
+	 * @param int   $default_days Fallback used when the raw value is invalid.
 	 * @return int Sanitized retention in days.
 	 */
-	private static function sanitize_retention_days( $days, int $default ): int {
+	private static function sanitize_retention_days( $days, int $default_days ): int {
 		$days = (int) $days;
 
 		if ( $days < 1 || $days > 3650 ) {
-			$days = $default;
+			$days = $default_days;
 		}
 
 		return $days;

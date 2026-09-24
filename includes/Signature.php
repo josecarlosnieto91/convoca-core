@@ -66,7 +66,7 @@ class Signature {
 
 		if ( ! class_exists( 'Dompdf\Dompdf' ) ) {
 			$this->last_error = __( 'La librería Dompdf no está instalada. Por favor, contacta con el administrador.', 'convoca-core' );
-			error_log( 'Signature Error: Dompdf class not found. Run composer require dompdf/dompdf.' );
+			\Convoca\Core\Logger::error( 'No se puede firmar el PDF: falta la librería Dompdf (composer require dompdf/dompdf).', 'PDF' );
 			return false;
 		}
 
@@ -207,7 +207,7 @@ class Signature {
 			return $output_path;
 		} catch ( \Exception $e ) {
 			$this->last_error = __( 'Excepción durante la generación del PDF: ', 'convoca-core' ) . $e->getMessage();
-			error_log( 'Signature Exception: ' . $e->getMessage() );
+			\Convoca\Core\Logger::error( 'Fallo al firmar el PDF: ' . $e->getMessage(), 'PDF' );
 			return false;
 		}
 	}
@@ -281,7 +281,7 @@ class Signature {
 
 		if ( ! file_exists( $htaccess_file ) ) {
 			$rules = "Options -ExecCGI\nphp_flag engine off\n<FilesMatch \"\\.(pdf|sig)$\">\n    Order allow,deny\n    Allow from all\n    Satisfy any\n</FilesMatch>\nOrder deny,allow\nDeny from all\n";
-			if ( @file_put_contents( $htaccess_file, $rules ) === false ) {
+			if ( file_put_contents( $htaccess_file, $rules ) === false ) {
 				/* translators: %s: directory path */
 				$this->last_error = sprintf( __( 'No se pudo crear el archivo de protección .htaccess en %s.', 'convoca-core' ), $dir );
 				return false;
@@ -289,7 +289,7 @@ class Signature {
 		}
 
 		if ( ! file_exists( $index_file ) ) {
-			if ( @file_put_contents( $index_file, "<?php\n// Silence is golden.\n" ) === false ) {
+			if ( file_put_contents( $index_file, "<?php\n// Silence is golden.\n" ) === false ) {
 				/* translators: %s: directory path */
 				$this->last_error = sprintf( __( 'No se pudo crear el archivo de protección index.php en %s.', 'convoca-core' ), $dir );
 				return false;

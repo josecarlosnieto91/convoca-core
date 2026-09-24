@@ -225,7 +225,7 @@ class Security_Monitor {
 			// que el aviso dijera «fallos de firma» y «posible ataque» cuando lo que había era
 			// alguien abriendo un enlace de pago desde su móvil (visto en producción). Se cuentan
 			// aparte y con su propio umbral, porque son ruido habitual.
-			'redsys_ip_rejections' => (int) $wpdb->get_var(
+			'redsys_ip_rejections'      => (int) $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(*) FROM {$table}
 					WHERE created_at > %s AND level = 'error'
@@ -236,14 +236,14 @@ class Security_Monitor {
 				)
 			),
 			// Contención de locks.
-			'lock_contentions' => (int) $wpdb->get_var(
+			'lock_contentions'          => (int) $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(*) FROM {$table} WHERE created_at > %s AND context = 'Core/Lock' AND level = 'warning'",
 					$since
 				)
 			),
 			// REST no autorizados + rate limits (contexto Common/Security).
-			'rest_unauthorized' => (int) $wpdb->get_var(
+			'rest_unauthorized'         => (int) $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(*) FROM {$table} WHERE created_at > %s AND context = 'Common/Security'
 					AND message LIKE %s",
@@ -251,7 +251,7 @@ class Security_Monitor {
 					'%Acceso REST no autorizado%'
 				)
 			),
-			'rate_limit_exceeded' => (int) $wpdb->get_var(
+			'rate_limit_exceeded'       => (int) $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(*) FROM {$table} WHERE created_at > %s AND context = 'Common/Security'
 					AND message LIKE %s",

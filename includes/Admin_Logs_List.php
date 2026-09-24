@@ -157,11 +157,17 @@ class Admin_Logs_List extends \WP_List_Table {
 			$total              = max( (int) $approx, 0 );
 			$this->approx_total = true;
 		} else {
+			// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- $where_clause se compone solo con fragmentos fijos y marcadores, y los valores van en $args.
 			$total = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(id) FROM $table WHERE $where_clause", $args ) );
 		}
 
+		// sanitize_sql_orderby() devuelve false si el valor no es válido: sin el
+		// respaldo, un `?orderby=lo que sea` dejaba «ORDER BY  DESC» y la consulta
+		// reventaba (orden no inyectable, pero sí roto).
 		$orderby = ! empty( $_GET['orderby'] ) ? sanitize_sql_orderby( $_GET['orderby'] ) : 'created_at';
+		$orderby = $orderby ? $orderby : 'created_at';
 		$order   = ! empty( $_GET['order'] ) ? sanitize_sql_orderby( $_GET['order'] ) : 'DESC';
+		$order   = $order ? $order : 'DESC';
 
 		$sql       = "SELECT * FROM $table WHERE $where_clause ORDER BY $orderby $order LIMIT %d OFFSET %d";
 		$full_args = array_merge( $args, array( $per_page, $offset ) );
@@ -195,6 +201,7 @@ class Admin_Logs_List extends \WP_List_Table {
 			$ids = array_map( 'absint', (array) $_POST['log_ids'] );
 			if ( ! empty( $ids ) ) {
 				$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+				// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- $placeholders son %d generados sobre $ids (ya pasados por absint).
 				$wpdb->query( $wpdb->prepare( "DELETE FROM $table WHERE id IN ($placeholders)", $ids ) );
 			}
 		}

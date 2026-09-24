@@ -66,7 +66,7 @@ function convoca_uninstall_settings_page(): void {
 		wp_die( esc_html__( 'No tienes permisos.', 'convoca-core' ) );
 	}
 
-	$conservar    = 1 === (int) get_option( CONVOCA_KEEP_DATA_OPTION, 0 );
+	$conservar     = 1 === (int) get_option( CONVOCA_KEEP_DATA_OPTION, 0 );
 	$por_constante = defined( 'CONVOCA_KEEP_DATA_ON_UNINSTALL' ) && CONVOCA_KEEP_DATA_ON_UNINSTALL;
 	?>
 	<div class="wrap">

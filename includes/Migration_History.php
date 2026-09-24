@@ -37,15 +37,15 @@ class Migration_History {
 	 * @param array  $meta     Extra data (rows affected, etc.).
 	 */
 	public static function record( string $plugin, string $from, string $to, float $duration, array $meta = array() ): void {
-		$history = self::get_all();
+		$history   = self::get_all();
 		$history[] = array(
-			'plugin'    => $plugin,
-			'from'      => $from,
-			'to'        => $to,
-			'duration'  => round( $duration, 3 ),
-			'status'    => 'success',
-			'date'      => current_time( 'mysql' ),
-			'meta'      => $meta,
+			'plugin'   => $plugin,
+			'from'     => $from,
+			'to'       => $to,
+			'duration' => round( $duration, 3 ),
+			'status'   => 'success',
+			'date'     => current_time( 'mysql' ),
+			'meta'     => $meta,
 		);
 		// Mantener las últimas 100 entradas (evitar crecimiento infinito).
 		$history = array_slice( $history, -100 );
@@ -61,18 +61,18 @@ class Migration_History {
 	 * @param string $error  Error message.
 	 */
 	public static function record_failure( string $plugin, string $from, string $to, string $error ): void {
-		$history = self::get_all();
+		$history   = self::get_all();
 		$history[] = array(
-			'plugin'    => $plugin,
-			'from'      => $from,
-			'to'        => $to,
-			'duration'  => 0,
-			'status'    => 'failed',
-			'error'     => $error,
-			'date'      => current_time( 'mysql' ),
-			'meta'      => array(),
+			'plugin'   => $plugin,
+			'from'     => $from,
+			'to'       => $to,
+			'duration' => 0,
+			'status'   => 'failed',
+			'error'    => $error,
+			'date'     => current_time( 'mysql' ),
+			'meta'     => array(),
 		);
-		$history = array_slice( $history, -100 );
+		$history   = array_slice( $history, -100 );
 		update_option( self::OPTION, $history, false );
 	}
 
