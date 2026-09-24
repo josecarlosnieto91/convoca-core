@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.3.2
+Stable tag: 2.3.3
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.3.3 =
+* El formulario de evento incluye un campo de **precio** (`_convoca_event_price`), así que una actividad de pago ya no sale como gratuita en los datos estructurados: antes había que escribir el dato a mano por WP-CLI, entrada por entrada.
+* El precio se normaliza al guardar (acepta coma decimal, descarta lo que no sea un número válido y guarda dos decimales). Vacío = evento gratuito, como hasta ahora.
 
 = 2.3.2 =
 * Saneamiento: las redirecciones de la pantalla de licencia usan `wp_safe_redirect` (el referer es entrada del visitante).

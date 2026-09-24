@@ -46,7 +46,29 @@ function event_meta_keys(): array {
 		'_convoca_event_start_date',
 		'_convoca_event_end_date',
 		'_convoca_event_address',
+		'_convoca_event_price',
 	);
+}
+
+/**
+ * Normaliza un precio escrito por quien edita.
+ *
+ * Devuelve el precio con dos decimales y punto (`60.00`, `60.50`) o cadena vacía
+ * si no es un número válido o es negativo. Se acepta la coma decimal porque es lo
+ * que escribe media España: sin esto, «60,50» se descartaba en silencio y el
+ * evento acababa publicado como gratuito en los datos estructurados.
+ *
+ * @param string $valor Valor tal cual llega del formulario.
+ * @return string Precio normalizado, o '' si no sirve.
+ */
+function event_price_sanitize( string $valor ): string {
+	$valor = trim( str_replace( ',', '.', $valor ) );
+
+	if ( '' === $valor || ! is_numeric( $valor ) || (float) $valor < 0 ) {
+		return '';
+	}
+
+	return number_format( (float) $valor, 2, '.', '' );
 }
 
 /**
@@ -151,6 +173,7 @@ function event_meta_box_html( $post ): void {
 	$inicio    = event_meta( (int) $post->ID, '_convoca_event_start_date' );
 	$fin       = event_meta( (int) $post->ID, '_convoca_event_end_date' );
 	$direccion = event_meta( (int) $post->ID, '_convoca_event_address' );
+	$precio    = event_meta( (int) $post->ID, '_convoca_event_price' );
 	?>
 	<p>
 		<label for="convoca_has_event">
@@ -172,6 +195,14 @@ function event_meta_box_html( $post ): void {
 		<label for="convoca_event_address"><?php esc_html_e( 'Address / location', 'convoca-core' ); ?></label>
 		<input type="text" id="convoca_event_address" name="convoca_event_address"
 			value="<?php echo esc_attr( $direccion ); ?>" placeholder="<?php esc_attr_e( 'e.g. Main Street 1, Your Town, Spain', 'convoca-core' ); ?>" style="width:100%">
+	</p>
+	<p>
+		<label for="convoca_event_price"><?php esc_html_e( 'Price per person (EUR)', 'convoca-core' ); ?></label>
+		<input type="number" id="convoca_event_price" name="convoca_event_price" step="0.01" min="0"
+			value="<?php echo esc_attr( $precio ); ?>" placeholder="0.00" style="width:100%">
+		<span style="display:block;color:#666;font-size:12px;">
+			<?php esc_html_e( 'Leave empty for free events. Without a price the event is published as free.', 'convoca-core' ); ?>
+		</span>
 	</p>
 	<p style="color:#666;font-size:12px;margin-top:8px;">
 		<?php esc_html_e( 'Fill in these fields only if you want search engines to index this content as an event with structured data.', 'convoca-core' ); ?>
@@ -225,6 +256,17 @@ function event_meta_save( $post_id ): void {
 			update_post_meta( $post_id, $meta_key, $value );
 		} else {
 			delete_post_meta( $post_id, $meta_key );
+		}
+	}
+
+	// El precio no es texto libre: se normaliza aparte. Vacío o inválido borra el
+	// meta (evento gratuito), que es el comportamiento de siempre.
+	if ( isset( $_POST['convoca_event_price'] ) ) {
+		$precio = event_price_sanitize( sanitize_text_field( wp_unslash( $_POST['convoca_event_price'] ) ) );
+		if ( '' !== $precio ) {
+			update_post_meta( $post_id, '_convoca_event_price', $precio );
+		} else {
+			delete_post_meta( $post_id, '_convoca_event_price' );
 		}
 	}
 }

@@ -1,5 +1,15 @@
 # Changelog — convoca-core
 
+## v2.3.3 (2026-09-24)
+
+### Añadido
+- **Precio del evento** en el modelo de datos y en el formulario de la entrada: `_convoca_event_price` entra en `event_meta_keys()` y el metabox «Event» gana un campo numérico (`step="0.01"`, `min="0"`), con nota de que vacío significa evento gratuito.
+- `event_price_sanitize()`: normaliza el precio (acepta coma decimal, exige número válido y no negativo, guarda dos decimales). Un valor inválido no se inventa: se borra el meta y el evento queda como gratuito.
+- Pruebas: `EventPriceSanitizeTest` cubre once casos (coma, negativos, texto, cero, vacío) y comprueba que la clave canónica está en el inventario.
+
+### Contexto
+Cierra el issue #5: el theme leía el precio desde el meta (theme 2.9.18) pero no había manera de declararlo desde el editor, así que un curso de pago podía publicarse como gratuito en el JSON-LD del evento.
+
 ## v2.3.2 (2026-09-23)
 
 ### 🔒 Seguridad y robustez
