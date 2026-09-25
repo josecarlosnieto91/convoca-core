@@ -1,5 +1,17 @@
 # Changelog — convoca-core
 
+## v2.3.5 (2026-09-25)
+
+### Añadido
+- **`Convoca\Core\Hour_Ledger`**: ciclo de vida único de las horas de voluntariado. Un hecho
+  (asistencia o turno) tiene **un solo** `registro_hora`, vinculado a su origen
+  (`_convoca_origen` / `_convoca_origen_id`); retirarlo lo **invalida** (`_convoca_estado = 'anulada'`)
+  y volver a marcarlo lo **reactiva**, así que marcar/desmarcar no acumula horas. Los consumidores
+  (Members, certificados, renovación) exigen `aprobada`, de modo que invalidar basta para que las
+  horas dejen de contar. Los registros históricos sin vínculo se reutilizan solo cuando la
+  correspondencia es inequívoca.
+
+
 ## v2.3.4 (2026-09-25)
 
 ### Añadido

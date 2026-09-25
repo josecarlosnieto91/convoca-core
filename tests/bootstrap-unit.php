@@ -233,7 +233,7 @@ if (!function_exists('get_post_type')) {
     }
 }
 if (!function_exists('is_email')) { function is_email($email) { return (bool) filter_var((string) $email, FILTER_VALIDATE_EMAIL); } }
-if (!function_exists('post_type_exists')) { function post_type_exists($t) { return in_array($t, ['post', 'page', 'miembro'], true); } }
+if (!function_exists('post_type_exists')) { function post_type_exists($t) { return in_array($t, ['post', 'page', 'miembro', 'registro_hora', 'actividad', 'inscripcion', 'centro_turno', 'centro_actividad'], true); } }
 if (!function_exists('get_post')) {
     function get_post($id = null, $output = OBJECT, $filter = 'raw') {
         // Convención de tests: _test_posts[id] permite mockear posts completos.
@@ -249,7 +249,32 @@ if (!function_exists('get_post')) {
         return $p;
     }
 }
-if (!function_exists('wp_insert_post')) { function wp_insert_post($data, $error = false) { return 99; } }
+if (!function_exists('wp_insert_post')) {
+    function wp_insert_post($data, $error = false) {
+        // Store de posts para los tests que necesitan recorrer un ciclo real
+        // (crear → consultar → actualizar). El primer ID sigue siendo 99, así que los
+        // tests que solo comprobaban "se creó algo" no cambian.
+        $GLOBALS['_wp_stub_next_id'] = $GLOBALS['_wp_stub_next_id'] ?? 99;
+        $id = $GLOBALS['_wp_stub_next_id']++;
+
+        $p = new WP_Post();
+        $p->ID          = $id;
+        $p->post_type   = $data['post_type'] ?? 'post';
+        $p->post_status = $data['post_status'] ?? 'publish';
+        $p->post_title  = $data['post_title'] ?? '';
+        $p->post_author = (int) ($data['post_author'] ?? 0);
+
+        $GLOBALS['_wp_stores']['posts'][$id]       = $p;
+        $GLOBALS['_wp_stores']['post_types'][$id]  = $p->post_type;
+        $GLOBALS['_wp_stores']['post_status'][$id] = $p->post_status;
+
+        foreach ((array) ($data['meta_input'] ?? []) as $k => $v) {
+            $GLOBALS['_wp_stores']['post_meta'][$id][$k] = $v;
+        }
+
+        return $id;
+    }
+}
 if (!function_exists('wp_update_post')) {
     function wp_update_post($data) {
         // Spy: registrar los datos pasados (convención usada por los tests).
@@ -262,7 +287,59 @@ if (!function_exists('wp_update_post')) {
     }
 }
 if (!function_exists('wp_delete_post')) { function wp_delete_post($id, $force = false) { return true; } }
-if (!function_exists('get_posts')) { function get_posts($args = []) { return []; } }
+if (!function_exists('get_posts')) {
+    /** ¿Cumple un post las cláusulas de meta_query? (soporta =, EXISTS, NOT EXISTS) */
+    function _wp_stub_meta_matches($id, $mq) {
+        foreach ((array) $mq as $clause) {
+            if (!is_array($clause) || empty($clause['key'])) { continue; }
+            $key     = $clause['key'];
+            $compare = strtoupper((string) ($clause['compare'] ?? '='));
+            $meta    = $GLOBALS['_wp_stores']['post_meta'][$id] ?? [];
+            $has     = array_key_exists($key, $meta);
+
+            if ($compare === 'NOT EXISTS') { if ($has) { return false; } continue; }
+            if ($compare === 'EXISTS')     { if (!$has) { return false; } continue; }
+            if (!$has) { return false; }
+            if ($compare === '=' && (string) $meta[$key] !== (string) ($clause['value'] ?? '')) { return false; }
+        }
+        return true;
+    }
+
+    function get_posts($args = []) {
+        // Compatibilidad: sin posts en el store no hay nada que devolver (comportamiento previo).
+        $posts = $GLOBALS['_wp_stores']['posts'] ?? [];
+        if (empty($posts)) { return []; }
+
+        $types  = (array) ($args['post_type'] ?? 'post');
+        $status = (array) ($args['post_status'] ?? ['publish']);
+        $mq     = $args['meta_query'] ?? [];
+        $limit  = (int) ($args['posts_per_page'] ?? 5);
+        $fields = $args['fields'] ?? '';
+
+        // Consulta simple por meta_key/meta_value (la que usa la búsqueda del socio).
+        if (empty($mq) && !empty($args['meta_key'])) {
+            $mq = array(
+                array(
+                    'key'   => $args['meta_key'],
+                    'value' => (string) ($args['meta_value'] ?? ''),
+                ),
+            );
+        }
+
+        $out = [];
+        foreach ($posts as $id => $p) {
+            if (!in_array($p->post_type ?? '', $types, true)) { continue; }
+            if (!in_array($p->post_status ?? 'publish', $status, true)) { continue; }
+            if (!_wp_stub_meta_matches((int) $id, $mq)) { continue; }
+            $out[] = ($fields === 'ids') ? (int) $id : $p;
+            if ($limit > 0 && count($out) >= $limit) { break; }
+        }
+
+        if (strtoupper((string) ($args['order'] ?? '')) === 'DESC') { $out = array_reverse($out); }
+
+        return $out;
+    }
+}
 if (!function_exists('wp_get_post_terms')) {
     function wp_get_post_terms($id, $tax, $args = []) {
         // Override por test: _wp_stores['post_terms'][id].
@@ -340,6 +417,7 @@ if (!class_exists('WP_Post')) {
     class WP_Post {
         public $ID = 0; public $post_title = ''; public $post_type = 'post';
         public $post_status = 'publish'; public $post_content = '';
+        public $post_author = 0; public $post_date = ''; public $post_name = '';
     }
 }
 
