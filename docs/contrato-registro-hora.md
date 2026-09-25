@@ -25,9 +25,14 @@ paneles, correos) sale de aquí.
 
 | Estado | Cuenta | Significado |
 |---|---|---|
-| `pendiente` | **No** | Registro manual a la espera de aprobación por la asociación. |
+| `pendiente` | **No** | Registro a la espera de aprobación por la asociación. |
 | `aprobada` | **Sí** | Acreditado. Es el **único** estado que suma. |
-| `anulada` | **No** | El hecho se retiró: la acreditación no cuenta y el histórico se conserva. |
+| `anulada` | **No** | El hecho se retiró (`Hour_Ledger::revoke`): se había acreditado y dejó de valer. Conserva el histórico. |
+| `rechazada` | **No** | Horas manuales que la asociación no acepta (`Hours_Manager`): **nunca** llegaron a acreditarse. |
+
+`anulada` y `rechazada` son cosas distintas —una acreditación retirada frente a una propuesta
+denegada— pero comparten efecto: **no suman**. Ningún consumidor debe tratarlas como equivalentes
+al mostrarlas: la primera tuvo horas y se retiraron; la segunda nunca las tuvo.
 
 Regla de oro: **quien decide (renovación, certificados) exige `aprobada`**; nadie debe considerar
 válido un estado distinto ni añadir estados nuevos sin actualizar este documento y a todos los
