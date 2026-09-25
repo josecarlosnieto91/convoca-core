@@ -1,5 +1,16 @@
 # Changelog — convoca-core
 
+## v2.3.4 (2026-09-25)
+
+### Añadido
+- **Copia al administrador (o al monitor) de los correos**: `Convoca\Core\Email_Copy`. Todo correo que
+  un plugin de Convoca envía a una persona se notifica también a la asociación — a los **responsables**
+  de la actividad si el correo es de una actividad, y al **correo de administración** en cualquier otro
+  caso. Asunto marcado `[Copia]`, con cabecera que indica a quién se envió y su origen, y sin duplicar
+  los adjuntos del original. Activada por defecto; se apaga con el ajuste o el filtro
+  `convoca_email_copy_enabled`, y los destinatarios se ajustan con `convoca_email_copy_recipients`.
+
+
 ## v2.3.3 (2026-09-24)
 
 ### Añadido

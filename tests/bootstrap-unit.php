@@ -225,6 +225,14 @@ if (!function_exists('wp_date')) { function wp_date($f, $ts = null) { return dat
 // --- Posts ---
 if (!function_exists('get_the_title')) { function get_the_title($id) { return "Post $id"; } }
 if (!function_exists('get_post_status')) { function get_post_status($id) { return 'publish'; } }
+if (!function_exists('get_post_type')) {
+    function get_post_type($post = null) {
+        $id = is_object($post) ? (int) ($post->ID ?? 0) : (int) $post;
+        if (!empty($GLOBALS['_test_posts'][$id])) { return $GLOBALS['_test_posts'][$id]->post_type ?? false; }
+        return $GLOBALS['_wp_stores']['post_types'][$id] ?? 'miembro';
+    }
+}
+if (!function_exists('is_email')) { function is_email($email) { return (bool) filter_var((string) $email, FILTER_VALIDATE_EMAIL); } }
 if (!function_exists('post_type_exists')) { function post_type_exists($t) { return in_array($t, ['post', 'page', 'miembro'], true); } }
 if (!function_exists('get_post')) {
     function get_post($id = null, $output = OBJECT, $filter = 'raw') {
