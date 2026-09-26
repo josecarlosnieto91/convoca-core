@@ -22,19 +22,19 @@ desde el admin y la migración de versiones lo corrige.
 |---|---|---|---|---|---|
 | Alta solicitada | `solicitud_recibida` | «Hemos recibido tu solicitud de {tipo_solicitud} — {sitio}» | Persona solicitante | Acceder a Mi Área | capturado |
 | Alta confirmada | `bienvenida` | «¡Bienvenido/a, {nombre}! Ya formas parte de {sitio}» | Persona socia | Acceder a Mi Área | capturado |
-| Aprobación con acceso | `credenciales_acceso` | «Bienvenido/a a {sitio} — Tus credenciales de acceso» | Persona socia | Acceder a Mi Área | capturado (pendiente de revisar el texto) |
+| Aprobación con acceso | `credenciales_acceso` | «Bienvenido/a a {sitio} — Tus credenciales de acceso» | Persona socia | Acceder a Mi Área | capturado |
 | Cuota pendiente (1/3) | `recordatorio_pago` | «Recordatorio de pago (1/3) — {sitio}» | Persona socia | Pagar ahora | capturado |
-| Cuota pendiente (2/3) | `pago_pendiente_2` | «Segundo aviso: pago pendiente — {sitio}» | Persona socia | Pagar ahora | código |
-| Cuota pendiente (3/3) | `pago_pendiente_ultimo` | «Último aviso: suspensión inminente — {sitio}» | Persona socia | Pagar ahora | código |
-| Renovación a 30 días | `renovacion` | «Tu renovación en {sitio} (30 días)» | Persona socia | Renovar ahora | código |
-| Renovación a 15 días | `renovacion_15d` | «Tu renovación en {sitio} (15 días)» | Persona socia | Renovar mi cuota | código |
-| Renovación a 7 días | `renovacion_7d` | «Última semana para tu renovación — {sitio}» | Persona socia | Renovar mi cuota | código |
-| Renovación automática lanzada | `renovacion_automatica` | «Procesando tu renovación automática — {sitio}» | Persona socia | Ver mi membresía | código |
+| Cuota pendiente (2/3) | `pago_pendiente_2` | «Segundo aviso: pago pendiente — {sitio}» | Persona socia | Pagar ahora | capturado |
+| Cuota pendiente (3/3) | `pago_pendiente_ultimo` | «Último aviso: suspensión inminente — {sitio}» | Persona socia | Pagar ahora | capturado |
+| Renovación a 30 días | `renovacion` | «Tu renovación en {sitio} (30 días)» | Persona socia | Renovar ahora | capturado |
+| Renovación a 15 días | `renovacion_15d` | «Tu renovación en {sitio} (15 días)» | Persona socia | Renovar mi cuota | capturado |
+| Renovación a 7 días | `renovacion_7d` | «Última semana para tu renovación — {sitio}» | Persona socia | Renovar mi cuota | capturado |
+| Renovación automática lanzada | `renovacion_automatica` | «Procesando tu renovación automática — {sitio}» | Persona socia | Ver mi membresía | capturado |
 | Renovación cobrada | `renovacion_completada` | «Renovación completada con éxito — {sitio}» | Persona socia | Ver mi carnet (+ tarjeta PDF adjunta) | capturado |
-| Recordatorio de horas | `voluntariado_recordatorio` | «Recuerda tus horas de voluntariado — {sitio}» | Persona voluntaria | (sin botón propio) | código |
+| Recordatorio de horas | `voluntariado_recordatorio` | «Recuerda tus horas de voluntariado — {sitio}» | Persona voluntaria | (sin botón propio) | capturado |
 | Objetivo de horas cumplido | `objetivo_voluntariado_completado` | «🎉 ¡Felicidades! Has completado tu voluntariado — {sitio}» | Persona voluntaria | Descargar Certificado | capturado |
-| Confirmación de email | `confirm_email` | «Confirma tu nuevo email — {sitio}» | Titular del cambio | Confirmar email | código |
-| Verificación de teléfono | `verify_phone` | «Verifica tu teléfono — {sitio}» | Titular del cambio | Verificar teléfono | código |
+| Confirmación de email | `confirm_email` | «Confirma tu nuevo email — {sitio}» | Titular del cambio | Confirmar email | capturado |
+| Verificación de teléfono | `verify_phone` | «Verifica tu teléfono — {sitio}» | Titular del cambio | Verificar teléfono | capturado |
 
 ### Enroll — opción `convoca_enroll_email_templates` (11 plantillas)
 
@@ -90,7 +90,27 @@ del voluntario y notificaciones de pago. Ahí sí falta la copia y el layout.
 
 **Issue:** el mecanismo es de Core, así que el seguimiento vive en `convoca-core`.
 
-## 3. Un punto suelto en todos los correos (corregido, core 2.3.7)
+## 3. Los botones llegaban rotos en las plantillas de fábrica (corregido, core 2.3.8)
+
+`Email_Layout::button_html()` escapaba el enlace al **construir** la plantilla, y `esc_url()` se come un
+placeholder: `{link_pago}` se guardaba como `http://link_pago`. La sustitución posterior ya no
+encontraba nada y el botón viajaba a una dirección inventada.
+
+**10 de las 15 plantillas de fábrica** estaban afectadas (`login_url`, `link_pago` ×6,
+`link_confirmacion` ×2, `certificado_url_verificacion`). No se veía porque en los sitios existentes
+mandaba la plantilla guardada antigua y el CTA de respaldo —que sí sustituye antes de escapar—; en una
+instalación **nueva** los diez botones salían muertos.
+
+Ahora el placeholder sobrevive hasta la sustitución y el enlace se escapa en `render()`, el único punto
+donde el valor ya está sustituido. Los sitios que ya tenían las plantillas rotas las recuperan con la
+migración (members 2.8.13), que reconoce el nombre de la variable en vez de tapar los casos uno a uno
+—antes solo estaban contemplados dos de los cinco—.
+
+Comprobado sobre el HTML real: los 15 correos de Members salen con **un solo botón y enlace real**
+(`https://…?convoca_confirm_email=1&amp;member=…`), y el `&amp;` demuestra que el escape ocurre
+después de sustituir.
+
+## 4. Un punto suelto en todos los correos (corregido, core 2.3.7)
 
 Capturando el HTML real apareció algo que ninguna plantilla mostraba: **todos** los correos del
 ecosistema llevaban un `.` pegado a la marca del sitio en la cabecera y otro al final del cuerpo.
@@ -100,11 +120,10 @@ literal fuera del bloque PHP. No se ve en la plantilla ni en una vista previa de
 HTML que se envía. Corregido y cubierto por `EmailLayoutRenderTest`, que exige que el layout no
 imprima texto propio, **comprobado en negativo**: con el defecto el test falla.
 
-## 4. Qué falta, en corto
+## 5. Qué falta, en corto
 
-- Capturar el HTML real de las 7 plantillas de Members que aún dicen `código` (el resto de la
-  familia ya está capturada).
-- Decidir el arreglo de los correos fuera del mecanismo (¿un `Core\Mailer` único?) y ejecutarlo.
+- Decidir el arreglo de los correos fuera del mecanismo (¿un `Core\Mailer` único?) y ejecutarlo
+  (`convoca-core#6`).
 - Comprobar que las plantillas **almacenadas** coinciden con las del código en **cada** sitio, no
   solo en uno: un sitio con la migración sin correr sigue enviando el texto viejo.
 - La cola de correo de Enroll **no se limpia**: en producción quedan 14 filas `sent` de QA de
