@@ -40,20 +40,22 @@ desde el admin y la migración de versiones lo corrige.
 
 | Evento | Plantilla | Asunto | Destinatario | Acción | Verificado |
 |---|---|---|---|---|---|
-| Inscripción recibida | `recepcion` | «Inscripción recibida — {actividad}» | Persona inscrita | Ver mi reserva | código |
-| Sin plazas | `lista_espera` | «En lista de espera — {actividad}» | Persona inscrita | Ver mi inscripción | código |
-| Se libera una plaza | `promocion_lista_espera` | «¡Tienes una plaza disponible! — {actividad}» | Persona en espera | Confirmar mi plaza | código |
-| Plaza confirmada | `confirmacion_plaza` | «¡Plaza confirmada! — {actividad}» | Persona inscrita | Ver mi reserva | código |
-| Inscripción cancelada | `cancelacion_reserva` | «Reserva cancelada — {actividad}» | Persona inscrita | Gestionar reserva | código |
-| Faltan 7 días | `recordatorio_7dias` | «¡Esta semana! {actividad}» | Persona inscrita | (sin botón) | código |
-| Falta 1 día | `recordatorio_24h` | «Recordatorio: {actividad} es mañana» | Persona inscrita | (sin botón) | código |
-| Falta 1 hora | `recordatorio_1hora` | «{actividad} comienza en 1 hora» | Persona inscrita | (sin botón) | código |
-| Actividad terminada | `feedback_post` | «¿Qué te pareció "{actividad}"?» | Persona inscrita | (sin botón) | código |
-| Álbum de fotos creado | `google_photos_album_creado` | «Álbum de fotos para "{actividad}" — {sitio}» | Participantes | Subir fotos | código |
-| Álbum compartido | `google_photos_album_compartido` | «Fotos de "{actividad}" — {sitio}» | Participantes | Ver fotos | código |
+| Inscripción recibida | `recepcion` | «Inscripción recibida — {actividad}» | Persona inscrita | Ver mi reserva | capturado |
+| Sin plazas | `lista_espera` | «En lista de espera — {actividad}» | Persona inscrita | Ver mi inscripción | capturado |
+| Se libera una plaza | `promocion_lista_espera` | «¡Tienes una plaza disponible! — {actividad}» | Persona en espera | Confirmar mi plaza | capturado |
+| Plaza confirmada | `confirmacion_plaza` | «¡Plaza confirmada! — {actividad}» | Persona inscrita | Ver mi reserva | capturado |
+| Inscripción cancelada | `cancelacion_reserva` | «Reserva cancelada — {actividad}» | Persona inscrita | Gestionar reserva | capturado |
+| Faltan 7 días | `recordatorio_7dias` | «¡Esta semana! {actividad}» | Persona inscrita | (sin botón) | capturado |
+| Falta 1 día | `recordatorio_24h` | «Recordatorio: {actividad} es mañana» | Persona inscrita | (sin botón) | capturado |
+| Falta 1 hora | `recordatorio_1hora` | «{actividad} comienza en 1 hora» | Persona inscrita | (sin botón) | capturado |
+| Actividad terminada | `feedback_post` | «¿Qué te pareció "{actividad}"?» | Persona inscrita | (sin botón) | capturado |
+| Álbum de fotos creado | `google_photos_album_creado` | «Álbum de fotos para "{actividad}" — {sitio}» | Participantes | Subir fotos | capturado |
+| Álbum compartido | `google_photos_album_compartido` | «Fotos de "{actividad}" — {sitio}» | Participantes | Ver fotos | capturado |
 
-**Pendiente de este bloque:** capturar el HTML real de las 11 de Enroll (necesita una actividad con
-inscripciones en el sitio). Hasta entonces la columna dice `código`, no `capturado`.
+Capturadas las 11 en producción el 26/09/2026 con una actividad y una inscripción de prueba: se
+disparó el mismo `send()` del plugin y se leyó el HTML de la cola de correo. Comprobado que ninguna
+tiene filas sin valor, botones sin destino, placeholders sin sustituir, escapes literales, acentos
+rotos ni botón duplicado.
 
 ## 2. Correos que NO pasan por el mecanismo común
 
@@ -88,9 +90,22 @@ del voluntario y notificaciones de pago. Ahí sí falta la copia y el layout.
 
 **Issue:** el mecanismo es de Core, así que el seguimiento vive en `convoca-core`.
 
-## 3. Qué falta, en corto
+## 3. Un punto suelto en todos los correos (corregido, core 2.3.7)
 
-- Capturar el HTML real de las 11 plantillas de Enroll (y de las 7 de Members que aún dicen `código`).
+Capturando el HTML real apareció algo que ninguna plantilla mostraba: **todos** los correos del
+ecosistema llevaban un `.` pegado a la marca del sitio en la cabecera y otro al final del cuerpo.
+
+Venía de dos `?>.` al final de un `echo` en `Email_Layout::render()`: el `.` quedaba como texto
+literal fuera del bloque PHP. No se ve en la plantilla ni en una vista previa del asunto; sí en el
+HTML que se envía. Corregido y cubierto por `EmailLayoutRenderTest`, que exige que el layout no
+imprima texto propio, **comprobado en negativo**: con el defecto el test falla.
+
+## 4. Qué falta, en corto
+
+- Capturar el HTML real de las 7 plantillas de Members que aún dicen `código` (el resto de la
+  familia ya está capturada).
 - Decidir el arreglo de los correos fuera del mecanismo (¿un `Core\Mailer` único?) y ejecutarlo.
 - Comprobar que las plantillas **almacenadas** coinciden con las del código en **cada** sitio, no
   solo en uno: un sitio con la migración sin correr sigue enviando el texto viejo.
+- La cola de correo de Enroll **no se limpia**: en producción quedan 14 filas `sent` de QA de
+  sesiones anteriores. No es un fallo de entrega (todas salieron), pero la tabla crece sin límite.
