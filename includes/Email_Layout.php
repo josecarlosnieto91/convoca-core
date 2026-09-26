@@ -184,11 +184,23 @@ img{display:block;border:0;height:auto;line-height:100%;outline:none;text-decora
 <p style="margin:0 0 8px">&copy; <?php echo esc_html( $year ); ?> <?php echo esc_html( $site_name ); ?></p>
 <p style="margin:0 0 8px"><?php echo esc_html( $footer_text ); ?></p>
 <p style="margin:0">
-<a href="<?php echo esc_url( home_url( '/mi-area/' ) ); ?>">Mi Área</a>
+		<?php
+		// Los enlaces del pie se resuelven contra las páginas reales del sitio:
+		// escritos a mano son un 404 esperando (el panel de un sitio se llama
+		// `/panel-socio/`, no `/mi-area/`). Lo que no resuelve, no se imprime.
+		$convoca_pie = \Convoca\Core\Email_Links::footer();
+		$convoca_pie = array_filter( $convoca_pie, static fn( $url ): bool => '' !== trim( (string) $url ) );
+		$convoca_sep = false;
+		foreach ( $convoca_pie as $convoca_etiqueta => $convoca_url ) :
+			if ( $convoca_sep ) :
+				?>
 &nbsp;·&nbsp;
-<a href="<?php echo esc_url( home_url( '/contacto/' ) ); ?>">Contacto</a>
-&nbsp;·&nbsp;
-<a href="<?php echo esc_url( home_url( '/aviso-legal/' ) ); ?>">Aviso Legal</a>
+				<?php
+			endif;
+			$convoca_sep = true;
+			?>
+<a href="<?php echo esc_url( $convoca_url ); ?>"><?php echo esc_html( $convoca_etiqueta ); ?></a>
+		<?php endforeach; ?>
 </p>
 </td></tr>
 </table>

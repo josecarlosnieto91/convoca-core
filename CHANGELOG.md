@@ -1,5 +1,26 @@
 # Changelog — convoca-core
 
+## v2.3.9 (2026-09-26)
+
+### Añadido
+- **`Convoca\Core\Email_Links`**: los enlaces de los correos se resuelven contra las páginas REALES
+  del sitio en vez de escribirse a mano. `panel()` encuentra la página del área privada por su
+  shortcode (`[convoca_mi_area]`) o por sus slugs habituales; `footer()` construye los enlaces del pie
+  con el **título real** de cada página encontrada. Todo pasa por `convoca_email_panel_url` y
+  `convoca_email_footer_links`, para que un sitio pueda apuntar donde quiera sin tocar el plugin.
+
+### Corregido
+- **El CTA principal de todos los correos y el pie llevaban a un 404** en cualquier sitio cuyo panel no
+  se llame `/mi-area/`: `render()` escribía `home_url('/mi-area/')`, `home_url('/contacto/')` y
+  `home_url('/aviso-legal/')` a mano. Ahora los tres salen de `Email_Links::footer()`, y **lo que no
+  resuelve no se imprime** (mejor sin enlace que con un 404).
+
+### Cambiado
+- El banco de pruebas del core registra filtros de verdad: `apply_filters()` devolvía el valor tal cual
+  y `add_filter()` era un no-op, así que **cualquier contrato basado en filtros pasaba sin comprobar
+  nada**. Con el registro real, los tests de filtros comprueban algo.
+
+
 ## v2.3.8 (2026-09-26)
 
 ### Corregido

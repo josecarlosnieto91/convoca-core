@@ -168,6 +168,23 @@ if (!function_exists('get_bloginfo')) { function get_bloginfo($show = 'name') { 
 // configurado cae al nombre del sitio, que es lo que se prueba por defecto.
 if (!function_exists('get_theme_mod')) { function get_theme_mod($name = '', $default = false) { return $default; } }
 if (!function_exists('wp_get_attachment_image_src')) { function wp_get_attachment_image_src($id, $size = 'thumbnail', $icon = false) { return false; } }
+// Resolución de páginas por shortcode (Email_Links). `get_page_by_path` lee del
+// mismo almacén que get_posts, para poder montar un sitio de prueba coherente.
+if (!function_exists('has_shortcode')) {
+    function has_shortcode($content, $tag) {
+        if (!is_string($content) || '' === $content) { return false; }
+        return (bool) preg_match('/\[' . preg_quote($tag, '/') . '[\s\]]/', $content);
+    }
+}
+if (!function_exists('get_permalink')) { function get_permalink($id = 0) { return 'https://example.org/?p=' . (int) $id; } }
+if (!function_exists('get_page_by_path')) {
+    function get_page_by_path($slug) {
+        foreach (($GLOBALS['_wp_stores']['posts'] ?? []) as $p) {
+            if (($p->post_type ?? '') === 'page' && ($p->post_name ?? '') === $slug) { return $p; }
+        }
+        return null;
+    }
+}
 if (!function_exists('sanitize_text_field')) { function sanitize_text_field($s) { return trim(strip_tags($s)); } }
 if (!function_exists('sanitize_title')) { function sanitize_title($t) { return strtolower(str_replace(' ', '-', trim($t))); } }
 if (!function_exists('sanitize_email')) { function sanitize_email($e) { return filter_var($e, FILTER_SANITIZE_EMAIL); } }
@@ -176,13 +193,45 @@ if (!function_exists('absint')) { function absint($v) { return abs((int)$v); } }
 if (!function_exists('wp_unslash')) { function wp_unslash($s) { return is_string($s) ? stripslashes($s) : $s; } }
 
 // --- Hooks ---
-if (!function_exists('apply_filters')) { function apply_filters($t, $v, ...$a) { return $v; } }
+// Registro real de filtros: con un `apply_filters` que devolvía el valor tal cual,
+// cualquier contrato basado en filtros pasaba sin comprobar nada (y `add_filter`
+// era un no-op). Un check que no puede fallar no es un check.
+if (!isset($GLOBALS['_wp_filters'])) { $GLOBALS['_wp_filters'] = array(); }
+if (!function_exists('add_filter')) {
+    function add_filter($t, $c, $p = 10, $a = 1) {
+        $GLOBALS['_wp_filters'][$t][(int) $p][] = $c;
+        return true;
+    }
+}
+if (!function_exists('apply_filters')) {
+    function apply_filters($t, $v, ...$args) {
+        $niveles = $GLOBALS['_wp_filters'][$t] ?? array();
+        ksort($niveles);
+        foreach ($niveles as $cbs) {
+            foreach ($cbs as $cb) {
+                if (is_callable($cb)) { $v = $cb($v, ...$args); }
+            }
+        }
+        return $v;
+    }
+}
+if (!function_exists('remove_all_filters')) {
+    function remove_all_filters($t) { unset($GLOBALS['_wp_filters'][$t]); return true; }
+}
 if (!function_exists('do_action')) { function do_action($t, ...$a) {} }
 if (!function_exists('add_action')) { function add_action($t, $c, $p = 10, $a = 1) { return true; } }
-if (!function_exists('add_filter')) { function add_filter($t, $c, $p = 10, $a = 1) { return true; } }
 if (!function_exists('remove_action')) { function remove_action($t, $c, $p = 10) { return true; } }
 if (!function_exists('has_action')) { function has_action($t, $c = false) { return false; } }
-if (!function_exists('has_filter')) { function has_filter($t, $c = false) { return false; } }
+if (!function_exists('has_filter')) {
+    function has_filter($t, $c = false) {
+        if (empty($GLOBALS['_wp_filters'][$t])) { return false; }
+        if (false === $c) { return true; }
+        foreach ($GLOBALS['_wp_filters'][$t] as $cbs) {
+            if (in_array($c, $cbs, true)) { return true; }
+        }
+        return false;
+    }
+}
 if (!function_exists('do_action_deprecated')) { function do_action_deprecated($t, $a = [], $v = '', $alt = '') {} }
 if (!function_exists('apply_filters_deprecated')) { function apply_filters_deprecated($t, $a = [], $v = '', $alt = '') { return $a[0] ?? null; } }
 if (!function_exists('did_action')) { function did_action($t) { return 0; } }
