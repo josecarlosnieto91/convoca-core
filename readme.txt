@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.3.5
+Stable tag: 2.3.6
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,9 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.3.6 =
+* Los correos dejan de imprimir datos ausentes: una fila sin valor («Nueva fecha renovación: —») ya no se imprime y un botón cuyo enlace no lleva a ninguna parte desaparece. Un `0` sigue siendo un dato y se conserva.
 
 = 2.3.3 =
 * El formulario de evento incluye un campo de **precio** (`_convoca_event_price`), así que una actividad de pago ya no sale como gratuita en los datos estructurados: antes había que escribir el dato a mano por WP-CLI, entrada por entrada.

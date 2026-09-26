@@ -36,6 +36,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Email_Layout {
 
 	/**
+	 * Valor con el que las plantillas representan «este dato no existe».
+	 *
+	 * Lo escriben los constructores de variables (`{fecha_renovacion}` → `—`).
+	 * Es el único valor que se considera ausente: un `0` es un dato real.
+	 */
+	public const EMPTY_VALUE = '—';
+
+	/**
 	 * Render a complete HTML email with Convoca branding.
 	 *
 	 * @param string $body        Inner HTML content.
@@ -77,6 +85,16 @@ class Email_Layout {
 		// Convert plain text line breaks to <p> if body has no HTML tags.
 		if ( $body === wp_strip_all_tags( $body ) ) {
 			$body = nl2br( esc_html( $body ) );
+		}
+
+		// El cuerpo llega con las variables ya sustituidas, así que lo que se
+		// quedó sin dato se retira aquí: una fila «Nueva fecha renovación: —» o
+		// un botón con `href=""` son visibles para el destinatario.
+		$body = self::prune_empty_html( $body );
+
+		if ( self::is_missing( $button_url ) ) {
+			$button_url  = '';
+			$button_text = '';
 		}
 
 		// Fade variation of accent for buttons (slightly darker on hover).
@@ -201,6 +219,74 @@ img{display:block;border:0;height:auto;line-height:100%;outline:none;text-decora
 		}
 		$html .= '</table></div>';
 		return $html;
+	}
+
+	/**
+	 * ¿El valor representa un dato ausente?
+	 *
+	 * @param string $value Valor ya sustituido.
+	 */
+	public static function is_missing( string $value ): bool {
+		$value = trim( html_entity_decode( $value, ENT_QUOTES, 'UTF-8' ) );
+		return '' === $value || self::EMPTY_VALUE === $value || in_array( $value, array( '-', '--', '#' ), true );
+	}
+
+	/**
+	 * Retira del cuerpo lo que quedó sin dato tras sustituir las variables.
+	 *
+	 * Las plantillas se montan ANTES de sustituir los placeholders, así que una
+	 * fila cuyo valor venía vacío se imprimía igual y el destinatario leía
+	 * «Nueva fecha renovación: —». Aquí se quitan, en este orden: el botón sin
+	 * destino, el párrafo que se queda sin texto, la fila sin valor y la caja
+	 * de datos entera si acaba sin filas.
+	 *
+	 * @param string $html Cuerpo con las variables ya sustituidas.
+	 * @return string
+	 */
+	public static function prune_empty_html( string $html ): string {
+		// 1. Botones cuyo enlace no lleva a ninguna parte (el placeholder se
+		//    sustituyó por una raya, o `esc_url()` dejó el href vacío).
+		$html = preg_replace_callback(
+			'#<a\b[^>]*class="email-btn"[^>]*>.*?</a>#is',
+			static function ( array $m ): string {
+				$url = preg_match( '#href="([^"]*)"#i', $m[0], $h ) ? $h[1] : '';
+				return self::is_missing( $url ) ? '' : $m[0];
+			},
+			(string) $html
+		);
+
+		// 2. Párrafos que se quedan sin texto: los que eran solo el botón, los
+		//    que llevaban un valor ausente y los que quedaron vacíos.
+		$html = preg_replace_callback(
+			'#<p\b[^>]*>(?:(?!</p>).)*</p>#is',
+			static function ( array $m ): string {
+				$texto = trim( html_entity_decode( wp_strip_all_tags( $m[0] ), ENT_QUOTES, 'UTF-8' ) );
+				if ( self::is_missing( $texto ) ) {
+					return '';
+				}
+				// «ID del certificado: —» → fuera el párrafo completo.
+				if ( preg_match( '/^.{1,80}:\s*' . preg_quote( self::EMPTY_VALUE, '/' ) . '$/u', $texto ) ) {
+					return '';
+				}
+				return $m[0];
+			},
+			(string) $html
+		);
+
+		// 3. Filas de la tabla de datos sin valor.
+		$html = preg_replace_callback(
+			'#<tr>(?:(?!</tr>).)*<td class="value">(?:(?!</td>).)*</td>\s*</tr>#is',
+			static function ( array $m ): string {
+				if ( ! preg_match( '#<td class="value">((?:(?!</td>).)*)</td>#is', $m[0], $c ) ) {
+					return $m[0];
+				}
+				return self::is_missing( wp_strip_all_tags( $c[1] ) ) ? '' : $m[0];
+			},
+			(string) $html
+		);
+
+		// 4. La caja de datos si se quedó sin ninguna fila.
+		return (string) preg_replace( '#<div class="email-meta"><table\b[^>]*>\s*</table></div>#is', '', (string) $html );
 	}
 
 	/**

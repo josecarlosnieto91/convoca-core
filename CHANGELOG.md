@@ -1,5 +1,17 @@
 # Changelog — convoca-core
 
+## v2.3.6 (2026-09-26)
+
+### Corregido
+- **`Email_Layout` ya no imprime datos ausentes.** El cuerpo de una plantilla se sustituye
+  **después** de montarse, así que una fila cuyo valor venía vacío se imprimía igual: el
+  destinatario leía «Nueva fecha renovación: —» y un botón cuyo enlace era un placeholder llegaba
+  con `href="—"` (un enlace roto con la apariencia de un botón).
+  `Email_Layout::prune_empty_html()` retira, ya sustituido el cuerpo, el botón sin destino, el
+  párrafo que se queda sin texto, la fila sin valor y la caja de datos entera cuando acaba vacía.
+  `Email_Layout::is_missing()` define qué cuenta como ausente (`''`, `—`, `-`, `--`, `#`): un `0`
+  es un dato real y **se conserva**.
+
 ## v2.3.5 (2026-09-25)
 
 ### Añadido
