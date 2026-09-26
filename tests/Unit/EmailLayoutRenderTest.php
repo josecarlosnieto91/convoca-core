@@ -58,6 +58,54 @@ class EmailLayoutRenderTest extends TestCase {
 		$this->assertSame( 1, substr_count( $html, 'MARCA-CUERPO' ) );
 	}
 
+	public function test_el_boton_conserva_el_placeholder_hasta_la_sustitucion(): void {
+		// El cuerpo se monta antes de sustituir: si aquí se escapara, el
+		// placeholder quedaría destruido y el botón viajaría a «http://link_pago».
+		$boton = Email_Layout::button_html( '{link_pago}', 'Pagar ahora' );
+
+		$this->assertStringContainsString( 'href="{link_pago}"', $boton );
+		$this->assertStringNotContainsString( 'http://link_pago', $boton );
+	}
+
+	public function test_render_escapa_el_enlace_ya_sustituido(): void {
+		$cuerpo = str_replace( '{link_pago}', 'https://example.org/pago/?a=1&b=2', Email_Layout::button_html( '{link_pago}', 'Pagar ahora' ) );
+		$html   = Email_Layout::render( $cuerpo, 'Asunto' );
+
+		$this->assertStringContainsString( 'class="email-btn"', $html );
+		$this->assertStringNotContainsString( 'href="{link_pago}"', $html );
+
+		preg_match( '#<a href="([^"]*)" class="email-btn"#', $html, $m );
+		// El contrato es «el enlace pasa por esc_url», no las reglas concretas de
+		// WordPress (que cambian entre versiones): se compara con su resultado.
+		$this->assertSame( esc_url( 'https://example.org/pago/?a=1&b=2' ), $m[1] ?? '', 'El enlace debe quedar escapado en el render.' );
+	}
+
+	public function test_un_enlace_ya_literal_no_se_estropea_al_escaparlo_dos_veces(): void {
+		$cuerpo = Email_Layout::button_html( 'https://example.org/panel/', 'Ir al panel' );
+
+		$this->assertSame( $cuerpo, Email_Layout::prune_empty_html( $cuerpo ) );
+		$this->assertStringContainsString( 'href="https://example.org/panel/"', $cuerpo );
+	}
+
+	/**
+	 * @dataProvider placeholders
+	 */
+	public function test_que_es_un_placeholder( string $valor, bool $esperado ): void {
+		$this->assertSame( $esperado, Email_Layout::is_placeholder( $valor ), $valor );
+	}
+
+	/** @return array<string, array{0: string, 1: bool}> */
+	public static function placeholders(): array {
+		return array(
+			'link_pago'        => array( '{link_pago}', true ),
+			'panel_reservas'   => array( '{panel_reservas}', true ),
+			'con espacios'     => array( ' {login_url} ', true ),
+			'url real'         => array( 'https://example.org/x/', false ),
+			'texto suelto'     => array( 'link_pago', false ),
+			'dos juntos'       => array( '{a}{b}', false ),
+		);
+	}
+
 	public function test_el_boton_del_layout_no_sale_sin_destino(): void {
 		$html = Email_Layout::render( '<p>Contenido</p>', 'Asunto', array( 'button_url' => '—', 'button_text' => 'Pulsar' ) );
 

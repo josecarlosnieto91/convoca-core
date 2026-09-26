@@ -92,6 +92,10 @@ class Email_Layout {
 		// un botón con `href=""` son visibles para el destinatario.
 		$body = self::prune_empty_html( $body );
 
+		// Ya con las variables sustituidas: es el punto donde se puede escapar el
+		// enlace de un botón sin cargarse el placeholder que lo alimenta.
+		$body = self::escape_button_urls( $body );
+
 		if ( self::is_missing( $button_url ) ) {
 			$button_url  = '';
 			$button_text = '';
@@ -310,10 +314,45 @@ img{display:block;border:0;height:auto;line-height:100%;outline:none;text-decora
 
 	/**
 	 * Build a simple button block (centered, full-width on mobile).
+	 *
+	 * El cuerpo de una plantilla se sustituye DESPUÉS de montarse, así que aquí
+	 * NO se puede escapar un placeholder: `esc_url('{link_pago}')` devuelve
+	 * `http://link_pago`, el motor ya no encuentra nada que sustituir y el botón
+	 * viaja roto sin que nadie lo note. El escape de verdad lo hace `render()`,
+	 * cuando el valor ya está sustituido.
 	 */
 	public static function button_html( string $url, string $text ): string {
+		$href = self::is_placeholder( $url ) ? trim( $url ) : esc_url( $url );
+
 		return '<p style="text-align:center;margin:24px 0 0">'
-			. '<a href="' . esc_url( $url ) . '" class="email-btn">' . esc_html( $text ) . '</a>'
+			. '<a href="' . $href . '" class="email-btn">' . esc_html( $text ) . '</a>'
 			. '</p>';
+	}
+
+	/** ¿Es un placeholder sin sustituir, del tipo `{link_pago}`? */
+	public static function is_placeholder( string $value ): bool {
+		return 1 === preg_match( '/^\{[a-z0-9_]+\}$/i', trim( $value ) );
+	}
+
+	/**
+	 * Escapa los enlaces de los botones del cuerpo.
+	 *
+	 * Es el ÚNICO punto donde se puede escapar un enlace sin cargarse el
+	 * placeholder que lo alimenta: aquí el cuerpo ya está sustituido. Escapar
+	 * dos veces una URL válida no la cambia, así que también vale para las
+	 * plantillas que ya venían con el enlace literal.
+	 */
+	private static function escape_button_urls( string $html ): string {
+		return (string) preg_replace_callback(
+			'#<a\b[^>]*class="email-btn"[^>]*>#i',
+			static function ( array $a ): string {
+				return (string) preg_replace_callback(
+					'#href="([^"]*)"#i',
+					static fn( array $h ): string => 'href="' . esc_url( $h[1] ) . '"',
+					$a[0]
+				);
+			},
+			$html
+		);
 	}
 }

@@ -1,5 +1,21 @@
 # Changelog — convoca-core
 
+## v2.3.8 (2026-09-26)
+
+### Corregido
+- **Los botones de los correos llegaban rotos.** `Email_Layout::button_html()` escapaba el enlace en el
+  momento de **construir** la plantilla, y `esc_url()` destruye un placeholder: `{link_pago}` se
+  convertía en `http://link_pago`, la sustitución posterior ya no encontraba nada que reemplazar y el
+  botón salía apuntando a una dirección inventada. **10 de las 15 plantillas de fábrica** estaban
+  afectadas (`login_url`, `link_pago` ×6, `link_confirmacion` ×2, `certificado_url_verificacion`).
+  Invisible hasta ahora porque en los sitios existentes mandaba la plantilla guardada antigua y el CTA
+  de respaldo —que sí sustituye antes de escapar—; en una instalación nueva los 10 botones salían
+  muertos.
+  Ahora `button_html()` respeta el placeholder y el escape se hace en `render()`, el único punto donde
+  el valor ya está sustituido (`escape_button_urls()`). Escapar dos veces una URL válida no la cambia,
+  así que las plantillas literales siguen igual.
+
+
 ## v2.3.7 (2026-09-26)
 
 ### Corregido
