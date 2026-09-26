@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.3.9
+Stable tag: 2.3.10
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,9 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.3.10 =
+* Un botón cuyo enlace se quedó en placeholder (el dato no llegó) ya no se imprime: antes se convertía en «http://link_pago».
 
 = 2.3.9 =
 * Los enlaces de los correos se resuelven contra las páginas reales del sitio (el CTA del área privada y el pie ya no apuntan a rutas escritas a mano que dan 404) y son configurables por filtro.

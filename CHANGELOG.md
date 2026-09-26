@@ -1,5 +1,14 @@
 # Changelog — convoca-core
 
+## v2.3.10 (2026-09-26)
+
+### Corregido
+- **Un botón cuyo enlace sigue siendo un placeholder ya no se imprime.** Si el dato no llega al
+  cuerpo, `{link_pago}` sobrevive a la sustitución y el escape lo convertía en `http://link_pago`: un
+  enlace inventado con apariencia de botón. `prune_empty_html()` lo retira igual que un enlace vacío.
+  Detectado con la captura real de los correos, no leyendo el código.
+
+
 ## v2.3.9 (2026-09-26)
 
 ### Añadido

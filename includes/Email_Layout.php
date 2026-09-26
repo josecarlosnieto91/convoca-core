@@ -261,12 +261,14 @@ img{display:block;border:0;height:auto;line-height:100%;outline:none;text-decora
 	 */
 	public static function prune_empty_html( string $html ): string {
 		// 1. Botones cuyo enlace no lleva a ninguna parte (el placeholder se
-		//    sustituyó por una raya, o `esc_url()` dejó el href vacío).
+		//    sustituyó por una raya, `esc_url()` dejó el href vacío, o el
+		//    placeholder sigue SIN sustituir porque el dato no llegó: un botón
+		//    con `href="{link_pago}"` acaba en «http://link_pago»).
 		$html = preg_replace_callback(
 			'#<a\b[^>]*class="email-btn"[^>]*>.*?</a>#is',
 			static function ( array $m ): string {
 				$url = preg_match( '#href="([^"]*)"#i', $m[0], $h ) ? $h[1] : '';
-				return self::is_missing( $url ) ? '' : $m[0];
+				return ( self::is_missing( $url ) || self::is_placeholder( $url ) ) ? '' : $m[0];
 			},
 			(string) $html
 		);

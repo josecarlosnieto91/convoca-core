@@ -105,6 +105,18 @@ class EmailLayoutPruneTest extends TestCase {
 		$this->assertSame( '', Email_Layout::prune_empty_html( $html ) );
 	}
 
+	public function test_un_boton_con_el_placeholder_sin_sustituir_desaparece(): void {
+		// Si el dato no llegó, el placeholder sobrevive; pintarlo lo convertiría
+		// en «http://link_pago», un enlace inventado con pinta de botón.
+		$html = 'Antes' . $this->boton( '{link_pago}', 'Pagar ahora' ) . 'Después';
+
+		$limpio = Email_Layout::prune_empty_html( $html );
+
+		$this->assertStringNotContainsString( 'Pagar ahora', $limpio );
+		$this->assertStringNotContainsString( 'link_pago', $limpio );
+		$this->assertSame( 'AntesDespués', $limpio );
+	}
+
 	public function test_un_parrafo_con_texto_no_se_toca(): void {
 		$html = '<p>Adjunto encontrarás tu tarjeta de socio/a actualizada.</p>';
 
