@@ -1,5 +1,14 @@
 # Changelog — convoca-core
 
+## v2.3.7 (2026-09-26)
+
+### Corregido
+- **Un punto suelto en todos los correos.** Dos `?>.` al final de un `echo` en `Email_Layout::render()`
+  imprimían un `.` literal: salía pegado a la marca del sitio en la cabecera y al final del cuerpo de
+  **todos** los correos del ecosistema (Members y Enroll). Se ve mirando el HTML que se envía, no la
+  plantilla, y lo cubre `EmailLayoutRenderTest` («el layout no imprime texto propio»), comprobado en
+  negativo contra el código con el defecto.
+
 ## v2.3.6 (2026-09-26)
 
 ### Corregido

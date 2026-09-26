@@ -164,6 +164,10 @@ if (!function_exists('wp_list_pluck')) {
 }
 // Los emails de Convoca llevan el nombre del sitio en asuntos y textos.
 if (!function_exists('get_bloginfo')) { function get_bloginfo($show = 'name') { return 'Sitio de Prueba'; } }
+// El branding de emails y PDFs sale del logo del sitio (custom_logo). Sin logo
+// configurado cae al nombre del sitio, que es lo que se prueba por defecto.
+if (!function_exists('get_theme_mod')) { function get_theme_mod($name = '', $default = false) { return $default; } }
+if (!function_exists('wp_get_attachment_image_src')) { function wp_get_attachment_image_src($id, $size = 'thumbnail', $icon = false) { return false; } }
 if (!function_exists('sanitize_text_field')) { function sanitize_text_field($s) { return trim(strip_tags($s)); } }
 if (!function_exists('sanitize_title')) { function sanitize_title($t) { return strtolower(str_replace(' ', '-', trim($t))); } }
 if (!function_exists('sanitize_email')) { function sanitize_email($e) { return filter_var($e, FILTER_SANITIZE_EMAIL); } }
