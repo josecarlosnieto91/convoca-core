@@ -187,6 +187,17 @@ class Email_Copy {
 		$copy_body = $notice . $body;
 		$headers   = array( 'Content-Type: text/html; charset=UTF-8' );
 
+		// El remitente del original se respeta en la copia. Sin esto, una copia de un correo que
+		// fija su propio `From` sale con el remitente por defecto del sitio, que muchos servidores
+		// rechazan («Invalid address: (From): wordpress@localhost») y la asociación no se entera
+		// de nada aunque el registro diga que se intentó.
+		foreach ( (array) ( $context['headers'] ?? array() ) as $original_header ) {
+			if ( is_string( $original_header ) && 0 === stripos( $original_header, 'from:' ) ) {
+				$headers[] = $original_header;
+				break;
+			}
+		}
+
 		/**
 		 * Permite ajustar la copia antes de enviarla (destinatarios, asunto, cuerpo, cabeceras).
 		 */
