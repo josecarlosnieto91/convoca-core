@@ -622,6 +622,33 @@ if (!isset($GLOBALS['wpdb'])) {
     };
 }
 
+// Autoloader del propio nucleo. Los plugins cargan este bootstrap y NO instalan las
+// dependencias del nucleo, asi que su vendor/autoload.php puede no estar: sin esto, las
+// clases reales (Logger, Utils...) no se encuentran y cada plugin acaba tapandolo con
+// dobles propios que miden un comportamiento que no existe.
+if ( ! function_exists( 'convoca_core_unit_autoload' ) ) {
+    function convoca_core_unit_autoload( $class ) {
+        $prefijo = 'Convoca\\Core\\';
+        if ( 0 !== strpos( $class, $prefijo ) ) {
+            return;
+        }
+        $relativo = str_replace( '\\', '/', substr( $class, strlen( $prefijo ) ) );
+        foreach ( array( 'class-', '' ) as $prefijo_archivo ) {
+            $ruta = __DIR__ . '/../includes/' . $prefijo_archivo . strtolower( str_replace( '_', '-', $relativo ) ) . '.php';
+            if ( file_exists( $ruta ) ) {
+                require_once $ruta;
+                return;
+            }
+        }
+        // Convencion del proyecto: Clase_Larga.php -> Clase_Larga.php o class-clase-larga.php
+        $ruta = __DIR__ . '/../includes/' . $relativo . '.php';
+        if ( file_exists( $ruta ) ) {
+            require_once $ruta;
+        }
+    }
+    spl_autoload_register( 'convoca_core_unit_autoload' );
+}
+
 // Load Composer autoloader LAST (after all stubs)
 $autoload = dirname(__DIR__) . '/vendor/autoload.php';
 if (file_exists($autoload)) {
