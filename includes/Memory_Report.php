@@ -78,11 +78,16 @@ class Memory_Report {
 			$body        = 'La memoria mensual de ' . $label . ' ha sido generada automáticamente.';
 			$body       .= "\n\nPuedes descargarla en el Panel de Control de " . esc_html( get_bloginfo( 'name' ) ) . '.';
 			// Sale con la identidad de Convoca. Sin copia: el destinatario ya es la asociación (issue convoca-core#6).
-			\Convoca\Core\Mailer::send( $admin_email, $subject, $body, array(
-				'plugin'   => 'convoca-core',
-				'template' => 'memoria_mensual',
-				'copy'     => false,
-			) );
+			\Convoca\Core\Mailer::send(
+				$admin_email,
+				$subject,
+				$body,
+				array(
+					'plugin'   => 'convoca-core',
+					'template' => 'memoria_mensual',
+					'copy'     => false,
+				)
+			);
 
 			set_transient( $cache_key, true, MONTH_IN_SECONDS );
 			Logger::info( "Memoria mensual generada: {$label}", 'Common/Memory' );
