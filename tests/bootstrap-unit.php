@@ -241,7 +241,11 @@ if (!function_exists('apply_filters_deprecated')) { function apply_filters_depre
 if (!function_exists('did_action')) { function did_action($t) { return 0; } }
 
 // --- Auth ---
-if (!function_exists('current_user_can')) { function current_user_can($c, ...$a) { return true; } }
+if (!function_exists('current_user_can')) {
+    // Override por prueba: $GLOBALS['_test_caps'][capacidad] = false. Sin entrada, se
+    // concede, que es como se comportaba antes (no cambia ninguna prueba existente).
+    function current_user_can($c, ...$a) { return $GLOBALS['_test_caps'][$c] ?? true; }
+}
 if (!function_exists('get_current_user_id')) { function get_current_user_id() { return 1; } }
 if (!function_exists('wp_create_nonce')) { function wp_create_nonce($a = -1) { return md5($a . time()); } }
 if (!function_exists('wp_verify_nonce')) { function wp_verify_nonce($n, $a = -1) { return true; } }
