@@ -182,10 +182,16 @@ class Security_Monitor {
 		$site  = get_bloginfo( 'name' );
 		$email = get_option( 'admin_email' );
 
-		wp_mail(
+		// Sale con la identidad de Convoca. Sin copia: el destinatario ya es la asociación (issue convoca-core#6).
+		\Convoca\Core\Mailer::send(
 			$email,
 			sprintf( '[%s] Alerta de seguridad Convoca — %d evento(s) crítico(s)', $site, count( $alerts ) ),
-			implode( "\n\n", $alerts ) . "\n\n— Convoca Security Monitor (revisa Convoca → Registro)"
+			implode( "\n\n", $alerts ) . "\n\n— Convoca Security Monitor (revisa Convoca → Registro)",
+			array(
+				'plugin'   => 'convoca-core',
+				'template' => 'digest_seguridad',
+				'copy'     => false,
+			)
 		);
 
 		Logger::warning( 'Digest de seguridad enviado: ' . count( $alerts ) . ' alerta(s).', 'Common/Security' );
