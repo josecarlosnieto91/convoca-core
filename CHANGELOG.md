@@ -250,7 +250,7 @@ Cierra el issue #5: el theme leía el precio desde el meta (theme 2.9.18) pero n
 - El shortcode del Asistente de configuración es el correcto (`convoca_alta_socio`)
 - Evitada una clave duplicada en instalaciones multisitio
 - El endpoint REST de métricas usa el callback existente
-- Eliminados los datos de Biodevas incrustados: planes, pistas, correos y URLs ahora se configuran mediante filtros
+- Eliminados los datos de Asociacion incrustados: planes, pistas, correos y URLs ahora se configuran mediante filtros
 - El límite de intentos ya no queda enmascarado por la caché de objetos
 - Modo oscuro: etiquetas de formulario en naranja e inputs con fondo oscuro
 - Las peticiones de licencia se firman con nonce HMAC
