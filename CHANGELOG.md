@@ -1,5 +1,35 @@
 # Changelog — convoca-core
 
+## v2.3.11 (2026-10-09)
+
+### Añadido
+- **`Convoca\Core\Mailer`**: un único punto de salida para los correos que van a personas. Envuelve
+  el cuerpo con `Email_Layout`, saca copia con `Email_Copy` y entrega por el canal que se le pase
+  (`wp_mail` por defecto). Ya lo usan los tres correos a personas del ecosistema: recordatorio de
+  turno y aviso por faltas (Shifts) y notificación de pago (Gateway).
+
+### Corregido
+- **La copia de un correo no heredaba el remitente del original.** Cuando el correo fijaba su propio
+  `From`, la copia caía al remitente por defecto del sitio y el servidor la rechazaba: la asociación
+  no se enteraba aunque el registro dijera que se había intentado. La copia hereda ya el remitente.
+- **Los avisos por correo al administrador pasan por el punto único** con la identidad visual común y
+  **sin copia** (`copy => false`): su destinatario ya es la asociación, así que copiarlos sería
+  duplicarlos.
+- **Enlaces muertos del panel de control.** El listado de pagos se registra sin interfaz de
+  administración (`show_ui=false`), así que `edit.php?post_type=pago` devuelve un error, y el slug de
+  inscripciones es `convoca-enroll`. Los tres enlaces llevan ahora a pantallas que existen y responden
+  200.
+
+### Cambiado
+- Higiene del producto: retirados el nombre del cliente y de la asociación de CHANGELOGs, readmes,
+  documentación, comentarios y datos de prueba, además de las referencias a proyectos reales que
+  quedaban en el núcleo. Solo cambian comentarios y documentación; no se toca el comportamiento.
+
+### Internamente
+- Ajustes del banco de pruebas: el bootstrap carga sus propias clases, el simulador deja de dar por
+  buenos cuatro supuestos equivocados, el mock de permisos admite overrides por prueba y la
+  configuración ejecutaba una suite que no puede correr.
+
 ## v2.3.10 (2026-09-26)
 
 ### Corregido
