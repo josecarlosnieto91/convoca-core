@@ -22,7 +22,7 @@
  * pero lee los datos por aquí.
  *
  * Nota de convivencia con instalaciones antiguas: las claves heredadas
- * (`_biodevas_event_*`) NO se cablean aquí. El sitio que las tenga declara su
+ * (las claves heredadas del sitio) NO se cablean aquí. El sitio que las tenga declara su
  * mapa con el filtro `convoca_event_meta_legacy_keys`, de modo que Convoca no
  * arrastra el nombre de ninguna asociación.
  *

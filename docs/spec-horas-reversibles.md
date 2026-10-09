@@ -1,11 +1,11 @@
 # Spec — Horas de voluntariado reversibles (asistencia ↔ registro_hora)
 
 **Estado:** aprobada · **Componentes:** convoca-core (mecanismo), convoca-enroll y convoca-shifts (productores)
-**Origen:** `convoca-enroll#2`, reproducido en la E2E de Lugg (2026-09-25).
+**Origen:** `convoca-enroll#2`, reproducido en una prueba de extremo a extremo (2026-09-25).
 
 ## Problema (reproducido)
 
-Ciclo real medido en Lugg con un voluntario aprobado y una actividad de 1 h:
+Ciclo medido en el sitio con un voluntario aprobado y una actividad de 1 h:
 
 | Paso | registros_hora | usermeta total | Members ve |
 |---|---|---|---|
@@ -115,7 +115,7 @@ de un histórico tampoco duplica.
    cuando es inequívoco.
 8. Migración idempotente (segunda ejecución: 0 cambios) y auditada.
 9. `phpunit`, PHPStan, PHPCS y PCP en verde en los tres plugins afectados.
-10. E2E real en Lugg tras el despliegue.
+10. Prueba de extremo a extremo tras el despliegue.
 
 ## Fuera de alcance
 
