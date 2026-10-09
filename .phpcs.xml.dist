@@ -25,6 +25,9 @@
         <element value="convoca-gateway"/>
         <element value="convoca-shifts"/>
         <element value="convoca-license-generator"/>
+        <element value="convoca-ext-gateway"/>
+        <!-- Cada plugin tiene su propio dominio de traduccion (convencion de WordPress):
+             al anadir un plugin nuevo, su dominio se anade aqui. -->
       </property>
     </properties>
   </rule>
