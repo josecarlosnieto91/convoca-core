@@ -176,9 +176,13 @@ if (!function_exists('has_shortcode')) {
         return (bool) preg_match('/\[' . preg_quote($tag, '/') . '[\s\]]/', $content);
     }
 }
-if (!function_exists('get_permalink')) { function get_permalink($id = 0) { return 'https://example.org/?p=' . (int) $id; } }
+if (!function_exists('get_permalink')) { function get_permalink($id = 0) { $pid = is_object($id) ? (int) ($id->ID ?? 0) : (int) $id; return 'https://example.org/?p=' . $pid; } }
 if (!function_exists('get_page_by_path')) {
     function get_page_by_path($slug) {
+        // Convencion de pruebas: $GLOBALS['convoca_test_pages'][slug] permite declarar
+        // una pagina sin tener que montar el store completo de entradas.
+        $directa = $GLOBALS['convoca_test_pages'][$slug] ?? null;
+        if (is_object($directa)) { return $directa; }
         foreach (($GLOBALS['_wp_stores']['posts'] ?? []) as $p) {
             if (($p->post_type ?? '') === 'page' && ($p->post_name ?? '') === $slug) { return $p; }
         }
@@ -273,10 +277,23 @@ if (!function_exists('current_time')) {
         return date($type);
     }
 }
+if (!function_exists('wp_timezone_string')) {
+    // Sin esto, Utils::format_date() no puede crear la fecha, captura el error y devuelve la
+    // cadena sin tocar: cualquier regla que sume dias o años se rompe en silencio.
+    function wp_timezone_string() { return (string) (get_option('timezone_string') ?: 'UTC'); }
+}
+if (!function_exists('wp_timezone')) { function wp_timezone() { return new \DateTimeZone(wp_timezone_string()); } }
+if (!function_exists('date_i18n')) { function date_i18n($f, $ts = null) { return date($f, $ts ?? time()); } }
 if (!function_exists('wp_date')) { function wp_date($f, $ts = null) { return date($f, $ts ?? time()); } }
 
 // --- Posts ---
-if (!function_exists('get_the_title')) { function get_the_title($id) { return "Post $id"; } }
+if (!function_exists('get_the_title')) {
+    function get_the_title($id) {
+        // Convencion de pruebas: permite fijar el titulo sin montar la entrada entera.
+        if (isset($GLOBALS['_test_post_title'])) { return (string) $GLOBALS['_test_post_title']; }
+        return "Post $id";
+    }
+}
 if (!function_exists('get_post_status')) { function get_post_status($id) { return 'publish'; } }
 if (!function_exists('get_post_type')) {
     function get_post_type($post = null) {
@@ -486,13 +503,56 @@ if (!class_exists('WP_User')) {
     }
 }
 
+
+// --- Funciones de WordPress que faltaban en el entorno de pruebas unitarias ---
+if (!function_exists('add_shortcode')) {
+    function add_shortcode($tag, $cb) { $GLOBALS['_wp_stores']['shortcodes'][$tag] = $cb; return true; }
+}
+if (!function_exists('get_the_date')) {
+    function get_the_date($format = '', $post = null) {
+        $id = is_object($post) ? (int) ($post->ID ?? 0) : (int) $post;
+        return (string) ($GLOBALS['_wp_stores']['post_dates'][$id] ?? gmdate($format ?: 'Y-m-d'));
+    }
+}
+if (!function_exists('get_the_time')) { function get_the_time($format = '', $post = null) { return get_the_date($format, $post); } }
+
+if (!function_exists('wp_generate_password')) {
+    // Usada por Utils::get_persistent_salt() entre otros. Secuencia determinista para que
+    // las pruebas no dependan del azar.
+    function wp_generate_password($length = 12, $special = true, $extra = false) {
+        static $n = 0;
+        ++$n;
+        return substr(str_repeat(md5((string) $n), 4), 0, max(1, (int) $length));
+    }
+}
+if (!function_exists('wp_rand')) { function wp_rand($min = 0, $max = 0) { return random_int((int) $min, max((int) $min, (int) $max)); } }
+if (!function_exists('get_the_author_meta')) { function get_the_author_meta($f = '', $id = 0) { return ''; } }
+
+// Constantes de WordPress que el codigo usa al leer de base de datos.
+if (!defined('ARRAY_A')) { define('ARRAY_A', 'ARRAY_A'); }
+if (!defined('ARRAY_N')) { define('ARRAY_N', 'ARRAY_N'); }
+if (!defined('OBJECT')) { define('OBJECT', 'OBJECT'); }
+if (!defined('OBJECT_K')) { define('OBJECT_K', 'OBJECT_K'); }
+
 // --- $wpdb global ---
 if (!isset($GLOBALS['wpdb'])) {
     $GLOBALS['wpdb'] = new class {
         public $prefix = 'wp_'; public $posts = 'wp_posts';
         public $postmeta = 'wp_postmeta'; public $options = 'wp_options';
         public $insert_id = 42;
-        public function get_var($q = null, $x = 0, $y = 0) { return '0'; }
+        public function get_var($q = null, $x = 0, $y = 0) {
+            // Como WordPress: SHOW TABLES LIKE 'x' devuelve el nombre si existe. Sin esto el
+            // Logger cree que no hay tabla y no escribe, y el bloqueo cae al camino de opciones.
+            if (is_string($q) && preg_match("/SHOW TABLES LIKE '?([A-Za-z0-9_]+)'?/i", $q, $m)) {
+                return $m[1];
+            }
+            // Bloqueos: Utils::acquire_lock guarda un vencimiento y despues comprueba que
+            // el valor leido es el suyo. Sin devolverlo, todo bloqueo parece contencion.
+            if (is_string($q) && preg_match('/(convoca_lock_[A-Za-z0-9_]+)/', $q, $k)) {
+                return $GLOBALS['_wp_stores']['locks'][$k[1]] ?? null;
+            }
+            return '0';
+        }
         public function get_results($q = null, $o = 'OBJECT') { return []; }
         public function get_row($q = null) { return null; }
         public function query($q) {
@@ -514,11 +574,41 @@ if (!isset($GLOBALS['wpdb'])) {
                 $store[$post][$key] = $new;
                 return 1;
             }
+            // Bloqueos: el vencimiento se guarda por clave; si sigue vivo, no se concede.
+            if (preg_match('/INSERT INTO \S*(?:locks|options)\s*\(/i', (string) $q)
+                && preg_match('/(convoca_lock_[A-Za-z0-9_]+)/', (string) $q, $k)) {
+                $numeros = array();
+                preg_match_all('/\b(\d{6,})\b/', (string) $q, $numeros);
+                $nuevo  = (int) ($numeros[1][0] ?? 0);
+                $actual = $GLOBALS['_wp_stores']['locks'][$k[1]] ?? null;
+                if (null !== $actual && (int) $actual >= time()) {
+                    return 0;
+                }
+                $GLOBALS['_wp_stores']['locks'][$k[1]] = $nuevo;
+                return 1;
+            }
+            if (preg_match('/DELETE FROM \S*(?:locks|options)/i', (string) $q)
+                && preg_match('/(convoca_lock_[A-Za-z0-9_]+)/', (string) $q, $k)) {
+                unset($GLOBALS['_wp_stores']['locks'][$k[1]]);
+                return 1;
+            }
             return 1;
         }
-        public function insert($t, $d, $f = []) { $this->insert_id = 42; return 1; }
+        public function insert($t, $d, $f = []) {
+            // Se guarda lo insertado: es lo unico que permite afirmar, en una prueba
+            // unitaria, que algo quedo registrado en base de datos (por ejemplo un
+            // aviso del Logger, que no tiene buffer en memoria).
+            $GLOBALS['_wp_stores']['db_inserts'][] = ['table' => $t, 'data' => $d];
+            $this->insert_id = 42;
+            return 1;
+        }
         public function update($t, $d, $w) { return 1; }
-        public function delete($t, $w) { return 1; }
+        public function delete($t, $w) {
+            if (is_array($w) && isset($w['option_name']) && isset($GLOBALS['_wp_stores']['locks'][$w['option_name']])) {
+                unset($GLOBALS['_wp_stores']['locks'][$w['option_name']]);
+            }
+            return 1;
+        }
         public function prepare($q, ...$a) {
             $sql = $q;
             foreach ($a as $arg) {
