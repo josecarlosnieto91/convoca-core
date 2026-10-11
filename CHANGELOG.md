@@ -1,5 +1,10 @@
 # Changelog — convoca-core
 
+## v2.3.13 (2026-10-11)
+
+### Corregido
+- **La página de Salud del núcleo registraba un aviso de deprecación en cada carga con PHP 8.5.** `includes/admin-global-menu.php` llamaba a `ReflectionMethod::setAccessible( true )` dos veces (para leer los chequeos de sistema de Members y de Enroll). Ese método está **obsoleto desde PHP 8.5** y además era innecesario: desde PHP 8.1 todas las propiedades y métodos son accesibles por reflexión sin marcar nada. Se eliminan las dos llamadas, que es lo que pide el propio PHP (no un `@` ni un silenciador). Visto en la demo, que corre PHP 8.5.10; en Lugg (PHP 8.4) no se manifestaba, y por eso hay que medir en los tres sitios.
+
 ## v2.3.12 (2026-10-11)
 
 ### Corregido

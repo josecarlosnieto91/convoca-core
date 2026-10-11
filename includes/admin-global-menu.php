@@ -87,7 +87,6 @@ function convoca_health_page(): void {
 	if ( class_exists( '\\Convoca\\Members\\Admin_Settings' ) ) {
 		try {
 			$ref = new \ReflectionMethod( '\\Convoca\\Members\\Admin_Settings', 'get_system_checks' );
-			$ref->setAccessible( true );
 			$settings = new \Convoca\Members\Admin_Settings();
 			$checks   = $ref->invoke( $settings, $force );
 			if ( is_array( $checks ) ) {
@@ -113,7 +112,6 @@ function convoca_health_page(): void {
 	if ( class_exists( '\\Convoca\\Enroll\\Admin_Settings' ) ) {
 		try {
 			$ref = new \ReflectionMethod( '\\Convoca\\Enroll\\Admin_Settings', 'get_system_checks' );
-			$ref->setAccessible( true );
 			$checks = $ref->invoke( null, $force );
 			if ( is_array( $checks ) ) {
 				$all_checks             = array_merge( $all_checks, $checks );
