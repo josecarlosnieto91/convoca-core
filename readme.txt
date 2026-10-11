@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.3.11
+Stable tag: 2.3.12
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,9 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.3.12 =
+* Los oyentes internos del núcleo escuchaban nombres de hook retirados en la 1.1.0 (`convoca_payment_failed`, `convoca_hours_submitted`): cada pago fallido dejaba un aviso de deprecación en el registro de PHP. Ahora usan los nombres vigentes.
 
 = 2.3.10 =
 * Un botón cuyo enlace se quedó en placeholder (el dato no llegó) ya no se imprime: antes se convertía en «http://link_pago».
