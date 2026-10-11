@@ -247,8 +247,8 @@ class Hour_Ledger {
 		$actividad_id = (int) get_post_meta( $origen_id, '_convoca_actividad_id', true );
 
 		if ( $user_id <= 0 ) {
-			$email = (string) get_post_meta( $origen_id, '_convoca_email', true );
-			$user  = $email ? get_user_by( 'email', $email ) : false;
+			$email   = (string) get_post_meta( $origen_id, '_convoca_email', true );
+			$user    = $email ? get_user_by( 'email', $email ) : false;
 			$user_id = $user ? (int) $user->ID : 0;
 		}
 
