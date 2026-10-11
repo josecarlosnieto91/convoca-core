@@ -28,6 +28,7 @@ jobs:
         with:
           dependency-versions: highest
           composer-options: '--ignore-platform-req=ext-iconv'
+      - run: vendor/bin/phpcs --standard=dev-tools/phpcs.xml.dist
 
   phpstan:
     name: PHPStan
