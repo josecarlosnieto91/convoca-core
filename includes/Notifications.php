@@ -50,8 +50,8 @@ class Notifications {
 
 		// Event hooks.
 		add_action( 'convoca_member_created', array( __CLASS__, 'on_member_created' ), 10, 2 );
-		add_action( 'convoca_payment_failed', array( __CLASS__, 'on_payment_failed' ), 10, 2 );
-		add_action( 'convoca_hours_submitted', array( __CLASS__, 'on_hours_submitted' ), 10, 2 );
+		add_action( 'convoca_gateway_payment_failed', array( __CLASS__, 'on_payment_failed' ), 10, 2 );
+		add_action( 'convoca_members_hours_submitted', array( __CLASS__, 'on_hours_submitted' ), 10, 2 );
 		add_action( 'convoca_inscripcion_pendiente_pago', array( __CLASS__, 'on_inscripcion_pendiente' ), 10, 2 );
 		add_action( 'convoca_voluntario_pendiente', array( __CLASS__, 'on_voluntario_pendiente' ), 10 );
 		add_action( 'convoca_members_unsubscribe_request', array( __CLASS__, 'on_unsubscribe_request' ), 10 );

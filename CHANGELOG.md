@@ -1,5 +1,16 @@
 # Changelog — convoca-core
 
+## v2.3.12 (2026-10-11)
+
+### Corregido
+- **Los oyentes internos del núcleo escuchaban nombres de hook retirados.** `Notifications`
+  registraba `convoca_payment_failed` y `convoca_hours_submitted`, dos nombres que el
+  ecosistema retiró en la 1.1.0 a favor de `convoca_gateway_payment_failed` y
+  `convoca_members_hours_submitted`. Como `Utils::do_action()` dispara el nombre nuevo y,
+  si queda alguien en el viejo, lo dispara también con aviso, cada pago fallido dejaba una
+  línea `PHP Deprecated` en el log y la campanita de avisos se alimentaba por un camino
+  obsoleto. Ahora se registran solo los nombres nuevos.
+
 ## v2.3.11 (2026-10-09)
 
 ### Añadido
