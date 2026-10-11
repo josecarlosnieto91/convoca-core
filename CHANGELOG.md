@@ -1,5 +1,18 @@
 # Changelog — convoca-core
 
+## v2.3.14 (2026-10-11)
+
+### Arreglado
+- **Contraste de los botones (WCAG 2.1 AA)** en `convoca-common.css`, medido con axe:
+  - `.convoca-btn-primary`: texto blanco sobre `#ff8700` = **2.41:1** (mínimo 4.5:1). Pasa a
+    `naranja-oscuro` (`#b05500`, **5.07:1**); el hover, de `#ff500a` (3.28:1) a `#8f4400` (**7.01:1**).
+    Afectaba a **todos** los botones primarios del ecosistema.
+  - `.convoca-btn-outline`: el texto y el borde en naranja brillante no llegaban ni al 4.5:1 del
+    texto (1.4.3) ni al 3:1 del límite del control (1.4.11). Pasan a naranja-oscuro. **axe no lo
+    veía** porque el botón «← Atrás» está oculto hasta avanzar de paso: lo encontró el recorrido.
+  - `.convoca-check-group a`: mismo caso en el texto de los enlaces.
+- Cubierto por `tests/Unit/BotonPrimarioContrasteTest.php`, probado **en negativo**.
+
 ## v2.3.13 (2026-10-11)
 
 ### Corregido

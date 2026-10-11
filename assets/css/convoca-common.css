@@ -216,10 +216,11 @@
 }
 
 .convoca-check-group a {
-    color: var(--wp--preset--color--naranja, #ff8700);
+    /* Naranja oscuro: el brillante da 2.41:1 sobre blanco (mínimo 4.5:1). */
+    color: var(--wp--preset--color--naranja-oscuro, #b05500);
 }
 .convoca-check-group a:hover {
-    color: var(--wp--preset--color--naranja-intenso, #ff500a);
+    color: #8f4400;
 }
 
 .convoca-checkbox-box {
@@ -258,13 +259,18 @@
 .convoca-btn--full { width: 100%; margin-top: 0.5rem; }
 
 .convoca-btn-primary {
-    background: var(--wp--preset--color--naranja, #ff8700);
+    /* Naranja de marca OSCURO, no el brillante: con texto blanco encima el
+       #ff8700 da 2.41:1 y no cumple AA (hace falta 4.5:1). #b05500 da 5.07:1.
+       La paleta ya lo declara como «Dark orange (text)». */
+    background: var(--wp--preset--color--naranja-oscuro, #b05500);
     color: var(--wp--preset--color--blanco, #fff);
-    border-color: var(--wp--preset--color--naranja, #ff8700);
+    border-color: var(--wp--preset--color--naranja-oscuro, #b05500);
 }
 .convoca-btn-primary:hover {
-    background: var(--wp--preset--color--naranja-intenso, #ff500a);
-    border-color: var(--wp--preset--color--naranja-intenso, #ff500a);
+    /* Un paso más oscuro en hover: blanco encima = 7.01:1. El naranja-intenso
+       anterior (#ff500a) daba 3.28:1 y tampoco cumplía. */
+    background: #8f4400;
+    border-color: #8f4400;
     color: var(--wp--preset--color--blanco, #fff);
 }
 
@@ -280,11 +286,14 @@
 
 .convoca-btn-outline {
     background: transparent;
-    color: var(--wp--preset--color--naranja, #ff8700);
-    border-color: var(--wp--preset--color--naranja, #ff8700);
+    /* Texto y borde en naranja OSCURO: el brillante da 2.41:1 sobre blanco, por
+       debajo del 4.5:1 del texto (1.4.3) y del 3:1 del límite del control (1.4.11). */
+    color: var(--wp--preset--color--naranja-oscuro, #b05500);
+    border-color: var(--wp--preset--color--naranja-oscuro, #b05500);
 }
 .convoca-btn-outline:hover {
-    background: var(--wp--preset--color--naranja, #ff8700);
+    background: var(--wp--preset--color--naranja-oscuro, #b05500);
+    border-color: var(--wp--preset--color--naranja-oscuro, #b05500);
     color: var(--wp--preset--color--blanco, #fff);
 }
 
