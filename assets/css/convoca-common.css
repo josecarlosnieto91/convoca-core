@@ -259,18 +259,21 @@
 .convoca-btn--full { width: 100%; margin-top: 0.5rem; }
 
 .convoca-btn-primary {
-    /* Naranja de marca OSCURO, no el brillante: con texto blanco encima el
-       #ff8700 da 2.41:1 y no cumple AA (hace falta 4.5:1). #b05500 da 5.07:1.
-       La paleta ya lo declara como «Dark orange (text)». */
-    background: var(--wp--preset--color--naranja-oscuro, #b05500);
+    /* Fondo naranja OSCURO, encadenando los fallbacks: el sitio que declare
+       `naranja-oscuro` en su paleta lo usa (tema convoca, donde el texto del botón
+       es blanco y el brillante daba 2.41:1), y el que no, conserva el naranja de
+       marca de siempre — hay sitios cuyo tema ajusta el TEXTO a su paleta oscura
+       (texto uva sobre naranja brillante = 7.47:1) y ponerles aquí un fondo oscuro
+       a la fuerza les rompía el contraste. */
+    background: var(--wp--preset--color--naranja-oscuro, var(--wp--preset--color--naranja, #ff8700));
     color: var(--wp--preset--color--blanco, #fff);
-    border-color: var(--wp--preset--color--naranja-oscuro, #b05500);
+    border-color: var(--wp--preset--color--naranja-oscuro, var(--wp--preset--color--naranja, #ff8700));
 }
 .convoca-btn-primary:hover {
-    /* Un paso más oscuro en hover: blanco encima = 7.01:1. El naranja-intenso
-       anterior (#ff500a) daba 3.28:1 y tampoco cumplía. */
-    background: #8f4400;
-    border-color: #8f4400;
+    /* Mismo criterio en el hover: un paso más oscuro donde la paleta lo declare
+       (blanco encima = 7.01:1), y el naranja intenso de siempre donde no. */
+    background: var(--wp--preset--color--naranja-oscuro-hover, var(--wp--preset--color--naranja-intenso, #ff500a));
+    border-color: var(--wp--preset--color--naranja-oscuro-hover, var(--wp--preset--color--naranja-intenso, #ff500a));
     color: var(--wp--preset--color--blanco, #fff);
 }
 

@@ -1,5 +1,18 @@
 # Changelog — convoca-core
 
+## v2.3.15 (2026-10-11)
+
+### Arreglado
+- **Regresión cazada midiendo en los sitios reales**: el arreglo anterior de contraste puso
+  `#b05500` como fallback GLOBAL del fondo del botón primario. En Lugg, cuyo tema **no declara la
+  paleta de Convoca** y en cambio **ajusta el texto del botón a su uva oscuro** (`color:#320028`),
+  eso bajó el contraste de **7.47:1 a 3.55:1** — un arreglo en la demo que rompía producción.
+  Ahora los fallbacks van **encadenados**: donde la paleta declare `naranja-oscuro` se usa, y donde
+  no se conserva el naranja de marca de siempre, que es el que esos temas esperan. Igual en el
+  `:hover` (`naranja-oscuro-hover` → `naranja-intenso`).
+- Lección: un color de la paleta de Convoca **no existe** en los sitios con tema propio; el
+  fallback hay que elegirlo pensando en el sitio que NO define la variable, no en el que sí.
+
 ## v2.3.14 (2026-10-11)
 
 ### Arreglado
