@@ -36,7 +36,7 @@
 .convoca-badge--confirmed { background: #e6f7e6; color: #2d5a27; }
 .convoca-badge--success { background: #e6f7e6; color: #2d5a27; }
 .convoca-badge--pending { background: #fff3e0; color: #cc6e00; }
-.convoca-badge--warning { background: #fff3e0; color: #cc6e00; }
+.convoca-badge--warning { background: #fff3e0; color: #7a4300; }
 .convoca-badge--waitlist { background: #f3e8ff; color: #6b21a8; }
 .convoca-badge--cancelled { background: #fef2f2; color: #991b1b; }
 .convoca-badge--error { background: #fef2f2; color: #991b1b; }
@@ -46,7 +46,7 @@
 
 /* ── Typography & Globals ─────────────────────── */
 .convoca-text-center { text-align: center; }
-.convoca-small { font-size: 0.85rem; color: #777; margin-top: 0.3rem; }
+.convoca-small { font-size: 0.85rem; color: #6b6b6b; margin-top: 0.3rem; }
 .convoca-mt-small { margin-top: 0.75rem; }
 .convoca-mt-medium { margin-top: 1.5rem; }
 .convoca-mb-small { margin-bottom: 0.75rem; }
@@ -265,9 +265,9 @@
        marca de siempre — hay sitios cuyo tema ajusta el TEXTO a su paleta oscura
        (texto uva sobre naranja brillante = 7.47:1) y ponerles aquí un fondo oscuro
        a la fuerza les rompía el contraste. */
-    background: var(--wp--preset--color--naranja-oscuro, var(--wp--preset--color--naranja, #ff8700));
+    background: var(--wp--preset--color--naranja-oscuro, var(--wp--preset--color--naranja, #b05500));
     color: var(--wp--preset--color--blanco, #fff);
-    border-color: var(--wp--preset--color--naranja-oscuro, var(--wp--preset--color--naranja, #ff8700));
+    border-color: var(--wp--preset--color--naranja-oscuro, var(--wp--preset--color--naranja, #b05500));
 }
 .convoca-btn-primary:hover {
     /* Mismo criterio en el hover: un paso más oscuro donde la paleta lo declare
