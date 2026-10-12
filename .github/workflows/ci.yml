@@ -81,11 +81,11 @@ jobs:
         # exige <source> filter + @covers válidos que no aportan aquí.
         run: vendor/bin/phpunit -c phpunit-unit.xml --log-junit build/junit.xml
 
+      - name: Run integration tests
         # La suite de INTEGRACION no la ejecutaba nadie: cuando se midio, fallaba con 6
         # errores (faltaba un doble de WordPress). Sin este paso, vuelve a dejar de correr
         # sin que nadie se entere.
-        - name: Run integration tests
-          run: vendor/bin/phpunit --testsuite integration
+        run: vendor/bin/phpunit --testsuite integration
 
   plugin-check:
     name: Plugin Check (PCP)
