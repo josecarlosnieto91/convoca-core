@@ -1,11 +1,16 @@
 # Deuda conocida de PHPCS en Core
 
-`phpcs` con el estándar del repo (`dev-tools/phpcs.xml.dist`) da **0 errores**.
-Los avisos que quedan están **clasificados y justificados aquí**: no se silencian
-ni se dan por resueltos, y ninguno indica un fallo funcional conocido.
+`phpcs` (con el estándar único del repo, `.phpcs.xml.dist` en la raíz: lo coge solo
+sin argumentos, lo coge el CI y lo coge composer) da **0 errores y 0 avisos** sobre
+los 36 ficheros del plugin. Las exclusiones que siguen vigentes están **declaradas con
+su motivo escrito dentro del propio estándar**, no en un flag que relaje la salida.
 
-Punto de partida de esta limpieza (2026-09-23): **292 avisos**.
-Tras corregir los que podían ocultar problemas reales: **199 avisos**.
+> Historial de la limpieza: punto de partida (2026-09-23) **292 avisos** → 199 corregidos
+> o excluidos con motivo → **0** (pasadas 4 y 5 del gauntlet, 11-12/10/2026).
+> Antes había **dos** configuraciones (`dev-tools/phpcs.xml.dist` la del CI y una copia
+> obsoleta en la raíz) y daban veredictos distintos para el mismo código: la obsoleta
+> marcaba **194 avisos** y era la que `phpcs` cogía sola al ejecutarlo sin argumentos.
+> Unificado en una sola en la raíz (pasada 6).
 
 ## Corregido (y por qué)
 
@@ -41,9 +46,14 @@ Tras corregir los que podían ocultar problemas reales: **199 avisos**.
 ## Volver a medir
 
 ```bash
-vendor/bin/phpcs --standard=dev-tools/phpcs.xml.dist --report=summary
-vendor/bin/phpcs --standard=dev-tools/phpcs.xml.dist --report=json -q   # desglose por sniff
+vendor/bin/phpcs --report=summary      # vacío y salida 0 = limpio (el "0 errores" no se imprime)
+vendor/bin/phpcs --report=json -q      # desglose por fichero y por sniff
+composer phpcs                         # el mismo estándar, por el script del repo
 ```
+
+Un estándar y solo uno: si aparece un segundo fichero de reglas en el repo, la
+comprobación `PhpcsUnSoloEstandarTest` falla (dos varas para el mismo código dan
+dos veredictos, y el verde deja de significar algo).
 
 Regla de la casa: **no se silencia un aviso para bajar el contador**. Si alguno
 estorba de verdad, se corrige la causa o se documenta aquí.

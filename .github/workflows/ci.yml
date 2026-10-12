@@ -28,7 +28,11 @@ jobs:
         with:
           dependency-versions: highest
           composer-options: '--ignore-platform-req=ext-iconv'
-      - run: vendor/bin/phpcs --standard=dev-tools/phpcs.xml.dist
+      # El estandar lo descubre phpcs solo (.phpcs.xml.dist en la raiz): la misma vara
+      # para el CI, composer y quien audite a mano. Antes el CI apuntaba a
+      # dev-tools/phpcs.xml.dist mientras la raiz tenia otra copia obsoleta, y las dos
+      # daban veredictos distintos para el mismo codigo (0 avisos frente a 194).
+      - run: vendor/bin/phpcs
 
   phpstan:
     name: PHPStan
