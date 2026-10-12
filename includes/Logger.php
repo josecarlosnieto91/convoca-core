@@ -317,7 +317,9 @@ class Logger {
 			return;
 		}
 
-		@set_time_limit( 30 );
+		if ( false === strpos( (string) ini_get( 'disable_functions' ), 'set_time_limit' ) ) {
+			set_time_limit( 30 );
+		}
 
 		global $wpdb;
 		$table_name    = $wpdb->prefix . 'convoca_logs';

@@ -149,8 +149,12 @@ class Admin_Backup {
 			wp_die( esc_html__( 'ZipArchive no disponible.', 'convoca-core' ) );
 		}
 
-		@set_time_limit( 300 );
-		@ini_set( 'memory_limit', '512M' );
+		if ( false === strpos( (string) ini_get( 'disable_functions' ), 'set_time_limit' ) ) {
+			set_time_limit( 300 );
+		}
+		if ( false === strpos( (string) ini_get( 'disable_functions' ), 'ini_set' ) ) {
+			ini_set( 'memory_limit', '512M' );
+		}
 
 		$temp_dir = get_temp_dir() . 'conv-export-' . wp_generate_password( 16, false ) . '/';
 		wp_mkdir_p( $temp_dir );

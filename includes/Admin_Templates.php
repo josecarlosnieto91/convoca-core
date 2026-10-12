@@ -482,7 +482,7 @@ class Admin_Templates {
 			<p><?php echo esc_html__( 'Aquí puedes modificar el diseño HTML de los documentos generados por el sistema de firmas (Convoca Common).', 'convoca-core' ); ?></p>
 			<p>
 			<?php
-			/* translators: %1$s, %2$s, %3$s: template placeholder examples like {{nombre}}, {{dni}}, {{fecha}} */
+			/* translators: %1$s, %2$s y %3$s son ejemplos de marcadores de plantilla, del estilo {{nombre}}, {{dni}} o {{fecha}}. */
 			printf( esc_html__( 'Utiliza etiquetas como %1$s, %2$s, %3$s para que se rellenen automáticamente según el contexto.', 'convoca-core' ), '<code>{{nombre}}</code>', '<code>{{dni}}</code>', '<code>{{fecha}}</code>' );
 			?>
 			</p>
