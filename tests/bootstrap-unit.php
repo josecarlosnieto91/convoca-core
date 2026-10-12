@@ -463,8 +463,12 @@ if (!function_exists('wp_clear_scheduled_hook')) {
         return 0;
     }
 }
-if (!function_exists('register_post_type')) { function register_post_type($s, $a) { return null; } }
-if (!function_exists('register_taxonomy')) { function register_taxonomy($s, $t, $a) { return null; } }
+// Los registros se GUARDAN, como ya hace _wp_cron, para que las pruebas puedan comprobar
+// los ARGUMENTOS con los que se declara cada cosa y no solo que se declare. Hay defectos
+// que solo se ven ahi: una taxonomia sin `show_ui` deja su pantalla de terminos en HTTP
+// 500 en WordPress 7.
+if (!function_exists('register_post_type')) { function register_post_type($s, $a = []) { $GLOBALS['_wp_post_types_registrados'][$s] = $a; return null; } }
+if (!function_exists('register_taxonomy')) { function register_taxonomy($s, $t, $a = []) { $GLOBALS['_wp_taxonomias_registradas'][$s] = ['object_type' => $t, 'args' => $a]; return null; } }
 if (!function_exists('register_rest_route')) { function register_rest_route($n, $r, $a) { return true; } }
 if (!function_exists('wp_redirect')) { function wp_redirect($u) {} }
 if (!function_exists('wp_die')) { function wp_die($m = '', $t = '', $a = []) {} }

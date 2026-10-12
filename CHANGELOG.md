@@ -1,5 +1,15 @@
 # Changelog — convoca-core
 
+## v2.3.17 (2026-10-12)
+
+### Cambiado
+- **Los dobles de `register_taxonomy` y `register_post_type` ahora guardan la llamada**
+  (`$GLOBALS['_wp_taxonomias_registradas']` / `['_wp_post_types_registrados']`), como ya
+  hacia `_wp_cron`. Permite comprobar los **argumentos** del registro, no solo que se
+  registre: hay defectos que solo se ven ahi. El primero que se caza asi, en convoca-members:
+  una taxonomia declarada con `public => false` y sin `show_ui` deja su pantalla de terminos
+  en HTTP 500 en WordPress 7.
+
 ## v2.3.16 (2026-10-12)
 
 ### Arreglado
