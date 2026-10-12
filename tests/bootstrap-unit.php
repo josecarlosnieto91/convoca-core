@@ -469,6 +469,16 @@ if (!function_exists('wp_clear_scheduled_hook')) {
 // 500 en WordPress 7.
 if (!function_exists('register_post_type')) { function register_post_type($s, $a = []) { $GLOBALS['_wp_post_types_registrados'][$s] = $a; return null; } }
 if (!function_exists('register_taxonomy')) { function register_taxonomy($s, $t, $a = []) { $GLOBALS['_wp_taxonomias_registradas'][$s] = ['object_type' => $t, 'args' => $a]; return null; } }
+// Las PRUEBAS DE INTEGRACION llamaban a esta funcion y no habia doble: el codigo la usa
+// desde el namespace Convoca\Core, asi que sin una version global la suite fallaba con 6
+// errores («Call to undefined function ...wp_generate_uuid4»). No se veia porque el CI nunca
+// ejecutaba esa suite.
+if (!function_exists('wp_generate_uuid4')) {
+    function wp_generate_uuid4() {
+        $h = bin2hex(random_bytes(16));
+        return sprintf('%s-%s-%s-%s-%s', substr($h, 0, 8), substr($h, 8, 4), substr($h, 12, 4), substr($h, 16, 4), substr($h, 20, 12));
+    }
+}
 if (!function_exists('register_rest_route')) { function register_rest_route($n, $r, $a) { return true; } }
 if (!function_exists('wp_redirect')) { function wp_redirect($u) {} }
 if (!function_exists('wp_die')) { function wp_die($m = '', $t = '', $a = []) {} }
