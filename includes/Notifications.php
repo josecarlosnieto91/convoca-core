@@ -227,7 +227,7 @@ class Notifications {
 				$html .= '<a href="' . esc_url( $n['url'] ) . '" class="conv-notif-link">';
 				$html .= '<span class="conv-notif-icon">' . $icon . '</span>';
 				$html .= '<span class="conv-notif-title">' . esc_html( $n['title'] ) . '</span>';
-				$html .= '<span class="conv-notif-time">' . human_time_diff( strtotime( $n['time'] ), current_time( 'timestamp' ) ) . ' ' . __( 'atrás', 'convoca-core' ) . '</span>';
+				$html .= '<span class="conv-notif-time">' . human_time_diff( strtotime( $n['time'] ), current_datetime()->getTimestamp() ) . ' ' . __( 'atrás', 'convoca-core' ) . '</span>';
 				$html .= '</a>';
 				$html .= '<a href="#" class="conv-notif-dismiss" title="' . __( 'Descartar', 'convoca-core' ) . '">✕</a>';
 				$html .= '</div>';
