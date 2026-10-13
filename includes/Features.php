@@ -65,7 +65,7 @@ class Features {
 	 * instalaciones antiguas.
 	 */
 	public static function is_convoca_theme_active(): bool {
-		$theme = wp_get_theme();
+		$theme   = wp_get_theme();
 		$nombres = array( 'convoca', 'convoca-theme' );
 		return in_array( $theme->get_template(), $nombres, true )
 			|| in_array( $theme->get_stylesheet(), $nombres, true );
