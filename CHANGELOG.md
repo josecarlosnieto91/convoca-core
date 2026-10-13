@@ -1,5 +1,26 @@
 # Changelog — convoca-core
 
+## v2.3.18 (2026-10-13)
+
+### Arreglado
+- **Los fallos de las llamadas AJAX decían «Error desconocido.» o hablaban en inglés.** La causa no
+  estaba en los llamadores: `conv.ajaxPost` / `convAdmin.ajaxPost` no traducían las respuestas de
+  protocolo de WordPress (`0` = acción inexistente, `-1` = nonce caducado, que llegan como JSON
+  válido, así que el llamador recibía un número) y devolvían frases que el usuario no puede
+  seguir: `Authentication required. Please log in.`, `Service temporarily unavailable.`,
+  `Redirect detected. Please log in.` y el texto técnico
+  `Error HTTP Fetch al portal wp-admin /admin-ajax.php`; además, un cuerpo no-JSON se pintaba tal
+  cual en pantalla.
+- Ahora hay **un único punto** que traduce el fallo a un texto que dice QUÉ HACER
+  (`conv.mensajes` + `conv.normalizarError`, y su gemelo `convAdmin.mensajes` /
+  `convAdmin.normalizarError` para la administración), y los textos tienen **fuente única en PHP**
+  (`convoca_common_js_strings()`, envueltos en `__()`), inyectados por `wp_localize_script` en
+  `convoca-common-js` (`window.convocaI18n`) y `convoca-common-admin-js`
+  (`window.convocaAdminI18n`).
+- Prueba de contrato `tests/Unit/MensajesDeErrorTest.php`: los textos retirados no vuelven, los
+  dos bundles traducen `0` y `-1`, el PHP declara las mismas claves que el JS usa y los dos
+  handles las reciben. Probada **en negativo** (con el fichero de HEAD falla y lo nombra).
+
 ## v2.3.17 (2026-10-12)
 
 ### Cambiado

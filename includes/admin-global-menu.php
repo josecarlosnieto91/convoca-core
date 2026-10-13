@@ -304,6 +304,7 @@ function convoca_common_enqueue_assets(): void {
 		CONVOCA_COMMON_VERSION,
 		true
 	);
+	wp_localize_script( 'convoca-common-js', 'convocaI18n', convoca_common_js_strings() );
 
 	$needed = (bool) apply_filters( 'convoca_need_common_assets', false );
 
@@ -347,5 +348,31 @@ function convoca_common_enqueue_admin_assets(): void {
 		CONVOCA_COMMON_VERSION,
 		true
 	);
+	wp_localize_script( 'convoca-common-admin-js', 'convocaAdminI18n', convoca_common_js_strings() );
 }
 add_action( 'admin_enqueue_scripts', 'Convoca\\Core\\convoca_common_enqueue_admin_assets' );
+
+/**
+ * Textos de la capa JS del ecosistema: cada fallo dice QUÉ HACER.
+ *
+ * Fuente ÚNICA: se inyectan por `wp_localize_script` en `convoca-common-js`
+ * (`window.convocaI18n`) y en `convoca-common-admin-js` (`window.convocaAdminI18n`).
+ * El JS trae los mismos textos como respaldo, porque un fichero cacheado puede
+ * quedarse sin la localización; lo que no puede quedar es un mensaje técnico o en inglés.
+ * Se retiraron los que había (`Authentication required. Please log in.`,
+ * `Service temporarily unavailable.`, `Redirect detected. Please log in.`,
+ * `Error HTTP Fetch al portal wp-admin /admin-ajax.php`) y el «Error desconocido.» de los
+ * llamadores: no dicen qué hacer y el usuario no puede seguirlos.
+ *
+ * @return array<string, string> Clave => texto traducible.
+ */
+function convoca_common_js_strings(): array {
+	return array(
+		'sinConexion'          => __( 'No se ha podido conectar con el servidor. Comprueba tu conexión y vuelve a intentarlo.', 'convoca-core' ),
+		'sesionCaducada'       => __( 'Tu sesión ha caducado. Recarga la página (F5) y vuelve a iniciar sesión.', 'convoca-core' ),
+		'accionNoDisponible'   => __( 'No se ha podido completar la operación en este sitio. Recarga la página y vuelve a intentarlo; si el problema continúa, avisa a la asociación.', 'convoca-core' ),
+		'servidorNoDisponible' => __( 'El servicio no está disponible en este momento. Vuelve a intentarlo en unos minutos.', 'convoca-core' ),
+		'respuestaInesperada'  => __( 'El servidor ha devuelto una respuesta inesperada. Recarga la página y vuelve a intentarlo.', 'convoca-core' ),
+		'reintentar'           => __( 'No se ha podido completar la operación. Vuelve a intentarlo; si el problema continúa, avisa a la asociación.', 'convoca-core' ),
+	);
+}

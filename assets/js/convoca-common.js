@@ -102,6 +102,58 @@ window.convoca = window.convoca || {};
   };
 
   /**
+   * Mensajes de error del ecosistema (público). Dicen QUÉ HACER: nunca «Error desconocido.»
+   * ni texto técnico. Los textos traducibles los inyecta Core con wp_localize_script
+   * (`window.convocaI18n`, ver includes/admin-global-menu.php); esto es el respaldo.
+   */
+  conv.mensajes = Object.assign({
+    sinConexion: 'No se ha podido conectar con el servidor. Comprueba tu conexión y vuelve a intentarlo.',
+    sesionCaducada: 'Tu sesión ha caducado. Recarga la página (F5) y vuelve a iniciar sesión.',
+    accionNoDisponible: 'No se ha podido completar la operación en este sitio. Recarga la página y vuelve a intentarlo; si el problema continúa, avisa a la asociación.',
+    servidorNoDisponible: 'El servicio no está disponible en este momento. Vuelve a intentarlo en unos minutos.',
+    respuestaInesperada: 'El servidor ha devuelto una respuesta inesperada. Recarga la página y vuelve a intentarlo.',
+    reintentar: 'No se ha podido completar la operación. Vuelve a intentarlo; si el problema continúa, avisa a la asociación.'
+  }, window.convocaI18n || {});
+
+  /**
+   * Normaliza CUALQUIER respuesta de error de admin-ajax a `{ success:false, data:{ message } }`.
+   * WordPress responde `0` (acción inexistente) y `-1` (nonce caducado) en texto plano: sin esta
+   * normalización el llamador recibe un número, no encuentra `data.message` y acaba pintando
+   * «Error desconocido.» al usuario. Este es el único punto donde se traduce el fallo a un texto
+   * que una persona puede seguir.
+   * @param {*} res - Respuesta cruda (número, cadena u objeto) o null si falló la conexión.
+   * @param {Object} [opts] - Opciones. `message` fuerza el texto del respaldo.
+   * @returns {{success: boolean, data: Object}}
+   */
+  conv.normalizarError = function (res, opts) {
+    opts = opts || {};
+    const m = conv.mensajes;
+    const con = (txt) => ({ message: txt });
+
+    if (res === 0 || res === '0' || res === 'false' || res === false) {
+      return { success: false, data: con(m.accionNoDisponible) };
+    }
+    if (res === -1 || res === '-1') {
+      return { success: false, data: con(m.sesionCaducada) };
+    }
+    if (res && typeof res === 'object') {
+      if (res.data === undefined || res.data === null) {
+        return { success: false, data: con(opts.message || m.reintentar) };
+      }
+      if (typeof res.data === 'object') {
+        const d = res.data;
+        if (!d.message && !d.errors) d.message = opts.message || m.reintentar;
+        return { success: false, data: d };
+      }
+      return { success: false, data: con(String(res.data)) };
+    }
+    if (typeof res === 'string' && res.trim() !== '') {
+      return { success: false, data: con(res) };
+    }
+    return { success: false, data: con(opts.message || m.respuestaInesperada) };
+  };
+
+  /**
    * Centralizes Convoca fetch logic via AJAX/WordPress handling safely.
    * @param {string} action - WordPress API / Admin-ajax action name.
    * @param {FormData|Object} data - Context data. Form keys and values.
@@ -128,40 +180,43 @@ window.convoca = window.convoca || {};
          body: fd
       })
       .then(r => {
-          // Handle HTTP errors and special responses
-          if (!r.ok && r.status !== 200 && r.status !== 204) {
-              if (r.status === 403 || r.status === 401) {
-                  return { success: false, data: 'Authentication required. Please log in.' };
-              }
-              if (r.status === 503) {
-                  return { success: false, data: 'Service temporarily unavailable.' };
-              }
+          // Cada fallo se traduce AQUÍ a un mensaje que diga qué hacer (nunca texto técnico
+          // ni frases en inglés): el llamador solo tiene que pintar `data.message`.
+          if (r.status === 403 || r.status === 401) {
+              return { success: false, data: { message: conv.mensajes.sesionCaducada } };
           }
-          if (r.status === 204 || r.status === 0) {
-              return { success: true, data: 'No content' };
+          if (r.status === 503 || r.status >= 500) {
+              return { success: false, data: { message: conv.mensajes.servidorNoDisponible } };
+          }
+          if (r.status === 204) {
+              return { success: true, data: null };
+          }
+          if (r.status === 0) {
+              return { success: false, data: { message: conv.mensajes.sinConexion } };
           }
           const contentType = r.headers.get('content-type');
           if (!contentType || !contentType.includes('application/json')) {
               if (r.redirected) {
-                  return { success: false, data: 'Redirect detected. Please log in.' };
+                  return { success: false, data: { message: conv.mensajes.sesionCaducada } };
               }
-              return r.text().then(text => ({ 
-                  success: false, 
-                  data: text.substring(0, 200) + (text.length > 200 ? '...' : '') 
-              }));
+              return { success: false, data: { message: conv.mensajes.respuestaInesperada } };
           }
-          return r.json();
+          return r.json().then(json => (
+              (json === 0 || json === -1 || json === '-1' || json === '0')
+                  ? conv.normalizarError(json)
+                  : json
+          ));
       })
       .then(res => {
-         if(res.success) {
+         if(res && res.success) {
             if (onSuccess) onSuccess(res);
          } else {
-            if (onError) onError(res);
+            if (onError) onError(conv.normalizarError(res));
          }
      })
      .catch(err => {
          console.error('Convoca JS.ajaxPost Fetch Error:', err);
-         if (onError) onError({ success: false, data: 'Error HTTP Fetch al portal wp-admin /admin-ajax.php' });
+         if (onError) onError(conv.normalizarError(null, { message: conv.mensajes.sinConexion }));
      });
   };
 
