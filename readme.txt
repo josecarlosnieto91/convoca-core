@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.3.19
+Stable tag: 2.3.20
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,12 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.3.20 =
+* Desinstalación: el modo «conservar datos» de la interfaz también se respeta aquí. Antes solo
+  miraba la constante de wp-config.php, así que con la casilla marcada el núcleo borraba sus tres
+  tablas igualmente (medido en un WordPress limpio).
+* Prueba nueva del modo conservar datos, por sus dos vías y comprobando que la guarda va antes.
 
 = 2.3.19 =
 * Desinstalación: se limpian todas las tareas programadas del plugin. Antes se

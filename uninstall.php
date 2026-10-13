@@ -25,10 +25,17 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-// ─── Keep data mode ───
-// Define CONVOCA_KEEP_DATA_ON_UNINSTALL in wp-config.php to preserve all data
-// when uninstalling. Useful for temporary deactivation + reactivation.
-if ( defined( 'CONVOCA_KEEP_DATA_ON_UNINSTALL' ) && CONVOCA_KEEP_DATA_ON_UNINSTALL ) {
+// ─── Modo conservar datos ───
+// Dos formas de pedirlo, y este fichero solo miraba una:
+//   1. La constante CONVOCA_KEEP_DATA_ON_UNINSTALL en wp-config.php (despliegues).
+//   2. La opción de la interfaz, convoca_uninstall_keep_data.
+// La segunda es la que ofrece includes/Uninstall_Settings.php, que dice de sí misma que «todos los
+// plugins leen esta misma opción»: los otros seis la respetan y este no, así que con la casilla
+// marcada el núcleo borraba sus tablas igualmente (medido en un WordPress limpio el 13/10/2026).
+if (
+	( defined( 'CONVOCA_KEEP_DATA_ON_UNINSTALL' ) && CONVOCA_KEEP_DATA_ON_UNINSTALL )
+	|| 1 === (int) get_option( 'convoca_uninstall_keep_data', 0 )
+) {
 	return;
 }
 
