@@ -56,6 +56,7 @@ $composer_autoload = __DIR__ . '/vendor/autoload.php';
 if ( file_exists( $composer_autoload ) ) {
 	require_once $composer_autoload;
 }
+
 /*
  * Endurecimiento de la API REST: se carga explícitamente, y antes de cualquier uso.
  *
@@ -188,7 +189,6 @@ add_action(
 		Performance_Probe::init();
 	}
 );
-require_once __DIR__ . '/includes/Rest_Hardening.php';
 
 /* ── Global Convoca menu → extracted to includes/admin-global-menu.php ── */
 require_once __DIR__ . '/includes/admin-global-menu.php';
