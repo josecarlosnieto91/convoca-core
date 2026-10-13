@@ -56,6 +56,16 @@ $composer_autoload = __DIR__ . '/vendor/autoload.php';
 if ( file_exists( $composer_autoload ) ) {
 	require_once $composer_autoload;
 }
+/*
+ * Endurecimiento de la API REST: se carga explícitamente, y antes de cualquier uso.
+ *
+ * El cargador de clases que hay instalado en los sitios es un mapa autoritativo y no conoce las
+ * clases nuevas; sin este require, la clase no se encuentra y la web entera responde 500
+ * (ocurrió el 13/10/2026 al desplegar este cambio). Va aquí arriba, no junto al enganche, para que
+ * valga aunque más adelante alguien llame a la clase al cargar el fichero en vez de en un enganche.
+ */
+require_once __DIR__ . '/includes/Rest_Hardening.php';
+
 /**
  * Basic Autoloader fallback.
  * Supports Convoca\Core\ClassName mapped to includes/ClassName.php
@@ -178,14 +188,6 @@ add_action(
 		Performance_Probe::init();
 	}
 );
-
-/*
- * Endurecimiento de la API REST: se carga explícitamente.
- *
- * El cargador de clases de los sitios está generado como mapa autoritativo y no conoce las
- * clases nuevas; sin este require, la clase no se encuentra y la web entera responde 500
- * (ocurrió el 13/10/2026 al desplegar este cambio).
- */
 require_once __DIR__ . '/includes/Rest_Hardening.php';
 
 /* ── Global Convoca menu → extracted to includes/admin-global-menu.php ── */
