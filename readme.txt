@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.3.22
+Stable tag: 2.3.23
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,16 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.3.23 =
+* Seguridad: sin sesión ya no se pueden enumerar los usuarios por la API REST. Bloquear la ruta
+  `/wp-json/wp/v2/users` en el servidor web no bastaba: la misma consulta llega como
+  `/?rest_route=/wp/v2/users` y esa forma no pasa por una regla de ruta. Medido el 13/10/2026 en las
+  tres webs: las tres devolvían 200 con la lista (biodevas.org, 92 KB con nombres y slugs de acceso).
+  A quien ha iniciado sesión no se le retira nada.
+* Limpieza: el segundo bucle de la desinstalación limpiaba otra vez las mismas tablas `convoca_*`
+  aunque su comentario decía `conv_`; ahora limpia el prefijo que promete (hoy no encuentra nada en
+  ninguna de las tres instalaciones, comprobado).
 
 = 2.3.22 =
 * Accesibilidad: el botón común usa el naranja oscuro como respaldo, no el brillante. El respaldo

@@ -77,8 +77,12 @@ foreach ( $tables_convoca as $table ) {
 	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}{$table}" );
 }
 
-// Also clean legacy conv_ prefixed tables.
-$tables_legacy = array( 'convoca_logs', 'convoca_webhook_retries', 'convoca_locks' );
-foreach ( $tables_legacy as $table ) {
-	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}{$table}" );
+// Tablas de la etapa anterior al cambio de nombre del producto (prefijo `conv_`).
+// El array anterior traía los mismos nombres `convoca_*`, así que este bucle no limpiaba nada
+// distinto y el comentario prometía algo que no ocurría. Comprobado el 13/10/2026 en las bases
+// de los tres sitios: no hay ninguna tabla `conv_*`, así que hoy no encuentra nada; se deja como
+// red por si quedara una instalación antigua.
+$tables_legacy = array( 'logs', 'webhook_retries', 'locks' );
+foreach ( $tables_legacy as $sufijo ) {
+	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}conv_{$sufijo}" );
 }
