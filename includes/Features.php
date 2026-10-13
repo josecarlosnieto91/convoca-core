@@ -57,11 +57,18 @@ class Features {
 	}
 
 	/**
-	 * Comprueba si el theme activo es convoca-theme.
+	 * Comprueba si el theme activo es el de Convoca.
+	 *
+	 * El tema se instala en la carpeta `convoca` (su Text Domain es `convoca`), así que
+	 * comparar solo con `convoca-theme` —el nombre del repositorio— devolvía siempre falso.
+	 * Se aceptan los dos nombres: `convoca` es el instalado hoy, `convoca-theme` el de las
+	 * instalaciones antiguas.
 	 */
 	public static function is_convoca_theme_active(): bool {
 		$theme = wp_get_theme();
-		return $theme->get_template() === 'convoca-theme';
+		$nombres = array( 'convoca', 'convoca-theme' );
+		return in_array( $theme->get_template(), $nombres, true )
+			|| in_array( $theme->get_stylesheet(), $nombres, true );
 	}
 
 	/**

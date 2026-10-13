@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.3.20
+Stable tag: 2.3.21
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,13 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.3.21 =
+* Arreglo: `Features::is_convoca_theme_active()` comparaba con `convoca-theme` (el nombre del
+  repositorio) y el tema se instala en la carpeta `convoca`, así que devolvía siempre falso. No la
+  llamaba nadie, de modo que el efecto era una trampa para el futuro más que un fallo vivo. Ahora
+  acepta los dos nombres, y también mira el estilo para los temas hijos.
+* Prueba nueva del nombre del tema, en positivo y en negativo.
 
 = 2.3.20 =
 * Desinstalación: el modo «conservar datos» de la interfaz también se respeta aquí. Antes solo
