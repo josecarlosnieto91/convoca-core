@@ -53,6 +53,11 @@ foreach ( $options as $option ) {
 wp_clear_scheduled_hook( 'convoca_log_cleanup' );
 wp_clear_scheduled_hook( 'convoca_log_purge' );
 wp_clear_scheduled_hook( 'convoca_webhook_retry' );
+// Faltaba: se programa en convoca-core.php y seguía disparándose tras desinstalar.
+wp_clear_scheduled_hook( 'convoca_security_digest' );
+// Y estos dos, del módulo de licencias/accesos: los encontró la prueba de contrato (13/10/2026).
+wp_clear_scheduled_hook( 'convoca_continue_access_codes' );
+wp_clear_scheduled_hook( 'convoca_license_validate' );
 
 // Clean up transients.
 global $wpdb;
