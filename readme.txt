@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.3.21
+Stable tag: 2.3.22
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.3.22 =
+* Accesibilidad: el botón común usa el naranja oscuro como respaldo, no el brillante. El respaldo
+  anterior solo se veía cuando la página no usaba ese color de paleta, y ahí quedaba en 2.4:1.
 
 = 2.3.21 =
 * Arreglo: `Features::is_convoca_theme_active()` comparaba con `convoca-theme` (el nombre del
