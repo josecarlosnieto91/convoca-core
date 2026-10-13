@@ -17,8 +17,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Por qué existe: bloquear la ruta `/wp-json/wp/v2/users` en el servidor web es insuficiente,
  * porque la misma consulta llega también como `/?rest_route=/wp/v2/users` y esa forma **no
  * pasa** por una regla de nginx: para nginx la ruta es `/`. Medido el 13/10/2026 en las tres
- * webs: la variante con `?rest_route=` devolvía 200 con la lista de usuarios (en biodevas.org,
- * 92 KB con nombres y slugs de acceso). El nombre y el slug son datos personales y material
+ * webs: la variante con `?rest_route=` devolvía 200 con la lista de usuarios (92 KB de nombres y
+ * slugs de acceso en una de ellas). El nombre y el slug son datos personales y material
  * para fuerza bruta dirigida.
  *
  * Se cierra en WordPress y no en el servidor web para que valga con cualquier forma de llamada,

@@ -5,8 +5,8 @@
  * Por qué existe: el bloqueo por ruta de `/wp-json/wp/v2/users` en el servidor web es
  * insuficiente, porque la misma consulta llega como `/?rest_route=/wp/v2/users` y esa forma no
  * pasa por la regla de nginx (para nginx la ruta es `/`). Medido el 13/10/2026 en las tres webs:
- * las tres devolvían 200 con la lista de usuarios (biodevas.org, 92 KB, con nombres y slugs de
- * acceso; lugg, el nombre real de una persona).
+ * las tres devolvían 200 con la lista de usuarios (92 KB de nombres y slugs en una, y el nombre
+ * real de una persona en otra).
  *
  * Se cubre desde WordPress para que valga con cualquier forma de llamada. Estos casos fijan que:
  *  1. sin sesión desaparecen las dos rutas que enumeran (`/wp/v2/users` y `/wp/v2/users/<id>`);
