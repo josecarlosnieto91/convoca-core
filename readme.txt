@@ -4,7 +4,7 @@ Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.3.18
+Stable tag: 2.3.19
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,11 @@ The plugin includes an optional license validation system that contacts getconvo
 5. Backup/Restore panel
 
 == Changelog ==
+
+= 2.3.19 =
+* Desinstalación: se limpian todas las tareas programadas del plugin. Antes se
+  quedaban puestas y seguían disparándose tras borrarlo (medido en un WordPress limpio).
+* Prueba nueva: todo gancho que el plugin programa tiene que aparecer en su desinstalación.
 
 = 2.3.13 =
 * La página de Salud del núcleo deja de registrar un aviso de deprecación en PHP 8.5: `ReflectionMethod::setAccessible()` está obsoleto desde esa versión y ya no hacía falta (todas las propiedades y métodos son accesibles por reflexión desde PHP 8.1).
