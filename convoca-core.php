@@ -179,10 +179,11 @@ add_action(
 	}
 );
 
-/* ── Endurecimiento de la API REST → includes/Rest_Hardening.php ──
-   Se carga explícitamente: el cargador de clases de los sitios está generado como mapa
-   autoritativo y no conoce las clases nuevas; sin esta línea, la clase no se encuentra y la
-   web entera responde 500 (pasó el 13/10/2026 al desplegar). */
+/*
+── Endurecimiento de la API REST → includes/Rest_Hardening.php ──
+	Se carga explícitamente: el cargador de clases de los sitios está generado como mapa
+	autoritativo y no conoce las clases nuevas; sin esta línea, la clase no se encuentra y la
+	web entera responde 500 (pasó el 13/10/2026 al desplegar). */
 require_once __DIR__ . '/includes/Rest_Hardening.php';
 
 /* ── Global Convoca menu → extracted to includes/admin-global-menu.php ── */
