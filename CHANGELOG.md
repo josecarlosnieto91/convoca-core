@@ -1,5 +1,24 @@
 # Changelog — convoca-core
 
+## [2.3.25] - 2026-10-14
+
+### Retirado
+
+- **`assets/js/convoca-monitor.js`** (código muerto, pasada 9 del gauntlet). Comprobado antes de
+  borrarlo: **ningún PHP lo encola** (ni por nombre de fichero ni por handle), **no existe el HTML
+  que necesita** (`#conv-live-dot`, `.conv-metric-card`, `#conv-monitor-label` no se pintan en
+  ninguna parte) y no lo carga nada fuera del repo —ni la batería del ecosistema, ni la
+  documentación, ni los mu-plugins de demo, Lugg y biodevas—. Era el resto de un panel de métricas
+  cuya parte de servidor (la ruta `/convoca/v1/admin/metrics`) sigue viva y en uso.
+
+  El endpoint **no se toca**: está en la API congelada (`docs/openapi.yaml`), en el inventario de la
+  batería y lo consulta `observability.php`. Lo que sobraba era solo el fichero que no cargaba nadie.
+
+### Pruebas
+
+- La comprobación de «ningún recurso viaja sin que nadie lo use» entra en la batería del ecosistema
+  (`convoca-health-check`), que es donde vive lo que afecta a más de un plugin.
+
 ## v2.3.18 (2026-10-13)
 
 ### Arreglado
