@@ -1,5 +1,20 @@
 # Changelog — convoca-core
 
+## [2.3.26] — 2026-10-14
+
+### Arreglado
+- **Ningún correo del ecosistema sale sin remitente.** El auditor independiente capturó 83 correos de
+  los sitios y **69 salían sin cabecera `From`**: el `Mailer` arrancaba con `headers => []` y solo añadía
+  el `Content-Type`, así que el remitente quedaba en manos de PHP (`wordpress@localhost`), que muchos
+  servidores rechazan — y el registro decía «enviado», así que nadie se enteraba.
+  Ahora el remitente se pone en el **punto de salida único** (`Mailer::from_header()`), no en cada
+  plugin: siete sitios donde olvidarlo son siete sitios donde se olvida. Orden del respaldo: ajuste del
+  sitio → correo de administración → `noreply@<dominio del sitio>`. Y ya no puede salir
+  `From:  <correo>` cuando el ajuste del nombre está guardado en blanco.
+- Filtro nuevo `convoca_email_from` para cambiar el remitente de todo el ecosistema de una vez.
+- **Prueba:** `tests/Unit/MailerRemitenteTest.php` (5 casos) con dos negativos comprobados: quitando el
+  bloque que añade el `From` fallan 4 comprobaciones; rompiendo el respaldo del nombre en blanco falla 1.
+
 ## [2.3.25] - 2026-10-14
 
 ### Retirado

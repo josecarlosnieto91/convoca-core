@@ -85,6 +85,16 @@ class Mailer {
 			$headers[] = 'Content-Type: text/html; charset=UTF-8';
 		}
 
+		// El remitente lo pone el ecosistema si el llamante no lo fija. Sin esto, los correos salen
+		// con el remitente por defecto de PHP (`wordpress@localhost`), que muchos servidores rechazan
+		// —y la asociación no se entera, porque el registro dice «enviado»—. Medido en la pasada 10
+		// del gauntlet: **69 de 83** correos capturados salían sin `From`. Se pone aquí, en el punto
+		// de salida único, y no en cada plugin: siete sitios donde olvidarlo es siete sitios donde
+		// se olvida.
+		if ( ! self::has_from( $headers ) ) {
+			$headers[] = self::from_header();
+		}
+
 		$attachments = array_values( array_filter( array_map( 'strval', (array) $args['attachments'] ) ) );
 		$channel     = is_callable( $args['channel'] ) ? $args['channel'] : null;
 
@@ -185,6 +195,68 @@ class Mailer {
 			$out .= '<p>' . nl2br( esc_html( $parrafo ) ) . '</p>';
 		}
 		return $out;
+	}
+
+	/**
+	 * Remitente del ecosistema, para los envíos que no fijan uno propio.
+	 *
+	 * Orden: **ajuste del sitio → respaldo del sitio → respaldo con dominio válido**. Los dos últimos
+	 * importan de verdad:
+	 *
+	 *  - un ajuste guardado **vacío** no puede acabar en `From:  <>` (el `??` no cae al respaldo si la
+	 *    clave existe vacía, y eso medía el auditor: nombre de remitente en blanco);
+	 *  - si no hay ningún correo válido, se usa `noreply@<dominio del sitio>`: existe en el dominio
+	 *    correcto y ningún servidor lo rechaza por sintaxis.
+	 *
+	 * @return string Cabecera `From:` completa, lista para `wp_mail`.
+	 */
+	public static function from_header(): string {
+		$ajustes = get_option( 'convoca_gateway_settings', array() );
+		$ajustes = is_array( $ajustes ) ? $ajustes : array();
+
+		$nombre = trim( wp_strip_all_tags( (string) ( $ajustes['email_sender_name'] ?? '' ) ) );
+		$correo = trim( (string) ( $ajustes['email_sender_email'] ?? '' ) );
+
+		if ( '' === $nombre ) {
+			$nombre = trim( wp_strip_all_tags( (string) get_bloginfo( 'name' ) ) );
+		}
+
+		if ( '' === $correo || ! is_email( $correo ) ) {
+			$correo = trim( (string) get_option( 'admin_email' ) );
+		}
+
+		if ( '' === $correo || ! is_email( $correo ) ) {
+			$host   = (string) wp_parse_url( home_url(), PHP_URL_HOST );
+			$correo = 'noreply@' . ( '' !== $host ? $host : 'localhost' );
+		}
+
+		$from = '' !== $nombre
+			? sprintf( 'From: %s <%s>', $nombre, $correo )
+			: sprintf( 'From: %s', $correo );
+
+		/**
+		 * Permite cambiar el remitente de todo el ecosistema de una sola vez.
+		 *
+		 * @param string $from   Cabecera completa.
+		 * @param string $nombre Nombre del remitente.
+		 * @param string $correo Correo del remitente.
+		 */
+		return (string) apply_filters( 'convoca_email_from', $from, $nombre, $correo );
+	}
+
+	/**
+	 * ¿El llamante ya ha fijado un remitente?
+	 *
+	 * @param array<int, mixed> $headers Cabeceras del envío.
+	 * @return bool
+	 */
+	private static function has_from( array $headers ): bool {
+		foreach ( $headers as $header ) {
+			if ( is_string( $header ) && 0 === stripos( trim( $header ), 'from:' ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
