@@ -48,10 +48,21 @@ class OpcionesSeBorranAlDesinstalarTest extends TestCase {
 				continue;
 			}
 			$txt = (string) file_get_contents( $ruta );
-			if ( preg_match_all( "/(?:update_option|add_option|register_setting)\s*\(\s*'([a-z0-9_]+)'/i", $txt, $m ) ) {
-				foreach ( $m[1] as $clave ) {
-					if ( 0 === strpos( $clave, 'convoca_' ) ) {
-						$claves[ $clave ] = true;
+
+			// update_option() y add_option(): el primer literal es la clave.
+			// register_setting( 'grupo', 'opcion' ): el primero es el GRUPO, no una opción. Contarlos
+			// como opciones —que es lo que hacía la primera versión de este escáner— dejaba la prueba
+			// vigilando lo que no debía y no viendo lo que sí (issue #10).
+			$patrones = array(
+				'/(?:update_option|add_option)\s*\(\s*\'([a-z0-9_]+)\'/i',
+				'/register_setting\s*\(\s*\'[a-z0-9_]+\'\s*,\s*\'([a-z0-9_]+)\'/i',
+			);
+			foreach ( $patrones as $patron ) {
+				if ( preg_match_all( $patron, $txt, $m ) ) {
+					foreach ( $m[1] as $clave ) {
+						if ( 0 === strpos( $clave, 'convoca_' ) ) {
+							$claves[ $clave ] = true;
+						}
 					}
 				}
 			}
@@ -59,6 +70,7 @@ class OpcionesSeBorranAlDesinstalarTest extends TestCase {
 
 		return array_keys( $claves );
 	}
+
 
 	public function test_todas_las_opciones_del_plugin_se_borran(): void {
 		$desinstalador = (string) file_get_contents( $this->raiz() . '/uninstall.php' );
@@ -78,5 +90,34 @@ class OpcionesSeBorranAlDesinstalarTest extends TestCase {
 			$faltan,
 			"El uninstall.php no borra estas opciones que el plugin crea:\n  - " . implode( "\n  - ", $faltan )
 		);
+	}
+
+	public function test_se_borran_de_verdad_y_no_solo_en_la_lista(): void {
+		$desinstalador = (string) file_get_contents( $this->raiz() . '/uninstall.php' );
+		$lineas        = preg_split( '/\R/', $desinstalador );
+
+		foreach ( $this->opcionesCreadas() as $clave ) {
+			if ( isset( self::EXCEPCIONES[ $clave ] ) ) {
+				continue;
+			}
+
+			$suelta = false;
+			foreach ( $lineas as $linea ) {
+				if ( 0 === strpos( $linea, "delete_option( '" . $clave . "'" ) ) {
+					$suelta = true;
+				}
+			}
+
+			// También vale dentro del array `$options = array( ... )`, que es una lista.
+			$en_lista = false;
+			if ( preg_match( '/\$options = array\((.*?)\);/s', $desinstalador, $bloque ) ) {
+				$en_lista = false !== strpos( $bloque[1], "'" . $clave . "'" );
+			}
+
+			$this->assertTrue(
+				$suelta || $en_lista,
+				"«{$clave}» no se borra a nivel de fichero: si está dentro de un bucle o de un `if`, solo se borra a veces (issue #10)."
+			);
+		}
 	}
 }
