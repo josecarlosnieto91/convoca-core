@@ -181,6 +181,11 @@ trait Andamiaje_Admin {
 	 * Se retira del paso cuando la URL trae `page`: esas son pantallas propias colgadas del tipo
 	 * (`edit.php?post_type=actividad&page=conv_enroll-logs`) y llevan a otro sitio a propósito.
 	 *
+	 * Se llama **en la clase** que usa el trait (`\Convoca\Core\Admin\Pantalla_Admin::redirigir_pantallas_crudas()`),
+	 * nunca en el trait: PHP 8.5 avisa por deprecación al invocar un método estático sobre el trait
+	 * directamente («it should only be called on a class using the trait»), y el aviso salía en cada
+	 * pantalla de administración.
+	 *
 	 * @param array<string, array{lista: string, alta?: string}> $destinos Tipo de contenido => pantallas propias.
 	 */
 	public static function redirigir_pantallas_crudas( array $destinos ): void {
