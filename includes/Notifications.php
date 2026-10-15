@@ -421,7 +421,7 @@ class Notifications {
 	public static function on_hours_submitted( int $record_id, string $member_name ): void {
 		/* translators: %s: member name */
 		$title = sprintf( __( 'Horas pendientes de aprobar: %s', 'convoca-core' ), $member_name );
-		$url   = admin_url( 'admin.php?page=conv-volunteer-hours' );
+		$url   = admin_url( 'admin.php?page=conv-horas' );
 
 		self::add( $title, $url, 'warning' );
 		self::push( __( 'Horas voluntariado', 'convoca-core' ), $title, 'default', array( 'clock' ) );

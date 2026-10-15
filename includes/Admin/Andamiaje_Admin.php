@@ -171,6 +171,47 @@ trait Andamiaje_Admin {
 	}
 
 	/**
+	 * Manda a su pantalla propia quien llegue a la cruda de WordPress de un tipo con pantalla.
+	 *
+	 * Un tipo con `show_ui => false` deja la URL cruda viva y WordPress la resuelve con un **500 de
+	 * permisos sin arreglo** (`edit.php?post_type=…`), y un tipo con pantalla propia ofrece además el
+	 * listado duplicado. El mapa declara, por tipo, a dónde va el listado y a dónde va el alta, y cada
+	 * plugin trae el suyo: la ceremonia (el gancho, el orden, la salida) vive en un solo sitio — core#16.
+	 *
+	 * Se retira del paso cuando la URL trae `page`: esas son pantallas propias colgadas del tipo
+	 * (`edit.php?post_type=actividad&page=conv_enroll-logs`) y llevan a otro sitio a propósito.
+	 *
+	 * @param array<string, array{lista: string, alta?: string}> $destinos Tipo de contenido => pantallas propias.
+	 */
+	public static function redirigir_pantallas_crudas( array $destinos ): void {
+		add_action(
+			'admin_init',
+			static function () use ( $destinos ) {
+				$pagenow = isset( $GLOBALS['pagenow'] ) ? (string) $GLOBALS['pagenow'] : '';
+				if ( ! in_array( $pagenow, array( 'edit.php', 'post-new.php' ), true ) ) {
+					return;
+				}
+
+				if ( isset( $_GET['page'] ) ) {
+					return;
+				}
+
+				$tipo = isset( $_GET['post_type'] ) ? sanitize_key( wp_unslash( $_GET['post_type'] ) ) : '';
+				if ( '' === $tipo || ! isset( $destinos[ $tipo ] ) ) {
+					return;
+				}
+
+				$destino = $destinos[ $tipo ];
+				$slug    = ( 'post-new.php' === $pagenow && ! empty( $destino['alta'] ) ) ? $destino['alta'] : $destino['lista'];
+
+				wp_safe_redirect( admin_url( 'admin.php?page=' . $slug ) );
+				exit;
+			},
+			0
+		);
+	}
+
+	/**
 	 * Apunta el nodo «Añadir nuevo» de la barra de administración al editor propio.
 	 *
 	 * Otra copia de dos pantallas en las que solo cambiaban el nodo y el slug.

@@ -188,4 +188,40 @@ class AndamiajeAdminTest extends TestCase {
 			}
 		}
 	}
+
+	/**
+	 * El redirector de las pantallas crudas vive en el andamiaje, y una sola vez (core#15).
+	 *
+	 * Antes estaba copiado en el arranque de cada plugin, con el destino escrito a mano; la copia de
+	 * socios no distinguía el alta del listado y por eso `post-new.php?post_type=proyecto` aterrizaba en
+	 * la lista (core#16). Aquí se vigila la ceremonia; cada plugin declara **su** mapa.
+	 */
+	public function test_el_redirector_de_pantallas_crudas_vive_en_el_andamiaje(): void {
+		$fuente = (string) file_get_contents( $this->raiz() . '/includes/Admin/Andamiaje_Admin.php' );
+
+		$this->assertStringContainsString(
+			'public static function redirigir_pantallas_crudas(',
+			$fuente,
+			'El andamiaje tiene que ofrecer el redirector a los plugins'
+		);
+		$this->assertStringContainsString( "'admin_init'", $fuente, 'La ceremonia va en admin_init (antes de que WordPress resuelva la pantalla cruda)' );
+		$this->assertStringContainsString( 'wp_safe_redirect', $fuente );
+		$this->assertMatchesRegularExpression(
+			'/isset\( \$_GET\[' . "'page'" . '\] \)/',
+			$fuente,
+			'Las pantallas propias colgadas del tipo (edit.php?post_type=X&page=Y) no se tocan'
+		);
+		$this->assertStringContainsString( "'alta'", $fuente, 'El mapa distingue el alta del listado' );
+	}
+
+	/** Nadie enlaza a `conv-volunteer-hours`: ese slug no existe, la pantalla es `conv-horas` (core#18). */
+	public function test_no_se_enlaza_a_la_pantalla_de_horas_por_un_slug_inexistente(): void {
+		foreach ( $this->ficherosPhp() as $relativo ) {
+			$this->assertStringNotContainsString(
+				'conv-volunteer-hours',
+				(string) file_get_contents( $this->raiz() . '/' . $relativo ),
+				$relativo . ' enlaza a la pantalla de horas con un slug que nadie registra (el real es conv-horas)'
+			);
+		}
+	}
 }
