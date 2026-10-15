@@ -49,6 +49,7 @@ class EscapeCsvFieldTest extends TestCase {
 			'con comillas dentro'     => array( '=a"b', '"=a""b"', 'Las comillas se duplican al entrecomillar' ),
 			'texto normal'            => array( 'Oviedo', 'Oviedo', 'Un valor normal no se toca' ),
 			'vacio'                   => array( '', '', 'Vacio se queda vacio' ),
+			'cero'                    => array( '0', '0', 'Un cero es un dato, no una celda vacia' ),
 			'numero'                  => array( '12345678', '12345678', 'Un numero no es formula' ),
 			'peligro en medio no cuenta' => array( 'a=1+1', 'a=1+1', 'Solo importa el PRIMER caracter' ),
 		);

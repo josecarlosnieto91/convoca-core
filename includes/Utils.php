@@ -147,12 +147,18 @@ class Utils {
 	/**
 	 * Escape fields starting with dangerous characters to prevent CSV injection.
 	 *
+	 * `0` y `'0'` NO son celdas vacías: con el `empty()` que había antes, un cero
+	 * legítimo (horas, plazas, importe pendiente) salía como celda en blanco al
+	 * pasar por este ayudante, y quien lo lee se queda sin el dato. Medido el
+	 * 15/10/2026 en la exportación de miembros (`Horas voluntariado`) y en la de
+	 * estadísticas de turnos (`Faltas`, `Realizados`).
+	 *
 	 * @param string|mixed $field Field value.
 	 * @return string Escaped field value.
 	 */
 	public static function escape_csv_field( $field ): string {
 		$field = (string) $field;
-		if ( empty( $field ) ) {
+		if ( '' === $field ) {
 			return '';
 		}
 
@@ -175,14 +181,19 @@ class Utils {
 	 * protección contra fórmulas: antes estaba copiada a mano en unos y ausente en otros (medido el
 	 * 15/10/2026: la pasarela tenía una versión más corta que no cubría tabulador, retorno ni `;`).
 	 *
-	 * Separador `;`, que es el que espera el ecosistema, y una sola cabecera de contenido.
+	 * Separador `;` por defecto, que es el que espera el ecosistema, y una sola cabecera de contenido.
+	 * El separador es un parámetro porque hay una descarga cuyo lector manda: la plantilla de
+	 * importación de socios se vuelve a subir y su lector (`fgetcsv(…, ',')`) está en el mismo
+	 * plugin, así que ahí el flujo tiene que salir con `,` o el fichero descargado deja de
+	 * importarse. La ceremonia compartida sigue siendo la misma; lo que cambia es el carácter.
 	 *
 	 * @param string $filename Nombre del fichero que verá quien lo descarga (sin ruta).
 	 * @param array<int, string> $headers Fila de cabeceras, ya traducida por quien llama.
 	 * @param iterable<int, array<int, mixed>> $rows Filas. Admite generador para no cargar todo en memoria.
+	 * @param string $separator Separador de campos. `;` salvo para lectores que exigen otro.
 	 * @return int Filas escritas, sin contar la cabecera.
 	 */
-	public static function stream_csv( string $filename, array $headers, iterable $rows ): int {
+	public static function stream_csv( string $filename, array $headers, iterable $rows, string $separator = ';' ): int {
 		if ( ob_get_length() ) {
 			ob_end_clean();
 		}
@@ -198,7 +209,7 @@ class Utils {
 		// BOM: sin él, Excel en Windows se come los acentos del castellano.
 		fprintf( $out, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) );
 
-		$escribir_fila = static function ( array $fila ) use ( $out ): void {
+		$escribir_fila = static function ( array $fila ) use ( $out, $separator ): void {
 			fputcsv(
 				$out,
 				array_map(
@@ -207,7 +218,7 @@ class Utils {
 					},
 					$fila
 				),
-				';',
+				$separator,
 				'"',
 				'\\'
 			);

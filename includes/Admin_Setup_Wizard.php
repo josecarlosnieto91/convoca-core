@@ -29,24 +29,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Admin_Setup_Wizard {
+class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
+
+	/**
+	 * Ganchos de la pantalla, en una lista en vez del constructor copiado.
+	 *
+	 * Los ganchos, el orden y las prioridades son los de antes; lo que cambia es dónde está escrito el
+	 * constructor, que era el mismo (copiado) en las seis pantallas del ecosistema.
+	 *
+	 * @return array<string, string> Gancho => método de esta clase.
+	 */
+	protected function ganchos(): array {
+		return array(
+			'admin_menu'                             => 'register_page',
+			'admin_init'                             => 'maybe_redirect',
+			'admin_post_convoca_wizard_save'         => 'handle_save',
+			'admin_post_convoca_wizard_skip'         => 'handle_skip',
+			'admin_post_convoca_wizard_create_pages' => 'handle_create_pages',
+			'admin_post_convoca_wizard_complete'     => 'handle_complete',
+		);
+	}
 
 	const COMPLETED_OPTION = 'convoca_setup_wizard_completed';
 	const DISMISS_OPTION   = 'convoca_setup_wizard_dismissed';
 	const PROGRESS_OPTION  = 'convoca_setup_wizard_progress';
 	const SEEN_OPTION      = 'convoca_setup_wizard_seen';
 
-	public function __construct() {
-		add_action( 'admin_menu', array( $this, 'register_page' ) );
-		add_action( 'admin_init', array( $this, 'maybe_redirect' ) );
-		add_action( 'admin_post_convoca_wizard_save', array( $this, 'handle_save' ) );
-		add_action( 'admin_post_convoca_wizard_skip', array( $this, 'handle_skip' ) );
-		add_action( 'admin_post_convoca_wizard_create_pages', array( $this, 'handle_create_pages' ) );
-		add_action( 'admin_post_convoca_wizard_complete', array( $this, 'handle_complete' ) );
-	}
-
 	public function register_page(): void {
-		add_submenu_page(
+		$this->registrar_subpagina(
 			'convoca-core',
 			__( 'Asistente de Configuración Convoca', 'convoca-core' ),
 			__( 'Asistente', 'convoca-core' ),

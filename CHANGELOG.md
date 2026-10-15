@@ -1,5 +1,38 @@
 ## [2.3.33] — 2026-10-15
 
+## [2.3.34] — 2026-10-15
+
+### Añadido
+- **El andamiaje de las pantallas de administración, en un solo sitio (issue #16).** `Convoca\Core\Admin\Pantalla_Admin`
+  (clase base) y su trait `Andamiaje_Admin` reúnen lo que las pantallas del ecosistema copiaban una y otra vez: el
+  constructor que registra los ganchos, el alta de páginas del menú, el encolado del CSS común, la guarda del guardado
+  (nonce primero y capacidad después, el mismo orden de siempre), el redirect del editor de WordPress al editor propio
+  y el nodo «Añadir nuevo» de la barra de administración. Medido el 15/10/2026: **siete** pantallas en cuatro plugins
+  repetían ese andamiaje, con tres copias carácter a carácter del bloque de `wp_enqueue_style`. El trait existe porque
+  dos de esas pantallas ya heredan de `\WP_List_Table` y PHP no tiene herencia múltiple: una sola implementación, dos
+  formas de engancharla. **No cambia ningún gancho, capacidad ni prioridad**: solo dónde está escrito.
+- **Contrato `AndamiajeAdminTest`:** cada pantalla declarada tiene que usar el andamiaje y no declarar constructor
+  propio, y no puede haber dos constructores iguales en el repositorio. Probado en negativo (con el constructor
+  devuelto a mano, el rojo nombra la clase).
+
+### Corregido
+- **`Utils::escape_csv_field()` daba por vacío un cero legítimo.** El guardia era `empty( $field )`, así que `0` y `'0'`
+  volvían como celda vacía: en la exportación de miembros, un socio con **0 horas de voluntariado** salía con la celda
+  en blanco, y en la de estadísticas de turnos lo mismo con `Faltas` y `Realizados`. Medido el 15/10/2026; con `'' ===`
+  el cero es un dato y no un hueco.
+- **`Utils::stream_csv()` acepta el separador como parámetro** (por omisión `;`). Hay una descarga cuyo lector manda: la
+  plantilla de importación de socios la vuelve a subir el mismo plugin que la lee con `fgetcsv( …, ',', … )`, así que
+  tiene que seguir saliendo con comas. La ceremonia compartida sigue siendo una; cambia el carácter.
+- **Contrato `UnaSolaCeremoniaCsvTest`:** fuera de `utils.php` nadie abre `php://output` para CSV ni llama a `fputcsv`
+  (con la única excepción escrita: el ZIP de copia de seguridad, que arma sus CSV en un flujo temporal), y nadie revive
+  `csv_headers()`, el intento anterior que perdía el BOM al cerrar el flujo. Probado en negativo.
+- **`StreamCsvTest`:** la ceremonia compartida escribe **byte a byte** lo mismo que la copiada a mano cuando esta ya
+  hacía lo mismo (BOM, separador, escapado por celda, generador de 5.000 filas y recuento devuelto).
+
+### Notas
+- El contrato de `phpstan.neon` retira un ignore que ya no casaba: la llamada a `add_node()` de la barra de
+  administración vive ahora en el andamiaje, que castea el nodo a array.
+
 ### Cambiado
 - **`Utils::get_payment_link()` se llama `create_payment()` (issue #16).** Tenía **el mismo nombre** que
   `Gateway\Payment_Handler::get_payment_link()` —hoy `build_payment_url()`— y no hacen lo mismo: esta **crea**

@@ -56,7 +56,8 @@ parameters:
             identifier: booleanAnd.rightAlwaysTrue
             path: includes/Admin_Templates.php
         # WP_Admin_Bar::add_node acepta WP_Admin_Bar_Node (objeto) en runtime;
-        # el stub solo declara array.
+        # el stub solo declara array. (En Admin/Andamiaje_Admin.php no hace falta: el nodo del
+        # andamiaje se castea a array antes de añadirlo.)
         -
             message: '#Parameter \#1 \$args of method WP_Admin_Bar::add_node\(\)#'
             identifier: argument.type
