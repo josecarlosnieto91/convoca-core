@@ -165,9 +165,74 @@ class Utils {
 	}
 
 	/**
-	 * Output CSV headers and BOM for Excel.
+	 * Vuelca un CSV al navegador: cabeceras, BOM y filas, todo en UN solo flujo.
 	 *
-	 * @param string $filename The filename to suggest.
+	 * Por qué no vale `csv_headers()`: abría el flujo, escribía el BOM y lo cerraba, así que quien
+	 * siguiera escribiendo se quedaba sin BOM —medido: la exportación de inscripciones salía sin él y
+	 * Excel rompía los acentos—. Aquí el flujo se abre una vez y no se cierra hasta escribir todo.
+	 *
+	 * Cada celda pasa por `escape_csv_field()`, así que ningún exportador puede olvidarse de la
+	 * protección contra fórmulas: antes estaba copiada a mano en unos y ausente en otros (medido el
+	 * 15/10/2026: la pasarela tenía una versión más corta que no cubría tabulador, retorno ni `;`).
+	 *
+	 * Separador `;`, que es el que espera el ecosistema, y una sola cabecera de contenido.
+	 *
+	 * @param string $filename Nombre del fichero que verá quien lo descarga (sin ruta).
+	 * @param array<int, string> $headers Fila de cabeceras, ya traducida por quien llama.
+	 * @param iterable<int, array<int, mixed>> $rows Filas. Admite generador para no cargar todo en memoria.
+	 * @return int Filas escritas, sin contar la cabecera.
+	 */
+	public static function stream_csv( string $filename, array $headers, iterable $rows ): int {
+		if ( ob_get_length() ) {
+			ob_end_clean();
+		}
+
+		header( 'Content-Type: text/csv; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+		header( 'Pragma: no-cache' );
+		header( 'Expires: 0' );
+
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- CSV a php://output: no hay equivalente en WP_Filesystem para un flujo de salida.
+		$out = fopen( 'php://output', 'w' );
+
+		// BOM: sin él, Excel en Windows se come los acentos del castellano.
+		fprintf( $out, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) );
+
+		$escribir_fila = static function ( array $fila ) use ( $out ): void {
+			fputcsv(
+				$out,
+				array_map(
+					static function ( $celda ): string {
+						return self::escape_csv_field( (string) $celda );
+					},
+					$fila
+				),
+				';',
+				'"',
+				'\\'
+			);
+		};
+
+		$escribir_fila( $headers );
+
+		$escritas = 0;
+		foreach ( $rows as $fila ) {
+			$escribir_fila( $fila );
+			++$escritas;
+		}
+
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Cerramos el flujo de salida del CSV, ya completo.
+		fclose( $out );
+
+		return $escritas;
+	}
+
+	/**
+	 * Cabeceras de un CSV. Obsoleta: abría y cerraba el flujo, así que el BOM se perdía.
+	 *
+	 * @deprecated 2.3.34 Usa `stream_csv()`, que hace el trabajo entero sin cortar el flujo.
+	 *
+	 * @param string $filename Nombre del fichero.
 	 */
 	public static function csv_headers( string $filename ): void {
 		header( 'Content-Type: text/csv; charset=utf-8' );
