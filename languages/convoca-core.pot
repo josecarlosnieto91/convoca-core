@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Core 2.3.18\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/app\n"
+"Project-Id-Version: Convoca Core 2.3.32\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-core\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-13T20:07:36+00:00\n"
+"POT-Creation-Date: 2026-10-15T11:04:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-core\n"
@@ -244,8 +244,8 @@ msgid "Forzar comprobación"
 msgstr ""
 
 #: includes/admin-global-menu.php:94
-#: includes/Admin_Setup_Wizard.php:610
-#: includes/Admin_Setup_Wizard.php:847
+#: includes/Admin_Setup_Wizard.php:667
+#: includes/Admin_Setup_Wizard.php:904
 msgid "Convoca Members"
 msgstr ""
 
@@ -256,20 +256,20 @@ msgid "Plugin no activo."
 msgstr ""
 
 #: includes/admin-global-menu.php:118
-#: includes/Admin_Setup_Wizard.php:615
-#: includes/Admin_Setup_Wizard.php:848
+#: includes/Admin_Setup_Wizard.php:672
+#: includes/Admin_Setup_Wizard.php:905
 msgid "Convoca Enroll"
 msgstr ""
 
 #: includes/admin-global-menu.php:137
-#: includes/Admin_Setup_Wizard.php:620
-#: includes/Admin_Setup_Wizard.php:849
+#: includes/Admin_Setup_Wizard.php:677
+#: includes/Admin_Setup_Wizard.php:906
 msgid "Convoca Gateway"
 msgstr ""
 
 #: includes/admin-global-menu.php:172
-#: includes/Admin_Setup_Wizard.php:625
-#: includes/Admin_Setup_Wizard.php:850
+#: includes/Admin_Setup_Wizard.php:682
+#: includes/Admin_Setup_Wizard.php:907
 msgid "Convoca Shifts"
 msgstr ""
 
@@ -521,19 +521,19 @@ msgstr ""
 msgid "Importación finalizada. %d registros procesados."
 msgstr ""
 
-#: includes/Admin_Backup.php:644
+#: includes/Admin_Backup.php:645
 msgid "Miembros / Socios"
 msgstr ""
 
-#: includes/Admin_Backup.php:645
+#: includes/Admin_Backup.php:646
 msgid "Inscripciones a Actividades"
 msgstr ""
 
-#: includes/Admin_Backup.php:646
+#: includes/Admin_Backup.php:647
 msgid "Proyectos y Actividades"
 msgstr ""
 
-#: includes/Admin_Backup.php:647
+#: includes/Admin_Backup.php:648
 #: includes/Admin_Setup_Wizard.php:198
 #: includes/Blocks_Common.php:51
 msgid "Turnos"
@@ -596,9 +596,9 @@ msgid "Asistente"
 msgstr ""
 
 #: includes/Admin_Setup_Wizard.php:143
-#: includes/Admin_Setup_Wizard.php:386
-#: includes/Admin_Setup_Wizard.php:884
-#: includes/Admin_Setup_Wizard.php:991
+#: includes/Admin_Setup_Wizard.php:443
+#: includes/Admin_Setup_Wizard.php:941
+#: includes/Admin_Setup_Wizard.php:1048
 msgid "Acceso denegado."
 msgstr ""
 
@@ -669,312 +669,312 @@ msgstr ""
 msgid "1. Infraestructura y Base de Datos"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:336
-#: includes/Admin_Setup_Wizard.php:788
+#: includes/Admin_Setup_Wizard.php:393
+#: includes/Admin_Setup_Wizard.php:845
 msgid "2. Páginas del Sistema"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:352
+#: includes/Admin_Setup_Wizard.php:409
 msgid "No existe la página."
 msgstr ""
 
 #. translators: %s: shortcode esperado en la página
-#: includes/Admin_Setup_Wizard.php:356
+#: includes/Admin_Setup_Wizard.php:413
 #, php-format
 msgid "Existe, pero su contenido no incluye %s."
 msgstr ""
 
 #. translators: %s: plugin/shortcode name
-#: includes/Admin_Setup_Wizard.php:363
+#: includes/Admin_Setup_Wizard.php:420
 #, php-format
 msgid "Ningún plugin activo registra %s: actívalo antes de crearla."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:376
+#: includes/Admin_Setup_Wizard.php:433
 msgid "Crear o reparar páginas"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:390
+#: includes/Admin_Setup_Wizard.php:447
 msgid "Otra operación de creación de páginas está en curso."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:487
-#: includes/Admin_Setup_Wizard.php:810
+#: includes/Admin_Setup_Wizard.php:544
+#: includes/Admin_Setup_Wizard.php:867
 msgid "3. Planes de Membresía"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:489
+#: includes/Admin_Setup_Wizard.php:546
 msgid "No se han detectado planes. Activa Convoca Members para configurarlos."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:491
+#: includes/Admin_Setup_Wizard.php:548
 msgid "Marca los planes disponibles, edita su nombre, modalidad y precio anual:"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:499
-#: includes/Admin_Setup_Wizard.php:659
+#: includes/Admin_Setup_Wizard.php:556
+#: includes/Admin_Setup_Wizard.php:716
 msgid "Activo"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:500
+#: includes/Admin_Setup_Wizard.php:557
 msgid "Nombre visible"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:501
+#: includes/Admin_Setup_Wizard.php:558
 msgid "ID corto"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:502
+#: includes/Admin_Setup_Wizard.php:559
 msgid "Modalidad"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:503
+#: includes/Admin_Setup_Wizard.php:560
 msgid "Precio (€)"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:525
+#: includes/Admin_Setup_Wizard.php:582
 msgid "Solo minúsculas, números y guiones"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:540
+#: includes/Admin_Setup_Wizard.php:597
 msgid "Guardar planes"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:543
+#: includes/Admin_Setup_Wizard.php:600
 msgid "Los planes se guardan en Convoca Members (Ajustes → Miembros → Planes) y se aplican al formulario de alta."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:554
+#: includes/Admin_Setup_Wizard.php:611
 msgid "4. Configuración de Redsys"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:561
+#: includes/Admin_Setup_Wizard.php:618
 msgid "Merchant Code"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:565
+#: includes/Admin_Setup_Wizard.php:622
 msgid "Secret Key"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:569
-#: includes/Admin_Setup_Wizard.php:594
+#: includes/Admin_Setup_Wizard.php:626
+#: includes/Admin_Setup_Wizard.php:651
 msgid "Guardar"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:579
+#: includes/Admin_Setup_Wizard.php:636
 msgid "5. Convoca Shifts"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:586
+#: includes/Admin_Setup_Wizard.php:643
 msgid "Hora de apertura"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:590
+#: includes/Admin_Setup_Wizard.php:647
 msgid "Hora de cierre"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:611
+#: includes/Admin_Setup_Wizard.php:668
 msgid "Fichas de socios, cuotas, carnets digitales y área personal."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:616
+#: includes/Admin_Setup_Wizard.php:673
 msgid "Inscripciones a actividades, listas de espera y asistencia."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:621
+#: includes/Admin_Setup_Wizard.php:678
 msgid "Cobro de cuotas con tarjeta o Bizum vía Redsys."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:626
+#: includes/Admin_Setup_Wizard.php:683
 msgid "Turnos de voluntariado con calendario y check-in."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:630
-#: includes/Admin_Setup_Wizard.php:851
+#: includes/Admin_Setup_Wizard.php:687
+#: includes/Admin_Setup_Wizard.php:908
 msgid "Convoca Publisher"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:631
+#: includes/Admin_Setup_Wizard.php:688
 msgid "Publica en 7 redes sociales desde una sola entrada."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:635
-#: includes/Admin_Setup_Wizard.php:852
+#: includes/Admin_Setup_Wizard.php:692
+#: includes/Admin_Setup_Wizard.php:909
 msgid "Convoca Assistant"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:636
+#: includes/Admin_Setup_Wizard.php:693
 msgid "Asistente conversacional local, sin IA, sin enviar datos."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:641
+#: includes/Admin_Setup_Wizard.php:698
 msgid "6. El Ecosistema Convoca"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:644
+#: includes/Admin_Setup_Wizard.php:701
 msgid "Tema de los documentos guardado."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:648
+#: includes/Admin_Setup_Wizard.php:705
 msgid "Cada módulo es un plugin independiente: funciona solo o en conjunto con el resto. Todo es open source y los datos viven en tu propia web."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:659
+#: includes/Admin_Setup_Wizard.php:716
 msgid "No instalado"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:665
+#: includes/Admin_Setup_Wizard.php:722
 msgid "💡 Importar tus socios actuales: ve a Miembros → Importar CSV y arrastra tu hoja de Excel. En segundos tendrás todas las fichas digitales."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:668
+#: includes/Admin_Setup_Wizard.php:725
 msgid "¿Necesitas instalar algún módulo? Encuéntralos en WordPress.org o en getconvoca.app — los módulos base son gratuitos para siempre."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:671
-#: includes/Admin_Setup_Wizard.php:680
+#: includes/Admin_Setup_Wizard.php:728
+#: includes/Admin_Setup_Wizard.php:737
 msgid "Tema de los documentos"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:673
+#: includes/Admin_Setup_Wizard.php:730
 msgid "Elige el estilo por defecto de carnets, certificados y emails transaccionales. Podrás cambiarlo después en Ajustes → Documentos."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:684
+#: includes/Admin_Setup_Wizard.php:741
 msgid "Claro (por defecto)"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:689
+#: includes/Admin_Setup_Wizard.php:746
 msgid "Oscuro"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:693
+#: includes/Admin_Setup_Wizard.php:750
 msgid "Guardar tema"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:705
+#: includes/Admin_Setup_Wizard.php:762
 msgid "7. Finalización"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:740
+#: includes/Admin_Setup_Wizard.php:797
 msgid "Finalizar configuración"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:743
+#: includes/Admin_Setup_Wizard.php:800
 msgid "Faltan requisitos obligatorios. Revisa los pasos marcados en ámbar."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:767
+#: includes/Admin_Setup_Wizard.php:824
 msgid "1. Infraestructura"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:770
+#: includes/Admin_Setup_Wizard.php:827
 msgid "Convoca Common activo."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:770
+#: includes/Admin_Setup_Wizard.php:827
 msgid "Convoca Common NO activo."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:771
+#: includes/Admin_Setup_Wizard.php:828
 msgid "Tablas de base de datos creadas."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:771
+#: includes/Admin_Setup_Wizard.php:828
 msgid "Faltan tablas de base de datos."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:773
+#: includes/Admin_Setup_Wizard.php:830
 msgid "Ejecuta el paso 1 para crear la infraestructura."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:791
+#: includes/Admin_Setup_Wizard.php:848
 msgid "Crea las páginas pendientes en el paso 2."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:813
+#: includes/Admin_Setup_Wizard.php:870
 msgid "Sin planes activos."
 msgstr ""
 
 #. translators: %d: número de planes activos
-#: includes/Admin_Setup_Wizard.php:815
+#: includes/Admin_Setup_Wizard.php:872
 #, php-format
 msgid "%d planes activos:"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:818
+#: includes/Admin_Setup_Wizard.php:875
 msgid "Activa al menos un plan en el paso 3."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:826
+#: includes/Admin_Setup_Wizard.php:883
 msgid "4. Pagos (Redsys)"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:828
+#: includes/Admin_Setup_Wizard.php:885
 msgid "Merchant Code configurado."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:828
+#: includes/Admin_Setup_Wizard.php:885
 msgid "Merchant Code vacío."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:829
+#: includes/Admin_Setup_Wizard.php:886
 msgid "Completa la configuración de Redsys en el paso 4."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:836
+#: includes/Admin_Setup_Wizard.php:893
 msgid "5. Turnos de Voluntariado"
 msgstr ""
 
 #. translators: 1: opening time, 2: closing time.
-#: includes/Admin_Setup_Wizard.php:838
+#: includes/Admin_Setup_Wizard.php:895
 #, php-format
 msgid "Horario del centro: %1$s – %2$s"
 msgstr ""
 
 #. translators: 1: opening time, 2: closing time.
-#: includes/Admin_Setup_Wizard.php:839
+#: includes/Admin_Setup_Wizard.php:896
 msgid "Define el horario en el paso 5."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:862
+#: includes/Admin_Setup_Wizard.php:919
 msgid "6. Ecosistema Convoca"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:866
+#: includes/Admin_Setup_Wizard.php:923
 msgid "Los 6 módulos están instalados y activos."
 msgstr ""
 
 #. translators: %d: número de módulos activos de 6
-#: includes/Admin_Setup_Wizard.php:868
+#: includes/Admin_Setup_Wizard.php:925
 #, php-format
 msgid "%d de 6 módulos activos."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:869
+#: includes/Admin_Setup_Wizard.php:926
 msgid "Faltan: "
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:871
+#: includes/Admin_Setup_Wizard.php:928
 msgid "Activa los módulos restantes en el paso 6."
 msgstr ""
 
 #. translators: %s: slug en conflicto
-#: includes/Admin_Setup_Wizard.php:941
+#: includes/Admin_Setup_Wizard.php:998
 #, php-format
 msgid "El ID corto «%s» ya está en uso. Elige otro."
 msgstr ""
 
 #. translators: %s: slug en conflicto
-#: includes/Admin_Setup_Wizard.php:942
+#: includes/Admin_Setup_Wizard.php:999
 msgid "No se guardó: el ID corto introducido ya existe."
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:1002
+#: includes/Admin_Setup_Wizard.php:1059
 msgid "Anterior"
 msgstr ""
 
-#: includes/Admin_Setup_Wizard.php:1007
+#: includes/Admin_Setup_Wizard.php:1064
 msgid "Siguiente"
 msgstr ""
 
