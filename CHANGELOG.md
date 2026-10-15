@@ -1,3 +1,20 @@
+## [2.3.32] — 2026-10-15
+
+### Añadido
+- **El sitio deja de anunciar la versión de PHP en cada respuesta (issue #11).** La demo enviaba
+  `x-powered-by: PHP/8.5.10` en todas las cabeceras: no es explotable por sí mismo, pero es información regalada
+  a quien esté buscando qué atacar. `Convoca\Core\Postura_HTTP` la retira en `send_headers` —antes de que se
+  envíe nada, que es cuando quitarla sirve de algo— y **no toca la `Content-Security-Policy`**, que sigue en modo
+  informe por decisión tomada: pasarla a aplicada exige revisar antes que nada legítimo se rompa (la política
+  lleva `unsafe-inline` y `unsafe-eval`, y el sitio usa bloques y scripts propios).
+
+### Pruebas
+- `tests/Unit/PosturaHTTPTest.php`: que la retirada esté en `send_headers`, que esté enganchada (una clase que
+  nadie llama no quita nada) y que **no** se toque la CSP. La comprobación de la CSP mira el **código sin
+  comentarios**: un comentario que la menciona no es tocar la CSP. **Negativos probados**: sin el enganche cae
+  una prueba; metiendo una cabecera CSP en la clase, caen dos.
+- Suite 212 en verde, PHPCS 0, PHPStan `[OK]`.
+
 ## [2.3.31] — 2026-10-15
 
 ### Arreglado
