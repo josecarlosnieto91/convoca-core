@@ -1,3 +1,22 @@
+## [2.3.31] — 2026-10-15
+
+### Arreglado
+- **La desinstalación no borraba todas las opciones del plugin (issue #10).** Borraba lo principal y se dejaba
+  tres que él mismo crea. La clave de las claves se **lee del código**, no de una lista escrita a mano —una lista
+  así se queda vieja en cuanto alguien añade una opción, que es exactamente cómo apareció el defecto—, y al
+  hacerlo aparecieron **siete**, no una:
+  - `convoca_log_retention_days` (la del informe), `convoca_document_theme` y `convoca_utils_fired` → se borran.
+  - `convoca_members_plans`, `convoca_gateway_settings`, `convoca_shifts_hora_apertura` y `convoca_shifts_hora_cierre`
+    → **no se borran, y es lo correcto**: son ajustes de **otros** plugins de la familia. Borrarlas desde aquí
+    significaría perder los ajustes de un plugin que sigue instalado. Van como excepciones documentadas en la
+    prueba, con su motivo.
+
+### Pruebas
+- `tests/Unit/OpcionesSeBorranAlDesinstalarTest.php`, hermano del de ganchos programados: toda opción que el
+  plugin crea tiene que borrarse al desinstalarlo. **Negativo probado**: quitando una opción del desinstalador,
+  la prueba cae y **la nombra**.
+- Suite 207 en verde, PHPCS 0, PHPStan `[OK]`.
+
 ## [2.3.30] — 2026-10-15
 
 ### Arreglado

@@ -50,6 +50,11 @@ $options = array(
 	'convoca_capabilities_hash',
 	'convoca_webhook_retry_limit',
 	'convoca_auto_cleanup_days',
+	// Las encontró la prueba de contrato de opciones (issue #10). La primera es la que más importa:
+	// `convoca_log_retention_days` se guardaba y no se borraba nunca.
+	'convoca_log_retention_days',
+	'convoca_document_theme',
+	'convoca_utils_fired',
 );
 
 foreach ( $options as $option ) {
