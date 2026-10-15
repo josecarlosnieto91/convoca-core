@@ -1,5 +1,15 @@
 # Changelog — convoca-core
 
+## [2.3.27] - 2026-10-15
+
+### Corregido
+
+- **El QR del carnet apuntaba a una página que no existía** (auditoría de navegador): el carnet digital
+  imprime un código que lleva a `/verificar-socio/`, y esa página no la creaba nadie —404—, así que
+  verificar un carnet era imposible. Las dos páginas de verificación (`verificar-socio` y
+  `verificar-certificado`) entran en la lista del asistente de puesta en marcha, que ya avisa si el
+  shortcode no está registrado.
+
 ## [2.3.26] — 2026-10-14
 
 ### Arreglado

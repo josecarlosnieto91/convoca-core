@@ -283,20 +283,35 @@ class Admin_Setup_Wizard {
 		return apply_filters(
 			'convoca_wizard_system_pages',
 			array(
-				'alta-socios' => array(
+				'alta-socios'           => array(
 					'title' => 'Alta de Socios',
 					'sc'    => '[convoca_alta_socio]',
 					'req'   => true,
 				),
-				'panel-socio' => array(
+				'panel-socio'           => array(
 					'title' => 'Mi Panel de Socio',
 					'sc'    => '[convoca_mi_area]',
 					'req'   => true,
 				),
-				'pago'        => array(
+				'pago'                  => array(
 					'title' => 'Página de Pago',
 					'sc'    => '[convoca_pago]',
 					'req'   => true,
+				),
+				// Las dos páginas a las que apuntan los códigos QR. Faltaban de la lista: la del
+				// certificado existía en los sitios porque alguien la creó a mano, y la del carnet del
+				// socio no existía en ninguna parte, así que el QR del carnet llevaba a un 404. El
+				// asistente ya avisa si el shortcode no está registrado, así que no rompe instalaciones
+				// sin el plugin de socios.
+				'verificar-socio'       => array(
+					'title' => 'Verificar Socio/a',
+					'sc'    => '[convoca_verificar_socio]',
+					'req'   => false,
+				),
+				'verificar-certificado' => array(
+					'title' => 'Verificar Certificado',
+					'sc'    => '[convoca_verificar_certificado]',
+					'req'   => false,
 				),
 			)
 		);
