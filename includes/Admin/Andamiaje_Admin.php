@@ -30,6 +30,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * ¿Es esta una pantalla cruda que no puede existir, porque el tipo pedido no está registrado?
+ *
+ * Vive como función de espacio de nombres, y no dentro del cierre que redirige, por dos motivos: dentro
+ * hay un `exit` (una prueba no puede recorrerlo sin matar la suite) y llamarlo como método estático del
+ * trait dispara el aviso de PHP 8.5. Aquí se puede probar de verdad (core#22).
+ *
+ * @param string $pagenow Página actual (`edit.php`, `post-new.php`…).
+ * @param string $tipo    `post_type` pedido en la URL.
+ * @return bool
+ */
+function convoca_core_pantalla_cruda_imposible( string $pagenow, string $tipo ): bool {
+	if ( ! in_array( $pagenow, array( 'edit.php', 'post-new.php' ), true ) ) {
+		return false;
+	}
+
+	return '' !== $tipo && ! post_type_exists( $tipo );
+}
+
+/**
  * Implementación del andamiaje. La consumen `Pantalla_Admin` (herencia) y las pantallas que ya
  * extienden otra clase (uso directo).
  */
@@ -202,6 +221,16 @@ trait Andamiaje_Admin {
 				}
 
 				$tipo = isset( $_GET['post_type'] ) ? sanitize_key( wp_unslash( $_GET['post_type'] ) ) : '';
+
+				// Un `post_type` que no existe deja un 500 en el listado crudo del núcleo (medido con
+				// WordPress 7.1.3 y con cualquier rol: administrador o editor). No es código nuestro,
+				// pero sí nuestra política de pantallas crudas: se aparta al visitante a una pantalla
+				// válida en vez de dejar caer el sitio (core#22).
+				if ( convoca_core_pantalla_cruda_imposible( $pagenow, $tipo ) ) {
+					wp_safe_redirect( admin_url() );
+					exit;
+				}
+
 				if ( '' === $tipo || ! isset( $destinos[ $tipo ] ) ) {
 					return;
 				}
@@ -214,6 +243,20 @@ trait Andamiaje_Admin {
 			},
 			0
 		);
+	}
+
+	/**
+	 * ¿Es esta una pantalla cruda que no puede existir (porque el tipo no está registrado)?
+	 *
+	 * Vive fuera del cierre a propósito: dentro hay un `exit`, así que una prueba no puede recorrerlo sin
+	 * matar la suite — y esto es justo lo que hay que poder probar (core#22).
+	 *
+	 * @param string $pagenow Página actual (`edit.php`, `post-new.php`…).
+	 * @param string $tipo    `post_type` pedido en la URL.
+	 * @return bool
+	 */
+	public static function pantalla_cruda_imposible( string $pagenow, string $tipo ): bool {
+		return convoca_core_pantalla_cruda_imposible( $pagenow, $tipo );
 	}
 
 	/**

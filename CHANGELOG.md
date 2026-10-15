@@ -1,3 +1,15 @@
+## [2.3.36] — 2026-10-16
+
+### Arreglado
+- **Un `post_type` que no existe dejaba un 500 en el listado crudo (issue #22).** Medido en la demo con WordPress
+  7.1.3 y con **cualquier rol** —la primera medida fue como editor y parecía un problema de permisos; como
+  administrador pasa igual—: basta escribir `/wp-admin/edit.php?post_type=inventado-xyz` con sesión para que el
+  `edit.php` del núcleo caiga construyendo el listado de un tipo que no está registrado. No es código nuestro, pero
+  **sí es nuestra política de pantallas crudas** la que tiene que cubrirlo: el andamiaje ya intercepta los listados
+  en `admin_init`, así que ahora también aparta al visitante a una pantalla válida cuando el tipo no existe.
+  Va antes de consultar el mapa de destinos (si el tipo no existe, no hay mapa que consultar) y **solo** en
+  `edit.php`/`post-new.php`: un tipo registrado sigue su camino de siempre.
+
 ## [2.3.33] — 2026-10-15
 
 ## [2.3.34] — 2026-10-15

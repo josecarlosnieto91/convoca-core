@@ -224,4 +224,57 @@ class AndamiajeAdminTest extends TestCase {
 			);
 		}
 	}
+
+	/**
+	 * Un `post_type` que no existe deja un 500 en el listado crudo del núcleo (core#22).
+	 *
+	 * Medido en la demo con WordPress 7.1.3 y con **cualquier rol** — la primera medida fue como editor y
+	 * parecía un defecto de permisos; como administrador pasa lo mismo. No es código nuestro, pero sí
+	 * nuestra política de pantallas crudas: el andamiaje aparta al visitante a una pantalla válida.
+	 *
+	 * La decisión vive en una función aparte justo para poder probarla: dentro del cierre que redirige hay
+	 * un `exit`, y una prueba que lo recorriera mataría la suite.
+	 */
+	public function test_una_pantalla_cruda_de_un_tipo_inexistente_se_detecta(): void {
+		require_once $this->raiz() . '/includes/Admin/Andamiaje_Admin.php';
+
+		$this->assertTrue(
+			\Convoca\Core\Admin\convoca_core_pantalla_cruda_imposible( 'edit.php', 'inventado-xyz' ),
+			'Un tipo que no existe en el listado crudo es un 500 esperando a que alguien escriba la URL'
+		);
+		$this->assertTrue( \Convoca\Core\Admin\convoca_core_pantalla_cruda_imposible( 'post-new.php', 'turno' ) );
+	}
+
+	/** Y NO se toca nada de lo que sí existe o de lo que no es un listado. */
+	public function test_lo_que_si_existe_y_lo_que_no_es_un_listado_no_se_tocan(): void {
+		require_once $this->raiz() . '/includes/Admin/Andamiaje_Admin.php';
+
+		$this->assertFalse(
+			\Convoca\Core\Admin\convoca_core_pantalla_cruda_imposible( 'edit.php', 'miembro' ),
+			'Un tipo registrado sigue su camino normal (el mapa decide si se redirige a la pantalla propia)'
+		);
+		$this->assertFalse( \Convoca\Core\Admin\convoca_core_pantalla_cruda_imposible( 'edit.php', '' ), 'Sin tipo no hay nada que decidir' );
+		$this->assertFalse( \Convoca\Core\Admin\convoca_core_pantalla_cruda_imposible( 'index.php', 'inventado-xyz' ), 'Solo se vigilan los listados crudos' );
+	}
+
+	/** La ceremonia: se comprueba ANTES que el mapa, y se lleva a una pantalla válida. */
+	public function test_el_redirector_comprueba_el_tipo_antes_que_el_mapa(): void {
+		$fuente = (string) file_get_contents( $this->raiz() . '/includes/Admin/Andamiaje_Admin.php' );
+
+		$pos_guarda = strpos( $fuente, 'convoca_core_pantalla_cruda_imposible( $pagenow, $tipo )' );
+		$pos_mapa   = strpos( $fuente, "! isset( \$destinos[ \$tipo ] )" );
+
+		$this->assertNotFalse( $pos_guarda, 'El redirector tiene que usar la comprobación de tipo inexistente' );
+		$this->assertNotFalse( $pos_mapa );
+		$this->assertLessThan(
+			$pos_mapa,
+			$pos_guarda,
+			'La comprobación va ANTES del mapa: si el tipo no existe, no hay mapa que consultar'
+		);
+		$this->assertStringContainsString(
+			'wp_safe_redirect( admin_url() )',
+			$fuente,
+			'Y se aparta a una pantalla válida en vez de dejar caer el sitio'
+		);
+	}
 }
