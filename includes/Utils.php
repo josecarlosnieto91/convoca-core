@@ -103,16 +103,35 @@ class Utils {
 	}
 
 	/**
-	 * Proxy to create a payment link through Gateway.
+	 * Crea un pago a través de la pasarela y devuelve sus datos (issue convoca-core#16).
+	 *
+	 * Antes se llamaba `get_payment_link()`, el mismo nombre que `Gateway\Payment_Handler::get_payment_link()`
+	 * (hoy `build_payment_url()`), que hace lo contrario: **construye la URL** de un pago que ya existe. Este
+	 * nombre no dice lo que hace y encima invita a confundirlas: aquí se CREA el pago.
+	 *
+	 * @param array $args Payment details.
+	 * @return array|\WP_Error Result with URL.
+	 */
+	public static function create_payment( array $args ): array|\WP_Error {
+		if ( function_exists( '\Convoca\Gateway\convoca_gateway_create_payment' ) ) {
+			return \Convoca\Gateway\convoca_gateway_create_payment( $args );
+		}
+		return new \WP_Error( 'gateway_no_activo', __( 'La pasarela de pago no está activa.', 'convoca-core' ) );
+	}
+
+	/**
+	 * Alias de compatibilidad de `create_payment()` (issue convoca-core#16).
+	 *
+	 * Es API publicada en versiones anteriores del núcleo, así que el nombre viejo no desaparece: se queda
+	 * delegando. Lo que cambia es el nombre que usa el código nuevo.
+	 *
+	 * @deprecated 2.3.33 Usa `create_payment()`.
 	 *
 	 * @param array $args Payment details.
 	 * @return array|\WP_Error Result with URL.
 	 */
 	public static function get_payment_link( array $args ): array|\WP_Error {
-		if ( function_exists( '\Convoca\Gateway\convoca_gateway_create_payment' ) ) {
-			return \Convoca\Gateway\convoca_gateway_create_payment( $args );
-		}
-		return new \WP_Error( 'gateway_no_activo', __( 'La pasarela de pago no está activa.', 'convoca-core' ) );
+		return self::create_payment( $args );
 	}
 
 	/**

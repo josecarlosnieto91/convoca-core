@@ -1,3 +1,14 @@
+## [2.3.33] — 2026-10-15
+
+### Cambiado
+- **`Utils::get_payment_link()` se llama `create_payment()` (issue #16).** Tenía **el mismo nombre** que
+  `Gateway\Payment_Handler::get_payment_link()` —hoy `build_payment_url()`— y no hacen lo mismo: esta **crea**
+  el pago y devuelve un array o un `WP_Error`; aquella **construye la URL** de un pago que ya existe. Dos cosas
+  distintas, con el mismo nombre, en el camino del cobro: quien llamaba a una creyendo llamar a la otra no lo
+  descubría hasta que fallaba.
+  - El nombre viejo queda como **alias de compatibilidad** que delega: es API publicada y ninguna integración
+    existente tiene por qué romperse. Sin cambios de comportamiento.
+
 ## [2.3.32] — 2026-10-15
 
 ### Añadido
