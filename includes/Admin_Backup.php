@@ -625,10 +625,11 @@ class Admin_Backup {
 				continue;
 			}
 
-			// Backup before overwrite.
+			// Copia antes de sobrescribir, con retención (issue #9): antes se guardaba una opción
+			// nueva con la fecha en el nombre y no se borraba ninguna.
 			$current = get_option( $key );
 			if ( $current ) {
-				update_option( $key . '_backup_' . wp_date( 'Y-m-d-His' ), $current, false );
+				\Convoca\Core\Backups::anadir( $key, $current );
 			}
 
 			if ( is_array( $data[ $key ] ) ) {

@@ -1,3 +1,23 @@
+## [2.3.30] — 2026-10-15
+
+### Arreglado
+- **Las copias de ajustes y plantillas ya no crecen sin límite (issue #9).** Antes de sobrescribir unos ajustes
+  el plugin guardaba una copia —está bien guardarla—, pero en una **opción nueva** con la fecha en el nombre y
+  **nunca** la borraba: cada importación o restauración dejaba una más. En la demo había cuatro; en un sitio que
+  importe ajustes con frecuencia eso crece sin techo, y cada copia lleva dentro los ajustes completos con sus
+  plantillas de correo.
+  - Las copias viven ahora en **una sola opción por ajuste** (`…_backups`), con **las cinco últimas** —lo
+    acordado—, de la más reciente a la más antigua. Es el patrón que el propio plugin ya usaba para las
+    plantillas (`create_versioned_backup()`): no se poda lo que crece sin fin, se deja de crear opciones sin fin.
+  - `Convoca\Core\Backups::anadir()` y `::de()` son el único sitio donde se guardan y se leen, así que los dos
+    puntos que las creaban (`Admin_Backup` y `Admin_Templates`) dicen lo mismo y no pueden divergir.
+
+### Pruebas
+- `tests/Unit/CopiasConRetencionTest.php`: que se conserven las cinco acordadas, que lo que sobreviva sea lo más
+  reciente y que no se cree una opción por copia. **Negativos probados**: quitando la poda caen dos pruebas;
+  guardando por el final en vez de por el principio, cae una.
+- Suite 206 en verde, PHPCS 0, PHPStan `[OK]`.
+
 ## [2.3.29] — 2026-10-15
 
 ### Añadido

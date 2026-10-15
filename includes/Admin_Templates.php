@@ -423,10 +423,10 @@ class Admin_Templates {
 	 * Save a backup of corrupted template data before restoring defaults.
 	 */
 	private static function backup_corrupted( $data ): void {
-		$backup_key = self::$option_name . '_backup_' . wp_date( 'Ymd_His' );
-		update_option( $backup_key, $data, false );
+		// Con retención (issue #9): antes cada restauración dejaba una opción nueva y no se borraba ninguna.
+		\Convoca\Core\Backups::anadir( self::$option_name . '_corruptas', $data );
 		\Convoca\Core\Logger::info(
-			sprintf( 'Copia de seguridad de plantillas corruptas guardada en option: %s', $backup_key ),
+			sprintf( 'Copia de plantillas corruptas guardada (%d en total).', count( \Convoca\Core\Backups::de( self::$option_name . '_corruptas' ) ) ),
 			'System'
 		);
 	}
