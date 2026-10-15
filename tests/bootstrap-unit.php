@@ -207,6 +207,23 @@ if (!function_exists('add_filter')) {
         return true;
     }
 }
+if (!function_exists('remove_filter')) {
+    /**
+     * Quita un filtro. Faltaba en el arnés: una prueba que añade un filtro para medir un caso y no lo quita
+     * lo deja puesto para las siguientes, y el fallo aparece lejos de su causa.
+     */
+    function remove_filter($t, $c, $p = 10) {
+        if (!isset($GLOBALS['_wp_filters'][$t][(int) $p])) {
+            return false;
+        }
+        $i = array_search($c, $GLOBALS['_wp_filters'][$t][(int) $p], true);
+        if (false === $i) {
+            return false;
+        }
+        unset($GLOBALS['_wp_filters'][$t][(int) $p][$i]);
+        return true;
+    }
+}
 if (!function_exists('apply_filters')) {
     function apply_filters($t, $v, ...$args) {
         $niveles = $GLOBALS['_wp_filters'][$t] ?? array();
