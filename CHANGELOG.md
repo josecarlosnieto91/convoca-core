@@ -1,4 +1,4 @@
-## [sin publicar]
+## [2.3.29] — 2026-10-15
 
 ### Añadido
 - **Origen `responsable` en el libro de horas.** Las horas de una actividad pueden acreditarse a quien la
