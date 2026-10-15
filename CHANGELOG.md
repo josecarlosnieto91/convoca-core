@@ -1,5 +1,19 @@
 # Changelog — convoca-core
 
+## [2.3.28] - 2026-10-15
+
+### Corregido
+
+- **El asistente buscaba las páginas del sistema solo por su slug** (#14): una instalación cuya página de
+  socio se llame de otra forma recibía un aviso permanente de que no existía, y al pulsar «Crear páginas»
+  el asistente creaba una SEGUNDA página con el mismo shortcode, dejando dos áreas de socio en el mismo
+  sitio. Ahora la página se reconoce por su slug **o por el shortcode que lleva dentro**, en los cuatro
+  puntos donde se resolvía, así que deja de avisar en falso y de duplicar.
+- **Restos de la migración de prefijo** (#12): quedaban tablas `wp_conv_*` junto a sus `wp_convoca_*`
+  equivalentes, una con datos. El paso 2.3.28 las retira, y lo hace de forma conservadora: solo borra la
+  vieja cuando puede demostrar que la nueva tiene al menos tantas filas; si la vieja tiene más, no la toca
+  y lo deja anotado en el log para que lo mire una persona.
+
 ## [2.3.27] - 2026-10-15
 
 ### Corregido

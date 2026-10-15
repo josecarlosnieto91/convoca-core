@@ -497,6 +497,13 @@ if (!class_exists('WP_Error')) {
             if (!$code) $code = $this->get_error_code();
             return isset($this->errors[$code][0]) ? $this->errors[$code][0] : '';
         }
+        /** Todos los mensajes, como en WordPress. */
+        public function get_error_messages($code = '') {
+            if ($code) { return isset($this->errors[$code]) ? $this->errors[$code] : []; }
+            $todos = [];
+            foreach ($this->errors as $mensajes) { $todos = array_merge($todos, $mensajes); }
+            return $todos;
+        }
     }
 }
 

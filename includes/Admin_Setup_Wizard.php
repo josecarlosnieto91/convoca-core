@@ -129,7 +129,7 @@ class Admin_Setup_Wizard {
 			if ( empty( $info['req'] ) ) {
 				continue;
 			}
-			if ( 'ok' !== self::page_state( get_page_by_path( $slug ), $info['sc'] ) ) {
+			if ( 'ok' !== self::page_state( self::buscar_pagina_del_sistema( $slug, $info['sc'] ), $info['sc'] ) ) {
 				return false;
 			}
 		}
@@ -347,6 +347,48 @@ class Admin_Setup_Wizard {
 		return has_shortcode( (string) $page->post_content, trim( $shortcode, '[]' ) ) ? 'ok' : 'no_shortcode';
 	}
 
+	/**
+	 * Busca la página de un área del sistema: primero por su slug, si no por su shortcode.
+	 *
+	 * El asistente solo miraba el slug, así que una instalación cuya página de socio se llame de otra forma
+	 * recibía un aviso permanente de que no existía, y al pulsar «Crear páginas» creaba una SEGUNDA página
+	 * con el mismo shortcode: dos áreas de socio en el mismo sitio (issue #14). Buscando también por el
+	 * shortcode, el asistente reconoce la página esté como esté titulada y deja de duplicarla.
+	 *
+	 * Solo cuenta lo que ve un visitante: si la única página con ese shortcode está en borrador o en la
+	 * papelera, se considera que no está y el asistente la crea publicada.
+	 *
+	 * @param string $slug      Slug esperado.
+	 * @param string $shortcode Shortcode del área, con corchetes.
+	 * @return \WP_Post|null
+	 */
+	private static function buscar_pagina_del_sistema( string $slug, string $shortcode ) {
+		$por_slug = get_page_by_path( $slug );
+		if ( $por_slug instanceof \WP_Post ) {
+			return $por_slug;
+		}
+
+		$tag = trim( $shortcode, '[]' );
+		if ( '' === $tag ) {
+			return null;
+		}
+
+		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$id = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT ID FROM {$wpdb->posts}
+				 WHERE post_type = 'page' AND post_status = 'publish'
+				   AND post_content LIKE %s
+				 ORDER BY ID ASC
+				 LIMIT 1",
+				'%[' . $wpdb->esc_like( $tag ) . '%'
+			)
+		);
+
+		return $id ? get_post( (int) $id ) : null;
+	}
+
 	private function step_pages(): void {
 		echo '<h2>' . esc_html__( '2. Páginas del Sistema', 'convoca-core' ) . '</h2>';
 		$pages = self::system_pages();
@@ -357,7 +399,7 @@ class Admin_Setup_Wizard {
 		echo '<table style="width:100%;margin-bottom:20px;">';
 		$all_mand = true;
 		foreach ( $pages as $slug => $info ) {
-			$state = self::page_state( get_page_by_path( $slug ), $info['sc'] );
+			$state = self::page_state( self::buscar_pagina_del_sistema( $slug, $info['sc'] ), $info['sc'] );
 			$tag   = trim( $info['sc'], '[]' );
 			$notes = array();
 			if ( 'ok' !== $state ) {
@@ -418,7 +460,7 @@ class Admin_Setup_Wizard {
 					);
 				}
 
-				$page  = get_page_by_path( $slug );
+				$page  = self::buscar_pagina_del_sistema( $slug, $info['sc'] );
 				$state = self::page_state( $page, $info['sc'] );
 
 				if ( 'ok' === $state ) {
@@ -792,7 +834,7 @@ class Admin_Setup_Wizard {
 		$pages_ok   = true;
 		$pages_line = array();
 		foreach ( self::system_pages() as $slug => $info ) {
-			$state = self::page_state( get_page_by_path( $slug ), $info['sc'] );
+			$state = self::page_state( self::buscar_pagina_del_sistema( $slug, $info['sc'] ), $info['sc'] );
 			if ( 'ok' !== $state ) {
 				$pages_ok = false;
 			}
