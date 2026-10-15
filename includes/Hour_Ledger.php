@@ -42,6 +42,15 @@ class Hour_Ledger {
 	const ORIGEN_TURNO       = 'turno';
 
 	/**
+	 * Horas de una actividad a quien la imparte (monitor o responsable) sin estar inscrito (enroll#19).
+	 *
+	 * El libro identifica cada registro por origen + `origen_id`, y aquí el hecho es «esta persona en esta
+	 * actividad», así que el id codifica los dos: `actividad × 1.000.000 + usuario`. Los ids de usuario de
+	 * WordPress no llegan al millón ni de lejos; si algún día llegaran, la codificación habría que cambiarla.
+	 */
+	const ORIGEN_RESPONSABLE = 'responsable';
+
+	/**
 	 * Estados de una acreditación.
 	 */
 	const ESTADO_APROBADA = 'aprobada';

@@ -1,3 +1,10 @@
+## [sin publicar]
+
+### Añadido
+- **Origen `responsable` en el libro de horas.** Las horas de una actividad pueden acreditarse a quien la
+  imparte sin estar inscrito (enroll#19), y el libro identifica cada registro por origen + `origen_id`; aquí el
+  hecho es «esta persona en esta actividad», así que el id codifica los dos (`actividad × 1.000.000 + usuario`).
+
 # Changelog — convoca-core
 
 ## [2.3.28] - 2026-10-15
