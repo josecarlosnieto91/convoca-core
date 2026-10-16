@@ -52,6 +52,14 @@ define( 'NONCE_SALT', 'pruebas-convoca' );
 define( 'WP_DEBUG', true );
 define( 'WP_DEBUG_DISPLAY', false );
 define( 'ABSPATH', __DIR__ . '/' );
+
+if ( ! defined( 'WP_DEBUG' ) ) {
+	define( 'WP_DEBUG', false );
+}
+
+/* Eso es todo. Deja de editar. ¡Feliz publicación! */
+
+require_once ABSPATH . 'wp-settings.php';
 PHP
 
 echo "==> 3/3 el plugin (y el núcleo, si es otro) a la vista de WordPress"
