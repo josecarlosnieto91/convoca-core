@@ -542,6 +542,33 @@ if (!class_exists('WP_User')) {
         public $user_email = 'test@example.com';
         public function exists() { return $this->ID > 0; }
         public function has_cap($cap) { return true; }
+
+        // add_role/remove_role/set_role existen en la clase REAL de WordPress y faltaban en el doble:
+        // sin ellos, cualquier código que retire un rol no se podía probar (se estrenó con el borrado de
+        // datos del usuario en members#40). Escriben en el almacén para que la prueba pueda comprobarlo,
+        // como hace el resto del arnés.
+        public function add_role($rol) {
+            if (!in_array((string) $rol, $this->roles, true)) { $this->roles[] = (string) $rol; }
+            $GLOBALS['_wp_stores']['users'][$this->ID]['roles'] = $this->roles;
+        }
+        public function remove_role($rol) {
+            $this->roles = array_values(array_diff($this->roles, array((string) $rol)));
+            $GLOBALS['_wp_stores']['users'][$this->ID]['roles'] = $this->roles;
+        }
+        public function set_role($rol) {
+            $this->roles = array((string) $rol);
+            $GLOBALS['_wp_stores']['users'][$this->ID]['roles'] = $this->roles;
+        }
+    }
+}
+
+// --- wp_delete_attachment() ---
+// Faltaba y hace falta para probar cualquier borrado de datos: el borrado de members#40 borra la foto del
+// documento de identidad y sin este doble no se puede ejercitar.
+if (!function_exists('wp_delete_attachment')) {
+    function wp_delete_attachment($id, $force_delete = false) {
+        $GLOBALS['_wp_stores']['deleted_attachments'][] = (int) $id;
+        return true;
     }
 }
 
