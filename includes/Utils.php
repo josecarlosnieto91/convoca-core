@@ -373,26 +373,73 @@ class Utils {
 	 * @param int    $window  Time window in seconds.
 	 * @return bool True if within limits, false if exceeded.
 	 */
-	public static function check_rate_limit( string $action, int $max = 10, int $window = 300 ): bool {
-		$ip        = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-		$cache_key = 'convoca_rl_' . $action . '_' . md5( $ip );
+	/**
+	 * Comprueba el límite de intentos de una acción, **por persona** y por conexión.
+	 *
+	 * DEFECTO QUE ARREGLA (members#46, medido el 16/10/2026): el contador era SOLO por dirección IP, así que
+	 * varios errores de UNA persona dejaban fuera a todas las demás de su misma conexión durante una hora —
+	 * una sede con una sola línea, un telecentro, o una familia entrando por el mismo router. Y el siguiente
+	 * que lo intentaba leía «Demasiados intentos», sin saber que no era culpa suya.
+	 *
+	 * Ahora:
+	 *
+	 *  1. Si se sabe **quién** lo intenta (el correo del alta, el usuario del acceso), el contador es SUYO:
+	 *     agotarlo no arrastra a nadie más.
+	 *  2. Y se cuenta también **por conexión**, pero con un tope mucho más alto: sirve para frenar a un
+	 *     abusón que va cambiando de identidad, sin cerrarle la puerta a una sede entera por los errores de
+	 *     una persona. El tope de conexión es el mayor entre `5 × max` y `max + 20`.
+	 *
+	 * @param string $action   Acción (p. ej. 'alta_socio').
+	 * @param int    $max      Intentos permitidos por persona y ventana.
+	 * @param int    $window   Ventana en segundos.
+	 * @param string $identity Quien lo intenta (correo o usuario). Vacío = solo se mira la conexión.
+	 * @return bool true si puede seguir; false si está bloqueado.
+	 */
+	public static function check_rate_limit( string $action, int $max = 10, int $window = 300, string $identity = '' ): bool {
+		$ip = (string) ( $_SERVER['REMOTE_ADDR'] ?? 'unknown' );
 
+		if ( '' !== trim( $identity ) ) {
+			$quien = strtolower( trim( $identity ) );
+			if ( ! self::contar_intento( 'convoca_rl_' . $action . '_id_' . md5( $quien ), $max, $window, 'persona ' . self::etiqueta_privada( $quien ) ) ) {
+				return false;
+			}
+		}
+
+		$tope_conexion = max( $max * 5, $max + 20 );
+
+		return self::contar_intento(
+			'convoca_rl_' . $action . '_ip_' . md5( $ip ),
+			$tope_conexion,
+			$window,
+			'conexion ' . self::etiqueta_privada( $ip )
+		);
+	}
+
+	/**
+	 * Cuenta un intento y dice si sigue permitido. Guarda el contador en una opción con la caducidad
+	 * empaquetada en los bits altos, como antes; no se toca la mecánica, solo la clave y el tope.
+	 *
+	 * @param string $option_name Nombre del contador.
+	 * @param int    $max         Tope.
+	 * @param int    $window      Ventana en segundos.
+	 * @param string $etiqueta    Para el registro de auditoría.
+	 * @return bool true si puede seguir.
+	 */
+	private static function contar_intento( string $option_name, int $max, int $window, string $etiqueta ): bool {
 		// Object cache fast-path: only a 0 (blocked) result short-circuits.
 		// A 1 (allowed) MUST fall through to the atomic INSERT so the DB
 		// counter keeps accumulating within the same request/window.
-		$cached = wp_cache_get( $cache_key, 'convoca_rate_limits' );
-		if ( $cached === 0 ) {
+		$cached = wp_cache_get( $option_name, 'convoca_rate_limits' );
+		if ( 0 === $cached ) {
 			return false;
 		}
 
 		global $wpdb;
-		$option_name = $cache_key;
-		$now         = time();
-		$expires     = $now + $window;
+		$now     = time();
+		$expires = $now + $window;
 
 		try {
-			// Atomic INSERT ON DUPLICATE KEY UPDATE — eliminates SELECT+INSERT race.
-			// Also handles the case where object cache returns false (non-persistent cache).
+			// Atomic INSERT ON DUPLICATE KEY UPDATE — elimina la carrera SELECT+INSERT.
 			$result = $wpdb->query(
 				$wpdb->prepare(
 					"INSERT INTO {$wpdb->options} (option_name, option_value, autoload) 
@@ -409,12 +456,10 @@ class Utils {
 				)
 			);
 
-			// If the query failed entirely, allow the request (fail open).
-			if ( $result === false ) {
-				return true;
+			if ( false === $result ) {
+				return true; // Fail open.
 			}
 
-			// Read back the packed value.
 			$current = (int) $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT option_value FROM {$wpdb->options} WHERE option_name = %s",
@@ -425,19 +470,154 @@ class Utils {
 			$stored_expires = $current >> 20;
 			$attempts       = $current & 0xFFFFF;
 
-			// If within window, check limit.
 			if ( $stored_expires > $now && $attempts > $max ) {
-				wp_cache_set( $cache_key, 0, 'convoca_rate_limits', $stored_expires - $now );
-				Logger::warning( "Rate limit exceeded for $action from IP $ip", 'Common/Security' );
+				wp_cache_set( $option_name, 0, 'convoca_rate_limits', $stored_expires - $now );
+				self::guardar_etiqueta_bloqueo( $option_name, $etiqueta, $stored_expires );
+				Logger::warning( "Límite de intentos superado ($etiqueta) hasta " . gmdate( 'Y-m-d H:i:s', $stored_expires ), 'Common/Security' );
+
 				return false;
 			}
 
-			wp_cache_set( $cache_key, 1, 'convoca_rate_limits', max( 60, $stored_expires - $now ) );
+			wp_cache_set( $option_name, 1, 'convoca_rate_limits', max( 60, $stored_expires - $now ) );
+
 			return true;
 		} catch ( \Exception $e ) {
 			Logger::error( 'Rate limit check failed: ' . $e->getMessage(), 'Common/Security' );
+
 			return true;
 		}
+	}
+
+	/**
+	 * Guarda aparte de quién es el contador, para que quien administra pueda verlo.
+	 *
+	 * El nombre de la opción lleva un `md5()`, así que de ahí no se puede sacar ni la IP ni el correo: sin
+	 * esta etiqueta, el panel podría decir «hay un bloqueo» pero no de quién (members#46, punto 3).
+	 *
+	 * @param string $option_name Nombre del contador.
+	 * @param string $etiqueta    Quién es (IP o correo, en texto llano).
+	 * @param int    $expires     Caducidad (timestamp).
+	 */
+	private static function guardar_etiqueta_bloqueo( string $option_name, string $etiqueta, int $expires ): void {
+		update_option(
+			self::etiqueta_opcion( $option_name ),
+			array(
+				'etiqueta' => $etiqueta,
+				'expira'   => $expires,
+			),
+			false
+		);
+	}
+
+	/**
+	 * Nombre de la opción donde vive la etiqueta de un contador.
+	 *
+	 * @param string $option_name Nombre del contador.
+	 * @return string
+	 */
+	private static function etiqueta_opcion( string $option_name ): string {
+		return str_replace( 'convoca_rl_', 'convoca_rl_quien_', $option_name );
+	}
+
+	/**
+	 * Pinta una identidad sin enseñarla entera (para los registros): «p***@dominio» o «1.2.3.x».
+	 *
+	 * @param string $valor IP o correo.
+	 * @return string
+	 */
+	private static function etiqueta_privada( string $valor ): string {
+		if ( false !== strpos( $valor, '@' ) ) {
+			list( $usuario, $dominio ) = explode( '@', $valor, 2 );
+
+			return substr( $usuario, 0, 1 ) . '***@' . $dominio;
+		}
+
+		$partes = explode( '.', $valor );
+		if ( count( $partes ) === 4 ) {
+			return $partes[0] . '.' . $partes[1] . '.' . $partes[2] . '.x';
+		}
+
+		return '(conexión)';
+	}
+
+	/**
+	 * Los intentos bloqueados ahora mismo, para poder verlos y levantarlos desde el panel (members#46).
+	 *
+	 * @param string $action Acción concreta ('' = todas).
+	 * @return array<int, array{clave:string,accion:string,quien:string,intentos:int,bloqueado_hasta:int,es_persona:bool}>
+	 */
+	public static function rate_limit_blocks( string $action = '' ): array {
+		global $wpdb;
+		$now  = time();
+		$like = 'convoca_rl_' . ( '' !== $action ? $action . '_' : '' ) . '%';
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$filas = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT option_name, option_value FROM {$wpdb->options}
+				 WHERE option_name LIKE %s AND option_name NOT LIKE %s",
+				$like,
+				'convoca_rl_quien_%'
+			)
+		);
+		// phpcs:enable
+
+		$bloqueos = array();
+		foreach ( (array) $filas as $fila ) {
+			$valor    = (int) $fila->option_value;
+			$expira   = $valor >> 20;
+			$intentos = $valor & 0xFFFFF;
+
+			if ( $expira <= $now ) {
+				// Caducado: se limpia al pasar, para que el listado no arrastre basura.
+				self::rate_limit_clear( (string) $fila->option_name );
+				continue;
+			}
+
+			$etiqueta    = get_option( self::etiqueta_opcion( (string) $fila->option_name ), array() );
+			$nombre      = (string) $fila->option_name;
+			$es_persona  = ( false !== strpos( $nombre, '_id_' ) );
+			$sin_prefijo = preg_replace( '/^convoca_rl_/', '', $nombre );
+			$sin_hash    = preg_replace( '/_(id|ip)_[a-f0-9]{32}$/', '', (string) $sin_prefijo );
+
+			$bloqueos[] = array(
+				'clave'           => $nombre,
+				'accion'          => (string) $sin_hash,
+				'quien'           => (string) ( $etiqueta['etiqueta'] ?? ( $es_persona ? 'una persona' : 'una conexión' ) ),
+				'intentos'        => $intentos,
+				'bloqueado_hasta' => $expira,
+				'es_persona'      => $es_persona,
+			);
+		}
+
+		usort(
+			$bloqueos,
+			static function ( $a, $b ) {
+				return $b['bloqueado_hasta'] <=> $a['bloqueado_hasta'];
+			}
+		);
+
+		return $bloqueos;
+	}
+
+	/**
+	 * Levanta un bloqueo sin tocar la base de datos a mano (members#46).
+	 *
+	 * @param string $clave Nombre del contador (lo que devuelve `rate_limit_blocks()`).
+	 * @return bool true si había algo que levantar.
+	 */
+	public static function rate_limit_clear( string $clave ): bool {
+		if ( '' === $clave || 0 !== strpos( $clave, 'convoca_rl_' ) ) {
+			return false;
+		}
+
+		$habia = ( false !== get_option( $clave, false ) );
+
+		delete_option( $clave );
+		delete_option( self::etiqueta_opcion( $clave ) );
+		wp_cache_delete( $clave, 'convoca_rate_limits' );
+
+		return $habia;
 	}
 
 	/**
