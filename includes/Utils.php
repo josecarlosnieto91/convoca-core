@@ -400,7 +400,7 @@ class Utils {
 
 		if ( '' !== trim( $identity ) ) {
 			$quien = strtolower( trim( $identity ) );
-			if ( ! self::contar_intento( 'convoca_rl_' . $action . '_id_' . md5( $quien ), $max, $window, 'persona ' . self::etiqueta_privada( $quien ) ) ) {
+			if ( ! self::contar_intento( 'convoca_rl_' . $action . '_id_' . md5( $quien ), $max, $window, $quien, 'persona' ) ) {
 				return false;
 			}
 		}
@@ -411,7 +411,8 @@ class Utils {
 			'convoca_rl_' . $action . '_ip_' . md5( $ip ),
 			$tope_conexion,
 			$window,
-			'conexion ' . self::etiqueta_privada( $ip )
+			$ip,
+			'conexion'
 		);
 	}
 
@@ -422,10 +423,11 @@ class Utils {
 	 * @param string $option_name Nombre del contador.
 	 * @param int    $max         Tope.
 	 * @param int    $window      Ventana en segundos.
-	 * @param string $etiqueta    Para el registro de auditoría.
+	 * @param string $quien       Quién es (correo o IP): es lo que ve quien administra.
+	 * @param string $tipo        'persona' o 'conexion'.
 	 * @return bool true si puede seguir.
 	 */
-	private static function contar_intento( string $option_name, int $max, int $window, string $etiqueta ): bool {
+	private static function contar_intento( string $option_name, int $max, int $window, string $quien, string $tipo ): bool {
 		// Object cache fast-path: only a 0 (blocked) result short-circuits.
 		// A 1 (allowed) MUST fall through to the atomic INSERT so the DB
 		// counter keeps accumulating within the same request/window.
@@ -472,8 +474,8 @@ class Utils {
 
 			if ( $stored_expires > $now && $attempts > $max ) {
 				wp_cache_set( $option_name, 0, 'convoca_rate_limits', $stored_expires - $now );
-				self::guardar_etiqueta_bloqueo( $option_name, $etiqueta, $stored_expires );
-				Logger::warning( "Límite de intentos superado ($etiqueta) hasta " . gmdate( 'Y-m-d H:i:s', $stored_expires ), 'Common/Security' );
+				self::guardar_etiqueta_bloqueo( $option_name, $quien, $tipo, $stored_expires );
+				Logger::warning( 'Límite de intentos superado (' . $tipo . ' ' . self::etiqueta_privada( $quien ) . ') hasta ' . gmdate( 'Y-m-d H:i:s', $stored_expires ), 'Common/Security' );
 
 				return false;
 			}
@@ -495,14 +497,16 @@ class Utils {
 	 * esta etiqueta, el panel podría decir «hay un bloqueo» pero no de quién (members#46, punto 3).
 	 *
 	 * @param string $option_name Nombre del contador.
-	 * @param string $etiqueta    Quién es (IP o correo, en texto llano).
+	 * @param string $quien       Quién es (correo o IP), en texto llano: es lo que ve quien administra.
+	 * @param string $tipo        'persona' o 'conexion'.
 	 * @param int    $expires     Caducidad (timestamp).
 	 */
-	private static function guardar_etiqueta_bloqueo( string $option_name, string $etiqueta, int $expires ): void {
+	private static function guardar_etiqueta_bloqueo( string $option_name, string $quien, string $tipo, int $expires ): void {
 		update_option(
 			self::etiqueta_opcion( $option_name ),
 			array(
-				'etiqueta' => $etiqueta,
+				'etiqueta' => $quien,
+				'tipo'     => $tipo,
 				'expira'   => $expires,
 			),
 			false
@@ -574,7 +578,13 @@ class Utils {
 				continue;
 			}
 
-			$etiqueta    = get_option( self::etiqueta_opcion( (string) $fila->option_name ), array() );
+			$etiqueta = get_option( self::etiqueta_opcion( (string) $fila->option_name ), array() );
+			if ( empty( $etiqueta['etiqueta'] ) ) {
+				// Sin etiqueta NO es un bloqueo: es un contador que va por debajo del tope.
+				// Enseñarlo era ruido —y mentira: parecían dieciséis personas cortadas cuando no había ninguna—.
+				continue;
+			}
+
 			$nombre      = (string) $fila->option_name;
 			$es_persona  = ( false !== strpos( $nombre, '_id_' ) );
 			$sin_prefijo = preg_replace( '/^convoca_rl_/', '', $nombre );
@@ -583,7 +593,7 @@ class Utils {
 			$bloqueos[] = array(
 				'clave'           => $nombre,
 				'accion'          => (string) $sin_hash,
-				'quien'           => (string) ( $etiqueta['etiqueta'] ?? ( $es_persona ? 'una persona' : 'una conexión' ) ),
+				'quien'           => (string) $etiqueta['etiqueta'],
 				'intentos'        => $intentos,
 				'bloqueado_hasta' => $expira,
 				'es_persona'      => $es_persona,
