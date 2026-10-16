@@ -264,6 +264,17 @@ if (!function_exists('current_user_can')) {
     function current_user_can($c, ...$a) { return $GLOBALS['_test_caps'][$c] ?? true; }
 }
 if (!function_exists('get_current_user_id')) { function get_current_user_id() { return 1; } }
+
+/**
+ * ¿Puede ESTE usuario hacer algo? Importa cuando la decisión no es sobre quien tiene la sesión: el aterrizaje
+ * tras el acceso o los permisos de una pantalla concreta se deciden sobre el usuario que entra.
+ */
+if (!function_exists('user_can')) {
+    function user_can($user, $cap, ...$a) {
+        if (!($user instanceof WP_User)) { return false; }
+        return $GLOBALS['_test_user_caps'][$user->ID][$cap] ?? ($GLOBALS['_test_caps'][$cap] ?? true);
+    }
+}
 if (!function_exists('wp_create_nonce')) { function wp_create_nonce($a = -1) { return md5($a . time()); } }
 if (!function_exists('wp_verify_nonce')) { function wp_verify_nonce($n, $a = -1) { return true; } }
 if (!function_exists('get_userdata')) {

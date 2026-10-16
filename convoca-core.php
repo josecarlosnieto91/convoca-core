@@ -3,7 +3,7 @@
  * Plugin Name:       Convoca Core
  * Plugin URI:        https://getconvoca.app
  * Description:       Common functions, validation, logging, and shared infrastructure.
- * Version: 2.3.37
+ * Version: 2.3.38
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Tested up to:      7.1
@@ -163,6 +163,7 @@ add_action(
 			}
 			Admin_Templates::init();
 			new Admin_Setup_Wizard();
+			Admin_Entrada::init();
 			new Admin_Backup();
 			add_filter( 'screen_options_show_screen', 'Convoca\Core\convoca_hide_screen_options', 10, 2 );
 			add_filter( 'admin_footer_text', 'Convoca\Core\convoca_admin_footer', 999 );
@@ -199,6 +200,7 @@ require_once __DIR__ . '/includes/class-module-registry.php';
 
 /* ── Admin Appearance → extracted to includes/admin-appearance.php ── */
 require_once __DIR__ . '/includes/admin-appearance.php';
+require_once __DIR__ . '/includes/Admin_Entrada.php';
 
 /* ── Ajuste de desinstalación: qué hacer con los datos (compartido por los uninstall.php) ── */
 require_once __DIR__ . '/includes/Uninstall_Settings.php';

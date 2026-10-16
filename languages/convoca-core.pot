@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Core 2.3.37\n"
+"Project-Id-Version: Convoca Core 2.3.38\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-core\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-16T00:54:13+00:00\n"
+"POT-Creation-Date: 2026-10-16T01:50:31+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-core\n"
@@ -537,6 +537,54 @@ msgstr ""
 #: includes/Admin_Setup_Wizard.php:208
 #: includes/Blocks_Common.php:51
 msgid "Turnos"
+msgstr ""
+
+#: includes/Admin_Entrada.php:110
+msgid "Convoca: por dónde empiezo"
+msgstr ""
+
+#: includes/Admin_Entrada.php:152
+msgid "No hemos podido consultar el estado del servidor ahora mismo."
+msgstr ""
+
+#: includes/Admin_Entrada.php:192
+msgid "El servidor tiene algo que conviene enseñar a quien te instaló esto."
+msgstr ""
+
+#: includes/Admin_Entrada.php:200
+msgid "El servidor va bien, con algún aviso que no corre prisa."
+msgstr ""
+
+#: includes/Admin_Entrada.php:207
+msgid "El servidor va bien: no hay nada urgente."
+msgstr ""
+
+#: includes/Admin_Entrada.php:221
+msgid "Lo que te interesa de la asociación está en tu panel:"
+msgstr ""
+
+#: includes/Admin_Entrada.php:223
+msgid "Abrir el Panel de Control"
+msgstr ""
+
+#: includes/Admin_Entrada.php:239
+msgid "¿Por dónde empiezo?"
+msgstr ""
+
+#: includes/Admin_Entrada.php:241
+msgid "Mira el Panel de Control: socios activos, altas del mes, inscripciones e ingresos."
+msgstr ""
+
+#: includes/Admin_Entrada.php:242
+msgid "Publica las actividades de las próximas semanas y comprueba que tienen plazas."
+msgstr ""
+
+#: includes/Admin_Entrada.php:243
+msgid "Reparte los turnos del centro entre los voluntarios (Turnos → Delegados lo ven)."
+msgstr ""
+
+#: includes/Admin_Entrada.php:244
+msgid "Si algo del servidor pide atención, avisa a quien te lo instaló; no hace falta que lo entiendas."
 msgstr ""
 
 #: includes/Admin_Logs_List.php:51
@@ -1547,55 +1595,55 @@ msgstr ""
 msgid "La pasarela de pago no está activa."
 msgstr ""
 
-#: includes/Utils.php:911
+#: includes/Utils.php:921
 msgid "Se han detectado problemas críticos que impiden el funcionamiento."
 msgstr ""
 
-#: includes/Utils.php:912
+#: includes/Utils.php:922
 msgid "Estado: Errores detectados"
 msgstr ""
 
-#: includes/Utils.php:916
+#: includes/Utils.php:926
 msgid "Hay advertencias que podrían afectar el funcionamiento."
 msgstr ""
 
-#: includes/Utils.php:917
+#: includes/Utils.php:927
 msgid "Estado: Advertencias"
 msgstr ""
 
-#: includes/Utils.php:921
+#: includes/Utils.php:931
 msgid "Todos los componentes están configurados correctamente."
 msgstr ""
 
-#: includes/Utils.php:922
+#: includes/Utils.php:932
 msgid "Estado: Todo correcto"
 msgstr ""
 
-#: includes/Utils.php:950
+#: includes/Utils.php:960
 msgid "Reparar"
 msgstr ""
 
-#: includes/Utils.php:1143
-#: includes/Utils.php:1150
+#: includes/Utils.php:1153
+#: includes/Utils.php:1160
 msgid "Aportación"
 msgstr ""
 
-#: includes/Utils.php:1147
+#: includes/Utils.php:1157
 msgctxt "plural"
 msgid "Aportaciones"
 msgstr ""
 
-#: includes/Utils.php:1153
+#: includes/Utils.php:1163
 msgctxt "trasgu"
 msgid "Aportación Trasgu"
 msgstr ""
 
-#: includes/Utils.php:1156
+#: includes/Utils.php:1166
 msgctxt "socio"
 msgid "Aportación sugerida para socios"
 msgstr ""
 
-#: includes/Utils.php:1159
+#: includes/Utils.php:1169
 msgctxt "no-socio"
 msgid "Aportación sugerida para no socios"
 msgstr ""
