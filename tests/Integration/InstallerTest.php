@@ -203,8 +203,11 @@ class InstallerTest extends TestCase
             $this->markTestSkipped('Convoca\Core\Utils not available · motivo y seguimiento: convoca-health-check#20.');
         }
 
-        if (!function_exists('wp_next_scheduled')) {
-            $this->markTestSkipped('WordPress not available · motivo y seguimiento: convoca-health-check#20.');
+        // `wp_next_scheduled` existe en los dobles de la suite unitaria, asi que no sirve para saber si
+        // hay WordPress de verdad: la guarda pasaba y el caso moria dentro, con un $wpdb de mentira sin
+        // get_col(). `dbDelta` solo existe con WordPress cargado (convoca-health-check#19).
+        if (!function_exists('dbDelta')) {
+            $this->markTestSkipped('WordPress real no cargado · motivo y seguimiento: convoca-health-check#20.');
         }
 
         Installer::ensure_member_access_codes();
