@@ -562,6 +562,18 @@ if (!class_exists('WP_User')) {
     }
 }
 
+// --- get_edit_post_link() / get_permalink() ---
+// Faltaban y hacen falta para probar cualquier aviso que enlace a la ficha del socio.
+if (!function_exists('get_edit_post_link')) {
+    function get_edit_post_link($post = 0, $context = 'display') {
+        $id = is_object($post) ? (int) ($post->ID ?? 0) : (int) $post;
+        return 'https://example.test/wp-admin/post.php?post=' . $id . '&action=edit';
+    }
+}
+if (!function_exists('get_permalink')) {
+    function get_permalink($post = 0) { $id = is_object($post) ? (int) ($post->ID ?? 0) : (int) $post; return 'https://example.test/?p=' . $id; }
+}
+
 // --- wp_delete_attachment() ---
 // Faltaba y hace falta para probar cualquier borrado de datos: el borrado de members#40 borra la foto del
 // documento de identidad y sin este doble no se puede ejercitar.
