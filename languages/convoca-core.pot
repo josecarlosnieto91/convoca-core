@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Core 2.3.38\n"
+"Project-Id-Version: Convoca Core 2.3.39\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-core\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-16T01:50:31+00:00\n"
+"POT-Creation-Date: 2026-10-16T01:52:35+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-core\n"
@@ -547,43 +547,43 @@ msgstr ""
 msgid "No hemos podido consultar el estado del servidor ahora mismo."
 msgstr ""
 
-#: includes/Admin_Entrada.php:192
+#: includes/Admin_Entrada.php:227
 msgid "El servidor tiene algo que conviene enseñar a quien te instaló esto."
 msgstr ""
 
-#: includes/Admin_Entrada.php:200
+#: includes/Admin_Entrada.php:233
 msgid "El servidor va bien, con algún aviso que no corre prisa."
 msgstr ""
 
-#: includes/Admin_Entrada.php:207
+#: includes/Admin_Entrada.php:239
 msgid "El servidor va bien: no hay nada urgente."
 msgstr ""
 
-#: includes/Admin_Entrada.php:221
+#: includes/Admin_Entrada.php:258
 msgid "Lo que te interesa de la asociación está en tu panel:"
 msgstr ""
 
-#: includes/Admin_Entrada.php:223
+#: includes/Admin_Entrada.php:260
 msgid "Abrir el Panel de Control"
 msgstr ""
 
-#: includes/Admin_Entrada.php:239
+#: includes/Admin_Entrada.php:276
 msgid "¿Por dónde empiezo?"
 msgstr ""
 
-#: includes/Admin_Entrada.php:241
+#: includes/Admin_Entrada.php:278
 msgid "Mira el Panel de Control: socios activos, altas del mes, inscripciones e ingresos."
 msgstr ""
 
-#: includes/Admin_Entrada.php:242
+#: includes/Admin_Entrada.php:279
 msgid "Publica las actividades de las próximas semanas y comprueba que tienen plazas."
 msgstr ""
 
-#: includes/Admin_Entrada.php:243
+#: includes/Admin_Entrada.php:280
 msgid "Reparte los turnos del centro entre los voluntarios (Turnos → Delegados lo ven)."
 msgstr ""
 
-#: includes/Admin_Entrada.php:244
+#: includes/Admin_Entrada.php:281
 msgid "Si algo del servidor pide atención, avisa a quien te lo instaló; no hace falta que lo entiendas."
 msgstr ""
 

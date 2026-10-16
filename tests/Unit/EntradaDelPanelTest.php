@@ -85,6 +85,38 @@ class EntradaDelPanelTest extends TestCase {
 		$this->assertStringContainsString( 'No hemos podido consultar', $salud['texto'] );
 	}
 
+	/**
+	 * Lo que no se puede leer no se da por bueno.
+	 *
+	 * DEFECTO PROPIO (medido en la demo, 16/10/2026): la primera versión contaba las pruebas con
+	 * `WP_Site_Health::get_test_result()`, un método **que no existe**. Como además iba envuelto en un
+	 * `method_exists()` «por si acaso», nunca se ejecutaba nada, todos los contadores quedaban a cero y la
+	 * tarjeta decía «El servidor va bien: no hay nada urgente» mientras el widget de WordPress, justo debajo,
+	 * decía «Necesita mejoras · 7 elementos». La peor clase de error: una tranquilidad falsa, y encima la
+	 * escribía yo. Esta prueba fija las tres reglas que salen de ahí.
+	 */
+	public function test_lo_que_no_se_puede_leer_no_se_da_por_bueno(): void {
+		$fuente = (string) file_get_contents( dirname( __DIR__, 2 ) . '/includes/Admin_Entrada.php' );
+
+		$this->assertStringNotContainsString(
+			'get_test_result(',
+			$fuente,
+			'`WP_Site_Health::get_test_result()` no existe: usarlo (aunque sea detrás de un method_exists) convierte el «no sé» en un «todo va bien»'
+		);
+		$this->assertStringContainsString(
+			"'get_test_' . \$nombre",
+			$fuente,
+			'Cada prueba de salud es un método de la clase: get_test_<nombre>'
+		);
+		$this->assertStringContainsString(
+			'if ( 0 === $miradas ) {',
+			$fuente,
+			'Si no se ha podido mirar ninguna prueba, se dice que no se sabe'
+		);
+		$this->assertStringContainsString( 'convoca_core_salud_excluir', $fuente, 'Con lista de exclusiones, vacía por defecto' );
+		$this->assertStringContainsString( "\$pruebas['direct'] ?? array()", $fuente, 'Solo las pruebas que no salen a la red: el Escritorio no puede quedarse esperando' );
+	}
+
 	/** La tarjeta lleva el enlace al panel y los primeros pasos. */
 	public function test_la_tarjeta_lleva_al_panel(): void {
 		$clase = $this->clase();

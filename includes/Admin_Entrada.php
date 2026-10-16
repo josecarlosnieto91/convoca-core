@@ -147,21 +147,39 @@ class Admin_Entrada {
 	 * @return array{estado:string,texto:string,detalle:string}
 	 */
 	public static function salud(): array {
-		$salida = array(
+		$sin_datos = array(
 			'estado'  => 'sin_datos',
 			'texto'   => __( 'No hemos podido consultar el estado del servidor ahora mismo.', 'convoca-core' ),
 			'detalle' => '',
 		);
 
 		if ( ! class_exists( 'WP_Site_Health' ) ) {
-			return $salida;
+			return $sin_datos;
+		}
+
+		// Con caché media hora: correr las pruebas de salud en cada carga del Escritorio lo haría lento, y el
+		// Escritorio se abre muchas veces al día.
+		$guardado = get_transient( 'convoca_core_salud' );
+		if ( is_array( $guardado ) && isset( $guardado['estado'] ) ) {
+			return $guardado;
 		}
 
 		$salud   = \WP_Site_Health::get_instance();
 		$pruebas = $salud->get_tests();
 		if ( empty( $pruebas ) ) {
-			return $salida;
+			return $sin_datos;
 		}
+
+		/**
+		 * Filtro: pruebas de salud que NO se cuentan.
+		 *
+		 * Para sitios con una decisión deliberada que la prueba marca (el modo depuración, que en estos sitios se
+		 * deja encendido a propósito). Por defecto no se excluye ninguna: ocultar un aviso real es peor que
+		 * enseñar uno de más.
+		 *
+		 * @param string[] $excluidas Nombres de prueba (p. ej. 'is_in_debug_mode').
+		 */
+		$excluidas = (array) apply_filters( 'convoca_core_salud_excluir', array() );
 
 		$cuenta      = array(
 			'good'        => 0,
@@ -169,44 +187,63 @@ class Admin_Entrada {
 			'critical'    => 0,
 		);
 		$primer_crit = '';
+		$miradas     = 0;
 
-		foreach ( $pruebas as $tipo => $bloques ) {
-			foreach ( (array) $bloques as $prueba ) {
-				if ( ! method_exists( $salud, 'get_test_result' ) ) {
-					continue; // Sin poder leer el resultado no se inventa un diagnóstico.
-				}
-				$resultado = $salud->get_test_result( $prueba['test'] ?? '', 'en_US' );
-				$estado    = (string) ( $resultado['status'] ?? 'good' );
-				if ( isset( $cuenta[ $estado ] ) ) {
-					++$cuenta[ $estado ];
-				}
-				if ( 'critical' === $estado && '' === $primer_crit ) {
-					$primer_crit = wp_strip_all_tags( (string) ( $resultado['label'] ?? '' ) );
-				}
+		// Solo las pruebas «directas»: no salen a la red. Las asíncronas (comunicación con WordPress.org,
+		// bucle de retorno…) las lanza el propio widget de salud desde el navegador; hacerlo aquí dejaría
+		// esperando a quien entra a trabajar.
+		foreach ( (array) ( $pruebas['direct'] ?? array() ) as $prueba ) {
+			$nombre = (string) ( $prueba['test'] ?? '' );
+			if ( '' === $nombre || in_array( $nombre, $excluidas, true ) ) {
+				continue;
+			}
+
+			// Cada prueba es un MÉTODO de la clase (`get_test_<nombre>`); no hay un accesor único. Lo que no se
+			// puede ejecutar no se cuenta —y desde luego no se da por bueno—, pero tampoco se inventa.
+			$metodo = 'get_test_' . $nombre;
+			if ( ! method_exists( $salud, $metodo ) ) {
+				continue;
+			}
+
+			++$miradas;
+			$resultado = $salud->$metodo();
+			$estado    = (string) ( $resultado['status'] ?? '' );
+			if ( isset( $cuenta[ $estado ] ) ) {
+				++$cuenta[ $estado ];
+			}
+			if ( 'critical' === $estado && '' === $primer_crit ) {
+				$primer_crit = wp_strip_all_tags( (string) ( $resultado['label'] ?? $prueba['label'] ?? '' ) );
 			}
 		}
 
+		// Si no se ha podido mirar NINGUNA prueba, no se dice que todo va bien: se dice que no se sabe.
+		if ( 0 === $miradas ) {
+			return $sin_datos;
+		}
+
 		if ( $cuenta['critical'] > 0 ) {
-			return array(
+			$respuesta = array(
 				'estado'  => 'critical',
 				'texto'   => __( 'El servidor tiene algo que conviene enseñar a quien te instaló esto.', 'convoca-core' ),
 				'detalle' => $primer_crit,
 			);
-		}
-
-		if ( $cuenta['recommended'] > 0 ) {
-			return array(
+		} elseif ( $cuenta['recommended'] > 0 ) {
+			$respuesta = array(
 				'estado'  => 'recommended',
 				'texto'   => __( 'El servidor va bien, con algún aviso que no corre prisa.', 'convoca-core' ),
 				'detalle' => '',
 			);
+		} else {
+			$respuesta = array(
+				'estado'  => 'good',
+				'texto'   => __( 'El servidor va bien: no hay nada urgente.', 'convoca-core' ),
+				'detalle' => '',
+			);
 		}
 
-		return array(
-			'estado'  => 'good',
-			'texto'   => __( 'El servidor va bien: no hay nada urgente.', 'convoca-core' ),
-			'detalle' => '',
-		);
+		set_transient( 'convoca_core_salud', $respuesta, 30 * MINUTE_IN_SECONDS );
+
+		return $respuesta;
 	}
 
 	/**
