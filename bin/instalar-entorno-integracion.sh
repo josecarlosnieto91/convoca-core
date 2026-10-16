@@ -70,10 +70,11 @@ fi
 
 wp --path="$DATOS/wp" core install --url=http://example.org --title="Convoca pruebas" \
 	--admin_user=admin --admin_password=admin --admin_email=admin@example.org --skip-email >/dev/null
-wp --path="$DATOS/wp" plugin activate "$SLUG" >/dev/null
+# El núcleo PRIMERO: los demás plugins dependen de él y su activación falla sin Convoca Core.
 if [ -d "$DATOS/wp/wp-content/plugins/convoca-core" ] && [ "$SLUG" != "convoca-core" ]; then
 	wp --path="$DATOS/wp" plugin activate convoca-core >/dev/null
 fi
+wp --path="$DATOS/wp" plugin activate "$SLUG" >/dev/null
 
 echo
 echo "Entorno listo. Para la suite:"
