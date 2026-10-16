@@ -21,7 +21,6 @@ use PHPUnit\Framework\TestCase;
  * @covers ::run_cleanup
  * @covers ::run_purge
  * @requires extension pdo_mysql
- * @requires function dbDelta
  */
 class InstallerTest extends TestCase
 {
