@@ -33,7 +33,7 @@ class InstallerTest extends TestCase
     public function test_db_init_creates_tables(): void
     {
         if (!function_exists('dbDelta')) {
-            $this->markTestSkipped('dbDelta not available (WordPress not loaded)');
+            $this->markTestSkipped('dbDelta not available (WordPress not loaded) · motivo y seguimiento: convoca-health-check#20.');
         }
 
         Installer::db_init();
@@ -60,7 +60,7 @@ class InstallerTest extends TestCase
     public function test_db_init_logs_schema(): void
     {
         if (!function_exists('dbDelta')) {
-            $this->markTestSkipped('dbDelta not available (WordPress not loaded)');
+            $this->markTestSkipped('dbDelta not available (WordPress not loaded) · motivo y seguimiento: convoca-health-check#20.');
         }
 
         Installer::db_init();
@@ -90,7 +90,7 @@ class InstallerTest extends TestCase
     public function test_db_init_logs_indexes(): void
     {
         if (!function_exists('dbDelta')) {
-            $this->markTestSkipped('dbDelta not available (WordPress not loaded)');
+            $this->markTestSkipped('dbDelta not available (WordPress not loaded) · motivo y seguimiento: convoca-health-check#20.');
         }
 
         Installer::db_init();
@@ -116,7 +116,7 @@ class InstallerTest extends TestCase
     public function test_db_init_retries_schema(): void
     {
         if (!function_exists('dbDelta')) {
-            $this->markTestSkipped('dbDelta not available (WordPress not loaded)');
+            $this->markTestSkipped('dbDelta not available (WordPress not loaded) · motivo y seguimiento: convoca-health-check#20.');
         }
 
         Installer::db_init();
@@ -145,7 +145,7 @@ class InstallerTest extends TestCase
     public function test_db_init_locks_schema(): void
     {
         if (!function_exists('dbDelta')) {
-            $this->markTestSkipped('dbDelta not available (WordPress not loaded)');
+            $this->markTestSkipped('dbDelta not available (WordPress not loaded) · motivo y seguimiento: convoca-health-check#20.');
         }
 
         Installer::db_init();
@@ -171,7 +171,7 @@ class InstallerTest extends TestCase
     public function test_run_cleanup(): void
     {
         if (!function_exists('wp_next_scheduled')) {
-            $this->markTestSkipped('WordPress functions not available');
+            $this->markTestSkipped('WordPress functions not available · motivo y seguimiento: convoca-health-check#20.');
         }
 
         Installer::run_cleanup();
@@ -186,7 +186,7 @@ class InstallerTest extends TestCase
     public function test_run_purge(): void
     {
         if (!function_exists('wp_next_scheduled')) {
-            $this->markTestSkipped('WordPress functions not available');
+            $this->markTestSkipped('WordPress functions not available · motivo y seguimiento: convoca-health-check#20.');
         }
 
         Installer::run_purge();
@@ -201,11 +201,11 @@ class InstallerTest extends TestCase
     public function test_ensure_member_access_codes(): void
     {
         if (!class_exists('\\Convoca\\Core\\Utils')) {
-            $this->markTestSkipped('Convoca\Core\Utils not available');
+            $this->markTestSkipped('Convoca\Core\Utils not available · motivo y seguimiento: convoca-health-check#20.');
         }
 
         if (!function_exists('wp_next_scheduled')) {
-            $this->markTestSkipped('WordPress not available');
+            $this->markTestSkipped('WordPress not available · motivo y seguimiento: convoca-health-check#20.');
         }
 
         Installer::ensure_member_access_codes();

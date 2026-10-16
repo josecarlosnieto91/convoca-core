@@ -69,7 +69,7 @@ class WebhookManagerTest extends TestCase
     public function test_add_webhook(): void
     {
         if (!function_exists('update_option')) {
-            $this->markTestSkipped('WordPress not available');
+            $this->markTestSkipped('WordPress not available · motivo y seguimiento: convoca-health-check#20.');
         }
 
         $id = Webhook_Manager::add_webhook([
@@ -99,7 +99,7 @@ class WebhookManagerTest extends TestCase
     public function test_add_webhook_minimal(): void
     {
         if (!function_exists('update_option')) {
-            $this->markTestSkipped('WordPress not available');
+            $this->markTestSkipped('WordPress not available · motivo y seguimiento: convoca-health-check#20.');
         }
 
         $id = Webhook_Manager::add_webhook([
@@ -125,7 +125,7 @@ class WebhookManagerTest extends TestCase
     public function test_add_webhook_empty_events(): void
     {
         if (!function_exists('update_option')) {
-            $this->markTestSkipped('WordPress not available');
+            $this->markTestSkipped('WordPress not available · motivo y seguimiento: convoca-health-check#20.');
         }
 
         $id = Webhook_Manager::add_webhook([
@@ -147,7 +147,7 @@ class WebhookManagerTest extends TestCase
     public function test_add_webhook_invalid_url(): void
     {
         if (!function_exists('update_option')) {
-            $this->markTestSkipped('WordPress not available');
+            $this->markTestSkipped('WordPress not available · motivo y seguimiento: convoca-health-check#20.');
         }
 
         $id = Webhook_Manager::add_webhook([
@@ -173,7 +173,7 @@ class WebhookManagerTest extends TestCase
     public function test_update_webhook(): void
     {
         if (!function_exists('update_option')) {
-            $this->markTestSkipped('WordPress not available');
+            $this->markTestSkipped('WordPress not available · motivo y seguimiento: convoca-health-check#20.');
         }
 
         $id = Webhook_Manager::add_webhook([
@@ -222,7 +222,7 @@ class WebhookManagerTest extends TestCase
     public function test_delete_webhook(): void
     {
         if (!function_exists('update_option')) {
-            $this->markTestSkipped('WordPress not available');
+            $this->markTestSkipped('WordPress not available · motivo y seguimiento: convoca-health-check#20.');
         }
 
         $id = Webhook_Manager::add_webhook([
@@ -336,7 +336,7 @@ class WebhookManagerTest extends TestCase
     public function test_delivery_logs(): void
     {
         if (!function_exists('update_option')) {
-            $this->markTestSkipped('WordPress not available');
+            $this->markTestSkipped('WordPress not available · motivo y seguimiento: convoca-health-check#20.');
         }
 
         // Initially empty.

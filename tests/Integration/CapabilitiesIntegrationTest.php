@@ -77,7 +77,7 @@ class CapabilitiesIntegrationTest extends TestCase
     public function test_register_runs(): void
     {
         if (!function_exists('get_role')) {
-            $this->markTestSkipped('WordPress not loaded');
+            $this->markTestSkipped('WordPress not loaded · motivo y seguimiento: convoca-health-check#20.');
         }
 
         // Should run without errors.
@@ -100,7 +100,7 @@ class CapabilitiesIntegrationTest extends TestCase
     public function test_ensure_runs(): void
     {
         if (!function_exists('get_role')) {
-            $this->markTestSkipped('WordPress not loaded');
+            $this->markTestSkipped('WordPress not loaded · motivo y seguimiento: convoca-health-check#20.');
         }
 
         Capabilities::ensure();
@@ -115,7 +115,7 @@ class CapabilitiesIntegrationTest extends TestCase
     public function test_register_is_idempotent(): void
     {
         if (!function_exists('get_role')) {
-            $this->markTestSkipped('WordPress not loaded');
+            $this->markTestSkipped('WordPress not loaded · motivo y seguimiento: convoca-health-check#20.');
         }
 
         // Call multiple times.
@@ -139,14 +139,14 @@ class CapabilitiesIntegrationTest extends TestCase
     public function test_monitor_role_caps(): void
     {
         if (!function_exists('get_role')) {
-            $this->markTestSkipped('WordPress not loaded');
+            $this->markTestSkipped('WordPress not loaded · motivo y seguimiento: convoca-health-check#20.');
         }
 
         Capabilities::register();
         $monitor = get_role('monitor_actividad');
 
         if (!$monitor) {
-            $this->markTestSkipped('monitor_actividad role not found');
+            $this->markTestSkipped('monitor_actividad role not found · motivo y seguimiento: convoca-health-check#20.');
         }
 
         $this->assertTrue($monitor->has_cap('manage_inscripciones'));
