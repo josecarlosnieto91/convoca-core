@@ -588,6 +588,32 @@ if (!function_exists('wp_delete_attachment')) {
 // --- Funciones de WordPress que faltaban en el entorno de pruebas unitarias ---
 if (!function_exists('add_shortcode')) {
     function add_shortcode($tag, $cb) { $GLOBALS['_wp_stores']['shortcodes'][$tag] = $cb; return true; }
+
+    /**
+     * ¿Está registrado un shortcode? WordPress lo tiene siempre; el arnés no lo tenía y un plugin que lo
+     * usa legítimamente (para no pintar nada si el otro plugin no está) reventaba al probarse.
+     */
+    function shortcode_exists($tag) { return isset($GLOBALS['_wp_stores']['shortcodes'][$tag]); }
+
+    /**
+     * Renderizado mínimo: si el shortcode está registrado, se llama a su devolución con los atributos; si no,
+     * se deja el texto tal cual. No pretende imitar a WordPress (no hay `do_shortcode_tag` ni anidados): sirve
+     * para comprobar que un plugin delega en otro, que es lo que se prueba aquí.
+     */
+    function do_shortcode($content) {
+        if (!preg_match('/^\[(\S+?)(\s[^\]]*)?\]$/', trim((string) $content), $m)) {
+            return $content;
+        }
+        $tag = $m[1];
+        if (!isset($GLOBALS['_wp_stores']['shortcodes'][$tag])) {
+            return $content;
+        }
+        $atts = array();
+        if (!empty($m[2]) && preg_match_all('/(\w+)="([^"]*)"/', $m[2], $pares, PREG_SET_ORDER)) {
+            foreach ($pares as $par) { $atts[$par[1]] = $par[2]; }
+        }
+        return (string) call_user_func($GLOBALS['_wp_stores']['shortcodes'][$tag], $atts, '', $tag);
+    }
 }
 if (!function_exists('get_the_date')) {
     function get_the_date($format = '', $post = null) {
@@ -734,6 +760,24 @@ if ( ! function_exists( 'convoca_core_unit_autoload' ) ) {
 $autoload = dirname(__DIR__) . '/vendor/autoload.php';
 if (file_exists($autoload)) {
     require_once $autoload;
+}
+
+/**
+ * Doble mínimo de la respuesta REST de WordPress: los manejadores de los plugins devuelven una, y sin ella el
+ * arnés no puede comprobar ni el contenido ni el código de estado de un endpoint.
+ */
+if (!class_exists('WP_REST_Response')) {
+    class WP_REST_Response {
+        private $data;
+        private $status;
+        public function __construct($data = null, $status = 200) { $this->data = $data; $this->status = (int) $status; }
+        public function get_data() { return $this->data; }
+        public function set_data($data) { $this->data = $data; }
+        public function get_status() { return $this->status; }
+        public function set_status($status) { $this->status = (int) $status; }
+        public function get_headers() { return array(); }
+        public function header($key, $value, $replace = false) { return $this; }
+    }
 }
 
 date_default_timezone_set('Europe/Madrid');
