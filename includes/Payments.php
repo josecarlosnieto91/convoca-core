@@ -14,10 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Fachada de pagos.
  *
- * Hoy el backend real es Convoca Gateway. Existe para que los módulos que cobran (inscripciones,
- * cuotas, cursos) dependan de **una** firma del núcleo y no de las clases y funciones de otro plugin:
- * así el día que cambie el gateway —o haya dos— no hay que tocar trece sitios repartidos por tres
- * repositorios. El backend se puede sustituir con el filtro `convoca_payment_backend`.
+ * Hoy el backend real es Convoca Gateway, que **se registra** por los filtros `convoca_payment_backend`,
+ * `convoca_payment_reader` y `convoca_payment_receipt`: aquí no se nombra ni una clase suya. Existe para
+ * que los módulos que cobran (inscripciones, cuotas, cursos) dependan de **una** firma del núcleo: así el
+ * día que cambie la pasarela —o haya dos— no hay que tocar trece sitios repartidos por tres repositorios.
  */
 class Payments {
 
@@ -33,18 +33,20 @@ class Payments {
 	/**
 	 * Backend activo, o null si no hay ninguno.
 	 *
+	 * Lo registra la pasarela con el filtro `convoca_payment_backend` (el gateway lo hace en
+	 * `Payments_Backend::register()`). Aquí no se nombra ninguna clase de otro plugin: si nadie se
+	 * registra, no hay backend y quien cobra recibe un `WP_Error` en vez de un fatal.
+	 *
 	 * @return callable|null
 	 */
 	private static function backend(): ?callable {
-		$gateway = function_exists( '\Convoca\Gateway\convoca_gateway_create_payment' ) ? '\Convoca\Gateway\convoca_gateway_create_payment' : null;
-
 		/**
 		 * Backend de cobros.
 		 *
 		 * @param callable|null $backend Función que crea un pago. Recibe el array de datos y devuelve
 		 *                               `array{pago_id:int, payment_url:string}` o `WP_Error`.
 		 */
-		$backend = apply_filters( 'convoca_payment_backend', $gateway );
+		$backend = apply_filters( 'convoca_payment_backend', null );
 
 		return is_callable( $backend ) ? $backend : null;
 	}
@@ -117,16 +119,7 @@ class Payments {
 		 */
 		$payment = apply_filters( 'convoca_payment_reader', null, $pago_id );
 
-		if ( is_array( $payment ) ) {
-			return $payment;
-		}
-
-		if ( class_exists( '\Convoca\Gateway\CPT_Pago' ) && method_exists( '\Convoca\Gateway\CPT_Pago', 'get_meta' ) ) {
-			$meta = \Convoca\Gateway\CPT_Pago::get_meta( $pago_id );
-			return is_array( $meta ) ? $meta : array();
-		}
-
-		return array();
+		return is_array( $payment ) ? $payment : array();
 	}
 
 	/**
@@ -172,15 +165,7 @@ class Payments {
 		 */
 		$url = (string) apply_filters( 'convoca_payment_receipt', '', $pago_id );
 
-		if ( '' !== $url ) {
-			return $url;
-		}
-
-		if ( class_exists( '\Convoca\Gateway\Receipt_Generator' ) && method_exists( '\Convoca\Gateway\Receipt_Generator', 'receipt_url' ) ) {
-			return (string) \Convoca\Gateway\Receipt_Generator::receipt_url( $pago_id );
-		}
-
-		return '';
+		return $url;
 	}
 
 	/**
