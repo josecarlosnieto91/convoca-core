@@ -216,12 +216,15 @@ add_action(
 		$headers = array( __( 'Order ID', 'convoca-core' ), __( 'Importe', 'convoca-core' ), __( 'Estado', 'convoca-core' ), __( 'Método', 'convoca-core' ), __( 'Fecha', 'convoca-core' ) );
 		$rows    = array();
 
-		if ( class_exists( '\\Convoca\\Gateway\\CPT_Pago' ) ) {
+		// Se lee por la fachada del núcleo (`Payments`), no por las clases del gateway: el núcleo es el
+		// que define el contrato y no debe nombrar a otro plugin. Si no hay pasarela, el listado sale sin
+		// filas —igual que antes, que dejaba las cabeceras y nada más—.
+		if ( \Convoca\Core\Payments::is_available() ) {
 			foreach ( $posts as $p ) {
-				$m      = \Convoca\Gateway\CPT_Pago::get_meta( $p->ID );
+				$m      = \Convoca\Core\Payments::get( (int) $p->ID );
 				$rows[] = array(
 					$m['order_id'] ?? '',
-					\Convoca\Gateway\CPT_Pago::format_amount( (int) ( $m['amount_cents'] ?? 0 ) ),
+					\Convoca\Core\Payments::format_amount( (int) ( $m['amount_cents'] ?? 0 ) ),
 					$m['status'] ?? '',
 					$m['method'] ?? '',
 					$m['created_at'] ?? '',

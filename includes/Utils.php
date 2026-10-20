@@ -142,10 +142,18 @@ class Utils {
 	 * @return array|\WP_Error Result with URL.
 	 */
 	public static function create_payment( array $args ): array|\WP_Error {
-		if ( function_exists( '\Convoca\Gateway\convoca_gateway_create_payment' ) ) {
-			return \Convoca\Gateway\convoca_gateway_create_payment( $args );
+		if ( ! class_exists( '\\Convoca\\Core\\Payments' ) ) {
+			require_once __DIR__ . '/Payments.php';
 		}
-		return new \WP_Error( 'gateway_no_activo', __( 'La pasarela de pago no está activa.', 'convoca-core' ) );
+
+		$resultado = Payments::create( $args );
+
+		// El código de error viejo se conserva: es API publicada y alguien puede estar mirándolo.
+		if ( is_wp_error( $resultado ) && 'convoca_payments_unavailable' === $resultado->get_error_code() ) {
+			return new \WP_Error( 'gateway_no_activo', __( 'La pasarela de pago no está activa.', 'convoca-core' ) );
+		}
+
+		return $resultado;
 	}
 
 	/**

@@ -141,6 +141,19 @@ class Payments {
 	}
 
 	/**
+	 * Importe con formato de moneda.
+	 *
+	 * El formato vivía en el gateway (`CPT_Pago::format_amount`), así que imprimir un importe obligaba a
+	 * nombrar una clase de otro plugin. Es presentación, no cobro: se queda en el núcleo.
+	 *
+	 * @param int $cents Importe en céntimos.
+	 * @return string Por ejemplo `1.234,50 €`.
+	 */
+	public static function format_amount( int $cents ): string {
+		return number_format( $cents / 100, 2, ',', '.' ) . ' €';
+	}
+
+	/**
 	 * URL pública del recibo de un pago.
 	 *
 	 * @param int $pago_id Identificador.
