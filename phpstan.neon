@@ -67,3 +67,9 @@ parameters:
             message: '#Parameter \#1 \$args of function paginate_links#'
             identifier: argument.type
             path: includes/admin-global-menu.php
+        # class_exists/method_exists sobre clases de Convoca Gateway: el gateway es opcional y el
+        # bootstrap del análisis no lo carga, así que PHPStan los da por imposibles. En runtime la
+        # guarda es necesaria: un sitio con el núcleo y sin gateway no debe reventar al leer un pago.
+        -
+            message: '#Call to function (class_exists|method_exists)\(\) with .*Convoca.* will always evaluate to (false|true)#'
+            path: includes/Payments.php

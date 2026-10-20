@@ -54,6 +54,35 @@ class PaymentsTest extends TestCase {
 	}
 
 	/**
+	 * Sin pasarela, leer un pago devuelve vacío en vez de reventar.
+	 *
+	 * @return void
+	 */
+	public function test_get_without_backend_is_empty(): void {
+		$this->assertSame( array(), Payments::get( 123 ) );
+		$this->assertSame( '', Payments::status( 123 ) );
+	}
+
+	/**
+	 * Un identificador inválido tampoco consulta nada.
+	 *
+	 * @return void
+	 */
+	public function test_get_with_invalid_id_is_empty(): void {
+		$this->assertSame( array(), Payments::get( 0 ) );
+		$this->assertSame( '', Payments::receipt_url( 0 ) );
+	}
+
+	/**
+	 * Sin pasarela no hay recibo.
+	 *
+	 * @return void
+	 */
+	public function test_receipt_url_without_backend_is_empty(): void {
+		$this->assertSame( '', Payments::receipt_url( 123 ) );
+	}
+
+	/**
 	 * La comparación de origen es exacta.
 	 *
 	 * @return void

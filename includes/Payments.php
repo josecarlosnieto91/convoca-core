@@ -96,6 +96,81 @@ class Payments {
 	}
 
 	/**
+	 * Lee un pago.
+	 *
+	 * Devuelve lo que el backend sepa del pago (importe, estado, origen, fecha). Si no hay pasarela o
+	 * el pago no existe, devuelve un array vacío: quien llama decide qué hacer, no recibe un fatal.
+	 *
+	 * @param int $pago_id Identificador del pago.
+	 * @return array<string, mixed>
+	 */
+	public static function get( int $pago_id ): array {
+		if ( $pago_id <= 0 ) {
+			return array();
+		}
+
+		/**
+		 * Lector de pagos.
+		 *
+		 * @param array<string, mixed>|null $payment Pago leído, o null si no hay backend.
+		 * @param int                       $pago_id Identificador.
+		 */
+		$payment = apply_filters( 'convoca_payment_reader', null, $pago_id );
+
+		if ( is_array( $payment ) ) {
+			return $payment;
+		}
+
+		if ( class_exists( '\Convoca\Gateway\CPT_Pago' ) && method_exists( '\Convoca\Gateway\CPT_Pago', 'get_meta' ) ) {
+			$meta = \Convoca\Gateway\CPT_Pago::get_meta( $pago_id );
+			return is_array( $meta ) ? $meta : array();
+		}
+
+		return array();
+	}
+
+	/**
+	 * Estado de un pago.
+	 *
+	 * @param int $pago_id Identificador.
+	 * @return string Vacío si no se puede leer.
+	 */
+	public static function status( int $pago_id ): string {
+		$payment = self::get( $pago_id );
+		return isset( $payment['status'] ) ? (string) $payment['status'] : '';
+	}
+
+	/**
+	 * URL pública del recibo de un pago.
+	 *
+	 * @param int $pago_id Identificador.
+	 * @return string Vacío si no hay recibo disponible.
+	 */
+	public static function receipt_url( int $pago_id ): string {
+		if ( $pago_id <= 0 ) {
+			return '';
+		}
+
+		/**
+		 * Generador de la URL del recibo.
+		 *
+		 * @param string $url     URL del recibo (vacía si no hay).
+		 * @param int    $pago_id Identificador.
+		 */
+		$url = (string) apply_filters( 'convoca_payment_receipt', '', $pago_id );
+
+		if ( '' !== $url ) {
+			return $url;
+		}
+
+		if ( class_exists( '\Convoca\Gateway\Receipt_Generator' ) && method_exists( '\Convoca\Gateway\Receipt_Generator', 'receipt_url' ) ) {
+			return (string) \Convoca\Gateway\Receipt_Generator::receipt_url( $pago_id );
+		}
+
+		return '';
+	}
+
+	/**
 	 * ¿Este origen de pago es de este módulo?
 	 *
 	 * @param string $origin    Origen recibido.

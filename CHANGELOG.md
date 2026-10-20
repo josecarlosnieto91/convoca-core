@@ -1,3 +1,11 @@
+## [2.3.42] — 2026-10-20
+
+### Añadido
+
+- `Payments::get()`, `Payments::status()` y `Payments::receipt_url()`: la fachada también **lee** el
+  pago y su recibo, con `convoca_payment_reader` y `convoca_payment_receipt` para sustituir el
+  backend. Sin pasarela devuelven vacío (nunca un fatal).
+
 ## [2.3.41] — 2026-10-20
 
 ### Añadido
