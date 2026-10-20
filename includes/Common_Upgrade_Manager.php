@@ -16,7 +16,7 @@
  */
 
 /**
- * Upgrade Manager for Convoca Common.
+ * Upgrade Manager for Convoca Core.
  *
  * Handles database structure upgrades for the common plugin.
  *

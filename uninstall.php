@@ -16,7 +16,7 @@
  */
 
 /**
- * Uninstall handler for Convoca Common Utilities.
+ * Uninstall handler for Convoca Core.
  *
  * @package Convoca\Core
  */

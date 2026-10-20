@@ -479,7 +479,7 @@ class Admin_Templates {
 			</div>
 			<?php \Convoca\Core\Utils::render_stored_notices(); ?>
 
-			<p><?php echo esc_html__( 'Aquí puedes modificar el diseño HTML de los documentos generados por el sistema de firmas (Convoca Common).', 'convoca-core' ); ?></p>
+			<p><?php echo esc_html__( 'Aquí puedes modificar el diseño HTML de los documentos generados por el sistema de firmas (Convoca Core).', 'convoca-core' ); ?></p>
 			<p>
 			<?php
 			/* translators: %1$s, %2$s y %3$s son ejemplos de marcadores de plantilla, del estilo {{nombre}}, {{dni}} o {{fecha}}. */

@@ -18,6 +18,7 @@ msgstr ""
 #: convoca-core.php
 msgid "Convoca Core"
 msgstr ""
+#: includes/Admin_Setup_Wizard.php:244
 
 #. Plugin URI of the plugin
 #. Author URI of the plugin
@@ -278,11 +279,11 @@ msgid "Plugin no activo o sin función de diagnóstico."
 msgstr ""
 
 #: includes/admin-global-menu.php:184
-msgid "Convoca Common — Versión"
+msgid "Convoca Core — Versión"
 msgstr ""
 
 #: includes/admin-global-menu.php:189
-msgid "Convoca Common — Nivel de log"
+msgid "Convoca Core — Nivel de log"
 msgstr ""
 
 #. translators: %s: configured log level
@@ -303,7 +304,7 @@ msgid "OK"
 msgstr ""
 
 #: includes/admin-global-menu.php:206
-msgid "No encontrada. Desactiva y reactiva Convoca Common."
+msgid "No encontrada. Desactiva y reactiva Convoca Core."
 msgstr ""
 
 #: includes/admin-global-menu.php:210
@@ -692,15 +693,11 @@ msgid "Volver a este paso"
 msgstr ""
 
 #: includes/Admin_Setup_Wizard.php:244
-msgid "Convoca Common"
-msgstr ""
-
-#: includes/Admin_Setup_Wizard.php:244
 msgid "Plugin activo."
 msgstr ""
 
 #: includes/Admin_Setup_Wizard.php:244
-msgid "Activa Convoca Common."
+msgid "Activa Convoca Core."
 msgstr ""
 
 #. translators: %s: database table name
@@ -917,11 +914,11 @@ msgid "1. Infraestructura"
 msgstr ""
 
 #: includes/Admin_Setup_Wizard.php:837
-msgid "Convoca Common activo."
+msgid "Convoca Core activo."
 msgstr ""
 
 #: includes/Admin_Setup_Wizard.php:837
-msgid "Convoca Common NO activo."
+msgid "Convoca Core NO activo."
 msgstr ""
 
 #: includes/Admin_Setup_Wizard.php:838
@@ -1081,7 +1078,7 @@ msgid "Utilidades comunes e infraestructura de documentos"
 msgstr ""
 
 #: includes/Admin_Templates.php:482
-msgid "Aquí puedes modificar el diseño HTML de los documentos generados por el sistema de firmas (Convoca Common)."
+msgid "Aquí puedes modificar el diseño HTML de los documentos generados por el sistema de firmas (Convoca Core)."
 msgstr ""
 
 #. translators: %1$s, %2$s y %3$s son ejemplos de marcadores de plantilla, del estilo {{nombre}}, {{dni}} o {{fecha}}.

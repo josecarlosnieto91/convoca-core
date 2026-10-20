@@ -181,12 +181,12 @@ function convoca_health_page(): void {
 
 	// ── Common self-check ──
 	$all_checks[] = array(
-		'title'   => __( 'Convoca Common — Versión', 'convoca-core' ),
+		'title'   => __( 'Convoca Core — Versión', 'convoca-core' ),
 		'status'  => 'ok',
 		'message' => 'v' . CONVOCA_COMMON_VERSION,
 	);
 	$all_checks[] = array(
-		'title'   => __( 'Convoca Common — Nivel de log', 'convoca-core' ),
+		'title'   => __( 'Convoca Core — Nivel de log', 'convoca-core' ),
 		'status'  => 'ok',
 		'message' => sprintf(
 			/* translators: %s: configured log level */
@@ -203,7 +203,7 @@ function convoca_health_page(): void {
 			/* translators: %s: database table name */
 			'title'   => sprintf( __( 'Tabla %s', 'convoca-core' ), $t ),
 			'status'  => $exists ? 'ok' : 'error',
-			'message' => $exists ? __( 'OK', 'convoca-core' ) : __( 'No encontrada. Desactiva y reactiva Convoca Common.', 'convoca-core' ),
+			'message' => $exists ? __( 'OK', 'convoca-core' ) : __( 'No encontrada. Desactiva y reactiva Convoca Core.', 'convoca-core' ),
 		);
 	}
 
@@ -311,8 +311,8 @@ function convoca_common_enqueue_assets(): void {
 	if ( ! $needed ) {
 		$post = get_post();
 		if ( $post && ! empty( $post->post_content ) ) {
-			// Cualquier shortcode convoca_* en el contenido activa los assets comunes.
-			$needed = (bool) preg_match( '/\[convoca_[a-z_]+/i', $post->post_content );
+			// Shortcode `[convoca_x]` o bloque `<!-- wp:convoca-x/... -->`.
+			$needed = \Convoca\Core\Utils::content_needs_common_assets( (string) $post->post_content );
 		}
 	}
 

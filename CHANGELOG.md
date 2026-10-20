@@ -1,3 +1,19 @@
+## [2.3.43] — 2026-10-20
+
+### Arreglado
+
+- **Una página montada con bloques se quedaba sin `convoca-common.css`.** La detección solo miraba
+  shortcodes (`[convoca_x]`), así que un `<!-- wp:convoca-members/formulario-alta -->` no casaba y el
+  formulario salía desnudo; el JS sí llegaba, porque los scripts de los plugins sí declaran la
+  dependencia. La regla vive ahora en `Utils::content_needs_common_assets()`, mira shortcode **y**
+  bloque (`convoca-*` y `centro-social/*`) y tiene pruebas en los dos sentidos.
+
+### Cambiado
+
+- «Convoca Common» → «Convoca Core» en los textos que ve el usuario y en los catálogos `.pot`/`.po`.
+  El usuario instalaba «Convoca Core» y la web le pedía «Convoca Common Utilities», un producto que
+  ya no existe con ese nombre.
+
 ## [2.3.42] — 2026-10-20
 
 ### Añadido

@@ -241,7 +241,7 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 		global $wpdb;
 		$checks = array();
 
-		$checks[] = $this->check_item( __( 'Convoca Common', 'convoca-core' ), class_exists( '\\Convoca\\Core\\Utils' ), __( 'Plugin activo.', 'convoca-core' ), __( 'Activa Convoca Common.', 'convoca-core' ) );
+		$checks[] = $this->check_item( __( 'Convoca Core', 'convoca-core' ), class_exists( '\\Convoca\\Core\\Utils' ), __( 'Plugin activo.', 'convoca-core' ), __( 'Activa Convoca Core.', 'convoca-core' ) );
 
 		foreach ( array( 'convoca_logs', 'convoca_locks' ) as $t ) {
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- SHOW TABLES LIKE requires a literal string
@@ -834,7 +834,7 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 			'title'   => __( '1. Infraestructura', 'convoca-core' ),
 			'ok'      => $tables_ok && class_exists( '\Convoca\Core\Utils' ),
 			'detail'  => array(
-				class_exists( '\Convoca\Core\Utils' ) ? __( 'Convoca Common activo.', 'convoca-core' ) : __( 'Convoca Common NO activo.', 'convoca-core' ),
+				class_exists( '\Convoca\Core\Utils' ) ? __( 'Convoca Core activo.', 'convoca-core' ) : __( 'Convoca Core NO activo.', 'convoca-core' ),
 				$tables_ok ? __( 'Tablas de base de datos creadas.', 'convoca-core' ) : __( 'Faltan tablas de base de datos.', 'convoca-core' ),
 			),
 			'missing' => $tables_ok ? '' : __( 'Ejecuta el paso 1 para crear la infraestructura.', 'convoca-core' ),

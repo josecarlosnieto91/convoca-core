@@ -40,6 +40,35 @@ class Utils {
 	const CAP_GESTIONAR_MIS_TURNOS        = 'gestionar_mis_turnos';
 
 	/**
+	 * ¿Este contenido necesita los assets comunes del ecosistema?
+	 *
+	 * Mira dos cosas, porque son dos formas distintas de montar la misma página:
+	 *   - un shortcode `[convoca_algo]`;
+	 *   - un bloque `<!-- wp:convoca-x/... -->` o `<!-- wp:centro-social/... -->`.
+	 *
+	 * Los bloques NO son shortcodes: hasta ahora una página montada con bloques se
+	 * quedaba sin `convoca-common.css` (el JS sí llegaba, porque los scripts de los
+	 * plugins sí declaran la dependencia) y el formulario salía desnudo.
+	 *
+	 * Se mira el comentario del bloque y no `parse_blocks()`: mismo resultado sin
+	 * recorrer el árbol en cada carga del front.
+	 *
+	 * @param string $content Contenido del post (post_content).
+	 * @return bool
+	 */
+	public static function content_needs_common_assets( string $content ): bool {
+		if ( '' === $content ) {
+			return false;
+		}
+
+		if ( preg_match( '/\[convoca_[a-z_]+/i', $content ) ) {
+			return true;
+		}
+
+		return (bool) preg_match( '/<!--\s+wp:(convoca-|centro-social\/)/i', $content );
+	}
+
+	/**
 	 * Validate Spanish DNI/NIE checksum.
 	 * Consolidates validation from members and enroll logic.
 	 *

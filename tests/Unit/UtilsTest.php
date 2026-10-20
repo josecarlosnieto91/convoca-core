@@ -15,6 +15,39 @@ class UtilsTest extends TestCase
         $this->loadClass();
     }
 
+    // ── Detección de assets comunes (shortcode vs bloque) ──────────
+
+    public function test_shortcode_necesita_assets_comunes(): void
+    {
+        $this->assertTrue(\Convoca\Core\Utils::content_needs_common_assets('[convoca_calendario]'));
+        $this->assertTrue(\Convoca\Core\Utils::content_needs_common_assets("intro\n\n[convoca_alta_socio]"));
+    }
+
+    public function test_bloque_necesita_assets_comunes(): void
+    {
+        // El caso que se escapaba: página montada con bloques, sin ningún shortcode.
+        $this->assertTrue(\Convoca\Core\Utils::content_needs_common_assets(
+            '<!-- wp:convoca-members/formulario-alta {"lock":{}} /-->'
+        ));
+        $this->assertTrue(\Convoca\Core\Utils::content_needs_common_assets(
+            '<!-- wp:convoca-enroll/formulario-inscripcion /-->'
+        ));
+        $this->assertTrue(\Convoca\Core\Utils::content_needs_common_assets(
+            "<!-- wp:centro-social/calendario /-->\n<!-- wp:paragraph --><p>x</p><!-- /wp:paragraph -->"
+        ));
+    }
+
+    public function test_contenido_sin_convoca_no_necesita_assets(): void
+    {
+        $this->assertFalse(\Convoca\Core\Utils::content_needs_common_assets(''));
+        $this->assertFalse(\Convoca\Core\Utils::content_needs_common_assets('<p>Una entrada normal</p>'));
+        // Bloques de terceros o del core: no son nuestros.
+        $this->assertFalse(\Convoca\Core\Utils::content_needs_common_assets('<!-- wp:paragraph --><p>x</p><!-- /wp:paragraph -->'));
+        $this->assertFalse(\Convoca\Core\Utils::content_needs_common_assets('<!-- wp:otro-plugin/bloque /-->'));
+        // Un texto que menciona la palabra no basta: manda el shortcode/bloque real.
+        $this->assertFalse(\Convoca\Core\Utils::content_needs_common_assets('<p>Hablamos de convoca_calendario</p>'));
+    }
+
     // ── DNI validation ──────────────────────────
 
     public function test_valid_dni(): void
