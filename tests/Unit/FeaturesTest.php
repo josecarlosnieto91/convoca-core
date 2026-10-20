@@ -107,4 +107,31 @@ class FeaturesTest extends TestCase
         }
         $this->assertTrue(\Convoca\Core\Features::is_convoca_shifts_active());
     }
+
+    // ── has (detección por nombre corto) ──────────
+
+    public function test_has_turnos_por_constante(): void
+    {
+        if (!defined('CONVOCA_SHIFTS_VERSION')) {
+            define('CONVOCA_SHIFTS_VERSION', '2.5.1');
+        }
+        $this->assertTrue(\Convoca\Core\Features::has('turnos'));
+    }
+
+    public function test_has_ignora_nombres_desconocidos(): void
+    {
+        $this->assertFalse(\Convoca\Core\Features::has('no-existe'));
+        $this->assertFalse(\Convoca\Core\Features::has(''));
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function test_has_sin_plugins_no_inventa_nada(): void
+    {
+        $this->loadClass();
+        $this->assertFalse(\Convoca\Core\Features::has('members'));
+        $this->assertFalse(\Convoca\Core\Features::has('gateway'));
+        $this->assertFalse(\Convoca\Core\Features::has('enroll'));
+    }
 }

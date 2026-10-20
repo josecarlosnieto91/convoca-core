@@ -1120,20 +1120,18 @@ class Utils {
 	}
 
 	/**
-	 * Feature registry: check if a plugin feature is available without hardcoding class names.
+	 * Feature registry: check if a plugin feature is available.
 	 *
-	 * @param string $feature Feature key: 'members', 'enroll', 'gateway', 'turnos '
+	 * Delega en `Features`, que es el único sitio del núcleo que nombra clases de otro plugin para
+	 * preguntar si existe. Antes había aquí un segundo mapa con clases distintas (`CPT_Miembro`,
+	 * `CPT_Inscripcion`, `CPT_Pago`, `Convoca_Shifts_Upgrade_Manager`), así que la misma pregunta podía
+	 * tener dos respuestas.
+	 *
+	 * @param string $feature Feature key: 'members', 'enroll', 'gateway', 'turnos'
 	 * @return bool
 	 */
 	public static function has_feature( string $feature ): bool {
-		$map   = array(
-			'members' => '\\Convoca\\Members\\CPT_Miembro',
-			'enroll'  => '\\Convoca\\Enroll\\CPT_Inscripcion',
-			'gateway' => '\\Convoca\\Gateway\\CPT_Pago',
-			'turnos'  => '\\Convoca\\Shifts\\Convoca_Shifts_Upgrade_Manager',
-		);
-		$class = $map[ $feature ] ?? '';
-		return $class && class_exists( $class );
+		return Features::has( $feature );
 	}
 
 	/**

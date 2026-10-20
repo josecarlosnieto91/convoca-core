@@ -72,6 +72,31 @@ class Features {
 	}
 
 	/**
+	 * Detección por nombre corto: `members`, `enroll`, `gateway`, `turnos`.
+	 *
+	 * Este es el **único** sitio del núcleo que puede nombrar clases de otro plugin, y solo para
+	 * preguntar si existe: es el detector, no un uso. Estaba duplicado en `Utils::has_feature()` con
+	 * otro mapa y otras clases (allí `CPT_Miembro`, `CPT_Inscripcion`, `CPT_Pago`,
+	 * `Convoca_Shifts_Upgrade_Manager`), así que dos respuestas distintas a la misma pregunta eran
+	 * cuestión de tiempo. `Utils::has_feature()` delega aquí.
+	 *
+	 * @param string $feature Nombre corto del módulo.
+	 * @return bool
+	 */
+	public static function has( string $feature ): bool {
+		$alias = array(
+			'members' => 'is_members_active',
+			'enroll'  => 'is_enroll_active',
+			'gateway' => 'is_gateway_active',
+			'turnos'  => 'is_convoca_shifts_active',
+		);
+
+		$metodo = $alias[ $feature ] ?? '';
+
+		return '' !== $metodo && method_exists( self::class, $metodo ) && self::$metodo();
+	}
+
+	/**
 	 * Devuelve información de dependencias faltantes para un contexto dado.
 	 * Útil para mostrar avisos en el admin de WP.
 	 */

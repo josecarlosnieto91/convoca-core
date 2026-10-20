@@ -36,12 +36,8 @@ parameters:
             message: '#Path in require_once\(\) "/tmp/wp/wp-content/plugins/convoca-core/vendor/autoload.php"#'
             identifier: requireOnce.fileNotFound
             path: includes/Signature.php
-        # class_exists sobre clases de plugins hermanos: en runtime pueden estar
-        # instalados o no — es exactamente el propósito de has_feature().
-        -
-            message: '#Call to function class_exists\(\) with.*Convoca.*will always evaluate to false#'
-            identifier: function.impossibleType
-            path: includes/Utils.php
+        # (La exclusión de `class_exists` sobre clases de plugins hermanos en Utils.php ya no hace
+        # falta: el mapa de clases se fue de ahí a Features::has(), que es el único detector.)
         # WP_DEBUG se fija a true en el bootstrap de análisis; en producción es
         # configurable. El chequeo definido&&WP_DEBUG es correcto en runtime.
         -
