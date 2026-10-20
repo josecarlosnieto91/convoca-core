@@ -688,10 +688,11 @@ function convoca_build_metrics(): array {
 	global $wpdb;
 	$metrics = array();
 
-	// Members.
-	if ( class_exists( '\Convoca\Members\CPT_Miembro' ) && class_exists( '\Convoca\Members\Estados' ) ) {
+	// Socios: los estados los aporta el módulo por el filtro `convoca_member_states`.
+	$estados = apply_filters( 'convoca_member_states', array() );
+	if ( array() !== $estados ) {
 		$counts = array();
-		foreach ( \Convoca\Members\Estados::LABELS as $slug => $label ) {
+		foreach ( $estados as $slug => $label ) {
 			$counts[ $slug ] = ( new \WP_Query(
 				array(
 					'post_type'      => 'miembro',
@@ -716,7 +717,7 @@ function convoca_build_metrics(): array {
 		"SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'miembro' AND post_status = 'publish' AND MONTH(post_date) = MONTH(NOW()) AND YEAR(post_date) = YEAR(NOW())"
 	);
 
-	if ( class_exists( '\Convoca\Enroll\CPT_Inscripcion' ) ) {
+	if ( \Convoca\Core\Features::has( 'enroll' ) ) {
 		$pendientes_pago                          = new \WP_Query(
 			array(
 				'post_type'      => 'inscripcion',

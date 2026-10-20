@@ -540,7 +540,8 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 	/* ── Step 3: Membership ── */
 
 	private function step_plans(): void {
-		$plans = class_exists( '\Convoca\Members\CPT_Miembro' ) ? \Convoca\Members\CPT_Miembro::get_plans() : array();
+		// Los planes los aporta el módulo de socios por el filtro `convoca_member_plans`.
+		$plans = apply_filters( 'convoca_member_plans', array() );
 		// Solo modalidades reales de pago (Numerario/Familiar/Juvenil) — excluye artefactos 'Virtual'.
 		$real_mods = array( 'Numerario', 'Familiar', 'Juvenil' );
 		$editable  = array();
@@ -859,7 +860,7 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 		);
 
 		// ── 3. Planes de membresía ──
-		$plans        = class_exists( '\Convoca\Members\CPT_Miembro' ) ? \Convoca\Members\CPT_Miembro::get_plans() : array();
+		$plans        = apply_filters( 'convoca_member_plans', array() );
 		$real_mods    = array( 'Numerario', 'Familiar', 'Juvenil' );
 		$active_plans = array();
 		foreach ( $plans as $key => $p ) {
@@ -954,9 +955,9 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 		if ( $step === 3 ) {
 			// Guardar planes de membresía: activo, nombre visible, id corto (slug),
 			// modalidad y precio. Al renombrar un slug se migran los miembros que lo usan.
-			if ( class_exists( '\Convoca\Members\CPT_Miembro' ) ) {
-				$plans = \Convoca\Members\CPT_Miembro::get_plans();
-				$post  = isset( $_POST['convoca_plans'] ) ? (array) wp_unslash( $_POST['convoca_plans'] ) : array();
+			$plans = apply_filters( 'convoca_member_plans', array() );
+			if ( array() !== $plans ) {
+				$post = isset( $_POST['convoca_plans'] ) ? (array) wp_unslash( $_POST['convoca_plans'] ) : array();
 				// Los planes editables son los de modalidad real (Numerario/Familiar/Juvenil).
 				$real_mods  = array( 'Numerario', 'Familiar', 'Juvenil' );
 				$new_plans  = array();
