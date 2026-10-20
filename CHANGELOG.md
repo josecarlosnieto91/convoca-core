@@ -1,3 +1,12 @@
+## [2.3.41] — 2026-10-20
+
+### Añadido
+
+- `Convoca\Core\Payments`: fachada única para crear pagos (`create()`, `is_available()`) con el
+  backend sustituible por el filtro `convoca_payment_backend`. Los módulos que cobran dejan de llamar
+  a las clases de Convoca Gateway; el gateway sigue siendo el backend real.
+- Gancho `convoca_payment_created` al crear un pago.
+
 ## [2.3.40] — 2026-10-20
 
 ### Añadido
