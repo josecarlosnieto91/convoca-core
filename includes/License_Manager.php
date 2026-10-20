@@ -51,6 +51,7 @@ class License_Manager {
 			'webhooks'     => __( 'Webhooks salientes', 'convoca-core' ),
 			'publisher'    => __( 'Convoca Publisher PRO', 'convoca-core' ),
 			'theme'        => __( 'Convoca Theme PRO', 'convoca-core' ),
+			'courses'      => __( 'Convoca Courses PRO', 'convoca-core' ),
 		);
 	}
 

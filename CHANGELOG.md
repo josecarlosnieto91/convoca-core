@@ -1,3 +1,10 @@
+## [2.3.40] — 2026-10-20
+
+### Añadido
+
+- `License_Manager::pro_features()` incluye la función `courses` (Convoca Courses PRO: lecciones de
+  vídeo con URL firmada). El módulo de cursos la usa para saber si ofrece vídeo.
+
 ## [2.3.39] — 2026-10-16
 
 ### Arreglado

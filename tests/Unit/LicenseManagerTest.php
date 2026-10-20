@@ -88,14 +88,14 @@ class LicenseManagerTest extends TestCase
     // ────────────────────────────────────────────
 
     /**
-     * PRO_FEATURES has the 9 expected keys with Spanish labels.
+     * PRO_FEATURES has the expected number of keys with Spanish labels.
      *
      * @coversNothing — constant, not a method
      */
-    public function test_pro_features_has_nine_keys(): void
+    public function test_pro_features_has_expected_count(): void
     {
         $features = License_Manager::pro_features();
-        $this->assertCount(11, $features, 'PRO_FEATURES should contain exactly 11 features.');
+        $this->assertCount(12, $features, 'PRO_FEATURES should contain exactly 12 features.');
     }
 
     /**
@@ -119,6 +119,7 @@ class LicenseManagerTest extends TestCase
             'webhooks',
             'publisher',
             'theme',
+            'courses',
         ];
 
         foreach ($expected as $key) {
