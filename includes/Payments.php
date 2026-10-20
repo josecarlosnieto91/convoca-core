@@ -68,7 +68,7 @@ class Payments {
 			);
 		}
 
-		$origin   = isset( $args['origin'] ) ? (string) $args['origin'] : '';
+		$origin    = isset( $args['origin'] ) ? (string) $args['origin'] : '';
 		$origin_id = isset( $args['origin_id'] ) ? (int) $args['origin_id'] : 0;
 
 		if ( '' === $origin || $origin_id <= 0 ) {
