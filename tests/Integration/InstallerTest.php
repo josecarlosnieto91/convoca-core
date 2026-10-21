@@ -4,7 +4,6 @@
  *
  * @package       Convoca\Core\Tests
  *
- * @coversDefaultClass \Convoca\Core\Installer
  * @group integration
  */
 
@@ -16,10 +15,10 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests for DB schema installation and table management.
  *
- * @covers ::db_init
- * @covers ::ensure_member_access_codes
- * @covers ::run_cleanup
- * @covers ::run_purge
+ * @covers \Convoca\Core\Installer::db_init
+ * @covers \Convoca\Core\Installer::ensure_member_access_codes
+ * @covers \Convoca\Core\Installer::run_cleanup
+ * @covers \Convoca\Core\Installer::run_purge
  * @requires extension pdo_mysql
  */
 class InstallerTest extends TestCase
@@ -199,7 +198,7 @@ class InstallerTest extends TestCase
      */
     public function test_ensure_member_access_codes(): void
     {
-        if (!class_exists('\\Convoca\\Core\\Utils')) {
+        if (!class_exists('\Convoca\Core\Utils')) {
             $this->markTestSkipped('Convoca\Core\Utils not available · motivo y seguimiento: convoca-health-check#20.');
         }
 
