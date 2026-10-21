@@ -11,6 +11,13 @@
   falten (hoy `gestionar_mis_turnos` la añadían members y shifts por separado, así que hay instalaciones
   con el rol a medias). No se quita ninguna capacidad.
 
+- **El mapa de capacidades estaba incompleto y ahora no lo está.** Lo que cada plugin ponía en su
+  `add_role()` tiene que vivir aquí, porque `add_role()` **no pisa un rol existente**: el que llega segundo
+  no añade nada y el rol se queda a medias. Faltaban `gestionar_miembros`,
+  `gestionar_documentos_voluntariado`, `view_reports` y las ocho de edición de contenido que members ponía
+  al rol de monitor (`edit_posts`, `edit_others_posts`, `edit_published_posts`, `publish_posts`,
+  `delete_posts`, `delete_others_posts`, `delete_published_posts`, `read_private_posts`).
+
 ### Añadido
 
 - **`Hour_Ledger::puede_acreditar_horas()`**: la puerta del libro de horas. Por defecto **no** se acredita:

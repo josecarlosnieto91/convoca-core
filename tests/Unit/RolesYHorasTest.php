@@ -67,6 +67,11 @@ class RolesYHorasTest extends TestCase {
 		// Esta la ponía enroll al crear el rol; si falta en el mapa, `add_role()` no la repone y el rol
 		// se queda a medias (lo cazó la suite de integración del CI, no este test: por eso está aquí).
 		$this->assertTrue( get_role( 'monitor_actividad' )->has_cap( 'manage_inscripciones' ) );
+		// Y estas las ponía members: sin ellas en el mapa, el monitor pierde la edición de turnos en
+		// cuanto members deje de ponerlas (que es el paso siguiente del plan).
+		foreach ( array( 'edit_posts', 'edit_others_posts', 'edit_published_posts', 'publish_posts', 'delete_posts', 'delete_others_posts', 'delete_published_posts', 'read_private_posts', 'gestionar_miembros', 'gestionar_documentos_voluntariado', 'view_reports' ) as $cap ) {
+			$this->assertTrue( get_role( 'monitor_actividad' )->has_cap( $cap ), "el rol monitor se queda sin {$cap}" );
+		}
 		$this->assertFalse( get_role( 'socio' )->has_cap( 'convoca_export_members' ), 'socio no administra la exportación de socios' );
 	}
 

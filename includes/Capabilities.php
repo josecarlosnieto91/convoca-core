@@ -40,19 +40,19 @@ class Capabilities {
 	public static function get_all(): array {
 		return array(
 			// Convoca Shifts.
-			'gestionar_mis_turnos'         => array(
+			'gestionar_mis_turnos'              => array(
 				'description' => __( 'Gestionar mis turnos (voluntarios)', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad', 'voluntario_aprobado' ),
 			),
-			'convoca_shifts_manage_turnos' => array(
+			'convoca_shifts_manage_turnos'      => array(
 				'description' => __( 'Gestionar turnos del calendario (crear, editar)', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'convoca_shifts_view_stats'    => array(
+			'convoca_shifts_view_stats'         => array(
 				'description' => __( 'Ver estadísticas de turnos', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'convoca_shifts_audit_hours'   => array(
+			'convoca_shifts_audit_hours'        => array(
 				'description' => __( 'Auditoría de horas de voluntarios', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
@@ -61,53 +61,103 @@ class Capabilities {
 			// `manage_inscripciones` la ponía enroll al crear el rol `monitor_actividad`. Con el
 			// vocabulario en core, tiene que estar en este mapa o el rol se queda a medias: `add_role()`
 			// no pisa un rol que ya existe, así que quien llegue segundo no añade nada.
-			'manage_inscripciones'         => array(
+			'manage_inscripciones'              => array(
 				'description' => __( 'Gestionar inscripciones', 'convoca-core' ),
-				'roles'       => array( 'administrator', 'monitor_actividad' ),
+				'roles'       => array( 'administrator', 'monitor_actividad', 'shop_manager' ),
 			),
-			'convoca_manage_checkin'       => array(
+			// Gestión de personas: vocabulario del producto. Hoy estas tres sólo existían en el código de
+			// Convoca Members. La capacidad puede existir sin que haya gestión de personas instalada: quien
+			// la comprueba es la pantalla, y las personas que las tienen son las fichas.
+			'gestionar_miembros'                => array(
+				'description' => __( 'Gestionar miembros', 'convoca-core' ),
+				'roles'       => array( 'administrator', 'monitor_actividad', 'shop_manager' ),
+			),
+			'gestionar_documentos_voluntariado' => array(
+				'description' => __( 'Gestionar documentos de voluntariado', 'convoca-core' ),
+				'roles'       => array( 'administrator', 'monitor_actividad', 'shop_manager' ),
+			),
+			'view_reports'                      => array(
+				'description' => __( 'Ver informes', 'convoca-core' ),
+				'roles'       => array( 'administrator', 'monitor_actividad', 'shop_manager' ),
+			),
+			// Edición de contenido: estas ocho son nativas de WordPress y las ponía Convoca Members para
+			// que el monitor edite los turnos. Si el vocabulario es del producto, tienen que estar aquí, o
+			// el monitor pierde la edición en cuanto members deje de ponerlas.
+			'edit_posts'                        => array(
+				'description' => __( 'Editar entradas', 'convoca-core' ),
+				'roles'       => array( 'monitor_actividad' ),
+			),
+			'edit_others_posts'                 => array(
+				'description' => __( 'Editar entradas de otros', 'convoca-core' ),
+				'roles'       => array( 'monitor_actividad' ),
+			),
+			'edit_published_posts'              => array(
+				'description' => __( 'Editar entradas publicadas', 'convoca-core' ),
+				'roles'       => array( 'monitor_actividad' ),
+			),
+			'publish_posts'                     => array(
+				'description' => __( 'Publicar entradas', 'convoca-core' ),
+				'roles'       => array( 'monitor_actividad' ),
+			),
+			'delete_posts'                      => array(
+				'description' => __( 'Borrar entradas', 'convoca-core' ),
+				'roles'       => array( 'monitor_actividad' ),
+			),
+			'delete_others_posts'               => array(
+				'description' => __( 'Borrar entradas de otros', 'convoca-core' ),
+				'roles'       => array( 'monitor_actividad' ),
+			),
+			'delete_published_posts'            => array(
+				'description' => __( 'Borrar entradas publicadas', 'convoca-core' ),
+				'roles'       => array( 'monitor_actividad' ),
+			),
+			'read_private_posts'                => array(
+				'description' => __( 'Leer entradas privadas', 'convoca-core' ),
+				'roles'       => array( 'monitor_actividad' ),
+			),
+			'convoca_manage_checkin'            => array(
 				'description' => __( 'Hacer check-in de asistentes', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'convoca_manage_evaluations'   => array(
+			'convoca_manage_evaluations'        => array(
 				'description' => __( 'Gestionar evaluaciones', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'convoca_view_reports'         => array(
+			'convoca_view_reports'              => array(
 				'description' => __( 'Ver informes de actividades', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
 
 			// Convoca Members.
-			'convoca_manage_hours'         => array(
+			'convoca_manage_hours'              => array(
 				'description' => __( 'Gestionar horas de voluntarios (aprobar)', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
-			'convoca_export_members'       => array(
+			'convoca_export_members'            => array(
 				'description' => __( 'Exportar listado de socios', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
-			'convoca_manage_webhooks'      => array(
+			'convoca_manage_webhooks'           => array(
 				'description' => __( 'Gestionar webhooks', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
 
 			// Convoca Gateway.
-			'convoca_view_payments'        => array(
+			'convoca_view_payments'             => array(
 				'description' => __( 'Ver pagos y dashboard', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
-			'convoca_manage_payments'      => array(
+			'convoca_manage_payments'           => array(
 				'description' => __( 'Gestionar pagos manualmente', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
 
 			// Common.
-			'common_view_logs'             => array(
+			'common_view_logs'                  => array(
 				'description' => __( 'Ver logs del sistema', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
-			'common_manage_backup'         => array(
+			'common_manage_backup'              => array(
 				'description' => __( 'Gestionar copias de seguridad', 'convoca-core' ),
 				'roles'       => array( 'administrator' ),
 			),
