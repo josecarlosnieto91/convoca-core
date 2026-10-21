@@ -4,7 +4,6 @@
  *
  * @package       Convoca\Core\Tests
  *
- * @coversDefaultClass \Convoca\Core\Webhook_Manager
  * @group integration
  */
 
@@ -16,13 +15,13 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests for webhook signing, verification, and dispatch logic.
  *
- * @covers ::get_webhooks
- * @covers ::add_webhook
- * @covers ::get_webhook
- * @covers ::update_webhook
- * @covers ::delete_webhook
- * @covers ::dispatch
- * @covers ::test_webhook
+ * @covers \Convoca\Core\Webhook_Manager::get_webhooks
+ * @covers \Convoca\Core\Webhook_Manager::add_webhook
+ * @covers \Convoca\Core\Webhook_Manager::get_webhook
+ * @covers \Convoca\Core\Webhook_Manager::update_webhook
+ * @covers \Convoca\Core\Webhook_Manager::delete_webhook
+ * @covers \Convoca\Core\Webhook_Manager::dispatch
+ * @covers \Convoca\Core\Webhook_Manager::test_webhook
  */
 class WebhookManagerTest extends TestCase
 {

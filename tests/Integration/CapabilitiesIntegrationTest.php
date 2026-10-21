@@ -4,7 +4,6 @@
  *
  * @package       Convoca\Core\Tests
  *
- * @coversDefaultClass \Convoca\Core\Capabilities
  * @group integration
  */
 
@@ -16,9 +15,9 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests for role and capability management.
  *
- * @covers ::get_all
- * @covers ::register
- * @covers ::ensure
+ * @covers \Convoca\Core\Capabilities::get_all
+ * @covers \Convoca\Core\Capabilities::register
+ * @covers \Convoca\Core\Capabilities::ensure
  */
 class CapabilitiesIntegrationTest extends TestCase
 {

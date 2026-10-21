@@ -33,12 +33,16 @@ jobs:
       - name: Instalar gettext (msgfmt, lo exige el contrato de traducciones)
         run: sudo apt-get update -qq && sudo apt-get install -y -qq gettext
 
-      - name: Tests unitarios con cobertura
-        # phpunit-unit.xml no declara <source>: se usa phpunit.xml.dist (misma suite unit,
-        # con el filtro de cobertura sobre ./includes).
+      - name: Tests con cobertura (unitaria + integración, una sola medición)
+        # Spec 001-cobertura-integracion (RF-1): el porcentaje sale de TODAS las suites. Antes solo
+        # se medía la unitaria (17,4 %), así que el suelo se podía cumplir ignorando la integración.
+        # Las dos suites van en la misma invocación para que el clover sea uno; `defaultTestSuite`
+        # deja fuera la integración si no se nombra, por eso se pasan las dos explícitamente.
+        # La integración se salta sus casos sin WordPress (con motivo y seguimiento en el propio
+        # test); esos saltos no cubren, y por eso el número combinado es el honesto.
         run: |
           mkdir -p build
-          vendor/bin/phpunit -c phpunit.xml.dist --testsuite unit \
+          vendor/bin/phpunit -c phpunit.xml.dist --testsuite unit,integration \
             --coverage-clover build/coverage.xml --coverage-text
 
       - name: Leer la cobertura y aplicar el suelo
