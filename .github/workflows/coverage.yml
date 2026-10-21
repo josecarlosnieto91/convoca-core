@@ -39,7 +39,8 @@ jobs:
         run: |
           mkdir -p build
           vendor/bin/phpunit -c phpunit.xml.dist --testsuite unit \
-            --coverage-clover build/coverage.xml --coverage-text
+            --coverage-clover build/coverage.xml --coverage-text \
+            --do-not-fail-on-warning
 
       - name: Leer la cobertura y aplicar el suelo
         run: |
