@@ -6,7 +6,7 @@ window.convocaAdmin = window.convocaAdmin || {};
 
 (function (convAdmin) {
   'use strict';
-  
+
   /**
    * Helper DOM Selector
    */
@@ -75,7 +75,7 @@ window.convocaAdmin = window.convocaAdmin || {};
    */
   convAdmin.ajaxPost = function (action, data, nonce, onSuccess, onError) {
       const url = window.ajaxurl || '/wp-admin/admin-ajax.php';
-      
+
       let fd = data instanceof FormData ? data : new FormData();
       if (!(data instanceof FormData)) {
           for (let key in data) {

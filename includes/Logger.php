@@ -391,9 +391,9 @@ class Logger {
 		// Estimate table size.
 		$size = $wpdb->get_var(
 			"
-            SELECT ROUND((data_length + index_length) / 1024, 2) 
-            FROM information_schema.TABLES 
-            WHERE table_schema = DATABASE() 
+            SELECT ROUND((data_length + index_length) / 1024, 2)
+            FROM information_schema.TABLES
+            WHERE table_schema = DATABASE()
             AND table_name = '$table_name'
         "
 		) ?? 0;

@@ -148,4 +148,3 @@
 ### Notas
 - Una prueba nueva fija las tres reglas (`test_lo_que_no_se_puede_leer_no_se_da_por_bueno`), incluida la de
   no volver a usar el accesorio inexistente.
-

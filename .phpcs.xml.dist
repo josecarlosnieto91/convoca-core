@@ -7,7 +7,7 @@
     Antes habia dos (esta y una copia obsoleta en la raiz) y daban veredictos
     distintos para el mismo codigo (0 avisos frente a 194).
   -->
-  
+
   <file>.</file>
   <exclude-pattern>*/vendor/*</exclude-pattern>
   <exclude-pattern>*/node_modules/*</exclude-pattern>

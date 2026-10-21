@@ -1,10 +1,10 @@
 /**
  * Convoca Common JS Library
  * Version 1.2.1
- * 
+ *
  * Asset versioning: Assets are versioned via the plugin version constant.
  * When updating convoca-common, bump the version to force cache refresh.
- * 
+ *
  * @since 1.2.0 Initial release
  * @since 1.2.1 Fixed observeDynamicForms, showAlert whitelist, copyToClipboard fallback
  */
@@ -168,7 +168,7 @@ window.convoca = window.convoca || {};
              fd.append(key, data[key]);
          }
      }
-     
+
      if (!fd.has('action')) fd.append('action', action);
      if (nonce && !fd.has('nonce')) fd.append('nonce', nonce);
 
@@ -223,7 +223,7 @@ window.convoca = window.convoca || {};
   /**
    * Basic Tab interaction functionality initialization.
    * Uses semantic .convoca-tab-btn and .convoca-tab-content data bindings.
-   * Expects DOM struct: 
+   * Expects DOM struct:
    *    <button class="convoca-tab-btn active" data-tab-target="pane-1">Tab</button>
    *    <div id="pane-1" class="convoca-tab-content">...</div>
    * @param {string} containerSelector - The DOM CSS selector restricting tab search area.
@@ -251,7 +251,7 @@ window.convoca = window.convoca || {};
   };
 
 /**
-     * Uses MutationObserver to attach form listeners logically, avoiding early DOM binding loss. 
+     * Uses MutationObserver to attach form listeners logically, avoiding early DOM binding loss.
      * Useful when React/Preact or external AJAX injections happen after DOMContentLoaded.
      * @param {string} containerSelector - Main wrapper string ID or CSS path to watch.
      * @param {function} callback - Method triggered for every dynamically popped HTML Form. Example fn(formNode).
@@ -290,7 +290,7 @@ if (!targetNode || targetNode.dataset.convObserved) return;
                  }
              });
           });
-          
+
           if (addedForms.length > 0) {
               addedForms.forEach(function(frm) { safeCallback(frm); });
           }
@@ -307,10 +307,10 @@ if (!targetNode || targetNode.dataset.convObserved) return;
        var observer = new MutationObserver(throttledCallback);
 
        observer.observe(targetNode, { childList: true, subtree: true });
-       
+
       // Store observer reference for potential cleanup
       targetNode._convFormObserver = observer;
-      
+
       var runInitial = function() {
          var initStatic = conv.$$('form', targetNode);
          initStatic.forEach(function(frm) { safeCallback(frm); });
@@ -346,12 +346,12 @@ if (!targetNode || targetNode.dataset.convObserved) return;
        validate: function (form) {
            let isOk = true;
            const fields = form.querySelectorAll('[required]');
-           
+
            fields.forEach(f => {
                const tag = f.tagName.toLowerCase();
                const field = f.closest('.convoca-field');
                let valid = true;
-               
+
                if (tag === 'textarea') {
                    valid = f.value.trim().length > 0;
                } else if (tag === 'select') {
@@ -388,7 +388,7 @@ if (!targetNode || targetNode.dataset.convObserved) return;
                        }
                    }
                }
-               
+
                if (!valid) {
                    if (field) field.classList.add('has-error');
                    isOk = false;
@@ -408,7 +408,7 @@ if (!targetNode || targetNode.dataset.convObserved) return;
     */
    conv.copyToClipboard = function (text, onSuccess) {
      if (!text) return;
-     
+
      var copyFallback = function() {
        var textarea = document.createElement('textarea');
        textarea.value = text;
@@ -429,7 +429,7 @@ if (!targetNode || targetNode.dataset.convObserved) return;
          console.error('Convoca JS.copyToClipboard Fallback Error:', err);
        }
      };
-     
+
      if (navigator.clipboard && navigator.clipboard.writeText) {
        navigator.clipboard.writeText(text).then(function() {
          if (onSuccess) onSuccess();

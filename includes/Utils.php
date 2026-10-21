@@ -318,9 +318,9 @@ class Utils {
 			// Check uniqueness in database.
 			$exists = $wpdb->get_var(
 				$wpdb->prepare(
-					"SELECT pm.post_id FROM {$wpdb->postmeta} pm 
-                 INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id 
-                 WHERE pm.meta_key = '_convoca_access_code' AND pm.meta_value = %s 
+					"SELECT pm.post_id FROM {$wpdb->postmeta} pm
+                 INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+                 WHERE pm.meta_key = '_convoca_access_code' AND pm.meta_value = %s
                  AND p.post_type = 'miembro' LIMIT 1",
 					$code
 				)
@@ -481,9 +481,9 @@ class Utils {
 			// Atomic INSERT ON DUPLICATE KEY UPDATE — elimina la carrera SELECT+INSERT.
 			$result = $wpdb->query(
 				$wpdb->prepare(
-					"INSERT INTO {$wpdb->options} (option_name, option_value, autoload) 
+					"INSERT INTO {$wpdb->options} (option_name, option_value, autoload)
                  VALUES (%s, %d, 'no')
-                 ON DUPLICATE KEY UPDATE 
+                 ON DUPLICATE KEY UPDATE
                  option_value = CASE
                      WHEN (option_value >> 20) < %d THEN (%d << 20) | 1
                      ELSE option_value + 1

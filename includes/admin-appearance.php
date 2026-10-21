@@ -43,7 +43,7 @@ function convoca_admin_footer( string $text ): string {
 	return sprintf(
 		'© %d <a href="%s" target="_blank">' . get_bloginfo( 'name' ) . '</a> — %s',
 		wp_date( 'Y' ),
-		apply_filters( 'convoca_admin_appearance_url', 'https://getconvoca.app' ), 
+		apply_filters( 'convoca_admin_appearance_url', 'https://getconvoca.app' ),
 		__( 'Plataforma de gestión de la asociación.', 'convoca-core' )
 	);
 }
@@ -738,18 +738,18 @@ function convoca_build_metrics(): array {
 
 	if ( $wpdb->get_var( "SHOW TABLES LIKE '{$wpdb->prefix}postmeta'" ) ) {
 		$metrics['payments_month'] = (float) $wpdb->get_var(
-			"SELECT SUM(meta_value + 0) FROM {$wpdb->postmeta} pm 
-             JOIN {$wpdb->posts} p ON p.ID = pm.post_id 
-             WHERE pm.meta_key = '_convoca_amount_cents' AND p.post_type = 'pago' 
+			"SELECT SUM(meta_value + 0) FROM {$wpdb->postmeta} pm
+             JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+             WHERE pm.meta_key = '_convoca_amount_cents' AND p.post_type = 'pago'
              AND MONTH(p.post_date) = MONTH(NOW()) AND YEAR(p.post_date) = YEAR(NOW())"
 		) / 100;
 		$metrics['payments_url']   = admin_url( 'admin.php?page=conv-gateway-payments' );
 	}
 
 	$metrics['turnos_sin_cubrir'] = (int) $wpdb->get_var(
-		"SELECT COUNT(*) FROM {$wpdb->postmeta} pm 
-         JOIN {$wpdb->posts} p ON p.ID = pm.post_id 
-         WHERE pm.meta_key = '_estado' AND pm.meta_value = 'abierto_disponible' 
+		"SELECT COUNT(*) FROM {$wpdb->postmeta} pm
+         JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+         WHERE pm.meta_key = '_estado' AND pm.meta_value = 'abierto_disponible'
          AND p.post_type = 'centro_turno' AND p.post_status = 'publish'
          AND p.post_date >= NOW()"
 	);

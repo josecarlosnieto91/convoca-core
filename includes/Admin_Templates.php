@@ -489,7 +489,7 @@ class Admin_Templates {
 
 			<form method="post" action="">
 				<?php wp_nonce_field( 'convoca_save_templates_nonce' ); ?>
-				
+
 				<h2 class="nav-tab-wrapper">
 					<?php
 					$first = true;
@@ -525,7 +525,7 @@ class Admin_Templates {
 			</form>
 
 			<hr>
-			
+
 			<form method="post" action="" onsubmit="return confirm('<?php echo esc_js( __( '¿Estás seguro de que deseas restaurar las plantillas por defecto? Perderás cualquier cambio que hayas hecho en el HTML.', 'convoca-core' ) ); ?>');">
 				<?php wp_nonce_field( 'convoca_restore_templates_nonce' ); ?>
 				<p>
@@ -537,19 +537,19 @@ class Admin_Templates {
 		<script>
 			function convSwitchTab(event, tabId) {
 				event.preventDefault();
-				
+
 				// Hide all contents.
 				var contents = document.querySelectorAll('.conv-tab-content');
 				contents.forEach(function(content) {
 					content.style.display = 'none';
 				});
-				
+
 				// Remove active class from all tabs.
 				var tabs = document.querySelectorAll('.nav-tab');
 				tabs.forEach(function(tab) {
 					tab.classList.remove('nav-tab-active');
 				});
-				
+
 				// Show selected content.
 				document.getElementById('tab-' + tabId).style.display = 'block';
 				event.target.classList.add('nav-tab-active');

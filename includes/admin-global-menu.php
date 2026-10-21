@@ -177,7 +177,7 @@ endif;
 						'total'   => ceil( $total / $per_page ),
 						'current' => $paged,
 					)
-				) 
+				)
 			);
 			?>
 		</div></div>

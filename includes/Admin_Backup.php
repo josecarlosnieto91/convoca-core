@@ -99,12 +99,12 @@ class Admin_Backup {
 				<div class="convoca-alert convoca-alert--warning" style="display:block;margin-bottom:25px;">
 					<p>⚠️ <strong><?php esc_html_e( 'Modo de Importación Atómica:', 'convoca-core' ); ?></strong> <?php esc_html_e( 'Se crearán nuevos registros. Los IDs originales se perderán y se generarán nuevos. El sistema intentará remapear las relaciones internas.', 'convoca-core' ); ?></p>
 				</div>
-				
+
 				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 					<?php wp_nonce_field( 'convoca_import_backup_run' ); ?>
 					<input type="hidden" name="action" value="convoca_import_backup_run">
 					<input type="hidden" name="session_token" value="<?php echo esc_attr( $preview['token'] ); ?>">
-					
+
 					<h3 style="margin-bottom:15px;"><?php esc_html_e( 'Contenido Detectado', 'convoca-core' ); ?></h3>
 					<table class="wp-list-table widefat fixed striped" style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
 						<thead><tr><th style="width:40px;padding:12px;text-align:center;"><input type="checkbox" id="select-all-entities" checked></th><th style="padding:12px;"><?php esc_html_e( 'Entidad', 'convoca-core' ); ?></th><th style="padding:12px;"><?php esc_html_e( 'Registros', 'convoca-core' ); ?></th></tr></thead>
