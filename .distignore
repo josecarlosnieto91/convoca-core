@@ -49,3 +49,5 @@ wpml-config.xml
 
 # Guiones de taller: no viajan al sitio.
 bin/
+# Política del proyecto: los .htaccess no viajan (el empaquetador ya los quita).
+.htaccess
