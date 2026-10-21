@@ -57,6 +57,35 @@ class Hour_Ledger {
 	const ESTADO_ANULADA  = 'anulada';
 
 	/**
+	 * ¿Puede esta persona acreditar horas de voluntariado o monitorado?
+	 *
+	 * Decisión de producto (JC, 21/10/2026): **sin la gestión de personas no se acreditan horas**. El
+	 * valor por defecto es que NO, y quien las gestiona (Convoca Members) contesta con el filtro. Así
+	 * el núcleo no nombra a ningún addon y un sitio sin esa gestión no acredita nada, que es lo que se
+	 * ha decidido (antes se acreditaba por el camino de los roles, que cada plugin se fabricaba).
+	 *
+	 * Ojo: los dos productores del libro (`enroll/Volunteer_Hour_Tracker` y `shifts/Hour_Sync`) tienen
+	 * que preguntar aquí ANTES de escribir. Si aparece un tercero que no pregunta, se verá en la
+	 * revisión de `credit()`.
+	 *
+	 * @param int $user_id Usuario de WordPress.
+	 * @return bool
+	 */
+	public static function puede_acreditar_horas( int $user_id ): bool {
+		if ( $user_id <= 0 ) {
+			return false;
+		}
+
+		/**
+		 * ¿Quién puede acreditar horas?
+		 *
+		 * @param bool $puede   Por defecto no: el permiso lo aporta quien gestiona las personas.
+		 * @param int  $user_id Usuario de WordPress.
+		 */
+		return (bool) apply_filters( 'convoca_can_credit_hours', false, $user_id );
+	}
+
+	/**
 	 * Acredita las horas de un hecho: reutiliza su registro si ya existe (reactivándolo)
 	 * y solo crea uno nuevo cuando el hecho no tiene acreditación previa.
 	 *

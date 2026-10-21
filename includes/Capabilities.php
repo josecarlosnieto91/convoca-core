@@ -108,11 +108,48 @@ class Capabilities {
 	}
 
 	/**
+	 * Crea los roles de personas que falten. Idempotente: no toca los que ya existen.
+	 *
+	 * El vocabulario es del PRODUCTO: aquí y sólo aquí se crean. Antes los creaban tres plugins por su
+	 * cuenta —members, shifts y enroll—, cada uno con sus capacidades y su criterio, y eso hacía que en
+	 * un sitio sin la gestión de personas aparecieran roles de socio y de voluntario y se pudiera
+	 * asignar gente a los turnos: justo lo contrario de la regla de producto (JC, 21/10/2026: sin la
+	 * gestión de personas no hay personas asignables ni horas).
+	 *
+	 * Quién SÍ es voluntario o monitor no se decide aquí: eso son las fichas y las aprobaciones.
+	 *
+	 * Se llama desde `register()` porque una instalación que se actualiza no pasa por el gancho de
+	 * activación, y no se recrean los roles existentes para no pisar capacidades que el sitio haya
+	 * añadido por su cuenta.
+	 */
+	public static function crear_roles(): void {
+		if ( ! function_exists( 'get_role' ) || ! function_exists( 'add_role' ) ) {
+			return;
+		}
+
+		$nombres = array(
+			'socio'               => __( 'Socio', 'convoca-core' ),
+			'voluntario_aprobado' => __( 'Voluntario Aprobado', 'convoca-core' ),
+			'monitor_actividad'   => __( 'Monitor de Actividad', 'convoca-core' ),
+		);
+
+		foreach ( $nombres as $slug => $etiqueta ) {
+			if ( ! get_role( $slug ) ) {
+				add_role( $slug, $etiqueta, array( 'read' => true ) );
+			}
+		}
+	}
+
+	/**
 	 * Register (add) capabilities to their assigned roles.
 	 *
 	 * Safe to call multiple times; will not duplicate existing caps.
 	 */
 	public static function register(): void {
+
+		// Primero el vocabulario: sin los roles, el mapa de capacidades no tiene a quién aplicarse.
+		self::crear_roles();
+
 		$caps = self::get_all();
 
 		foreach ( $caps as $cap => $config ) {
@@ -135,7 +172,9 @@ class Capabilities {
 			return;
 		}
 
-		$version_hash = md5( 'convoca_caps_v1' );
+		// v2 (21/10/2026): ahora también crea los roles de personas. Subir la marca es lo que hace
+		// que las instalaciones existentes —donde los roles los creaban shifts o enroll— se alineen.
+		$version_hash = md5( 'convoca_caps_v2' );
 		if ( get_option( 'convoca_capabilities_hash' ) === $version_hash ) {
 			return;
 		}

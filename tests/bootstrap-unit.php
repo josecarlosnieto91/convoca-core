@@ -29,6 +29,38 @@ if (!defined('WEEK_IN_SECONDS')) { define('WEEK_IN_SECONDS', 604800); }
 if (!defined('MONTH_IN_SECONDS')) { define('MONTH_IN_SECONDS', 2592000); }
 if (!defined('YEAR_IN_SECONDS')) { define('YEAR_IN_SECONDS', 31536000); }
 
+// --- Roles de WordPress (el vocabulario de personas lo crea core) ---
+if ( ! class_exists( 'WP_Role' ) ) {
+    class WP_Role {
+        public $name;
+        public $capabilities;
+        public function __construct( $name = '', $caps = array() ) {
+            $this->name         = $name;
+            $this->capabilities = is_array( $caps ) ? $caps : array();
+        }
+        public function has_cap( $cap ) { return ! empty( $this->capabilities[ $cap ] ); }
+        public function add_cap( $cap, $grant = true ) { $this->capabilities[ $cap ] = $grant; }
+        public function remove_cap( $cap ) { unset( $this->capabilities[ $cap ] ); }
+    }
+}
+if ( ! isset( $GLOBALS['_wp_roles'] ) ) {
+    $GLOBALS['_wp_roles']      = array();
+    $GLOBALS['_roles_creados'] = 0;
+}
+if ( ! function_exists( 'add_role' ) ) {
+    function add_role( $slug, $nombre, $caps = array() ) {
+        if ( isset( $GLOBALS['_wp_roles'][ $slug ] ) ) {
+            return null; // WordPress real tampoco pisa un rol existente.
+        }
+        $GLOBALS['_wp_roles'][ $slug ] = new WP_Role( $nombre, $caps );
+        ++$GLOBALS['_roles_creados'];
+        return $GLOBALS['_wp_roles'][ $slug ];
+    }
+    function get_role( $slug ) {
+        return $GLOBALS['_wp_roles'][ $slug ] ?? null;
+    }
+}
+
 // --- WordPress option functions ---
 if (!function_exists('get_option')) {
     function get_option($key, $default = false) {

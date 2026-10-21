@@ -1,3 +1,29 @@
+## [2.3.45] — 2026-10-21
+
+### Cambiado
+
+- **El vocabulario de personas es del producto: core crea los roles.** `socio`, `voluntario_aprobado` y
+  `monitor_actividad` los creaba cada plugin por su cuenta —members, shifts y enroll—, cada uno con sus
+  capacidades. Eso hacía que en un sitio **sin** la gestión de personas aparecieran los roles y se pudiera
+  asignar gente a los turnos. Ahora los crea `Capabilities::crear_roles()` y nadie más; quién es voluntario
+  o monitor sigue siendo cosa de sus fichas y aprobaciones.
+- **Aviso de permisos**: al aplicar el mapa de capacidades se añaden a los roles existentes las que les
+  falten (hoy `gestionar_mis_turnos` la añadían members y shifts por separado, así que hay instalaciones
+  con el rol a medias). No se quita ninguna capacidad.
+
+### Añadido
+
+- **`Hour_Ledger::puede_acreditar_horas()`**: la puerta del libro de horas. Por defecto **no** se acredita:
+  el permiso lo aporta quien gestiona las personas, con el filtro `convoca_can_credit_hours`. Los dos
+  productores del libro tienen que preguntar aquí antes de escribir.
+
+### Pruebas
+
+- 8 casos nuevos en `RolesYHorasTest`: los tres roles se crean, es idempotente, no pisa un rol existente
+  con capacidades propias, el mapa se aplica a quien toca y la puerta de horas dice que no por defecto.
+  Probado en negativo: con el valor por defecto a `true` el test cae; sin crear los roles, el mapa no
+  llega a nadie.
+
 ## [2.3.44] — 2026-10-21
 
 ### Cambiado
