@@ -1,3 +1,23 @@
+## [2.3.44] — 2026-10-21
+
+### Cambiado
+
+- **El diagnóstico agregado del ecosistema pasa a filtro.** La página Salud del Sistema llamaba por
+  reflexión a `Members\Admin_Settings`, `Enroll\Admin_Settings`, `Gateway\Diagnostic` y a la función de
+  Turnos: el núcleo dependía de los addons. Ahora aplica `convoca_system_checks` y cada módulo aporta su
+  bloque; se conservan el orden y los dos textos de aviso, y un módulo que lanza una excepción ya no
+  tumba la página.
+- **Planes y estados del socio por `convoca_member_plans` y `convoca_member_states`**, y la detección de
+  Inscripciones por `Features::has( 'enroll' )`.
+- **La fachada de cobros (`Core\Payments`) ya no nombra clases del gateway**: backend, lector y recibo se
+  resuelven por filtro, y es el gateway quien se registra.
+
+### Arreglado
+
+- **Las métricas del panel habrían reventado con Members activo.** El código recorría
+  `Members\Estados::LABELS`, una constante que no existe (la API es `Estados::labels()`): en PHP 8 eso es
+  `Error: Undefined constant` en cuanto se abría la pantalla.
+
 ## [2.3.43] — 2026-10-20
 
 ### Arreglado
