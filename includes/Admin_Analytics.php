@@ -84,7 +84,7 @@ class Admin_Analytics {
 			'vencen_7d'       => 0,
 		);
 
-		if ( ! class_exists( '\\Convoca\\Members\\CPT_Miembro' ) ) {
+		if ( ! \Convoca\Core\Features::has( 'members' ) ) {
 			return $default;
 		}
 
@@ -154,7 +154,7 @@ class Admin_Analytics {
 			'proximas'     => 0,
 		);
 
-		if ( ! class_exists( '\\Convoca\\Enroll\\CPT_Inscripcion' ) ) {
+		if ( ! \Convoca\Core\Features::has( 'enroll' ) ) {
 			return $default;
 		}
 
@@ -222,7 +222,7 @@ class Admin_Analytics {
 			'last_7_days'   => array(),
 		);
 
-		if ( ! class_exists( '\\Convoca\\Gateway\\CPT_Pago' ) ) {
+		if ( ! \Convoca\Core\Features::has( 'gateway' ) ) {
 			return $default;
 		}
 

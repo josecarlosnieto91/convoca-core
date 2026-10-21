@@ -1,3 +1,12 @@
+## [2.3.48] — 2026-10-21
+
+### Cambiado
+
+- **El núcleo sólo nombra clases de plugins en `Features`.** Los tres informes de analítica comprobaban si
+  el módulo estaba con `class_exists( '\Convoca\Members\CPT_Miembro' )` y compañía; ahora preguntan a
+  `Features::has()`, que ya era el único detector. El día que un addon cambie el nombre de su clase, el
+  núcleo no se entera.
+
 ## [2.3.47] — 2026-10-21
 
 ### Añadido
