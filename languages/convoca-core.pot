@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Core 2.3.45\n"
+"Project-Id-Version: Convoca Core 2.3.46\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-core\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-21T07:36:25+00:00\n"
+"POT-Creation-Date: 2026-10-21T08:10:14+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-core\n"
@@ -1121,55 +1121,115 @@ msgstr ""
 msgid "Auditoría de horas de voluntarios"
 msgstr ""
 
-#: includes/Capabilities.php:62
-msgid "Hacer check-in de asistentes"
+#: includes/Capabilities.php:67
+msgid "Gestionar los registros de Convoca"
 msgstr ""
 
-#: includes/Capabilities.php:66
-msgid "Gestionar evaluaciones"
+#: includes/Capabilities.php:71
+msgid "Gestionar las plantillas de Convoca"
 msgstr ""
 
-#: includes/Capabilities.php:70
-msgid "Ver informes de actividades"
+#: includes/Capabilities.php:75
+msgid "Gestionar la pasarela de pago de Convoca"
 msgstr ""
 
-#: includes/Capabilities.php:76
-msgid "Gestionar horas de voluntarios (aprobar)"
+#: includes/Capabilities.php:79
+msgid "Gestionar inscripciones"
 msgstr ""
 
-#: includes/Capabilities.php:80
-msgid "Exportar listado de socios"
-msgstr ""
-
-#: includes/Capabilities.php:84
-msgid "Gestionar webhooks"
+#: includes/Capabilities.php:86
+msgid "Gestionar miembros"
 msgstr ""
 
 #: includes/Capabilities.php:90
-msgid "Ver pagos y dashboard"
+msgid "Gestionar documentos de voluntariado"
 msgstr ""
 
 #: includes/Capabilities.php:94
-msgid "Gestionar pagos manualmente"
+msgid "Ver informes"
 msgstr ""
 
-#: includes/Capabilities.php:100
-msgid "Ver logs del sistema"
+#: includes/Capabilities.php:101
+msgid "Editar entradas"
 msgstr ""
 
-#: includes/Capabilities.php:104
-msgid "Gestionar copias de seguridad"
+#: includes/Capabilities.php:105
+msgid "Editar entradas de otros"
 msgstr ""
 
-#: includes/Capabilities.php:131
-msgid "Socio"
+#: includes/Capabilities.php:109
+msgid "Editar entradas publicadas"
 msgstr ""
 
-#: includes/Capabilities.php:132
-msgid "Voluntario Aprobado"
+#: includes/Capabilities.php:113
+msgid "Publicar entradas"
+msgstr ""
+
+#: includes/Capabilities.php:117
+msgid "Borrar entradas"
+msgstr ""
+
+#: includes/Capabilities.php:121
+msgid "Borrar entradas de otros"
+msgstr ""
+
+#: includes/Capabilities.php:125
+msgid "Borrar entradas publicadas"
+msgstr ""
+
+#: includes/Capabilities.php:129
+msgid "Leer entradas privadas"
 msgstr ""
 
 #: includes/Capabilities.php:133
+msgid "Hacer check-in de asistentes"
+msgstr ""
+
+#: includes/Capabilities.php:137
+msgid "Gestionar evaluaciones"
+msgstr ""
+
+#: includes/Capabilities.php:141
+msgid "Ver informes de actividades"
+msgstr ""
+
+#: includes/Capabilities.php:147
+msgid "Gestionar horas de voluntarios (aprobar)"
+msgstr ""
+
+#: includes/Capabilities.php:151
+msgid "Exportar listado de socios"
+msgstr ""
+
+#: includes/Capabilities.php:155
+msgid "Gestionar webhooks"
+msgstr ""
+
+#: includes/Capabilities.php:161
+msgid "Ver pagos y dashboard"
+msgstr ""
+
+#: includes/Capabilities.php:165
+msgid "Gestionar pagos manualmente"
+msgstr ""
+
+#: includes/Capabilities.php:171
+msgid "Ver logs del sistema"
+msgstr ""
+
+#: includes/Capabilities.php:175
+msgid "Gestionar copias de seguridad"
+msgstr ""
+
+#: includes/Capabilities.php:202
+msgid "Socio"
+msgstr ""
+
+#: includes/Capabilities.php:203
+msgid "Voluntario Aprobado"
+msgstr ""
+
+#: includes/Capabilities.php:204
 msgid "Monitor de Actividad"
 msgstr ""
 

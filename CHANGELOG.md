@@ -1,3 +1,12 @@
+## [2.3.46] — 2026-10-21
+
+### Cambiado
+
+- **Tres capacidades más al mapa**: `manage_convoca_logs`, `manage_convoca_templates` y
+  `manage_convoca_gateway` las aplicaba Convoca Enroll al administrador. Con el vocabulario en core tienen
+  que estar aquí, o al retirar el mapa de enroll el administrador las pierde sin que nadie se entere.
+  El mapa queda en 29 capacidades y ningún addon necesita tocar roles.
+
 ## [2.3.45] — 2026-10-21
 
 ### Cambiado

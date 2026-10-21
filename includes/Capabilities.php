@@ -61,6 +61,20 @@ class Capabilities {
 			// `manage_inscripciones` la ponía enroll al crear el rol `monitor_actividad`. Con el
 			// vocabulario en core, tiene que estar en este mapa o el rol se queda a medias: `add_role()`
 			// no pisa un rol que ya existe, así que quien llegue segundo no añade nada.
+			// Logs, plantillas y pasarela: las aplicaba enroll al administrador. Con el vocabulario en core,
+			// van aquí; si no, al retirar el mapa de enroll el administrador las perdería.
+			'manage_convoca_logs'               => array(
+				'description' => __( 'Gestionar los registros de Convoca', 'convoca-core' ),
+				'roles'       => array( 'administrator' ),
+			),
+			'manage_convoca_templates'          => array(
+				'description' => __( 'Gestionar las plantillas de Convoca', 'convoca-core' ),
+				'roles'       => array( 'administrator' ),
+			),
+			'manage_convoca_gateway'            => array(
+				'description' => __( 'Gestionar la pasarela de pago de Convoca', 'convoca-core' ),
+				'roles'       => array( 'administrator' ),
+			),
 			'manage_inscripciones'              => array(
 				'description' => __( 'Gestionar inscripciones', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad', 'shop_manager' ),
