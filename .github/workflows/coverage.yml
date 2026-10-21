@@ -28,10 +28,18 @@ jobs:
           tools: composer:v2
 
       - name: Instalar dependencias
-        run: composer install --no-interaction --prefer-dist --no-progress
+        run: composer install --no-interaction --prefer-dist --no-progress --ignore-platform-req=ext-iconv
+
+      - name: Instalar gettext (msgfmt, lo exige el contrato de traducciones)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq gettext
 
       - name: Tests unitarios con cobertura
-        run: vendor/bin/phpunit -c phpunit-unit.xml --coverage-clover build/coverage.xml --coverage-text
+        # phpunit-unit.xml no declara <source>: se usa phpunit.xml.dist (misma suite unit,
+        # con el filtro de cobertura sobre ./includes).
+        run: |
+          mkdir -p build
+          vendor/bin/phpunit -c phpunit.xml.dist --testsuite unit \
+            --coverage-clover build/coverage.xml --coverage-text
 
       - name: Leer la cobertura y aplicar el suelo
         run: |
