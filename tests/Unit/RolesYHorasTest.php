@@ -64,6 +64,9 @@ class RolesYHorasTest extends TestCase {
 
 		$this->assertTrue( get_role( 'voluntario_aprobado' )->has_cap( 'gestionar_mis_turnos' ) );
 		$this->assertTrue( get_role( 'monitor_actividad' )->has_cap( 'convoca_shifts_manage_turnos' ) );
+		// Esta la ponía enroll al crear el rol; si falta en el mapa, `add_role()` no la repone y el rol
+		// se queda a medias (lo cazó la suite de integración del CI, no este test: por eso está aquí).
+		$this->assertTrue( get_role( 'monitor_actividad' )->has_cap( 'manage_inscripciones' ) );
 		$this->assertFalse( get_role( 'socio' )->has_cap( 'convoca_export_members' ), 'socio no administra la exportación de socios' );
 	}
 

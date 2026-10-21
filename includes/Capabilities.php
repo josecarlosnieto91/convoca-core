@@ -58,6 +58,13 @@ class Capabilities {
 			),
 
 			// Convoca Enroll.
+			// `manage_inscripciones` la ponía enroll al crear el rol `monitor_actividad`. Con el
+			// vocabulario en core, tiene que estar en este mapa o el rol se queda a medias: `add_role()`
+			// no pisa un rol que ya existe, así que quien llegue segundo no añade nada.
+			'manage_inscripciones'         => array(
+				'description' => __( 'Gestionar inscripciones', 'convoca-core' ),
+				'roles'       => array( 'administrator', 'monitor_actividad' ),
+			),
 			'convoca_manage_checkin'       => array(
 				'description' => __( 'Hacer check-in de asistentes', 'convoca-core' ),
 				'roles'       => array( 'administrator', 'monitor_actividad' ),
@@ -168,7 +175,9 @@ class Capabilities {
 	 * Call on plugins_loaded to handle upgrades without re-activation.
 	 */
 	public static function ensure(): void {
-		if ( ! is_admin() ) {
+		// `is_admin()` no existe si WordPress no está cargado (arnés de pruebas, CLI suelto): sin la
+		// guarda, esto es un fatal en vez de un no-op. Lo cazó la suite de integración del CI.
+		if ( ! function_exists( 'is_admin' ) || ! is_admin() ) {
 			return;
 		}
 
