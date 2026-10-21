@@ -17,8 +17,8 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests for the License_Manager class.
  *
- * Cada prueba declara su propio @covers con la clase cualificada: PHPUnit 10 no acepta
- * `@covers ::metodo` a nivel de clase (lo marca como anotación inválida al medir cobertura).
+ * Las anotaciones de cobertura van en cada prueba, cualificadas con su clase: PHPUnit 10 no
+ * admite la forma corta a nivel de clase al medir cobertura.
  */
 class LicenseManagerTest extends TestCase
 {
