@@ -181,6 +181,9 @@ class Hour_Ledger {
 			)
 		);
 		if ( ! empty( $members ) ) {
+			// convoca-acoplamiento-ignore: el meta va sobre el registro del LIBRO (post propio del núcleo), no sobre la
+			// ficha: es la referencia de qué socio son estas horas. Como acoplamiento es real (el nombre
+			// del meta es de Members), queda a la vista para decidir en F1 si pasa al contrato.
 			update_post_meta( $log_id, '_convoca_member_id', (int) $members[0] );
 		} else {
 			Logger::info(

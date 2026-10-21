@@ -602,6 +602,8 @@ class Admin_Backup {
 				if ( $old_resp && get_userdata( $old_resp ) ) {
 					$new_resp = $old_resp;
 				}
+				// convoca-acoplamiento-ignore: restaurar un backup escribe todos los metas del sitio por definición; no es
+				// proveer la asignación de turnos, es devolver la copia a su estado.
 				update_post_meta( $id, '_id_responsable', $new_resp );
 				break;
 		}
