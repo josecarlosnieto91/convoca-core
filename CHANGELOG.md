@@ -1,3 +1,22 @@
+## [2.3.47] — 2026-10-21
+
+### Añadido
+
+- **`Core\Member_Identity`: la identidad del socio, como contrato.** El núcleo necesita saber si hay un
+  socio con la sesión abierta y si una inscripción tiene prioridad; hasta hoy eso lo resolvía cada plugin
+  llamando a las clases de Convoca Members con un `class_exists` delante y su propio camino de reserva
+  detrás. Ahora se pregunta a `Member_Identity` y contesta quien gestiona los socios, por los filtros
+  `convoca_member_identity` y `convoca_member_priority`.
+- Los valores por defecto son **el comportamiento de hoy sin gestión de socios**: nadie autenticado,
+  ningún socio y prioridad concedida. La respuesta se guarda sólo durante la petición (la sesión vive en un
+  transient) y `olvidar()` la descarta tras un login o un logout.
+
+### Pruebas
+
+- 8 casos en `MemberIdentityTest`: los valores por defecto, la respuesta normalizada (lo que no encaja se
+  convierte en «no hay socio»), que se pregunta **una sola vez** por petición y que `olvidar()` vuelve a
+  preguntar.
+
 ## [2.3.46] — 2026-10-21
 
 ### Cambiado
