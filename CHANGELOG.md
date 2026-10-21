@@ -1,3 +1,18 @@
+## [2.3.49] — 2026-10-21
+
+### Arreglado
+
+- **La puerta de cobertura medía la mitad del núcleo (spec 001, cerrada).** El trabajo medía solo la suite
+  unitaria (17,4 %) y la integración no la miraba nadie; peor aún, con cobertura activada el trabajo
+  **fallaba y no medía nada**: las catorce anotaciones de `tests/Integration/` estaban sin cualificar y
+  PHPUnit 10 las declara inválidas (`«@covers ::get_all» is invalid`), con el clover en
+  `0,0 % (0/6.432)` sobre 25 avisos. La anotación `@coversDefaultClass` estaba en el docblock del
+  **fichero**, donde PHPUnit no la lee.
+  Ahora las dos suites se miden en una sola invocación (`--testsuite unit,integration`), las anotaciones
+  van cualificadas con su clase y el porcentaje es el total del proyecto: **18,9 %** en local y **19,2 %**
+  en el CI, con el suelo en 16,9 % (antes 15 %). 316 → 349 tests, 953 → 1.279 aserciones, cero fallos
+  nuevos; los 8 casos que necesitan WordPress se saltan con el motivo escrito en el propio test.
+
 ## [2.3.48] — 2026-10-21
 
 ### Cambiado

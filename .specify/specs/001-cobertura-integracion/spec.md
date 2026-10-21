@@ -2,7 +2,7 @@
 
 **Rama**: `001-cobertura-integracion`
 **Creada**: 2026-10-21
-**Estado**: Borrador
+**Estado**: Cerrada (2026-10-21)
 **Entrada**: petición de JC — «un gate de cobertura en el CI que no solo mida, sino que exija».
 
 Sostienen esta spec los principios **II (una sola vara por medida)** y **III (la evidencia manda)** de la
@@ -78,12 +78,14 @@ adivinar.
 
 ## Criterios de éxito (medibles)
 
-- [ ] El registro del trabajo de cobertura muestra el porcentaje total y **no** un aviso de anotación
-      inválida.
-- [ ] `grep -c '@covers ::' tests/` devuelve **0**.
-- [ ] El suelo se puede subir por encima del número actual y el trabajo **falla**; se prueba en una rama y se
-      revierte.
-- [ ] Los tests unitarios y de integración siguen pasando: mismo recuento o más, cero fallos nuevos.
+- [x] El registro del trabajo de cobertura muestra el porcentaje total y **no** un aviso de anotación
+      inválida. *(run de Cobertura de `main`: 19,2 % sin avisos)*
+- [x] `grep -c '@covers ::' tests/` devuelve **0**.
+- [x] El suelo se puede subir por encima del número actual y el trabajo **falla**: run de Cobertura
+      `39647472503` con el suelo en 99 % → `failure` (17,7 % medido); PR cerrado sin fusionar y `main`
+      intacta. Repetido en local: `cobertura-local.sh . --suelo 99` sale con código 1.
+- [x] Los tests unitarios y de integración siguen pasando: 316 → **349 tests**, 953 → 1.279
+      aserciones, 0 fallos nuevos (8 saltados por falta de WordPress, con motivo en el propio test).
 
 ## Fuera de alcance
 
