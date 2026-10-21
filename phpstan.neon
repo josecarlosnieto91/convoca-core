@@ -8,7 +8,10 @@ parameters:
             - tests
             - node_modules (?)
     scanFiles:
-        - vendor/wp-phpunit/wp-phpunit/includes/functions.php
+        # Aquí estaba vendor/wp-phpunit/wp-phpunit/includes/functions.php: era el fichero que declaraba
+        # `tests_add_filter()` y compañía para las pruebas de WordPress. El paquete se retiró el
+        # 21-10-2026 (no soporta PHPUnit 10 y ya no lo usa nadie) y con él la referencia: dejarla
+        # apuntando a un fichero inexistente tumba PHPStan con «Scanned file … does not exist».
     bootstrapFiles:
         - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
         - phpstan-bootstrap.php
