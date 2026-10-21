@@ -17,9 +17,8 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests for the License_Manager class.
  *
- * @covers ::has_pro
- * @covers ::get_status_label
- * @covers ::PRO_FEATURES
+ * Cada prueba declara su propio @covers con la clase cualificada: PHPUnit 10 no acepta
+ * `@covers ::metodo` a nivel de clase (lo marca como anotación inválida al medir cobertura).
  */
 class LicenseManagerTest extends TestCase
 {

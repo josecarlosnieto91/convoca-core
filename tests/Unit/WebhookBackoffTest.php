@@ -15,8 +15,8 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests for the webhook retry backoff calculation (standalone, no DB).
  *
- * @covers ::get_backoff
- * @covers ::get_retry_delay
+ * Cada prueba declara su propio @covers con la clase cualificada: PHPUnit 10 no acepta
+ * `@covers ::metodo` a nivel de clase (lo marca como anotación inválida al medir cobertura).
  */
 class WebhookBackoffTest extends TestCase {
 

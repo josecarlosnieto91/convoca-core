@@ -15,13 +15,8 @@ use PHPUnit\Framework\TestCase;
 /**
  * Tests for the Logger class.
  *
- * @covers ::log
- * @covers ::info
- * @covers ::warning
- * @covers ::error
- * @covers ::get_logs
- * @covers ::get_stats
- * @covers ::cleanup
+ * Cada prueba declara su propio @covers con la clase cualificada: PHPUnit 10 no acepta
+ * `@covers ::metodo` a nivel de clase (lo marca como anotación inválida al medir cobertura).
  */
 class LoggerTest extends TestCase
 {
