@@ -83,6 +83,15 @@ class RolesYHorasTest extends TestCase {
 		$this->assertSame( $antes, $GLOBALS['_roles_creados'] );
 	}
 
+	public function test_toda_capacidad_del_mapa_la_tiene_el_administrador(): void {
+		// Regla del repo (la vigila `CapabilitiesIntegrationTest::test_all_caps_have_admin_role` contra
+		// WordPress de verdad): si core declara una capacidad, el administrador tiene que poder ejercerla.
+		// Se comprueba aquí también para que un añadido al mapa falle en local y no en el CI.
+		foreach ( Capabilities::get_all() as $cap => $config ) {
+			$this->assertContains( 'administrator', $config['roles'], "la capacidad {$cap} se ha quedado sin administrador" );
+		}
+	}
+
 	public function test_horas_sin_quien_las_gestione_no_se_acreditan(): void {
 		$this->assertFalse( Hour_Ledger::puede_acreditar_horas( 5 ) );
 	}

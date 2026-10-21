@@ -85,35 +85,35 @@ class Capabilities {
 			// el monitor pierde la edición en cuanto members deje de ponerlas.
 			'edit_posts'                        => array(
 				'description' => __( 'Editar entradas', 'convoca-core' ),
-				'roles'       => array( 'monitor_actividad' ),
+				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
 			'edit_others_posts'                 => array(
 				'description' => __( 'Editar entradas de otros', 'convoca-core' ),
-				'roles'       => array( 'monitor_actividad' ),
+				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
 			'edit_published_posts'              => array(
 				'description' => __( 'Editar entradas publicadas', 'convoca-core' ),
-				'roles'       => array( 'monitor_actividad' ),
+				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
 			'publish_posts'                     => array(
 				'description' => __( 'Publicar entradas', 'convoca-core' ),
-				'roles'       => array( 'monitor_actividad' ),
+				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
 			'delete_posts'                      => array(
 				'description' => __( 'Borrar entradas', 'convoca-core' ),
-				'roles'       => array( 'monitor_actividad' ),
+				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
 			'delete_others_posts'               => array(
 				'description' => __( 'Borrar entradas de otros', 'convoca-core' ),
-				'roles'       => array( 'monitor_actividad' ),
+				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
 			'delete_published_posts'            => array(
 				'description' => __( 'Borrar entradas publicadas', 'convoca-core' ),
-				'roles'       => array( 'monitor_actividad' ),
+				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
 			'read_private_posts'                => array(
 				'description' => __( 'Leer entradas privadas', 'convoca-core' ),
-				'roles'       => array( 'monitor_actividad' ),
+				'roles'       => array( 'administrator', 'monitor_actividad' ),
 			),
 			'convoca_manage_checkin'            => array(
 				'description' => __( 'Hacer check-in de asistentes', 'convoca-core' ),
