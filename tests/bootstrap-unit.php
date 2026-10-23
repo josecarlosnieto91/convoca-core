@@ -133,6 +133,18 @@ if (!function_exists('get_users')) { function get_users($args = []) { return [];
 // Por defecto, visitante anónimo (el valor de siempre). La prueba puede abrir sesión con
 // `$GLOBALS['_wp_logged_in'] = true`: sin eso no hay forma de probar los flujos que cambian de
 // comportamiento cuando ya hay sesión de WordPress (p. ej. el login del panel de socios).
+// `remove_accents()`: la usan los planes de socio para que «socia etica» encuentre «Socia Ética». Sin ella
+// (no está en el arnés) la búsqueda se vuelve sensible a los acentos y nadie lo nota.
+if (!function_exists('remove_accents')) {
+    function remove_accents($texto = '') {
+        $mapa = array(
+            'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ü' => 'u', 'ñ' => 'n', 'ç' => 'c',
+            'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U', 'Ü' => 'U', 'Ñ' => 'N', 'Ç' => 'C',
+        );
+        return \strtr((string) $texto, $mapa);
+    }
+}
+
 if (!function_exists('is_user_logged_in')) {
     function is_user_logged_in() { return (bool) ($GLOBALS['_wp_logged_in'] ?? false); }
 }
@@ -706,6 +718,11 @@ if (!isset($GLOBALS['wpdb'])) {
             if (is_string($q) && preg_match('/(convoca_lock_[A-Za-z0-9_]+)/', $q, $k)) {
                 return $GLOBALS['_wp_stores']['locks'][$k[1]] ?? null;
             }
+            // MAX(id) de una tabla: la secuencia de socios se apoya en él para dejar la opción heredada al
+            // día. Devolver siempre 0 dejaba esa parte muerta y la prueba no podía notarlo.
+            if (is_string($q) && preg_match('/MAX\(\s*id\s*\)\s+FROM\s+([A-Za-z0-9_]+)/i', $q, $m)) {
+                return (string) ($GLOBALS['_wp_stores']['max_id'][$m[1]] ?? 0);
+            }
             return '0';
         }
         public function get_results($q = null, $o = 'OBJECT') { return []; }
@@ -754,7 +771,9 @@ if (!isset($GLOBALS['wpdb'])) {
             // unitaria, que algo quedo registrado en base de datos (por ejemplo un
             // aviso del Logger, que no tiene buffer en memoria).
             $GLOBALS['_wp_stores']['db_inserts'][] = ['table' => $t, 'data' => $d];
-            $this->insert_id = 42;
+            // AUTO_INCREMENT de mentira: la prueba puede fijar el siguiente id (`$_wp_insert_id`). Sin fijarlo,
+            // el de siempre, para no mover lo que ya cuenta con 42.
+            $this->insert_id = (int) ($GLOBALS['_wp_insert_id'] ?? 42);
             return 1;
         }
         public function update($t, $d, $w) { return 1; }
@@ -762,6 +781,9 @@ if (!isset($GLOBALS['wpdb'])) {
             if (is_array($w) && isset($w['option_name']) && isset($GLOBALS['_wp_stores']['locks'][$w['option_name']])) {
                 unset($GLOBALS['_wp_stores']['locks'][$w['option_name']]);
             }
+            // Se apunta el borrado: es lo único que permite afirmar, en una prueba unitaria, que se limpió
+            // una fila (p. ej. la secuencia de un socio).
+            $GLOBALS['_wp_stores']['db_deletes'][] = ['table' => $t, 'where' => $w];
             return 1;
         }
         public function prepare($q, ...$a) {
