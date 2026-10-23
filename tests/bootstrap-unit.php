@@ -92,6 +92,13 @@ if (!function_exists('get_transient')) {
 // --- Post meta functions ---
 if (!function_exists('get_post_meta')) {
     function get_post_meta($id, $key, $single = false) {
+        // Lectura de un solo uso (`post_meta_once`): permite que el valor cambie ENTRE dos lecturas, que es
+        // justo lo que hay que probar en una carrera (el socio paga mientras el cron está corriendo).
+        if (isset($GLOBALS['_wp_stores']['post_meta_once'][(int) $id][$key])) {
+            $v = $GLOBALS['_wp_stores']['post_meta_once'][(int) $id][$key];
+            unset($GLOBALS['_wp_stores']['post_meta_once'][(int) $id][$key]);
+            return $single ? $v : (is_array($v) ? $v : [$v]);
+        }
         $s = &$GLOBALS['_wp_stores']['post_meta'];
         $v = $s[$id][$key] ?? null;
         if ($v === null) return $single ? '' : [];
@@ -296,7 +303,13 @@ if (!function_exists('apply_filters')) {
 if (!function_exists('remove_all_filters')) {
     function remove_all_filters($t) { unset($GLOBALS['_wp_filters'][$t]); return true; }
 }
-if (!function_exists('do_action')) { function do_action($t, ...$a) {} }
+// `do_action()` apunta lo disparado: los webhooks (caducidad, alta, baja) son el efecto observable de medio
+// plugin y con un no-op no se puede afirmar que se disparen.
+if (!function_exists('do_action')) {
+    function do_action($hook, ...$args) {
+        $GLOBALS['_wp_actions'][] = array('hook' => $hook, 'args' => $args);
+    }
+}
 if (!function_exists('add_action')) { function add_action($t, $c, $p = 10, $a = 1) { return true; } }
 if (!function_exists('remove_action')) { function remove_action($t, $c, $p = 10) { return true; } }
 if (!function_exists('has_action')) { function has_action($t, $c = false) { return false; } }
@@ -497,6 +510,13 @@ if (!function_exists('get_posts')) {
         if (strtoupper((string) ($args['order'] ?? '')) === 'DESC') { $out = array_reverse($out); }
 
         return $out;
+    }
+}
+// Términos de un objeto (proyectos del socio en los correos y certificados). Se sirven del almacén; por
+// defecto, ninguno.
+if (!function_exists('wp_get_object_terms')) {
+    function wp_get_object_terms($id, $tax, $args = []) {
+        return $GLOBALS['_wp_stores']['object_terms'][(int) $id] ?? [];
     }
 }
 if (!function_exists('wp_get_post_terms')) {
@@ -763,6 +783,15 @@ if (!isset($GLOBALS['wpdb'])) {
             }
             return '0';
         }
+        /**
+         * Lista de valores (ids, casi siempre). Se sirve de `_wp_stores['col']`, que la prueba fija; sin él,
+         * cualquier método que consulte ids (caducidades, renovaciones) reventaba en vez de medirse.
+         *
+         * @param string|null $q Consulta.
+         * @param int         $x Columna.
+         * @return array
+         */
+        public function get_col($q = null, $x = 0) { return $GLOBALS['_wp_stores']['col'] ?? []; }
         public function get_results($q = null, $o = 'OBJECT') { return []; }
         public function get_row($q = null) { return null; }
         public function query($q) {
