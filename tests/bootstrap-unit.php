@@ -1129,6 +1129,7 @@ if (!isset($GLOBALS['wpdb'])) {
         public function esc_like($text) { return addcslashes((string) $text, '_%\\'); }
 
         public function get_var($q = null, $x = 0, $y = 0) {
+            $GLOBALS['_wp_stores']['db_reads'][] = (string) (is_string($q) ? $q : '');
             // Mapa por consulta (`get_var_mapa`): un método que busca la página de un shortcode y también, más
             // abajo, un pago pendiente recibe respuestas distintas según lo que pregunte. Sin esto las dos
             // páginas (`[convoca_renovar]` y `[convoca_pago]`) daban el mismo id y sus URL coincidían.
@@ -1198,7 +1199,15 @@ if (!isset($GLOBALS['wpdb'])) {
             }
             return array();
         }
-        public function get_row($q = null) { return null; }
+        public function get_row($q = null) {
+            $GLOBALS['_wp_stores']['db_reads'][] = (string) (is_string($q) ? $q : '');
+            // Respuesta programada por aguja (`get_row_mapa`): un agregado SQL (`SUM(IF(...))`) no se puede
+            // simular con el almacén, pero sí se puede dar la fila que devolvería y comprobar cómo se lee.
+            foreach (($GLOBALS['_wp_stores']['get_row_mapa'] ?? []) as $aguja => $valor) {
+                if (false !== strpos((string) $q, (string) $aguja)) { return $valor; }
+            }
+            return null;
+        }
         public function query($q) {
             $GLOBALS['_wp_stores']['queries'][] = (string) $q;
             // Los flujos atómicos (p. ej. Hours_Manager::process_approval) cambian
@@ -1568,5 +1577,25 @@ if (!function_exists('make_clickable')) {
     /** Convierte URLs sueltas en enlaces, como WordPress. */
     function make_clickable($text) {
         return preg_replace('~(?<!["\'=>])(https?://[^\s<]+)~i', '<a href="$1" rel="nofollow">$1</a>', (string) $text);
+    }
+}
+
+if (!function_exists('wp_script_is')) {
+    /** Estado de un script registrado/encolado. */
+    function wp_script_is($handle, $list = 'enqueued') {
+        $s = $GLOBALS['_wp_stores']['scripts'][(string) $handle] ?? null;
+        if (null === $s) { return false; }
+        if ('registered' === $list) { return true; }
+        return !empty($s['enqueued']);
+    }
+}
+if (!function_exists('wp_enqueue_script')) {
+    function wp_enqueue_script($handle, $src = '', $deps = array(), $ver = false, $footer = false) {
+        $GLOBALS['_wp_stores']['scripts'][(string) $handle] = array(
+            'src' => (string) $src, 'deps' => (array) $deps, 'ver' => $ver, 'footer' => (bool) $footer,
+            'enqueued' => true,
+        );
+        $GLOBALS['_wp_stores']['enqueues'][] = (string) $handle;
+        return true;
     }
 }

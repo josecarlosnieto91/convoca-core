@@ -82,6 +82,9 @@ class Admin_Analytics {
 			'pendientes_doc'  => 0,
 			'nuevos_mes'      => 0,
 			'vencen_7d'       => 0,
+			// Sin el plugin de socios también viaja: quien pinta el panel lee esta clave siempre, y con el atajo
+			// de «no hay socios» se quedaba pidiendo un índice que no existía.
+			'activos_pct'     => 0,
 		);
 
 		if ( ! \Convoca\Core\Features::has( 'members' ) ) {
@@ -485,8 +488,8 @@ class Admin_Analytics {
 			$json_data[] = $entry;
 		}
 
-		// wp_json_encode escapa <, >, &, ' para contexto JS (evita XSS vía
-		// labels/datos con </script>). json_encode crudo permitiría inyección.
+		// `wp_json_encode()` NO escapa `<`, `>` ni `&` por sí solo (eso lo hacen los flags `JSON_HEX_*`): sin
+		// ellos, una etiqueta con `</script>` cierra el bloque y lo que venga detrás se ejecuta como HTML.
 		$chart_opts = wp_json_encode(
 			array(
 				'responsive'          => true,
@@ -501,8 +504,8 @@ class Admin_Analytics {
 			JSON_THROW_ON_ERROR
 		);
 
-		$labels_json = wp_json_encode( $labels, JSON_THROW_ON_ERROR );
-		$data_json   = wp_json_encode( $json_data, JSON_THROW_ON_ERROR );
+		$labels_json = wp_json_encode( $labels, JSON_THROW_ON_ERROR | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
+		$data_json   = wp_json_encode( $json_data, JSON_THROW_ON_ERROR | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
 
 		$extra_css = $opts['css'] ?? '';
 		$height    = $opts['height'] ?? '200px';
