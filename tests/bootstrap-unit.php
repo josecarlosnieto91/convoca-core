@@ -423,7 +423,19 @@ if (!function_exists('user_can')) {
     }
 }
 if (!function_exists('wp_create_nonce')) { function wp_create_nonce($a = -1) { return md5($a . time()); } }
-if (!function_exists('wp_verify_nonce')) { function wp_verify_nonce($n, $a = -1) { return true; } }
+if (!function_exists('wp_verify_nonce')) {
+    /**
+     * Si la prueba declara `_wp_stores['nonces_validos']`, sólo esos valores valen; si no, se acepta cualquiera (lo
+     * que esperan las pruebas que no van de nonces). Con «siempre verdadero» una guarda de nonce no se podía medir
+     * y, peor, una prueba que debía morir seguía adelante y llegaba a un `exit` que mataba PHPUnit en silencio.
+     */
+    function wp_verify_nonce($n, $a = -1) {
+        if (array_key_exists('nonces_validos', $GLOBALS['_wp_stores'] ?? array())) {
+            return in_array((string) $n, array_map('strval', (array) $GLOBALS['_wp_stores']['nonces_validos']), true);
+        }
+        return true;
+    }
+}
 if (!function_exists('get_userdata')) {
     function get_userdata($id) {
         // Override por test: _test_users[id].
@@ -567,7 +579,10 @@ if (!function_exists('wp_date')) {
      */
     function wp_date($f, $ts = null, $zona = null) {
         $tz = $zona instanceof \DateTimeZone ? $zona : new \DateTimeZone(wp_timezone_string());
-        $dt = new \DateTime('@' . (int) ($ts ?? time()));
+        // Reloj controlable (`_test_now`): hay lógica que depende del día del mes (la memoria sólo se genera la
+        // primera semana) y sin poder fijar «hoy» esa rama no se puede probar.
+        $ahora = $ts ?? $GLOBALS['_test_now'] ?? time();
+        $dt = new \DateTime('@' . (int) $ahora);
         $dt->setTimezone($tz);
         return $dt->format($f);
     }
@@ -1598,4 +1613,19 @@ if (!function_exists('wp_enqueue_script')) {
         $GLOBALS['_wp_stores']['enqueues'][] = (string) $handle;
         return true;
     }
+}
+
+if (!function_exists('wp_upload_dir')) {
+    /** Directorio de subidas: por defecto uno temporal, sin tocar `wp-content`. */
+    function wp_upload_dir($time = null, $create_dir = true, $refresh_cache = false) {
+        $base = (string) ($GLOBALS['_wp_stores']['upload_dir'] ?? ((getenv('TMPDIR') ?: sys_get_temp_dir()) . '/convoca-uploads'));
+        return array('path' => $base, 'url' => 'https://example.test/uploads', 'subdir' => '',
+            'basedir' => $base, 'baseurl' => 'https://example.test/uploads', 'error' => false);
+    }
+}
+if (!function_exists('wp_mkdir_p')) {
+    function wp_mkdir_p($dir) { return is_dir($dir) || @mkdir($dir, 0777, true); }
+}
+if (!function_exists('sanitize_file_name')) {
+    function sanitize_file_name($name) { return trim(preg_replace('/[^A-Za-z0-9._-]+/', '-', (string) $name), '-'); }
 }
