@@ -325,9 +325,16 @@ if (!function_exists('do_action')) {
         $GLOBALS['_wp_actions'][] = array('hook' => $hook, 'args' => $args);
     }
 }
-if (!function_exists('add_action')) { function add_action($t, $c, $p = 10, $a = 1) { return true; } }
+if (!function_exists('add_action')) {
+    /**
+     * `add_action()` **registra**, y `has_action()` lo consulta: con `has_action()` devolviendo siempre `false`,
+     * la rama de compatibilidad de `Utils::do_action()` (disparar también el gancho viejo) era inmedible y
+     * cualquier prueba habría dado por hecho que no existe.
+     */
+    function add_action($t, $c, $p = 10, $a = 1) { $GLOBALS['_wp_hooks'][$t][] = $c; return true; }
+}
 if (!function_exists('remove_action')) { function remove_action($t, $c, $p = 10) { return true; } }
-if (!function_exists('has_action')) { function has_action($t, $c = false) { return false; } }
+if (!function_exists('has_action')) { function has_action($t, $c = false) { return isset($GLOBALS['_wp_hooks'][$t]) ? 10 : false; } }
 if (!function_exists('has_filter')) {
     function has_filter($t, $c = false) {
         if (empty($GLOBALS['_wp_filters'][$t])) { return false; }
@@ -338,7 +345,17 @@ if (!function_exists('has_filter')) {
         return false;
     }
 }
-if (!function_exists('do_action_deprecated')) { function do_action_deprecated($t, $a = [], $v = '', $alt = '') {} }
+if (!function_exists('do_action_deprecated')) {
+    /**
+     * En WordPress `do_action_deprecated()` **dispara** el gancho antiguo (avisando del cambio). Aquí era un
+     * no-op: la rama de compatibilidad de `Utils::do_action()` se la tragaba y parecía que el gancho viejo no
+     * existía. Se apunta igual que `do_action()`.
+     */
+    function do_action_deprecated($t, $a = [], $v = '', $alt = '') {
+        $GLOBALS['_wp_actions'][] = array('hook' => $t, 'args' => (array) $a, 'deprecated_por' => $alt);
+        return null;
+    }
+}
 if (!function_exists('apply_filters_deprecated')) { function apply_filters_deprecated($t, $a = [], $v = '', $alt = '') { return $a[0] ?? null; } }
 if (!function_exists('did_action')) { function did_action($t) { return 0; } }
 
