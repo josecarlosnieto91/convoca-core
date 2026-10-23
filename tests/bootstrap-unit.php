@@ -1369,3 +1369,16 @@ if (!function_exists('is_wp_error')) {
     // Ya suele existir; si no, la mínima: un array de respuesta no es un error.
     function is_wp_error($t) { return $t instanceof \WP_Error; }
 }
+
+if (!function_exists('wp_cache_set')) {
+    /** Caché de objetos: el limitador de intentos la usa como atajo (sólo un `0` corta). */
+    function wp_cache_set($clave, $valor, $grupo = '') { $GLOBALS['_wp_cache'][$grupo][$clave] = $valor; return true; }
+}
+
+if (!function_exists('wp_cache_get')) {
+    /**
+     * Caché de objetos (lectura). Faltaba, y `Utils::check_rate_limit()` la llama: cualquier prueba que llegara
+     * al limitador de intentos reventaba con «Call to undefined function».
+     */
+    function wp_cache_get($clave, $grupo = '', $forzar = false) { return $GLOBALS['_wp_cache'][$grupo][$clave] ?? false; }
+}
