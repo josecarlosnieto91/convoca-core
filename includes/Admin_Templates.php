@@ -378,7 +378,7 @@ class Admin_Templates {
 				if ( ! preg_match( '/[a-z-]+\s*:\s*[^;\s]/i', $style ) ) {
 					return '';
 				}
-				return $style ? 'style="' . esc_attr( $style ) . '"' : '';
+				return 'style="' . esc_attr( $style ) . '"';
 			},
 			$html
 		);
