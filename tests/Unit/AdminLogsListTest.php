@@ -182,6 +182,8 @@ final class AdminLogsListTest extends TestCase {
 	public function test_el_id_de_objeto(): void {
 		$this->assertStringContainsString( '#123', $this->columna( 'column_object_id', $this->fila( array( 'object_id' => 123 ) ) ) );
 		$this->assertStringContainsString( '—', $this->columna( 'column_object_id', $this->fila() ) );
+		// Un id con basura se pinta como número: si se colara el texto tal cual, el `#12abc` acabaría en el panel.
+		$this->assertStringContainsString( '#12<', $this->columna( 'column_object_id', $this->fila( array( 'object_id' => '12abc' ) ) ) );
 	}
 
 	/**
