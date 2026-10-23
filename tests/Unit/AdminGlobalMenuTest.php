@@ -206,5 +206,13 @@ final class AdminGlobalMenuTest extends TestCase {
 		$this->assertStringContainsString( 'convoca_logs', $html );
 		$this->assertStringContainsString( 'No encontrada', $html, 'la tabla que falta se ve' );
 		$this->assertStringContainsString( 'convoca-diagnostic', $html );
+		// Y se ve como **error**, no como un aviso cualquiera: el estado del panel lo delata.
+		$this->assertStringContainsString( 'convoca-diagnostic-header--error', $html );
+
+		// Vecino: con las tres tablas, el panel no está en error.
+		$GLOBALS['_wp_stores']['get_var_mapa'] = array();
+		$sano = $this->pinta( 'Convoca\\Core\\convoca_health_page' );
+		$this->assertStringContainsString( 'convoca-diagnostic-header--success', $sano );
+		$this->assertStringNotContainsString( 'convoca-diagnostic-header--error', $sano );
 	}
 }
