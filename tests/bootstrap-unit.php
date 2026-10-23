@@ -1234,6 +1234,9 @@ if (!defined('OBJECT_K')) { define('OBJECT_K', 'OBJECT_K'); }
 if (!isset($GLOBALS['wpdb'])) {
     $GLOBALS['wpdb'] = new class {
         public $prefix = 'wp_'; public $posts = 'wp_posts';
+        /** Cola de consultas tal como la deja `SAVEQUERIES`: [sql, segundos, llamador]. */
+        public $queries = array();
+        public $num_queries = 0;
         public $postmeta = 'wp_postmeta'; public $options = 'wp_options';
         public $insert_id = 42;
         /**
