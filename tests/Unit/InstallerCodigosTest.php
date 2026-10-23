@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Instalador.
  */
-final class InstallerTest extends TestCase {
+final class InstallerCodigosTest extends TestCase {
 
 	/**
 	 * Estado global previo.
