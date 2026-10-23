@@ -139,6 +139,17 @@ final class AdminLogsListTest extends TestCase {
 	}
 
 	/**
+	 * El nivel va con su insignia y **su color**: un error y un aviso no pueden verse igual en el registro, que es
+	 * donde se busca un incidente a ojo.
+	 */
+	public function test_el_nivel_lleva_su_insignia(): void {
+		$this->assertStringContainsString( 'convoca-badge--error', $this->columna( 'column_level', $this->fila( array( 'level' => 'error' ) ) ) );
+		$this->assertStringContainsString( 'convoca-badge--warning', $this->columna( 'column_level', $this->fila( array( 'level' => 'warning' ) ) ) );
+		$this->assertStringContainsString( 'convoca-badge--info', $this->columna( 'column_level', $this->fila( array( 'level' => 'info' ) ) ) );
+		$this->assertStringContainsString( 'Error', $this->columna( 'column_level', $this->fila( array( 'level' => 'error' ) ) ), 'y el nivel legible' );
+	}
+
+	/**
 	 * El contexto va en su etiqueta y escapado (lo escribe el propio código, pero se comprueba).
 	 */
 	public function test_el_contexto(): void {
