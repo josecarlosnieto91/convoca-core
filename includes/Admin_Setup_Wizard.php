@@ -447,17 +447,22 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 		$this->step_nav( 2, $all_mand );
 	}
 
-	public function handle_create_pages(): void {
-		check_admin_referer( 'convoca_wizard_create_pages' );
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'Acceso denegado.', 'convoca-core' ) );
-		}
+	/**
+	 * Crea o repara las páginas del sistema y devuelve qué se hizo.
+	 *
+	 * Separado de `handle_create_pages()` —que exige nonce, permiso y bloqueo, y termina en redirección con
+	 * `exit`— para poder probar la lógica de verdad: crear lo que falta, reparar lo que existe sin el shortcode y
+	 * **no duplicar** lo que ya está bien (issue #14).
+	 *
+	 * @return array{creadas:int,reparadas:int,ok:int}
+	 */
+	public function crear_paginas_del_sistema(): array {
+		$resumen = array(
+			'creadas'   => 0,
+			'reparadas' => 0,
+			'ok'        => 0,
+		);
 
-		if ( ! \Convoca\Core\Utils::acquire_lock( 'convoca_wizard_create_pages', 30 ) ) {
-			wp_die( esc_html__( 'Otra operación de creación de páginas está en curso.', 'convoca-core' ) );
-		}
-
-		try {
 			foreach ( self::system_pages() as $slug => $info ) {
 				$tag = trim( $info['sc'], '[]' );
 
@@ -474,6 +479,7 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 				$state = self::page_state( $page, $info['sc'] );
 
 				if ( 'ok' === $state ) {
+					++$resumen['ok'];
 					continue;
 				}
 
@@ -487,7 +493,9 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 							'post_type'    => 'page',
 						)
 					);
-					if ( ! $page_id ) {
+					if ( $page_id ) {
+						++$resumen['creadas'];
+					} else {
 						\Convoca\Core\Logger::error(
 							sprintf( 'Error creando página %s (wp_insert_post devolvió 0).', $slug ),
 							'Common/SetupWizard'
@@ -523,12 +531,28 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 						'Common/SetupWizard'
 					);
 				} else {
+					++$resumen['reparadas'];
 					\Convoca\Core\Logger::info(
 						sprintf( 'Página %s reparada: su contenido ya incluye %s.', $slug, $info['sc'] ),
 						'Common/SetupWizard'
 					);
 				}
 			}
+		return $resumen;
+	}
+
+	public function handle_create_pages(): void {
+		check_admin_referer( 'convoca_wizard_create_pages' );
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Acceso denegado.', 'convoca-core' ) );
+		}
+
+		if ( ! \Convoca\Core\Utils::acquire_lock( 'convoca_wizard_create_pages', 30 ) ) {
+			wp_die( esc_html__( 'Otra operación de creación de páginas está en curso.', 'convoca-core' ) );
+		}
+
+		try {
+			$this->crear_paginas_del_sistema();
 		} finally {
 			\Convoca\Core\Utils::release_lock( 'convoca_wizard_create_pages' );
 		}

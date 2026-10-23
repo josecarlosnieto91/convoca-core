@@ -663,6 +663,10 @@ if (!function_exists('wp_insert_post')) {
         $p->post_content = $data['post_content'] ?? '';
         $p->post_excerpt = $data['post_excerpt'] ?? '';
         $p->post_author = (int) ($data['post_author'] ?? 0);
+        // `post_name` y `post_date` también se guardan: el asistente busca la página por su slug y una prueba que
+        // comprobara «se creó con este slug» leía una cadena vacía.
+        $p->post_name = (string) ($data['post_name'] ?? '');
+        $p->post_date = (string) ($data['post_date'] ?? current_time('mysql'));
 
         $GLOBALS['_wp_stores']['posts'][$id]       = $p;
         $GLOBALS['_wp_stores']['post_types'][$id]  = $p->post_type;
@@ -1153,6 +1157,21 @@ if (!isset($GLOBALS['wpdb'])) {
             foreach (($GLOBALS['_wp_stores']['get_var_mapa'] ?? []) as $aguja => $valor) {
                 if ('' !== $q_mapa && false !== strpos($q_mapa, $aguja)) { return $valor; }
             }
+            // Búsqueda de una página por su shortcode (`post_content LIKE '%[tag%'`), que es como el asistente
+            // reconoce un área titulada de otra forma (issue #14). Sin esto, el producto parecía «no encontrarla»
+            // y creaba una segunda página con el mismo shortcode.
+            if (is_string($q) && preg_match("/post_content LIKE '%([^']+)%'/", $q, $mm)) {
+                $aguja = str_replace('\\', '', $mm[1]);
+                foreach (($GLOBALS['_wp_stores']['posts'] ?? []) as $p) {
+                    $tipo = is_object($p) ? ($p->post_type ?? '') : ($p['post_type'] ?? '');
+                    $estado = is_object($p) ? ($p->post_status ?? '') : ($p['post_status'] ?? '');
+                    $cont = is_object($p) ? ($p->post_content ?? '') : ($p['post_content'] ?? '');
+                    if ('page' === $tipo && 'publish' === $estado && false !== strpos((string) $cont, $aguja)) {
+                        return is_object($p) ? (int) $p->ID : (int) ($p['ID'] ?? 0);
+                    }
+                }
+                return null;
+            }
             // Como WordPress: SHOW TABLES LIKE 'x' devuelve el nombre si existe. Sin esto el
             // Logger cree que no hay tabla y no escribe, y el bloqueo cae al camino de opciones.
             if (is_string($q) && preg_match("/SHOW TABLES LIKE '?([A-Za-z0-9_]+)'?/i", $q, $m)) {
@@ -1291,15 +1310,20 @@ if (!isset($GLOBALS['wpdb'])) {
         }
         public function prepare($q, ...$a) {
             // Un solo argumento que sea array se **expande**: es lo que hace WordPress con `IN (%d,%d,...)`.
-            // Sin esto, un `DELETE ... IN ($placeholders)` salía literalmente como `IN (Array,%d,%d)` y no se
-            // podía afirmar qué filas se borran.
             if (1 === count($a) && is_array($a[0])) { $a = array_values($a[0]); }
-            $sql = $q;
-            foreach ($a as $arg) {
-                $p = strpos($sql, '%');
-                if ($p !== false) { $sql = substr_replace($sql, (string)$arg, $p, 2); }
-            }
-            return $sql;
+            $i = 0;
+            return preg_replace_callback(
+                '/%%|%[sdf]/',
+                function ($m) use (&$i, $a) {
+                    if ('%%' === $m[0]) { return '%'; }
+                    $v = $a[$i++] ?? '';
+                    if ('%s' !== $m[0]) { return (string) $v; }
+                    // `%s` va **entre comillas**, como en WordPress. Sin ellas, un `LIKE %s` acababa en
+                    // `LIKE %[tag%`: la consulta no casaba y el asistente creía que la página no existía.
+                    return "'" . addslashes((string) $v) . "'";
+                },
+                (string) $q
+            );
         }
         public function escape($d) { return addslashes($d); }
         public function get_charset_collate() { return 'DEFAULT CHARSET=utf8mb4'; }
