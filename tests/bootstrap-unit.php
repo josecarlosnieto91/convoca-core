@@ -253,6 +253,10 @@ if (!function_exists('get_page_by_path')) {
         return null;
     }
 }
+// `sanitize_textarea_field()`: la usan el consentimiento y las notas. Faltaba y reventaba el registro.
+if (!function_exists('sanitize_textarea_field')) {
+    function sanitize_textarea_field($t = '') { return trim(strip_tags((string) $t)); }
+}
 if (!function_exists('sanitize_text_field')) { function sanitize_text_field($s) { return trim(strip_tags($s)); } }
 if (!function_exists('sanitize_title')) { function sanitize_title($t) { return strtolower(str_replace(' ', '-', trim($t))); } }
 if (!function_exists('sanitize_email')) { function sanitize_email($e) { return filter_var($e, FILTER_SANITIZE_EMAIL); } }
@@ -501,7 +505,12 @@ if (!function_exists('get_posts')) {
         $out = [];
         foreach ($posts as $id => $p) {
             if (!in_array($p->post_type ?? '', $types, true)) { continue; }
-            if (!in_array($p->post_status ?? 'publish', $status, true)) { continue; }
+            $estado = $p->post_status ?? 'publish';
+            // `post_status => 'any'` en WordPress es «todo menos papelera, borrador automático y herencia».
+            // Tratarlo como un estado literal dejaba las consultas de «todo» devolviendo nada.
+            if (in_array('any', $status, true)) {
+                if (in_array($estado, ['trash', 'auto-draft', 'inherit'], true)) { continue; }
+            } elseif (!in_array($estado, $status, true)) { continue; }
             if (!_wp_stub_meta_matches((int) $id, $mq)) { continue; }
             $out[] = ($fields === 'ids') ? (int) $id : $p;
             if ($limit > 0 && count($out) >= $limit) { break; }
