@@ -562,7 +562,10 @@ class Admin_Backup {
 				update_post_meta( $id, '_convoca_email', sanitize_email( $data[2] ?? '' ) );
 				update_post_meta( $id, '_convoca_dni', sanitize_text_field( $data[3] ?? '' ) );
 				update_post_meta( $id, '_convoca_plan', sanitize_text_field( $data[4] ?? '' ) );
-				update_post_meta( $id, '_convoca_estado_miembro', sanitize_text_field( $data[5] ?? 'activo' ) );
+				// `??` no cubre la columna **vacía**: un socio importado sin estado se quedaba sin estado y los
+				// agregados del panel (que buscan 'activo') no lo contaban. Sin valor → activo.
+				$estado = (string) ( $data[5] ?? '' );
+				update_post_meta( $id, '_convoca_estado_miembro', sanitize_text_field( '' !== $estado ? $estado : 'activo' ) );
 				update_post_meta( $id, '_convoca_vencimiento', sanitize_text_field( $data[6] ?? '' ) );
 				break;
 			case 'proyectos':

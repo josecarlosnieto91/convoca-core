@@ -315,7 +315,7 @@ if (!function_exists('sanitize_textarea_field')) {
 // dispara el deprecado de `strip_tags(null)`.
 if (!function_exists('sanitize_text_field')) { function sanitize_text_field($s = '') { return trim(strip_tags((string) $s)); } }
 if (!function_exists('sanitize_title')) { function sanitize_title($t) { return strtolower(str_replace(' ', '-', trim($t))); } }
-if (!function_exists('sanitize_email')) { function sanitize_email($e) { return filter_var($e, FILTER_SANITIZE_EMAIL); } }
+if (!function_exists('sanitize_email')) { function sanitize_email($e) { return filter_var(trim((string) $e), FILTER_SANITIZE_EMAIL); } }
 if (!function_exists('sanitize_url')) { function sanitize_url($u) { return filter_var($u, FILTER_SANITIZE_URL); } }
 if (!function_exists('absint')) { function absint($v) { return abs((int)$v); } }
 if (!function_exists('wp_unslash')) { function wp_unslash($s) { return is_string($s) ? stripslashes($s) : $s; } }
@@ -1688,4 +1688,17 @@ if (!function_exists('add_options_page')) {
         $GLOBALS['_wp_stores']['options_pages'][] = compact('page_title', 'menu_title', 'capability', 'menu_slug', 'callback');
         return $menu_slug;
     }
+}
+
+if (!function_exists('add_submenu_page')) {
+    function add_submenu_page($parent, $page_title, $menu_title, $capability, $menu_slug, $callback = '') {
+        $GLOBALS['_wp_stores']['submenu_pages'][] = compact('parent', 'page_title', 'menu_title', 'capability', 'menu_slug', 'callback');
+        return $menu_slug;
+    }
+}
+if (!function_exists('admin_url')) {
+    function admin_url($path = '') { return 'https://example.test/wp-admin/' . ltrim((string) $path, '/'); }
+}
+if (!function_exists('get_current_user_id')) {
+    function get_current_user_id() { return (int) ($GLOBALS['_test_user_id'] ?? 1); }
 }
