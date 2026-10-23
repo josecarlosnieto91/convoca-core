@@ -136,7 +136,27 @@ if (!function_exists('add_user_meta')) {
         return update_user_meta($user_id, $key, $value);
     }
 }
-if (!function_exists('get_users')) { function get_users($args = []) { return []; } }
+if (!function_exists('get_users')) {
+    /**
+     * Usuarios por rol, desde el almacén real (`_wp_stores['usuarios']`). Devolvía `[]` siempre, así que
+     * cualquier código que reparta algo entre los administradores (un aviso, por ejemplo) no se podía medir: la
+     * prueba habría dado por bueno que no se avisa a nadie.
+     */
+    function get_users($args = []) {
+        $roles  = (array) ($args['role__in'] ?? ($args['role'] ?? []));
+        $campos = $args['fields'] ?? '';
+        $salida = [];
+        foreach (($GLOBALS['_wp_stores']['usuarios'] ?? []) as $id => $u) {
+            if ($roles) {
+                $suyos = (array) ($u->roles ?? []);
+                if (!array_intersect($roles, $suyos)) { continue; }
+            }
+            if ('ID' === $campos) { $salida[] = (int) $id; continue; }
+            $salida[] = $u;
+        }
+        return $salida;
+    }
+}
 // Por defecto, visitante anónimo (el valor de siempre). La prueba puede abrir sesión con
 // `$GLOBALS['_wp_logged_in'] = true`: sin eso no hay forma de probar los flujos que cambian de
 // comportamiento cuando ya hay sesión de WordPress (p. ej. el login del panel de socios).
