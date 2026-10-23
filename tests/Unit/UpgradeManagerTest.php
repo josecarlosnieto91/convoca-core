@@ -196,6 +196,25 @@ final class UpgradeManagerTest extends TestCase {
 	}
 
 	/**
+	 * Con otra petición migrando, esta no hace nada: dos admins a la vez no migran dos veces.
+	 */
+	public function test_con_el_cerrojo_tomado_no_migra(): void {
+		$hechas                  = array();
+		$this->gestor->callbacks = array(
+			'1.0.1' => function () use ( &$hechas ) {
+				$hechas[] = '1.0.1';
+			},
+		);
+		$GLOBALS['_wp_stores']['options']['convoca_prueba_db_version'] = '1.0.0';
+		$GLOBALS['_wp_stores']['locks']['convoca_lock_upgrade_convoca_prueba'] = time() + 600;
+
+		$this->gestor->maybe_upgrade();
+
+		$this->assertSame( array(), $hechas, 'no se migra' );
+		$this->assertSame( '1.0.0', $GLOBALS['_wp_stores']['options']['convoca_prueba_db_version'], 'ni se toca la versión' );
+	}
+
+	/**
 	 * Un `callable` que no lo es corta antes de ejecutar nada.
 	 */
 	public function test_un_callback_que_no_es_llamable(): void {
