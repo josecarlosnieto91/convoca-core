@@ -443,6 +443,13 @@ if (!function_exists('wp_timezone_string')) {
 }
 if (!function_exists('wp_timezone')) { function wp_timezone() { return new \DateTimeZone(wp_timezone_string()); } }
 if (!function_exists('date_i18n')) { function date_i18n($f, $ts = null) { return date($f, $ts ?? time()); } }
+// `get_site_option()` (multisite y respaldo del correo de administración): lee del mismo almacén que las
+// opciones, con el prefijo de red que usa WordPress.
+if (!function_exists('get_site_option')) {
+    function get_site_option($name, $default = false) {
+        return $GLOBALS['_wp_stores']['site_options'][$name] ?? $default;
+    }
+}
 if (!function_exists('wp_date')) { function wp_date($f, $ts = null) { return date($f, $ts ?? time()); } }
 
 // --- Posts ---
