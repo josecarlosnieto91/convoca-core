@@ -130,7 +130,12 @@ if (!function_exists('add_user_meta')) {
     }
 }
 if (!function_exists('get_users')) { function get_users($args = []) { return []; } }
-if (!function_exists('is_user_logged_in')) { function is_user_logged_in() { return false; } }
+// Por defecto, visitante anónimo (el valor de siempre). La prueba puede abrir sesión con
+// `$GLOBALS['_wp_logged_in'] = true`: sin eso no hay forma de probar los flujos que cambian de
+// comportamiento cuando ya hay sesión de WordPress (p. ej. el login del panel de socios).
+if (!function_exists('is_user_logged_in')) {
+    function is_user_logged_in() { return (bool) ($GLOBALS['_wp_logged_in'] ?? false); }
+}
 if (!function_exists('wp_get_current_user')) {
     function wp_get_current_user() {
         $u = new WP_User();
