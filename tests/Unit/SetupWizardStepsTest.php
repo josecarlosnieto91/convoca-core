@@ -82,6 +82,12 @@ final class SetupWizardStepsTest extends TestCase {
 		$this->assertStringContainsString( 'Convoca Core', $html );
 		$this->assertStringContainsString( 'convoca_logs', $html );
 		$this->assertStringContainsString( 'convoca_locks', $html );
+		$this->assertStringNotContainsString( 'No encontrada', $html, 'el doble dice que las tablas existen' );
+
+		// Y si no existen, se dice: una comprobación que nunca falla no comprueba nada.
+		$GLOBALS['_wp_stores']['get_var_mapa'] = array( 'convoca_' => '' );
+		$html = $this->paso( 'step_database' );
+		$this->assertStringContainsString( 'No encontrada', $html );
 	}
 
 	/**
@@ -91,7 +97,7 @@ final class SetupWizardStepsTest extends TestCase {
 		$html = $this->paso( 'step_pages' );
 
 		$this->assertStringContainsString( 'Páginas del Sistema', $html );
-		$this->assertStringContainsString( 'convoca_wizard_create_pages', $html, 'con su nonce' );
+		$this->assertStringContainsString( 'name="_wpnonce"', $html, 'con el campo del nonce' );
 		$this->assertStringContainsString( '[convoca_alta_socio]', $html );
 		$this->assertStringContainsString( 'No existe la página', $html, 'sin páginas, todas faltan' );
 	}
