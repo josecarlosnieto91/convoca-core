@@ -492,8 +492,11 @@ if (!function_exists('wp_remote_post')) {
      */
     function wp_remote_post($u, $a = []) {
         $GLOBALS['_wp_http_posts'][] = ['url' => $u, 'args' => $a];
+        // Se devuelve lo programado sea lo que sea: un `WP_Error` también es una respuesta legítima de
+        // `wp_remote_post()`, y con `is_array()` se descartaba —así no había forma de simular un fallo de red,
+        // y la rama que evita degradar una licencia activa quedaba inmedible.
         $respuesta = $GLOBALS['_wp_stores']['http_response'] ?? null;
-        if (is_array($respuesta)) { return $respuesta; }
+        if (null !== $respuesta) { return $respuesta; }
         return ['response' => ['code' => 200], 'body' => '{}'];
     }
 }
