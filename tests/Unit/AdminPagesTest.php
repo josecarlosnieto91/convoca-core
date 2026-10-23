@@ -42,7 +42,20 @@ final class AdminPagesTest extends TestCase {
 	 * Prepara el caso.
 	 */
 	protected function setUp(): void {
-		unset( $_GET['refresh'], $_POST['convoca_log_retention_save'], $_POST['retention_info'], $_POST['retention_warning'], $_POST['retention_error'] );
+		// Se limpia también el nonce y la acción de cualquier prueba anterior: `Admin_Logs_List::process_bulk_action()`
+		// los mira, y con `nonces_validos` declarado un `_wpnonce` residual mataba esta prueba según el orden.
+		unset(
+			$_GET['refresh'],
+			$_POST['convoca_log_retention_save'],
+			$_POST['retention_info'],
+			$_POST['retention_warning'],
+			$_POST['retention_error'],
+			$_POST['_wpnonce'],
+			$_POST['log_ids'],
+			$_REQUEST['action'],
+			$_REQUEST['action2'],
+			$_REQUEST['_wpnonce']
+		);
 		foreach ( array( 'filter_context', 'filter_level', 'filter_date_from', 'filter_date_to', 's', 'paged' ) as $f ) {
 			unset( $_GET[ $f ] );
 		}
