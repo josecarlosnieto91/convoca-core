@@ -443,6 +443,21 @@ if (!function_exists('current_user_can')) {
  */
 if (!function_exists('is_admin')) { function is_admin() { return !empty($GLOBALS['_wp_stores']['is_admin']); } }
 
+/** ¿Petición ajax o cron? Las pantallas que redirigen no deben hacerlo ahí. */
+if (!function_exists('wp_doing_ajax')) { function wp_doing_ajax() { return !empty($GLOBALS['_wp_stores']['doing_ajax']); } }
+if (!function_exists('wp_doing_cron')) { function wp_doing_cron() { return !empty($GLOBALS['_wp_stores']['doing_cron']); } }
+
+/**
+ * Redirección segura: se apunta y **corta** con una excepción. En WordPress termina en `exit`; sin cortar aquí, el
+ * `exit` del producto mataría PHPUnit sin resumen (ya pasó con un `wp_die`).
+ */
+if (!function_exists('wp_safe_redirect')) {
+    function wp_safe_redirect($url, $status = 302) {
+        $GLOBALS['_wp_redirects'][] = array('url' => $url, 'status' => $status);
+        throw new \RuntimeException('wp_safe_redirect: ' . (string) $url);
+    }
+}
+
 /**
  * Respuesta JSON de ajax: se apunta lo que se habría enviado y se sigue (el `wp_die` final no se puede medir).
  */

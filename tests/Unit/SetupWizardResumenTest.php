@@ -397,4 +397,95 @@ final class SetupWizardResumenTest extends TestCase {
 		$this->assertNull( $res['planes'] );
 		$this->assertSame( array(), $res['movimientos'] );
 	}
+
+	/**
+	 * La redirección al asistente: sólo cuando toca, y una vez por sesión.
+	 *
+	 * Cada guarda es una forma de no ser pesado: en ajax, en cron, en la propia pantalla del asistente, en una página
+	 * que no es el escritorio o los plugins, o si ya se enseñó hace poco. Si el sitio ya está configurado, se marca
+	 * como completado y no se redirige nunca más.
+	 */
+	public function test_la_redireccion_al_asistente(): void {
+		$GLOBALS['_test_caps'] = array( 'manage_options' => true );
+		$GLOBALS['pagenow']    = 'index.php';
+
+		// 1) Sin permiso no se hace nada.
+		$GLOBALS['_test_caps'] = array( 'manage_options' => false );
+		$this->wizard->maybe_redirect();
+		$this->assertSame( array(), $GLOBALS['_wp_redirects'] ?? array() );
+
+		// 2) Ya completado o descartado: silencio.
+		$GLOBALS['_test_caps'] = array( 'manage_options' => true );
+		$GLOBALS['_wp_stores']['options'][ Admin_Setup_Wizard::COMPLETED_OPTION ] = 1;
+		$this->wizard->maybe_redirect();
+		$this->assertSame( array(), $GLOBALS['_wp_redirects'] ?? array() );
+		unset( $GLOBALS['_wp_stores']['options'][ Admin_Setup_Wizard::COMPLETED_OPTION ] );
+
+		$GLOBALS['_wp_stores']['options'][ Admin_Setup_Wizard::DISMISS_OPTION ] = 1;
+		$this->wizard->maybe_redirect();
+		$this->assertSame( array(), $GLOBALS['_wp_redirects'] ?? array() );
+		unset( $GLOBALS['_wp_stores']['options'][ Admin_Setup_Wizard::DISMISS_OPTION ] );
+
+		// 3) Ajax y cron no se interrumpen.
+		$GLOBALS['_wp_stores']['doing_ajax'] = true;
+		$this->wizard->maybe_redirect();
+		$this->assertSame( array(), $GLOBALS['_wp_redirects'] ?? array() );
+		$GLOBALS['_wp_stores']['doing_ajax'] = false;
+		$GLOBALS['_wp_stores']['doing_cron'] = true;
+		$this->wizard->maybe_redirect();
+		$this->assertSame( array(), $GLOBALS['_wp_redirects'] ?? array() );
+		$GLOBALS['_wp_stores']['doing_cron'] = false;
+
+		// 4) En la propia pantalla del asistente, no se redirige a sí misma.
+		$_GET['page'] = 'conv-setup-wizard';
+		$this->wizard->maybe_redirect();
+		$this->assertSame( array(), $GLOBALS['_wp_redirects'] ?? array() );
+		unset( $_GET['page'] );
+
+		// 5) Si ya se enseñó en esta sesión, no se repite.
+		$GLOBALS['_wp_stores']['transients'][ Admin_Setup_Wizard::SEEN_OPTION . '_' . get_current_user_id() ] = 1;
+		$this->wizard->maybe_redirect();
+		$this->assertSame( array(), $GLOBALS['_wp_redirects'] ?? array() );
+		unset( $GLOBALS['_wp_stores']['transients'][ Admin_Setup_Wizard::SEEN_OPTION . '_' . get_current_user_id() ] );
+
+		// 6) Desde una página que no toca (una lista cualquiera), tampoco.
+		$GLOBALS['pagenow'] = 'edit.php';
+		$this->wizard->maybe_redirect();
+		$this->assertSame( array(), $GLOBALS['_wp_redirects'] ?? array() );
+
+		// 7) Si ya está configurado, se marca como completado y no se molesta más.
+		$this->sembrar_paginas();
+		$GLOBALS['pagenow'] = 'index.php';
+		$this->wizard->maybe_redirect();
+		$this->assertSame( 1, (int) $GLOBALS['_wp_stores']['options'][ Admin_Setup_Wizard::COMPLETED_OPTION ] );
+		$this->assertSame( array(), $GLOBALS['_wp_redirects'] ?? array() );
+	}
+
+	/**
+	 * Y cuando todo está por configurar y estamos en el escritorio: redirige **una vez** y marca la sesión para no
+	 * repetirlo en cada carga. El doble de `wp_safe_redirect()` corta con excepción, como el `exit` de WordPress.
+	 */
+	public function test_redirige_una_vez(): void {
+		$GLOBALS['_test_caps'] = array( 'manage_options' => true );
+		$GLOBALS['pagenow']    = 'index.php';
+
+		try {
+			$this->wizard->maybe_redirect();
+			$this->fail( 'debía redirigir' );
+		} catch ( \RuntimeException $e ) {
+			$this->assertStringContainsString( 'wp_safe_redirect', $e->getMessage() );
+		}
+
+		$this->assertCount( 1, $GLOBALS['_wp_redirects'] );
+		$this->assertStringContainsString( 'page=conv-setup-wizard', $GLOBALS['_wp_redirects'][0]['url'] );
+		$this->assertSame(
+			1,
+			(int) ( $GLOBALS['_wp_stores']['transients'][ Admin_Setup_Wizard::SEEN_OPTION . '_' . get_current_user_id() ] ?? 0 ),
+			'queda marcado para esta sesión'
+		);
+
+		// La segunda vez ya no molesta.
+		$this->wizard->maybe_redirect();
+		$this->assertCount( 1, $GLOBALS['_wp_redirects'] );
+	}
 }
