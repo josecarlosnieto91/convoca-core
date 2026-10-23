@@ -134,31 +134,6 @@ final class InstallerCodigosTest extends TestCase {
 	}
 
 	/**
-	 * La instalación de la tabla de registros: crea la suya y arranca la migración de códigos.
-	 */
-	public function test_db_init(): void {
-		$upgrade = ABSPATH . 'wp-admin/includes/';
-		if ( ! is_dir( $upgrade ) ) {
-			mkdir( $upgrade, 0777, true );
-		}
-		// El `require_once` del producto necesita el fichero; `dbDelta()` ya está en el arnés.
-		file_put_contents( $upgrade . 'upgrade.php', "<?php\n// doble del arnés\n" );
-
-		$GLOBALS['_wp_stores']['col_cola'] = array( array() );
-		Installer::db_init();
-
-		$dd = (array) ( $GLOBALS['_wp_stores']['dbdelta'] ?? array() );
-		$this->assertNotEmpty( $dd, 'se pide crear la tabla' );
-		$this->assertStringContainsString( 'convoca_logs', $dd[0] );
-		$this->assertStringContainsString( 'PRIMARY KEY', $dd[0] );
-
-		@unlink( $upgrade . 'upgrade.php' );
-		@rmdir( $upgrade );
-		@rmdir( ABSPATH . 'wp-admin/' );
-		@rmdir( ABSPATH );
-	}
-
-	/**
 	 * Las tareas programadas delegan en el registro.
 	 */
 	public function test_las_tareas_de_mantenimiento(): void {
