@@ -152,6 +152,12 @@ final class SetupWizardResumenTest extends TestCase {
 		$this->assertStringContainsString( 'Faltan tablas', implode( ' ', $filas['1']['detail'] ) );
 		$this->assertStringContainsString( 'paso 1', $filas['1']['missing'] );
 		$this->assertFalse( $this->privado( 'is_config_complete' ) );
+
+		// Y con todo lo demás en orden, lo que impide completar es **la tabla**: así el caso de arriba no pasa por
+		// otra causa y el mutante que quita la comprobación de tablas no sobrevive.
+		$this->sembrar_paginas();
+		unset( $GLOBALS['_wp_stores']['get_var_mapa'] );
+		$this->assertTrue( $this->privado( 'is_config_complete' ), 'con las páginas y las tablas, sí' );
 	}
 
 	/**
@@ -232,6 +238,11 @@ final class SetupWizardResumenTest extends TestCase {
 		$this->assertTrue( $filas['4']['ok'] );
 		$this->assertTrue( $filas['5']['ok'] );
 		$this->assertStringContainsString( '08:00 – 20:00', implode( ' ', $filas['5']['detail'] ) );
+
+		// Con **una sola** hora el horario no está definido: media jornada no es un horario.
+		$GLOBALS['_wp_stores']['options']['convoca_shifts_hora_cierre'] = '';
+		$filas = $this->privado( 'summary_rows' );
+		$this->assertFalse( $filas['5']['ok'], 'con sólo la apertura no vale' );
 	}
 
 	/**
