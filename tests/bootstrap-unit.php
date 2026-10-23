@@ -1271,6 +1271,10 @@ if (!class_exists('WP_REST_Response')) {
         public function set_param($key, $value) { $this->params[$key] = $value; }
         public function get_params() { return $this->params; }
         public function get_header($name) { return ''; }
+        // Ruta de la petición: la usa el monitor de seguridad para decidir si la respuesta es de las nuestras.
+        // Faltaba, y sin ella no se podía probar qué se vigila y qué no.
+        public function set_route($ruta) { $this->params['__route'] = (string) $ruta; }
+        public function get_route() { return (string) ($this->params['__route'] ?? ''); }
     }
 
     class WP_REST_Response {
@@ -1390,3 +1394,13 @@ if (!function_exists('trailingslashit')) {
     /** Barra final, como WordPress. Faltaba y la protección del directorio de PDF la usa. */
     function trailingslashit($ruta) { return rtrim((string) $ruta, '/\\') . '/'; }
 }
+
+// El `Logger` limita los avisos por proceso (50 en 60 s) y la suite entera comparte proceso: cuando un fichero
+// registra mucho, las pruebas siguientes dejan de ver **sus** avisos y parecen rotas. Se sube el tope para medir;
+// el valor de producción sigue en 50 y el filtro es la vía prevista para cambiarlo.
+add_filter(
+	'convoca_logger_rate_limit_max',
+	static function () {
+		return PHP_INT_MAX;
+	}
+);
