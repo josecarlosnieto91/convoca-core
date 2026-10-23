@@ -357,6 +357,11 @@ if (!function_exists('get_userdata')) {
         if (!empty($GLOBALS['_test_users'][(int) $id])) {
             return $GLOBALS['_test_users'][(int) $id];
         }
+        // Usuario del almacén real (`_wp_stores['usuarios']`): sin esto, `get_userdata()` devolvía un usuario
+        // inventado sin `user_login`, así que quien leía el nombre de cuenta recibía una cadena vacía.
+        if (isset($GLOBALS['_wp_stores']['usuarios'][(int) $id])) {
+            return $GLOBALS['_wp_stores']['usuarios'][(int) $id];
+        }
         $u = new WP_User();
         $u->ID = (int) $id;
         $u->display_name = 'Test User';
@@ -366,7 +371,55 @@ if (!function_exists('get_userdata')) {
         return $u;
     }
 }
-if (!function_exists('get_user_by')) { function get_user_by($field, $value) { $u = new WP_User(); $u->ID = 1; $u->user_email = 'test@example.com'; return $u; } }
+// Usuarios del sitio con registro REAL (`_wp_stores['usuarios']`, id => datos). Antes `get_user_by()`
+// devolvía siempre el usuario 1, así que cualquier código que decida «¿ya existe una cuenta con este correo?»
+// tomaba siempre la misma rama y no había manera de probar las demás.
+if (!function_exists('get_user_by')) {
+    function get_user_by($field, $value) {
+        $campo = 'email' === $field ? 'user_email' : ('login' === $field ? 'user_login' : ('id' === $field ? 'ID' : $field));
+        foreach (($GLOBALS['_wp_stores']['usuarios'] ?? []) as $id => $u) {
+            $actual = is_object($u) ? ($u->$campo ?? null) : ($u[$campo] ?? null);
+            if (null !== $actual && (string) $actual === (string) $value) {
+                return is_object($u) ? $u : (object) $u;
+            }
+        }
+        return false;
+    }
+}
+if (!function_exists('username_exists')) {
+    function username_exists($login) { return (bool) get_user_by('login', $login); }
+}
+if (!function_exists('wp_create_user')) {
+    function wp_create_user($login, $pass = '', $email = '') {
+        // Fallo controlable: la cola `_wp_create_fail` devuelve errores en orden.
+        if (!empty($GLOBALS['_wp_create_fail'])) {
+            $fallo = array_shift($GLOBALS['_wp_create_fail']);
+            if ($fallo instanceof WP_Error) { return $fallo; }
+        }
+        $id = 1 + max(array_merge([0], array_map('intval', array_keys($GLOBALS['_wp_stores']['usuarios'] ?? []))));
+        $GLOBALS['_wp_stores']['usuarios'][$id] = (object) [
+            'ID' => $id, 'user_login' => (string) $login, 'user_email' => (string) $email,
+            'display_name' => (string) $login, 'first_name' => '',
+        ];
+        $GLOBALS['_wp_stores']['users_created'][] = compact('id', 'login', 'pass', 'email');
+        return $id;
+    }
+}
+if (!function_exists('wp_update_user')) {
+    function wp_update_user($datos = []) {
+        $id = (int) ($datos['ID'] ?? 0);
+        if ($id && isset($GLOBALS['_wp_stores']['usuarios'][$id])) {
+            foreach ($datos as $k => $v) {
+                if ('ID' !== $k) { $GLOBALS['_wp_stores']['usuarios'][$id]->$k = $v; }
+            }
+        }
+        $GLOBALS['_wp_stores']['users_updated'][] = $datos;
+        return $id;
+    }
+}
+if (!function_exists('wp_set_password')) {
+    function wp_set_password($pass, $id) { $GLOBALS['_wp_stores']['passwords'][(int) $id] = (string) $pass; }
+}
 if (!function_exists('wp_set_current_user')) { function wp_set_current_user($id, $name = '') { return new WP_User(); } }
 
 // --- HTTP ---
