@@ -351,36 +351,58 @@ class Admin_Backup {
 		if ( empty( $_FILES['backup_zip']['tmp_name'] ) ) {
 			wp_die( esc_html__( 'No se ha subido ningún archivo.', 'convoca-core' ) );
 		}
-		$file = $_FILES['backup_zip'];
 
-		if ( $file['error'] !== UPLOAD_ERR_OK ) {
-			wp_die( esc_html__( 'Error en la subida: ', 'convoca-core' ) . esc_html( $file['error'] ) );
+		try {
+			$preparada = $this->preparar_importacion( (array) $_FILES['backup_zip'], get_current_user_id() );
+		} catch ( \RuntimeException $e ) {
+			wp_die( esc_html( $e->getMessage() ) );
 		}
-		if ( strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) ) !== 'zip' ) {
-			wp_die( esc_html__( 'Formato inválido. Solo ZIP.', 'convoca-core' ) );
+
+		set_transient( 'convoca_import_preview_' . get_current_user_id(), $preparada, self::PREVIEW_TTL );
+
+		wp_safe_redirect( admin_url( 'admin.php?page=conv-backup' ) );
+		exit;
+	}
+
+	/**
+	 * Valida el fichero subido y lo deja listo para importar: devuelve el token y qué trae.
+	 *
+	 * Se separa de `handle_import_preview()` (nonce, permiso, redirección y `exit`) porque es donde se decide si un
+	 * fichero entra o no: extensión, tamaño, que sea un ZIP legible y que traiga algo conocido. Un ZIP ajeno no se
+	 * acepta «por si acaso».
+	 *
+	 * @param array $file    Entrada de `$_FILES`.
+	 * @param int   $usuario Usuario que sube (la vista previa es suya).
+	 * @return array{token:string,entities:array<string, array{label:string,count:int}>}
+	 * @throws \RuntimeException Con el mensaje para quien sube.
+	 */
+	private function preparar_importacion( array $file, int $usuario ): array {
+		if ( (int) ( $file['error'] ?? UPLOAD_ERR_OK ) !== UPLOAD_ERR_OK ) {
+			throw new \RuntimeException( __( 'Error en la subida: ', 'convoca-core' ) . (int) ( $file['error'] ?? 0 ) );
 		}
-		if ( $file['size'] > self::MAX_ZIP_SIZE ) {
-			wp_die( esc_html__( 'Archivo demasiado grande.', 'convoca-core' ) );
+		if ( 'zip' !== strtolower( (string) pathinfo( (string) ( $file['name'] ?? '' ), PATHINFO_EXTENSION ) ) ) {
+			throw new \RuntimeException( __( 'Formato inválido. Solo ZIP.', 'convoca-core' ) );
+		}
+		if ( (int) ( $file['size'] ?? 0 ) > self::MAX_ZIP_SIZE ) {
+			throw new \RuntimeException( __( 'Archivo demasiado grande.', 'convoca-core' ) );
 		}
 
 		$zip = new \ZipArchive();
-		if ( $zip->open( $file['tmp_name'] ) !== true ) {
-			wp_die( esc_html__( 'No se pudo abrir el ZIP.', 'convoca-core' ) );
+		if ( $zip->open( (string) ( $file['tmp_name'] ?? '' ) ) !== true ) {
+			throw new \RuntimeException( __( 'No se pudo abrir el ZIP.', 'convoca-core' ) );
 		}
 
 		$entities = $this->analizar_zip( $zip );
-
-		if ( empty( $entities ) ) {
-			$zip->close();
-			wp_die( esc_html__( 'El archivo ZIP no contiene datos compatibles de Convoca.', 'convoca-core' ) );
-		}
-
 		$zip->close();
 
-		// Save to temp folder with security token.
+		if ( empty( $entities ) ) {
+			throw new \RuntimeException( __( 'El archivo ZIP no contiene datos compatibles de Convoca.', 'convoca-core' ) );
+		}
+
 		$upload_dir = wp_upload_dir();
 		$import_dir = $upload_dir['basedir'] . '/' . self::IMPORT_DIR;
 		wp_mkdir_p( $import_dir );
+		// El directorio de importaciones no se sirve nunca: ni listado ni descarga directa.
 		if ( ! file_exists( $import_dir . '/.htaccess' ) ) {
 			file_put_contents( $import_dir . '/.htaccess', "Deny from all\n" );
 		}
@@ -391,21 +413,14 @@ class Admin_Backup {
 		$token  = wp_generate_password( 24, false );
 		$target = $import_dir . '/import-' . $token . '.zip';
 		// phpcs:ignore Generic.PHP.ForbiddenFunctions.Found -- WP_Filesystem does not handle uploaded files; move_uploaded_file is the standard approach
-		if ( ! move_uploaded_file( $file['tmp_name'], $target ) ) {
-			wp_die( esc_html__( 'Error al guardar el temporal.', 'convoca-core' ) );
+		if ( ! move_uploaded_file( (string) ( $file['tmp_name'] ?? '' ), $target ) ) {
+			throw new \RuntimeException( __( 'Error al guardar el temporal.', 'convoca-core' ) );
 		}
 
-		set_transient(
-			'convoca_import_preview_' . get_current_user_id(),
-			array(
-				'token'    => $token,
-				'entities' => $entities,
-			),
-			self::PREVIEW_TTL
+		return array(
+			'token'    => $token,
+			'entities' => $entities,
 		);
-
-		wp_safe_redirect( admin_url( 'admin.php?page=conv-backup' ) );
-		exit;
 	}
 
 	/**

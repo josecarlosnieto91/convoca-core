@@ -544,4 +544,85 @@ final class AdminBackupTest extends TestCase {
 		$zip->close();
 		@unlink( $ruta );
 	}
+
+	/**
+	 * Lo que se acepta subir y lo que no. Cada rechazo tiene su motivo, y el motivo es lo que ve quien sube.
+	 */
+	public function test_lo_que_se_acepta_y_lo_que_no(): void {
+		$temp = ( getenv( 'TMPDIR' ) ?: sys_get_temp_dir() ) . '/convoca-subida-' . getmypid();
+		@mkdir( $temp, 0777, true );
+		$GLOBALS['_wp_stores']['upload_dir'] = $temp;
+
+		// 1) Extensión: sólo ZIP.
+		try {
+			$this->privado( 'preparar_importacion', array( 'name' => 'backup.txt', 'size' => 10, 'tmp_name' => $temp . '/a', 'error' => 0 ), 3 );
+			$this->fail( 'un .txt no debería pasar' );
+		} catch ( \RuntimeException $e ) {
+			$this->assertStringContainsString( 'Formato inválido', $e->getMessage() );
+		}
+
+		// 2) Un error de subida se cuenta, no se ignora.
+		try {
+			$this->privado( 'preparar_importacion', array( 'name' => 'a.zip', 'size' => 10, 'tmp_name' => $temp . '/a', 'error' => UPLOAD_ERR_PARTIAL ), 3 );
+			$this->fail( 'un error de subida no debería pasar' );
+		} catch ( \RuntimeException $e ) {
+			$this->assertStringContainsString( 'Error en la subida', $e->getMessage() );
+		}
+
+		// 3) Demasiado grande.
+		try {
+			$this->privado( 'preparar_importacion', array( 'name' => 'a.zip', 'size' => 999999999, 'tmp_name' => $temp . '/a', 'error' => 0 ), 3 );
+			$this->fail( 'un ZIP enorme no debería pasar' );
+		} catch ( \RuntimeException $e ) {
+			$this->assertStringContainsString( 'demasiado grande', $e->getMessage() );
+		}
+
+		// 4) Un ZIP ilegible.
+		file_put_contents( $temp . '/roto.zip', 'no soy un zip' );
+		try {
+			$this->privado( 'preparar_importacion', array( 'name' => 'roto.zip', 'size' => 12, 'tmp_name' => $temp . '/roto.zip', 'error' => 0 ), 3 );
+			$this->fail( 'un ZIP ilegible no debería pasar' );
+		} catch ( \RuntimeException $e ) {
+			$this->assertStringContainsString( 'No se pudo abrir el ZIP', $e->getMessage() );
+		}
+
+		// 5) Un ZIP legible pero sin nada de Convoca.
+		$zip = new \ZipArchive();
+		$zip->open( $temp . '/ajeno.zip', \ZipArchive::CREATE | \ZipArchive::OVERWRITE );
+		$zip->addFromString( 'otra-cosa.csv', "a\n" );
+		$zip->close();
+		try {
+			$this->privado( 'preparar_importacion', array( 'name' => 'ajeno.zip', 'size' => filesize( $temp . '/ajeno.zip' ), 'tmp_name' => $temp . '/ajeno.zip', 'error' => 0 ), 3 );
+			$this->fail( 'un ZIP ajeno no debería pasar' );
+		} catch ( \RuntimeException $e ) {
+			$this->assertStringContainsString( 'no contiene datos compatibles', $e->getMessage() );
+		}
+
+		// 6) Un ZIP bueno pasa la validación y el análisis: llega hasta el guardado (que en CLI no puede moverse,
+		//    porque `move_uploaded_file()` exige una subida real). Lo que se afirma es que **no** falló antes.
+		$zip = new \ZipArchive();
+		$zip->open( $temp . '/bueno.zip', \ZipArchive::CREATE | \ZipArchive::OVERWRITE );
+		$zip->addFromString( 'miembros.csv', "ID,Nombre\n1,Ada\n" );
+		$zip->close();
+		try {
+			$this->privado( 'preparar_importacion', array( 'name' => 'bueno.zip', 'size' => filesize( $temp . '/bueno.zip' ), 'tmp_name' => $temp . '/bueno.zip', 'error' => 0 ), 3 );
+			$this->fail( 'en CLI el guardado no puede completarse' );
+		} catch ( \RuntimeException $e ) {
+			$this->assertStringContainsString( 'Error al guardar el temporal', $e->getMessage(), 'pasó validación y análisis' );
+		}
+
+		// El directorio de importaciones queda protegido: ni listado ni descarga directa.
+		$import_dir = $temp . '/convoca-imports';
+		$this->assertFileExists( $import_dir . '/.htaccess' );
+		$this->assertStringContainsString( 'Deny from all', (string) file_get_contents( $import_dir . '/.htaccess' ) );
+		$this->assertFileExists( $import_dir . '/index.php' );
+
+		foreach ( glob( $temp . '/*' ) as $f ) {
+			is_dir( $f ) ? @rmdir( $f ) : @unlink( $f );
+		}
+		@unlink( $import_dir . '/.htaccess' );
+		@unlink( $import_dir . '/index.php' );
+		@rmdir( $import_dir );
+		@rmdir( $temp );
+	}
 }
