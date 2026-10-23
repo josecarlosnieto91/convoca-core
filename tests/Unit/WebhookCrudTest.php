@@ -133,6 +133,12 @@ final class WebhookCrudTest extends TestCase {
 		$this->assertSame( 'https://destino.example.test/a', $wh['url'] );
 		$this->assertSame( array( 'member.created' ), $wh['events'] );
 
+		// Y al revés: cambiar la etiqueta **no** puede borrar el secreto ya guardado.
+		$this->assertTrue( Webhook_Manager::update_webhook( $id, array( 'label' => 'Renombrada' ) ) );
+		$wh = Webhook_Manager::get_webhook( $id );
+		$this->assertSame( 'Renombrada', $wh['label'] );
+		$this->assertSame( 'nuevo', $wh['secret'], 'el secreto sobrevive a un cambio de etiqueta' );
+
 		$this->assertTrue( Webhook_Manager::update_webhook( $id, array( 'active' => false ) ) );
 		$this->assertFalse( Webhook_Manager::get_webhook( $id )['active'] );
 
