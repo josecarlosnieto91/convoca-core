@@ -123,9 +123,12 @@ final class UtilsVariasTest extends TestCase {
 	public function test_sin_escucha_no_hay_antiguo(): void {
 		$this->assertFalse( has_action( 'convoca_viejo_inexistente' ) );
 
+		$GLOBALS['_wp_actions'] = array();
 		Utils::do_action( 'convoca_nuevo', 'convoca_viejo_inexistente', 'dato' );
 
 		$this->assertArrayHasKey( 'convoca_nuevo', Utils::get_fired() );
+		$disparados = array_column( (array) $GLOBALS['_wp_actions'], 'hook' );
+		$this->assertNotContains( 'convoca_viejo_inexistente', $disparados, 'el antiguo no se dispara sin nadie que lo escuche' );
 	}
 
 	/**
@@ -166,6 +169,10 @@ final class UtilsVariasTest extends TestCase {
 		$this->assertSame( 'dark', Utils::get_document_theme() );
 		$GLOBALS['_wp_stores']['options']['convoca_document_theme'] = 'fucsia';
 		$this->assertSame( 'light', Utils::get_document_theme(), 'un valor inválido no se cuela' );
+
+		// Y si un filtro devuelve algo raro, tampoco: la comprobación final no es decorativa.
+		add_filter( 'convoca_document_theme', static fn(): string => 'fucsia' );
+		$this->assertSame( 'light', Utils::get_document_theme(), 'ni lo que devuelva un filtro' );
 	}
 
 	/**
