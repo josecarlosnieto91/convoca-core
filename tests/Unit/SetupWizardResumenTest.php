@@ -315,6 +315,20 @@ final class SetupWizardResumenTest extends TestCase {
 
 		$this->assertTrue( $res['planes']['juvenil2']['active'] === false, 'desmarcado → desactivado, no borrado' );
 		$this->assertSame( 'Selector', $res['planes']['selector']['label'], 'el selector no se toca' );
+
+		// Un precio que no es número **no** se guarda: se queda el que había (30, no 0 y no «carísimo»).
+		$otro = $this->privado(
+			'procesar_planes',
+			array(
+				'base'     => array(
+					'label'  => 'Base',
+					'price'  => 'carísimo',
+					'active' => '1',
+				),
+				'juvenil2' => array( 'label' => 'Joven', 'price' => '15', 'active' => '1' ),
+			)
+		);
+		$this->assertSame( 30, $otro['planes']['base']['price'], 'un precio no numérico no sustituye al bueno' );
 		$this->assertArrayNotHasKey( 'active', $res['planes']['selector'] );
 	}
 
