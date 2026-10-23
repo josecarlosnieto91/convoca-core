@@ -909,7 +909,22 @@ if (!isset($GLOBALS['wpdb'])) {
         public $prefix = 'wp_'; public $posts = 'wp_posts';
         public $postmeta = 'wp_postmeta'; public $options = 'wp_options';
         public $insert_id = 42;
+        /**
+         * Escapa `%` y `_` para un LIKE, como WordPress (`esc_like`). Sin esto, buscar la página de un shortcode
+         * revienta con «Call to undefined method» y —peor— el producto acaba llevando ramas «de test» para
+         * esquivarlo, que es lo que pasaba en `Member_Auth::logout_member_sessions`.
+         */
+        public function esc_like($text) { return addcslashes((string) $text, '_%\\'); }
+
         public function get_var($q = null, $x = 0, $y = 0) {
+            // Mapa por consulta (`get_var_mapa`): un método que busca la página de un shortcode y también, más
+            // abajo, un pago pendiente recibe respuestas distintas según lo que pregunte. Sin esto las dos
+            // páginas (`[convoca_renovar]` y `[convoca_pago]`) daban el mismo id y sus URL coincidían.
+            // Se compara sin las barras de escape: `esc_like()` escapa los `_` y `%`.
+            $q_mapa = is_string($q) ? str_replace('\\', '', $q) : '';
+            foreach (($GLOBALS['_wp_stores']['get_var_mapa'] ?? []) as $aguja => $valor) {
+                if ('' !== $q_mapa && false !== strpos($q_mapa, $aguja)) { return $valor; }
+            }
             // Como WordPress: SHOW TABLES LIKE 'x' devuelve el nombre si existe. Sin esto el
             // Logger cree que no hay tabla y no escribe, y el bloqueo cae al camino de opciones.
             if (is_string($q) && preg_match("/SHOW TABLES LIKE '?([A-Za-z0-9_]+)'?/i", $q, $m)) {
@@ -937,8 +952,40 @@ if (!isset($GLOBALS['wpdb'])) {
          * @param int         $x Columna.
          * @return array
          */
-        public function get_col($q = null, $x = 0) { return $GLOBALS['_wp_stores']['col'] ?? []; }
-        public function get_results($q = null, $o = 'OBJECT') { return []; }
+        public function get_col($q = null, $x = 0) {
+            // Cola por consulta (`col_cola`): un método que consulta varias veces con filtros distintos —los
+            // avisos de renovación a 30, 15 y 7 días— necesita respuestas distintas, no la misma para todas.
+            if (!empty($GLOBALS['_wp_stores']['col_cola'])) {
+                $siguiente = array_shift($GLOBALS['_wp_stores']['col_cola']);
+                return is_array($siguiente) ? $siguiente : [];
+            }
+            return $GLOBALS['_wp_stores']['col'] ?? [];
+        }
+        public function get_results($q = null, $o = 'OBJECT') {
+            if (!empty($GLOBALS['_wp_stores']['results'])) { return $GLOBALS['_wp_stores']['results']; }
+            // `SELECT option_name, option_value FROM wp_options WHERE option_name LIKE %s`: el barrido que usa
+            // Member_Auth para cerrar las sesiones de un socio. Devolver siempre `[]` obligaba al producto a
+            // llevar una rama «de test» que leía `$GLOBALS['_wp_stores']` — código de prueba dentro del plugin.
+            if (is_string($q) && preg_match("/option_name\s+LIKE\s+'?([^'\s]+)'?/i", $q, $m)) {
+                $patron  = str_replace(array('\\_', '\\%', '\\\\'), array('_', '%', '\\'), stripcslashes($m[1]));
+                $prefijo = rtrim($patron, '%');
+                $filas   = array();
+                foreach (($GLOBALS['_wp_stores']['options'] ?? array()) as $nombre => $valor) {
+                    if (0 === strpos((string) $nombre, $prefijo)) {
+                        $filas[] = (object) array('option_name' => $nombre, 'option_value' => $valor);
+                    }
+                }
+                // El almacén de transients del arnés es esa misma tabla con el prefijo `_transient_`.
+                foreach (($GLOBALS['_wp_stores']['transients'] ?? array()) as $clave => $valor) {
+                    $nombre = '_transient_' . $clave;
+                    if (0 === strpos($nombre, $prefijo)) {
+                        $filas[] = (object) array('option_name' => $nombre, 'option_value' => $valor);
+                    }
+                }
+                return $filas;
+            }
+            return array();
+        }
         public function get_row($q = null) { return null; }
         public function query($q) {
             // Los flujos atómicos (p. ej. Hours_Manager::process_approval) cambian
