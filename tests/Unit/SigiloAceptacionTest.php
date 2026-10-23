@@ -64,8 +64,17 @@ final class SigiloAceptacionTest extends TestCase {
 	 * Recoge.
 	 */
 	protected function tearDown(): void {
-		foreach ( (array) glob( $this->dir . '/*' ) as $f ) {
-			@unlink( $f );
+		// Borrado **recursivo**: `glob('*')` no ve los ficheros que empiezan por punto y la protección del
+		// directorio crea justo `.htaccess`. Con el borrado simple, la prueba dejaba basura en cada ejecución.
+		if ( ! is_dir( $this->dir ) ) {
+			return;
+		}
+		$it = new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator( $this->dir, \FilesystemIterator::SKIP_DOTS ),
+			\RecursiveIteratorIterator::CHILD_FIRST
+		);
+		foreach ( $it as $fichero ) {
+			$fichero->isDir() ? @rmdir( $fichero->getPathname() ) : @unlink( $fichero->getPathname() );
 		}
 		@rmdir( $this->dir );
 	}
