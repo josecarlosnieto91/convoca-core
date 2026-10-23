@@ -1382,3 +1382,8 @@ if (!function_exists('wp_cache_get')) {
      */
     function wp_cache_get($clave, $grupo = '', $forzar = false) { return $GLOBALS['_wp_cache'][$grupo][$clave] ?? false; }
 }
+
+if (!function_exists('trailingslashit')) {
+    /** Barra final, como WordPress. Faltaba y la protección del directorio de PDF la usa. */
+    function trailingslashit($ruta) { return rtrim((string) $ruta, '/\\') . '/'; }
+}
