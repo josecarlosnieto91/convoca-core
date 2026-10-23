@@ -677,6 +677,41 @@ if (!function_exists('wp_date')) {
 /** Precarga de metas: en unitario se lee del almacén al pedirla, así que no hay nada que precargar. */
 if (!function_exists('update_meta_cache')) { function update_meta_cache($tipo = 'post', $ids = array()) { return true; } }
 
+/** Registro y encolado de estilos y scripts: se apuntan para poder afirmar qué se sirve y qué no. */
+if (!function_exists('wp_register_style')) {
+    function wp_register_style($h, $src = '', $d = array(), $v = false, $m = 'all') {
+        $GLOBALS['_wp_stores']['styles'][$h] = array('src' => $src, 'version' => $v, 'media' => $m);
+        return true;
+    }
+}
+if (!function_exists('wp_register_script')) {
+    function wp_register_script($h, $src = '', $d = array(), $v = false, $f = false) {
+        $GLOBALS['_wp_stores']['scripts'][$h] = array('src' => $src, 'version' => $v, 'footer' => $f);
+        return true;
+    }
+}
+if (!function_exists('wp_enqueue_style')) {
+    function wp_enqueue_style($h, $src = '', $d = array(), $v = false) {
+        $GLOBALS['_wp_enqueue']['styles'][] = $h;
+        $GLOBALS['_wp_stores']['enqueues'][] = (string) $h;
+        return true;
+    }
+}
+if (!function_exists('wp_localize_script')) {
+    function wp_localize_script($h, $nombre, $datos) {
+        $GLOBALS['_wp_stores']['localizados'][$nombre] = $datos;
+        return true;
+    }
+}
+if (!function_exists('add_menu_page')) {
+    function add_menu_page($titulo, $menu, $cap, $slug, $cb = '', $icono = '', $pos = null) {
+        $GLOBALS['_wp_stores']['menu_pages'][$slug] = array(
+            'title' => $titulo, 'menu' => $menu, 'capability' => $cap, 'callback' => $cb, 'icon' => $icono, 'position' => $pos,
+        );
+        return $slug;
+    }
+}
+
 /** Directorio temporal: el de la prueba si lo fija, para no escribir en /tmp durante el test. */
 if (!function_exists('get_temp_dir')) {
     function get_temp_dir() {
@@ -716,6 +751,11 @@ if (!function_exists('get_post')) {
     function get_post($id = null, $output = OBJECT, $filter = 'raw') {
         // `get_post(0)` es `null` en WordPress: un id 0 no es un post. Inventarlo hacía que un handler «sin
         // sesión» creyera tener ficha y contestara 200 con datos vacíos en vez de 404.
+        // `get_post()` **sin argumentos** devuelve el post actual (`$GLOBALS['post']`), no `null`: es lo que usa
+        // cualquier código que mire «la página que se está viendo». Tratarlo como id 0 dejaba esas llamadas mudas.
+        if (null === $id || '' === $id) {
+            return $GLOBALS['post'] ?? null;
+        }
         if ((int) $id <= 0) { return null; }
         // Convención de tests: _test_posts[id] permite mockear posts completos.
         if (!empty($GLOBALS['_test_posts'][(int) $id])) {
