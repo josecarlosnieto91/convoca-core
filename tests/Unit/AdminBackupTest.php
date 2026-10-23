@@ -427,4 +427,54 @@ final class AdminBackupTest extends TestCase {
 		@unlink( $ruta );
 		@rmdir( $temp );
 	}
+
+	/**
+	 * Lo que trae un ZIP: cada entidad con su nombre y su recuento, y `settings.json` como configuración.
+	 *
+	 * El recuento **no** cuenta la cabecera del CSV (sale una fila de más, que es un engaño pequeño pero engaño).
+	 */
+	public function test_lo_que_trae_un_zip(): void {
+		$ruta = ( getenv( 'TMPDIR' ) ?: sys_get_temp_dir() ) . '/convoca-analizar-' . getmypid() . '.zip';
+		$zip  = new \ZipArchive();
+		$zip->open( $ruta, \ZipArchive::CREATE | \ZipArchive::OVERWRITE );
+		$zip->addFromString( "miembros.csv", "ID,Nombre\n1,Ada\n2,Bea\n" );
+		$zip->addFromString( "proyectos.csv", "ID,Título\n1,Actividad\n" );
+		$zip->addFromString( "ajeno.csv", "a,b\n" );
+		$zip->addFromString( "settings.json", '{"x":1}' );
+		$zip->close();
+
+		$zip = new \ZipArchive();
+		$zip->open( $ruta );
+
+		$entidades = $this->privado( 'analizar_zip', $zip );
+
+		$this->assertSame( array( 'miembros', 'proyectos', 'settings' ), array_keys( $entidades ) );
+		$this->assertSame( 2, $entidades['miembros']['count'], 'dos socios, no tres' );
+		$this->assertSame( 1, $entidades['proyectos']['count'] );
+		$this->assertSame( 'Miembros / Socios', $entidades['miembros']['label'] );
+		$this->assertSame( 1, $entidades['settings']['count'] );
+		$this->assertArrayNotHasKey( 'ajeno', $entidades, 'lo que no conoce no se ofrece' );
+
+		$zip->close();
+		@unlink( $ruta );
+	}
+
+	/**
+	 * Un ZIP sin nada reconocible no devuelve entidades: el llamador es quien decide no aceptarlo.
+	 */
+	public function test_un_zip_ajeno_no_trae_nada(): void {
+		$ruta = ( getenv( 'TMPDIR' ) ?: sys_get_temp_dir() ) . '/convoca-analizar2-' . getmypid() . '.zip';
+		$zip  = new \ZipArchive();
+		$zip->open( $ruta, \ZipArchive::CREATE | \ZipArchive::OVERWRITE );
+		$zip->addFromString( "otra-cosa.csv", "a\n" );
+		$zip->close();
+
+		$zip = new \ZipArchive();
+		$zip->open( $ruta );
+
+		$this->assertSame( array(), $this->privado( 'analizar_zip', $zip ) );
+
+		$zip->close();
+		@unlink( $ruta );
+	}
 }

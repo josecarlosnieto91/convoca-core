@@ -368,30 +368,7 @@ class Admin_Backup {
 			wp_die( esc_html__( 'No se pudo abrir el ZIP.', 'convoca-core' ) );
 		}
 
-		// Robust validation.
-		$entities       = array();
-		$valid_entities = array( 'miembros', 'inscripciones', 'proyectos', 'turnos' );
-		foreach ( $valid_entities as $name ) {
-			if ( $zip->locateName( $name . '.csv' ) !== false ) {
-				$stream = $zip->getStream( $name . '.csv' );
-				$count  = 0;
-				while ( fgets( $stream ) ) {
-					++$count;
-				}
-				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- ZipArchive stream cleanup
-				fclose( $stream );
-				$entities[ $name ] = array(
-					'label' => $this->entity_label( $name ),
-					'count' => max( 0, $count - 1 ),
-				);
-			}
-		}
-		if ( $zip->locateName( 'settings.json' ) !== false ) {
-			$entities['settings'] = array(
-				'label' => __( 'Configuración del Sistema', 'convoca-core' ),
-				'count' => 1,
-			);
-		}
+		$entities = $this->analizar_zip( $zip );
 
 		if ( empty( $entities ) ) {
 			$zip->close();
@@ -429,6 +406,44 @@ class Admin_Backup {
 
 		wp_safe_redirect( admin_url( 'admin.php?page=conv-backup' ) );
 		exit;
+	}
+
+	/**
+	 * Qué trae un ZIP de copia, sin aceptarlo todavía: qué entidades hay y cuántas filas.
+	 *
+	 * Se separa de la subida (nonce, fichero temporal, redirección y `exit`) porque es la decisión que importa:
+	 * un ZIP sin nada conocido no debe aceptarse, y un recuento mal contado engaña a quien va a restaurar.
+	 *
+	 * @param \ZipArchive $zip Archivo abierto.
+	 * @return array<string, array{label:string,count:int}>
+	 */
+	private function analizar_zip( \ZipArchive $zip ): array {
+	// Robust validation.
+	$entities       = array();
+	$valid_entities = array( 'miembros', 'inscripciones', 'proyectos', 'turnos' );
+	foreach ( $valid_entities as $name ) {
+		if ( $zip->locateName( $name . '.csv' ) !== false ) {
+			$stream = $zip->getStream( $name . '.csv' );
+			$count  = 0;
+			while ( fgets( $stream ) ) {
+				++$count;
+			}
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- ZipArchive stream cleanup
+			fclose( $stream );
+			$entities[ $name ] = array(
+				'label' => $this->entity_label( $name ),
+				'count' => max( 0, $count - 1 ),
+			);
+		}
+	}
+	if ( $zip->locateName( 'settings.json' ) !== false ) {
+		$entities['settings'] = array(
+			'label' => __( 'Configuración del Sistema', 'convoca-core' ),
+			'count' => 1,
+		);
+	}
+
+		return $entities;
 	}
 
 	/* ── Import Run ── */
