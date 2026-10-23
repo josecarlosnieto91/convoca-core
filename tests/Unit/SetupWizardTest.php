@@ -253,6 +253,44 @@ final class SetupWizardTest extends TestCase {
 	}
 
 	/**
+	 * Si el shortcode no lo registra nadie, se anota en el registro: mejor eso que publicar una página que se verá
+	 * como texto literal entre corchetes.
+	 */
+	public function test_avisa_si_el_shortcode_no_esta_registrado(): void {
+		$this->wizard->crear_paginas_del_sistema();
+
+		$mensajes = implode(
+			' | ',
+			array_map(
+				'strval',
+				array_column( array_column( (array) $GLOBALS['_wp_stores']['db_inserts'], 'data' ), 'message' )
+			)
+		);
+		$this->assertStringContainsString( 'ningún plugin activo registra', $mensajes );
+	}
+
+	/**
+	 * Y si está registrado, no hay aviso: el registro no se llena de ruido en una instalación sana.
+	 */
+	public function test_sin_aviso_si_el_shortcode_esta_registrado(): void {
+		foreach ( array( 'convoca_alta_socio', 'convoca_mi_area', 'convoca_pago', 'convoca_verificar_socio', 'convoca_verificar_certificado' ) as $tag ) {
+			// `shortcode_exists()` del arnés lee del registro propio, no de `_wp_stores`.
+			$GLOBALS['_wp_shortcodes'][ $tag ] = '__return_empty';
+		}
+
+		$this->wizard->crear_paginas_del_sistema();
+
+		$mensajes = implode(
+			' | ',
+			array_map(
+				'strval',
+				array_column( array_column( (array) $GLOBALS['_wp_stores']['db_inserts'], 'data' ), 'message' )
+			)
+		);
+		$this->assertStringNotContainsString( 'ningún plugin activo registra', $mensajes );
+	}
+
+	/**
 	 * **Sin permiso no se crea nada**: la guarda corta antes de tocar la base.
 	 */
 	public function test_sin_permiso_no_crea(): void {

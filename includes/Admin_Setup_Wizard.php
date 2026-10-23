@@ -463,81 +463,81 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 			'ok'        => 0,
 		);
 
-			foreach ( self::system_pages() as $slug => $info ) {
-				$tag = trim( $info['sc'], '[]' );
+		foreach ( self::system_pages() as $slug => $info ) {
+			$tag = trim( $info['sc'], '[]' );
 
-				// Un shortcode que nadie registra se pinta como texto literal: mejor
-				// dejarlo anotado en el log que publicar la página rota en silencio.
-				if ( ! shortcode_exists( $tag ) ) {
-					\Convoca\Core\Logger::warning(
-						sprintf( 'La página %s espera el shortcode [%s], que ningún plugin activo registra.', $slug, $tag ),
-						'Common/SetupWizard'
-					);
-				}
-
-				$page  = self::buscar_pagina_del_sistema( $slug, $info['sc'] );
-				$state = self::page_state( $page, $info['sc'] );
-
-				if ( 'ok' === $state ) {
-					++$resumen['ok'];
-					continue;
-				}
-
-				if ( 'missing' === $state ) {
-					$page_id = wp_insert_post(
-						array(
-							'post_title'   => $info['title'],
-							'post_name'    => $slug,
-							'post_content' => $info['sc'],
-							'post_status'  => 'publish',
-							'post_type'    => 'page',
-						)
-					);
-					if ( $page_id ) {
-						++$resumen['creadas'];
-					} else {
-						\Convoca\Core\Logger::error(
-							sprintf( 'Error creando página %s (wp_insert_post devolvió 0).', $slug ),
-							'Common/SetupWizard'
-						);
-					}
-					continue;
-				}
-
-				// La página existe pero le falta el shortcode correcto: se repara sin
-				// pisar el texto del autor — primero sustituye shortcodes retirados y,
-				// si aún falta, añade el correcto al final.
-				$content = (string) $page->post_content;
-				$legacy  = self::legacy_shortcodes();
-				if ( $legacy ) {
-					$content = str_ireplace( array_keys( $legacy ), array_values( $legacy ), $content );
-				}
-				if ( ! has_shortcode( $content, $tag ) ) {
-					$content = trim( $content );
-					$content = ( '' === $content ) ? $info['sc'] : $content . "\n\n" . $info['sc'];
-				}
-
-				$updated = wp_update_post(
-					array(
-						'ID'           => $page->ID,
-						'post_content' => $content,
-					),
-					true
+			// Un shortcode que nadie registra se pinta como texto literal: mejor
+			// dejarlo anotado en el log que publicar la página rota en silencio.
+			if ( ! shortcode_exists( $tag ) ) {
+				\Convoca\Core\Logger::warning(
+					sprintf( 'La página %s espera el shortcode [%s], que ningún plugin activo registra.', $slug, $tag ),
+					'Common/SetupWizard'
 				);
+			}
 
-				if ( is_wp_error( $updated ) ) {
-					\Convoca\Core\Logger::error(
-						sprintf( 'Error reparando la página %s: %s', $slug, $updated->get_error_message() ),
-						'Common/SetupWizard'
-					);
+			$page  = self::buscar_pagina_del_sistema( $slug, $info['sc'] );
+			$state = self::page_state( $page, $info['sc'] );
+
+			if ( 'ok' === $state ) {
+				++$resumen['ok'];
+				continue;
+			}
+
+			if ( 'missing' === $state ) {
+				$page_id = wp_insert_post(
+					array(
+						'post_title'   => $info['title'],
+						'post_name'    => $slug,
+						'post_content' => $info['sc'],
+						'post_status'  => 'publish',
+						'post_type'    => 'page',
+					)
+				);
+				if ( $page_id ) {
+					++$resumen['creadas'];
 				} else {
-					++$resumen['reparadas'];
-					\Convoca\Core\Logger::info(
-						sprintf( 'Página %s reparada: su contenido ya incluye %s.', $slug, $info['sc'] ),
+					\Convoca\Core\Logger::error(
+						sprintf( 'Error creando página %s (wp_insert_post devolvió 0).', $slug ),
 						'Common/SetupWizard'
 					);
 				}
+				continue;
 			}
+
+			// La página existe pero le falta el shortcode correcto: se repara sin
+			// pisar el texto del autor — primero sustituye shortcodes retirados y,
+			// si aún falta, añade el correcto al final.
+			$content = (string) $page->post_content;
+			$legacy  = self::legacy_shortcodes();
+			if ( $legacy ) {
+				$content = str_ireplace( array_keys( $legacy ), array_values( $legacy ), $content );
+			}
+			if ( ! has_shortcode( $content, $tag ) ) {
+				$content = trim( $content );
+				$content = ( '' === $content ) ? $info['sc'] : $content . "\n\n" . $info['sc'];
+			}
+
+			$updated = wp_update_post(
+				array(
+					'ID'           => $page->ID,
+					'post_content' => $content,
+				),
+				true
+			);
+
+			if ( is_wp_error( $updated ) ) {
+				\Convoca\Core\Logger::error(
+					sprintf( 'Error reparando la página %s: %s', $slug, $updated->get_error_message() ),
+					'Common/SetupWizard'
+				);
+			} else {
+				++$resumen['reparadas'];
+				\Convoca\Core\Logger::info(
+					sprintf( 'Página %s reparada: su contenido ya incluye %s.', $slug, $info['sc'] ),
+					'Common/SetupWizard'
+				);
+			}
+		}
 		return $resumen;
 	}
 
