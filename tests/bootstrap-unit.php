@@ -431,6 +431,51 @@ if (!function_exists('current_user_can')) {
     // concede, que es como se comportaba antes (no cambia ninguna prueba existente).
     function current_user_can($c, ...$a) { return $GLOBALS['_test_caps'][$c] ?? true; }
 }
+
+/**
+ * ¿Estamos en el panel? La campana del admin bar sólo se pinta ahí.
+ */
+if (!function_exists('is_admin')) { function is_admin() { return !empty($GLOBALS['_wp_stores']['is_admin']); } }
+
+/**
+ * Respuesta JSON de ajax: se apunta lo que se habría enviado y se sigue (el `wp_die` final no se puede medir).
+ */
+if (!function_exists('wp_send_json_success')) {
+    function wp_send_json_success($data = null, $status = null) {
+        $GLOBALS['_wp_json'][] = array('ok' => true, 'data' => $data, 'status' => $status);
+        return null;
+    }
+}
+
+/**
+ * Nonce de ajax: usa el mismo `nonces_validos` que el resto (si la prueba no declara ninguna, vale cualquiera).
+ */
+if (!function_exists('check_ajax_referer')) {
+    function check_ajax_referer($action = -1, $query_arg = false, $stop = true) {
+        $valor = ($query_arg && isset($_POST[$query_arg])) ? wp_unslash($_POST[$query_arg]) : ($_REQUEST['_ajax_nonce'] ?? $_REQUEST['_wpnonce'] ?? '');
+        $valido = wp_verify_nonce($valor, $action);
+        if (!$valido && $stop) { wp_die('nonce inválido (ajax)'); }
+        return $valido ? 1 : false;
+    }
+}
+
+/** Distancia entre dos fechas, en texto. */
+if (!function_exists('human_time_diff')) {
+    function human_time_diff($desde = 0, $hasta = 0) {
+        $seg = max(0, (int) $hasta - (int) $desde);
+        if ($seg < 60) { return $seg . ' segundos'; }
+        if ($seg < 3600) { return (int) ($seg / 60) . ' minutos'; }
+        if ($seg < 86400) { return (int) ($seg / 3600) . ' horas'; }
+        return (int) ($seg / 86400) . ' días';
+    }
+}
+
+/** «Ahora» como objeto, con el reloj controlable de las pruebas. */
+if (!function_exists('current_datetime')) {
+    function current_datetime() {
+        return new \DateTimeImmutable('@' . (int) ($GLOBALS['_test_now'] ?? time()));
+    }
+}
 /**
  * ¿Puede ESTE usuario hacer algo? Importa cuando la decisión no es sobre quien tiene la sesión: el aterrizaje
  * tras el acceso o los permisos de una pantalla concreta se deciden sobre el usuario que entra.
