@@ -212,7 +212,15 @@ if (!function_exists('wp_list_pluck')) {
     }
 }
 // Los emails de Convoca llevan el nombre del sitio en asuntos y textos.
-if (!function_exists('get_bloginfo')) { function get_bloginfo($show = 'name') { return 'Sitio de Prueba'; } }
+// El nombre del sitio sale en los correos, los certificados y los pies: la prueba puede cambiarlo con
+// `$GLOBALS['_wp_site']['name']`. Sin fijarlo, el de siempre.
+if (!function_exists('get_bloginfo')) {
+    function get_bloginfo($show = 'name') {
+        $sitio = $GLOBALS['_wp_site'] ?? array();
+        if (isset($sitio[$show])) { return $sitio[$show]; }
+        return 'name' === $show ? ($sitio['name'] ?? 'Sitio de Prueba') : ($sitio[$show] ?? '');
+    }
+}
 // El branding de emails y PDFs sale del logo del sitio (custom_logo). Sin logo
 // configurado cae al nombre del sitio, que es lo que se prueba por defecto.
 if (!function_exists('get_theme_mod')) { function get_theme_mod($name = '', $default = false) { return $default; } }
