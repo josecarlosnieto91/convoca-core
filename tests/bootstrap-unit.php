@@ -257,7 +257,9 @@ if (!function_exists('get_page_by_path')) {
 if (!function_exists('sanitize_textarea_field')) {
     function sanitize_textarea_field($t = '') { return trim(strip_tags((string) $t)); }
 }
-if (!function_exists('sanitize_text_field')) { function sanitize_text_field($s) { return trim(strip_tags($s)); } }
+// `sanitize_text_field()` acepta `null` como WordPress (los parámetros REST que no vienen llegan así) y no
+// dispara el deprecado de `strip_tags(null)`.
+if (!function_exists('sanitize_text_field')) { function sanitize_text_field($s = '') { return trim(strip_tags((string) $s)); } }
 if (!function_exists('sanitize_title')) { function sanitize_title($t) { return strtolower(str_replace(' ', '-', trim($t))); } }
 if (!function_exists('sanitize_email')) { function sanitize_email($e) { return filter_var($e, FILTER_SANITIZE_EMAIL); } }
 if (!function_exists('sanitize_url')) { function sanitize_url($u) { return filter_var($u, FILTER_SANITIZE_URL); } }
@@ -966,6 +968,12 @@ if (!isset($GLOBALS['wpdb'])) {
             // unitaria, que algo quedo registrado en base de datos (por ejemplo un
             // aviso del Logger, que no tiene buffer en memoria).
             $GLOBALS['_wp_stores']['db_inserts'][] = ['table' => $t, 'data' => $d];
+            // Un INSERT directo en `*postmeta` (el que usan las transiciones atómicas de estado) **escribe de
+            // verdad**: apuntarlo sólo en `db_inserts` dejaba la meta invisible para `get_post_meta()` y una
+            // aprobación recién insertada se leía como «sin estado».
+            if (is_string($t) && preg_match('/postmeta$/', $t) && isset($d['post_id'], $d['meta_key'])) {
+                $GLOBALS['_wp_stores']['post_meta'][(int) $d['post_id']][$d['meta_key']] = $d['meta_value'] ?? '';
+            }
             // AUTO_INCREMENT de mentira: la prueba puede fijar el siguiente id (`$_wp_insert_id`). Sin fijarlo,
             // el de siempre, para no mover lo que ya cuenta con 42.
             $this->insert_id = (int) ($GLOBALS['_wp_insert_id'] ?? 42);
