@@ -922,7 +922,9 @@ if (!isset($GLOBALS['wpdb'])) {
             if (is_string($q) && preg_match('/MAX\(\s*id\s*\)\s+FROM\s+([A-Za-z0-9_]+)/i', $q, $m)) {
                 return (string) ($GLOBALS['_wp_stores']['max_id'][$m[1]] ?? 0);
             }
-            return '0';
+            // Respuesta genérica para las consultas que la prueba fija: los flujos con SQL propio (el
+            // deduplicador del alta, las transiciones de estado) necesitan devolver un id concreto, no siempre 0.
+            return (string) ($GLOBALS['_wp_stores']['get_var'] ?? '0');
         }
         /**
          * Lista de valores (ids, casi siempre). Se sirve de `_wp_stores['col']`, que la prueba fija; sin él,
