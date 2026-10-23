@@ -546,7 +546,7 @@ class Admin_Backup {
 	private function importar_entidades( \ZipArchive $zip, array $seleccion, array &$creados ): int {
 		$total = 0;
 
-	$order = array( 'settings', 'proyectos', 'miembros', 'inscripciones', 'turnos' );
+		$order = array( 'settings', 'proyectos', 'miembros', 'inscripciones', 'turnos' );
 
 		foreach ( $order as $entity ) {
 			if ( ! in_array( $entity, $seleccion, true ) ) {
