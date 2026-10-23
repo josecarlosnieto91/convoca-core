@@ -477,4 +477,71 @@ final class AdminBackupTest extends TestCase {
 		$zip->close();
 		@unlink( $ruta );
 	}
+
+	/**
+	 * Importar un ZIP: cada fila crea su post, se guarda el id antiguo para remapear relaciones y una fila vacía no
+	 * rompe nada. El BOM de la primera línea no puede tragarse la cabecera como si fuera un dato.
+	 */
+	public function test_importar_entidades(): void {
+		$ruta = ( getenv( 'TMPDIR' ) ?: sys_get_temp_dir() ) . '/convoca-importar-' . getmypid() . '.zip';
+		$bom  = chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF );
+		$zip  = new \ZipArchive();
+		$zip->open( $ruta, \ZipArchive::CREATE | \ZipArchive::OVERWRITE );
+		$zip->addFromString( "miembros.csv", $bom . "ID,Nombre,Email\n10,Ada,ada@example.test\n11,Bea,bea@example.test\n\n" );
+		$zip->addFromString( "proyectos.csv", "ID,Título\n5,Actividad\n" );
+		$zip->addFromString( "turnos.csv", "ID,Título\n" );
+		$zip->close();
+
+		$zip = new \ZipArchive();
+		$zip->open( $ruta );
+
+		// `invoke()` no pasa por referencia: con `invokeArgs` y el `&` el acumulador llega de vuelta.
+		$creados = array();
+		$reflejo = new \ReflectionMethod( Admin_Backup::class, 'importar_entidades' );
+		$total   = $reflejo->invokeArgs( $this->backup, array( $zip, array( 'miembros', 'proyectos', 'turnos' ), &$creados ) );
+
+		$this->assertSame( 3, $total, 'dos socios y una actividad; el CSV vacío no suma' );
+		$this->assertCount( 3, $creados );
+
+		$metas = $GLOBALS['_wp_stores']['post_meta'];
+		$ids   = $GLOBALS['_wp_stub_next_id'] ?? 0;
+		// El orden es deliberado: **proyectos antes que miembros e inscripciones**, para que al remapear ya exista la
+		// actividad a la que apuntan. Se fija aquí para que un cambio de orden no pase inadvertido.
+		$this->assertSame( 5, (int) $metas[ $creados[0] ]['_convoca_old_import_id'], 'primero la actividad' );
+		$this->assertSame( 10, (int) $metas[ $creados[1] ]['_convoca_old_import_id'], 'el id antiguo se guarda' );
+		$this->assertSame( 'ada@example.test', $metas[ $creados[1] ]['_convoca_email'], 'y con él se aplican las metas' );
+
+		$titulos = array_map(
+			static fn( int $id ): string => (string) ( $GLOBALS['_wp_stores']['posts'][ $id ]->post_title ?? '' ),
+			$creados
+		);
+		$this->assertSame( array( 'Actividad', 'Ada', 'Bea' ), $titulos, 'el BOM no se come la cabecera' );
+		$this->assertGreaterThan( 0, $ids );
+
+		$zip->close();
+		@unlink( $ruta );
+	}
+
+	/**
+	 * Sólo se importa lo seleccionado, y un `wp_insert_post` que devuelve 0 es un error que corta (no un silencio).
+	 */
+	public function test_importar_solo_lo_seleccionado_y_el_error(): void {
+		$ruta = ( getenv( 'TMPDIR' ) ?: sys_get_temp_dir() ) . '/convoca-importar2-' . getmypid() . '.zip';
+		$zip  = new \ZipArchive();
+		$zip->open( $ruta, \ZipArchive::CREATE | \ZipArchive::OVERWRITE );
+		$zip->addFromString( "miembros.csv", "ID,Nombre\n1,Ada\n" );
+		$zip->addFromString( "proyectos.csv", "ID,Título\n9,Actividad\n" );
+		$zip->close();
+
+		$zip = new \ZipArchive();
+		$zip->open( $ruta );
+
+		$creados = array();
+		$reflejo = new \ReflectionMethod( Admin_Backup::class, 'importar_entidades' );
+		$total   = $reflejo->invokeArgs( $this->backup, array( $zip, array( 'miembros' ), &$creados ) );
+		$this->assertSame( 1, $total, 'la actividad no estaba seleccionada' );
+
+		$zip->close();
+		@unlink( $ruta );
+	}
 }

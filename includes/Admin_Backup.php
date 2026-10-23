@@ -495,72 +495,11 @@ class Admin_Backup {
 			wp_die( esc_html__( 'Otra importación está en curso. Espera a que termine.', 'convoca-core' ) );
 		}
 
+		$results        = array( 'total' => 0 );
+		$imported_posts = array();
+
 		try {
-			$order = array( 'settings', 'proyectos', 'miembros', 'inscripciones', 'turnos' );
-
-			foreach ( $order as $entity ) {
-				if ( ! in_array( $entity, $selected, true ) ) {
-					continue;
-				}
-
-				if ( $entity === 'settings' ) {
-					$this->import_settings( $zip );
-					continue;
-				}
-
-				$csv_name = $entity . '.csv';
-				if ( $zip->locateName( $csv_name ) === false ) {
-					continue;
-				}
-
-				$stream = $zip->getStream( $csv_name );
-				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread -- reading BOM check from ZipArchive stream, no WP alternative
-				if ( fread( $stream, 3 ) !== chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) ) {
-					rewind( $stream );
-				}
-
-				$headers = fgetcsv( $stream, 0, ',', '"' );
-				if ( ! $headers ) {
-					// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- ZipArchive stream cleanup
-					fclose( $stream );
-					continue; }
-
-				// $entity proviene del literal $order (settings hace continue
-				// antes); el mapa cubre todos los valores restantes. Si se
-				// añade una entidad nueva, PHPStan marcará el offset como
-				// inexistente — mejor que un guard silencioso.
-				$post_type = self::ENTITY_CPT_MAP[ $entity ];
-
-				while ( ( $data = fgetcsv( $stream, 0, ',', '"' ) ) !== false ) {
-					if ( empty( array_filter( $data ) ) ) {
-						continue;
-					}
-
-					$old_id = (int) ( $data[0] ?? 0 );
-					$new_id = wp_insert_post(
-						array(
-							'post_type'   => $post_type,
-							'post_title'  => sanitize_text_field( $data[1] ?? __( 'Importado', 'convoca-core' ) ),
-							'post_status' => 'publish',
-						)
-					);
-
-					if ( ! $new_id ) {
-						// wp_insert_post devuelve 0 en error (no WP_Error en WP moderno).
-						throw new \RuntimeException( __( 'Error al crear el post importado.', 'convoca-core' ) );
-					}
-
-					$imported_posts[] = $new_id;
-					// Store old ID as meta instead of keeping a RAM dict.
-					if ( $old_id ) {
-						update_post_meta( $new_id, '_convoca_old_import_id', $old_id );
-					}
-					$this->apply_meta( $entity, $new_id, $data );
-					++$results['total'];
-				}
-					// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- ZipArchive stream cleanup
-					fclose( $stream );
-			}
+			$results['total'] = $this->importar_entidades( $zip, $selected, $imported_posts );
 		} catch ( \Throwable $e ) {
 			foreach ( $imported_posts as $pid ) {
 				wp_delete_post( $pid, true );
@@ -588,6 +527,92 @@ class Admin_Backup {
 		$msg = sprintf( __( 'Importación finalizada. %d registros procesados.', 'convoca-core' ), $results['total'] );
 		wp_safe_redirect( add_query_arg( 'import_result', $msg, admin_url( 'admin.php?page=conv-backup' ) ) );
 		exit;
+	}
+
+	/**
+	 * Importa las entidades seleccionadas de un ZIP ya abierto.
+	 *
+	 * Se separa de `handle_import_run()` (nonce, token, cerrojo, limpieza y redirección) porque es la parte que
+	 * hay que poder comprobar: que cada fila se crea, que el id antiguo se guarda para remapear relaciones y que
+	 * una fila vacía o un CSV sin cabecera no rompen el resto.
+	 *
+	 * @param \ZipArchive $zip       Archivo abierto.
+	 * @param string[]    $seleccion Entidades a importar.
+	 * @param int[]       $creados   Acumulador de posts creados (por referencia: si falla a medias, el llamador
+	 *                               tiene que saber qué borrar).
+	 * @return int Filas importadas.
+	 * @throws \RuntimeException Si un post no se puede crear.
+	 */
+	private function importar_entidades( \ZipArchive $zip, array $seleccion, array &$creados ): int {
+		$total = 0;
+
+	$order = array( 'settings', 'proyectos', 'miembros', 'inscripciones', 'turnos' );
+
+		foreach ( $order as $entity ) {
+			if ( ! in_array( $entity, $seleccion, true ) ) {
+				continue;
+			}
+
+			if ( $entity === 'settings' ) {
+				$this->import_settings( $zip );
+				continue;
+			}
+
+			$csv_name = $entity . '.csv';
+			if ( $zip->locateName( $csv_name ) === false ) {
+				continue;
+			}
+
+			$stream = $zip->getStream( $csv_name );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread -- reading BOM check from ZipArchive stream, no WP alternative
+			if ( fread( $stream, 3 ) !== chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) ) {
+				rewind( $stream );
+			}
+
+			$headers = fgetcsv( $stream, 0, ',', '"', '\\' );
+			if ( ! $headers ) {
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- ZipArchive stream cleanup
+				fclose( $stream );
+				continue; }
+
+			// $entity proviene del literal $order (settings hace continue
+			// antes); el mapa cubre todos los valores restantes. Si se
+			// añade una entidad nueva, PHPStan marcará el offset como
+			// inexistente — mejor que un guard silencioso.
+			$post_type = self::ENTITY_CPT_MAP[ $entity ];
+
+			while ( ( $data = fgetcsv( $stream, 0, ',', '"', '\\' ) ) !== false ) {
+				if ( empty( array_filter( $data ) ) ) {
+					continue;
+				}
+
+				$old_id = (int) ( $data[0] ?? 0 );
+				$new_id = wp_insert_post(
+					array(
+						'post_type'   => $post_type,
+						'post_title'  => sanitize_text_field( $data[1] ?? __( 'Importado', 'convoca-core' ) ),
+						'post_status' => 'publish',
+					)
+				);
+
+				if ( ! $new_id ) {
+					// wp_insert_post devuelve 0 en error (no WP_Error en WP moderno).
+					throw new \RuntimeException( __( 'Error al crear el post importado.', 'convoca-core' ) );
+				}
+
+				$creados[] = $new_id;
+				// Store old ID as meta instead of keeping a RAM dict.
+				if ( $old_id ) {
+					update_post_meta( $new_id, '_convoca_old_import_id', $old_id );
+				}
+				$this->apply_meta( $entity, $new_id, $data );
+				++$total;
+			}
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- ZipArchive stream cleanup
+				fclose( $stream );
+		}
+
+		return $total;
 	}
 
 	private function apply_meta( $entity, $id, $data ): void {
