@@ -238,4 +238,106 @@ final class AdminBackupTest extends TestCase {
 		$this->assertNotEmpty( $copias, 'hay copia' );
 		$this->assertSame( array( 'cuota' => 12 ), $copias[0]['datos'] ?? null, 'con el valor anterior' );
 	}
+
+	/**
+	 * Pinta la pantalla.
+	 *
+	 * @return string
+	 */
+	private function pantalla(): string {
+		ob_start();
+		try {
+			$this->backup->render();
+		} finally {
+			$html = (string) ob_get_clean();
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Sin la capacidad de la copia no se pinta nada: la pantalla muere antes.
+	 */
+	public function test_sin_permiso_la_pantalla_muere(): void {
+		$GLOBALS['_test_caps']    = array( 'common_manage_backup' => false );
+		$GLOBALS['_wp_die_lanza'] = true;
+
+		$this->expectException( \RuntimeException::class );
+		$this->expectExceptionMessage( 'wp_die' );
+		$this->pantalla();
+	}
+
+	/**
+	 * Sin previsualización se pinta la pantalla pero **no** el bloque de contenido detectado: no hay nada que importar.
+	 */
+	public function test_sin_previsualizacion_no_hay_bloque_de_contenido(): void {
+		$GLOBALS['_test_caps'] = array( 'common_manage_backup' => true );
+
+		$html = $this->pantalla();
+
+		$this->assertStringContainsString( 'Copia de Seguridad y Mantenimiento', $html );
+		$this->assertStringNotContainsString( 'Contenido Detectado', $html );
+		$this->assertStringNotContainsString( 'Ejecutar Importación', $html );
+	}
+
+	/**
+	 * Con previsualización: el token viaja con el formulario y cada entidad sale con su nombre y su recuento.
+	 */
+	public function test_con_previsualizacion(): void {
+		$GLOBALS['_test_caps']    = array( 'common_manage_backup' => true );
+		$GLOBALS['_test_user_id'] = 7;
+		$GLOBALS['_wp_stores']['transients']['convoca_import_preview_' . get_current_user_id()] = array(
+			'token'    => 'abc123',
+			'entities' => array(
+				'miembros'  => array(
+					'label' => 'Miembros / Socios',
+					'count' => 12,
+				),
+				'proyectos' => array(
+					'label' => 'Proyectos y Actividades',
+					'count' => 3,
+				),
+			),
+		);
+
+		$html = $this->pantalla();
+
+		$this->assertStringContainsString( 'Contenido Detectado', $html );
+		$this->assertStringContainsString( 'value="abc123"', $html, 'el token viaja con el formulario' );
+		$this->assertStringContainsString( 'Miembros / Socios', $html );
+		$this->assertStringContainsString( '12 registros', $html );
+		$this->assertStringContainsString( 'value="proyectos"', $html );
+		$this->assertStringContainsString( 'name="_wpnonce"', $html, 'con su nonce' );
+	}
+
+	/**
+	 * Una entidad que no conoce no escribe nada: una fila de más no puede tocar metas ajenos.
+	 */
+	public function test_una_entidad_desconocida_no_escribe(): void {
+		$this->privado( 'apply_meta', 'pagos', 401, array( '401', 'x', 'y' ) );
+
+		$this->assertArrayNotHasKey( 401, $GLOBALS['_wp_stores']['post_meta'] );
+	}
+
+	/**
+	 * Un `settings.json` que no es JSON, o que es un escalar, se ignora sin romper ni escribir nada.
+	 */
+	public function test_un_settings_json_que_no_vale_se_ignora(): void {
+		$ruta = ( getenv( 'TMPDIR' ) ?: sys_get_temp_dir() ) . '/convoca-backup-test3-' . getmypid() . '.zip';
+
+		foreach ( array( 'no es json', '"solo texto"', '[]' . str_repeat( ' ', 0 ) ) as $i => $contenido ) {
+			$zip = new \ZipArchive();
+			$zip->open( $ruta, \ZipArchive::CREATE | \ZipArchive::OVERWRITE );
+			$zip->addFromString( 'settings.json', $contenido );
+			$zip->close();
+
+			$zip = new \ZipArchive();
+			$zip->open( $ruta );
+			$this->privado( 'import_settings', $zip );
+			$zip->close();
+		}
+		@unlink( $ruta );
+
+		$this->assertArrayNotHasKey( 'convoca_members_settings', $GLOBALS['_wp_stores']['options'] );
+	}
 }

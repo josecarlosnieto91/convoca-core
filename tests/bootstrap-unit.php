@@ -431,8 +431,6 @@ if (!function_exists('current_user_can')) {
     // concede, que es como se comportaba antes (no cambia ninguna prueba existente).
     function current_user_can($c, ...$a) { return $GLOBALS['_test_caps'][$c] ?? true; }
 }
-if (!function_exists('get_current_user_id')) { function get_current_user_id() { return 1; } }
-
 /**
  * ¿Puede ESTE usuario hacer algo? Importa cuando la decisión no es sobre quien tiene la sesión: el aterrizaje
  * tras el acceso o los permisos de una pantalla concreta se deciden sobre el usuario que entra.
