@@ -1532,6 +1532,14 @@ if (!class_exists('WP_List_Table')) {
             return (-1 === (int) $accion || '' === (string) $accion) ? '' : (string) $accion;
         }
         public function display() { echo 'tabla-renderizada'; }
+        public function set_pagination_args($args) {
+            $this->args['pagination'] = (array) $args;
+            $GLOBALS['_wp_stores']['pagination'][] = (array) $args;
+        }
+        public function get_pagination_args() { return (array) ($this->args['pagination'] ?? array()); }
+        public function no_items() { echo 'No hay registros.'; }
+        public function search_box($text, $input_id) {}
+        public function views() {}
     }
 }
 
@@ -1768,5 +1776,27 @@ if (!function_exists('remove_meta_box')) {
     function remove_meta_box($id, $screen = '', $context = '') {
         $GLOBALS['_wp_stores']['meta_boxes_quitadas'][] = array( (string) $id, (string) $screen, (string) $context );
         return true;
+    }
+}
+
+if (!function_exists('submit_button')) {
+    function submit_button($text = 'Guardar', $type = 'primary', $name = 'submit', $wrap = true, $other = '') {
+        $html = '<button type="submit" name="' . esc_attr($name) . '" class="button button-' . esc_attr($type) . '">' . esc_html($text) . '</button>';
+        if ($wrap) { echo '<p class="submit">' . $html . '</p>'; return; }
+        echo $html;
+    }
+}
+if (!function_exists('checked')) {
+    function checked($checked, $current = true, $echo = true) {
+        $r = ((string) $checked === (string) $current) ? " checked='checked'" : '';
+        if ($echo) { echo $r; }
+        return $r;
+    }
+}
+if (!function_exists('selected')) {
+    function selected($selected, $current = true, $echo = true) {
+        $r = ((string) $selected === (string) $current) ? " selected='selected'" : '';
+        if ($echo) { echo $r; }
+        return $r;
     }
 }
