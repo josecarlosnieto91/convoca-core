@@ -198,7 +198,15 @@ if (!function_exists('esc_html_e')) { function esc_html_e($t, $d = 'default') { 
 if (!function_exists('esc_attr_e')) { function esc_attr_e($t, $d = 'default') { echo $t; } }
 if (!function_exists('is_ssl')) { function is_ssl() { return false; } }
 if (!function_exists('wp_parse_url')) { function wp_parse_url($url, $component = -1) { return parse_url($url, $component); } }
-if (!function_exists('esc_url_raw')) { function esc_url_raw($u) { return (string) $u; } }
+if (!function_exists('esc_url_raw')) {
+    /** Saneado de URL para guardar: `esc_url()` codifica los espacios (`%20`) y descarta esquemas raros. */
+    function esc_url_raw($u) {
+        $u = trim((string) $u);
+        if ('' === $u) { return ''; }
+        if (!preg_match('~^(https?:|mailto:|/#|/)~i', $u)) { return ''; }
+        return str_replace(' ', '%20', $u);
+    }
+}
 if (!function_exists('add_query_arg')) {
     function add_query_arg($args, $url = '') {
         // Dos formas, como WordPress: `add_query_arg( array( ... ), $url )` y `add_query_arg( $clave, $valor, $url )`.
@@ -235,7 +243,9 @@ if (!function_exists('wp_mail')) {
 }
 if (!function_exists('sanitize_key')) { function sanitize_key($k) { return preg_replace('/[^a-z0-9_\-]/', '', strtolower((string) $k)); } }
 if (!function_exists('number_format_i18n')) { function number_format_i18n($n, $dec = 0) { return number_format((float) $n, (int) $dec); } }
-if (!function_exists('date_i18n')) { function date_i18n($f, $ts = null) { return gmdate($f, $ts ?? time()); } }
+// `date_i18n()` formatea en la **zona del sitio**, igual que `wp_date()`. Con `gmdate()` se leía en UTC: una
+// fecha de evento a las 18:30 en Madrid salía a las 17:30, y la prueba lo habría tomado por un fallo del producto.
+if (!function_exists('date_i18n')) { function date_i18n($f, $ts = null) { return wp_date($f, $ts ?? time()); } }
 if (!function_exists('wp_list_pluck')) {
     function wp_list_pluck($list, $field, $index_key = null) {
         $out = [];
@@ -766,6 +776,11 @@ if (!class_exists('WP_Query')) {
             $limit  = (int) ($args['posts_per_page'] ?? 10);
 
             $busca = isset($args['s']) ? trim((string) $args['s']) : '';
+            // `date_query` por año: sin esto, «las entradas de este año» contaba todas y la cifra mentía.
+            $anio = null;
+            foreach ((array) ($args['date_query'] ?? array()) as $dq) {
+                if (isset($dq['year'])) { $anio = (int) $dq['year']; }
+            }
             foreach (($GLOBALS['_wp_stores']['posts'] ?? []) as $post) {
                 if (!in_array($post->post_type ?? '', $tipos, true) && !in_array('any', $tipos, true)) { continue; }
                 $st = $post->post_status ?? 'publish';
@@ -777,6 +792,10 @@ if (!class_exists('WP_Query')) {
                     if (false === mb_stripos($pajar, $busca)) { continue; }
                 }
                 if ($mq && !_wp_stub_meta_matches((int) ($post->ID ?? 0), $mq)) { continue; }
+                if (null !== $anio) {
+                    $fecha = (string) ($post->post_date ?? '');
+                    if ((int) substr($fecha, 0, 4) !== $anio) { continue; }
+                }
                 $this->posts[] = $post;
             }
 
@@ -789,9 +808,11 @@ if (!class_exists('WP_Query')) {
                 });
             }
             if ('DESC' === $orden) { $this->posts = array_reverse($this->posts); }
-            if ($limit > 0) { $this->posts = array_slice($this->posts, 0, $limit); }
+            // `found_posts` es el total que casa, no lo que cabe en la página: WordPress devuelve ahí el total
+            // de la consulta, y con `posts_per_page => 1` hay quien cuenta con ese número (cifras del sitio).
             $this->found_posts = count($this->posts);
-            $this->post_count  = count($this->posts);
+            if ($limit > 0) { $this->posts = array_slice($this->posts, 0, $limit); }
+            $this->post_count = count($this->posts);
         }
 
         public function have_posts() { return $this->i < count($this->posts); }
@@ -1014,13 +1035,18 @@ if (!function_exists('wp_delete_attachment')) {
 
 // --- Funciones de WordPress que faltaban en el entorno de pruebas unitarias ---
 if (!function_exists('add_shortcode')) {
-    function add_shortcode($tag, $cb) { $GLOBALS['_wp_stores']['shortcodes'][$tag] = $cb; return true; }
+    /**
+     * Registro de shortcodes en un almacén **propio** (`$GLOBALS['_wp_shortcodes']`), no dentro de `_wp_stores`:
+     * los plugins registran al cargarse, y una prueba que reemplaza el almacén entero borraba el registro y la
+     * comprobación de que el shortcode existe dejaba de medir nada.
+     */
+    function add_shortcode($tag, $cb) { $GLOBALS['_wp_shortcodes'][(string) $tag] = $cb; return true; }
 
     /**
      * ¿Está registrado un shortcode? WordPress lo tiene siempre; el arnés no lo tenía y un plugin que lo
      * usa legítimamente (para no pintar nada si el otro plugin no está) reventaba al probarse.
      */
-    function shortcode_exists($tag) { return isset($GLOBALS['_wp_stores']['shortcodes'][$tag]); }
+    function shortcode_exists($tag) { return isset($GLOBALS['_wp_shortcodes'][$tag]); }
 
     /**
      * Renderizado mínimo: si el shortcode está registrado, se llama a su devolución con los atributos; si no,
@@ -1045,7 +1071,13 @@ if (!function_exists('add_shortcode')) {
 if (!function_exists('get_the_date')) {
     function get_the_date($format = '', $post = null) {
         $id = is_object($post) ? (int) ($post->ID ?? 0) : (int) $post;
-        return (string) ($GLOBALS['_wp_stores']['post_dates'][$id] ?? gmdate($format ?: 'Y-m-d'));
+        $fecha = (string) ($GLOBALS['_wp_stores']['post_dates'][$id] ?? '');
+        if ('' === $fecha) {
+            $fecha = (string) ($GLOBALS['_wp_stores']['posts'][$id]->post_date ?? '');
+        }
+        if ('' === $fecha) { return ''; } // Sin fecha conocida no se inventa la de hoy.
+        $ts = strtotime($fecha);
+        return $ts ? wp_date($format ?: 'Y-m-d', $ts) : $fecha;
     }
 }
 if (!function_exists('get_the_time')) { function get_the_time($format = '', $post = null) { return get_the_date($format, $post); } }
@@ -1443,4 +1475,69 @@ if (!class_exists('WP_List_Table')) {
 if (!function_exists('check_admin_referer')) {
     /** Comprobación de nonce de una acción en bloque: en unitario no hay formulario, así que no mata. */
     function check_admin_referer($accion = -1, $campo = '_wpnonce') { return true; }
+}
+
+if (!function_exists('shortcode_atts')) {
+    /** Atributos de un shortcode: los del autor sobre los de por defecto. */
+    function shortcode_atts($pairs, $atts, $shortcode = '') {
+        $atts = (array) $atts;
+        $out  = array();
+        foreach ((array) $pairs as $name => $default) {
+            $out[$name] = array_key_exists($name, $atts) ? $atts[$name] : $default;
+        }
+        return $out;
+    }
+}
+if (!function_exists('add_shortcode')) {
+    function add_shortcode($tag, $cb) { $GLOBALS['_wp_shortcodes'][(string) $tag] = $cb; }
+}
+if (!function_exists('has_nav_menu')) {
+    function has_nav_menu($location) { return !empty($GLOBALS['_wp_stores']['nav_menus'][(string) $location]); }
+}
+if (!function_exists('wp_nav_menu')) {
+    /**
+     * Devuelve el HTML del menú de una ubicación. `echo => false` es lo que usa el shortcode; con `echo => true`
+     * se imprime, como en WordPress.
+     */
+    function wp_nav_menu($args = array()) {
+        $html = (string) ($GLOBALS['_wp_stores']['nav_html'][(string) ($args['theme_location'] ?? '')] ?? '');
+        if (!empty($args['echo'])) { echo $html; return true; }
+        return $html;
+    }
+}
+if (!function_exists('do_blocks')) {
+    /**
+     * Renderiza bloques. Por defecto devuelve el marcado tal cual; con `_wp_stores['blocks_callback']` se delega,
+     * que es como se prueba que un bloque pueda volver a entrar en el shortcode (guardas anti-recursión).
+     */
+    function do_blocks($content) {
+        $cb = $GLOBALS['_wp_stores']['blocks_callback'] ?? null;
+        return is_callable($cb) ? $cb((string) $content) : (string) $content;
+    }
+}
+if (!function_exists('get_the_ID')) {
+    function get_the_ID() { return isset($GLOBALS['post']->ID) ? (int) $GLOBALS['post']->ID : 0; }
+}
+if (!function_exists('wp_count_posts')) {
+    function wp_count_posts($type = 'post') {
+        $cuenta = (object) array('publish' => 0, 'draft' => 0, 'pending' => 0, 'private' => 0);
+        // El almacén guarda las entradas como `posts[ID]` (que es lo que leen `get_post()`, `WP_Query` y los
+        // listados). Contar sólo `posts[tipo]` dejaba las cifras del sitio siempre a cero.
+        $todos = $GLOBALS['_wp_stores']['posts'] ?? array();
+        if (isset($todos[$type]) && is_array($todos[$type])) { $todos = $todos[$type]; }
+        foreach ((array) $todos as $p) {
+            $tipo_p = is_object($p) ? (string) ($p->post_type ?? 'post') : (string) ($p['post_type'] ?? 'post');
+            if ($tipo_p !== $type) { continue; }
+            $estado = is_object($p) ? (string) ($p->post_status ?? 'publish') : (string) ($p['post_status'] ?? 'publish');
+            if (isset($cuenta->$estado)) { $cuenta->$estado++; }
+        }
+        return $cuenta;
+    }
+}
+if (!function_exists('date_i18n')) {
+    /** Formato con la zona del sitio, como WordPress. */
+    function date_i18n($format, $timestamp_with_offset = false, $gmt = false) {
+        $ts = (false === $timestamp_with_offset) ? time() : (int) $timestamp_with_offset;
+        return wp_date($format, $ts);
+    }
 }
