@@ -677,20 +677,12 @@ if (!function_exists('wp_date')) {
 /** Precarga de metas: en unitario se lee del almacén al pedirla, así que no hay nada que precargar. */
 if (!function_exists('update_meta_cache')) { function update_meta_cache($tipo = 'post', $ids = array()) { return true; } }
 
-/** `dbDelta()`: se apunta la sentencia que el instalador quería crear o migrar. */
 /** ¿Es una revisión o un autoguardado? Los `save_post` no deben guardar metas en esos casos. */
 if (!function_exists('wp_is_post_revision')) {
     function wp_is_post_revision($id) { return in_array((int) $id, (array) ($GLOBALS['_wp_stores']['revisiones'] ?? array()), true); }
 }
 if (!function_exists('wp_is_post_autosave')) {
     function wp_is_post_autosave($id) { return in_array((int) $id, (array) ($GLOBALS['_wp_stores']['autosaves'] ?? array()), true); }
-}
-
-if (!function_exists('dbDelta')) {
-    function dbDelta($sql, $args = array()) {
-        $GLOBALS['_wp_stores']['dbdelta'][] = (string) $sql;
-        return array();
-    }
 }
 
 /** Registro y encolado de estilos y scripts: se apuntan para poder afirmar qué se sirve y qué no. */
