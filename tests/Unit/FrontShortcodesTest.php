@@ -166,6 +166,33 @@ final class FrontShortcodesTest extends TestCase {
 	}
 
 	/**
+	 * Un evento de dos días enseña el rango: si no, parece que acaba el mismo día que empieza.
+	 */
+	public function test_el_rango_de_dos_dias(): void {
+		$GLOBALS['post'] = (object) array( 'ID' => 42 );
+		$GLOBALS['_wp_stores']['post_meta'][42] = array(
+			'_convoca_event_start_date' => '2026-11-07 18:30:00',
+			'_convoca_event_end_date'   => '2026-11-08 14:00:00',
+		);
+
+		$html = \Convoca\Core\shortcode_when();
+
+		$this->assertStringContainsString( '18:30', $html );
+		$this->assertStringContainsString( '–', $html, 'con su raya de rango' );
+		$this->assertStringContainsString( '8 de November', $html, 'y el día de fin' );
+	}
+
+	/**
+	 * Un fin sin inicio no es un evento: no se pinta un rango con el principio en blanco.
+	 */
+	public function test_fin_sin_inicio_no_pinta_nada(): void {
+		$GLOBALS['post'] = (object) array( 'ID' => 42 );
+		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_event_end_date' => '2026-11-08 14:00:00' );
+
+		$this->assertSame( '', \Convoca\Core\shortcode_when() );
+	}
+
+	/**
 	 * **Sin fecha de evento no se pinta la de publicación**: una entrada no es una actividad.
 	 */
 	public function test_sin_fecha_de_evento_no_hay_fecha(): void {
@@ -190,13 +217,16 @@ final class FrontShortcodesTest extends TestCase {
 	public function test_el_lugar(): void {
 		$GLOBALS['post'] = (object) array( 'ID' => 42 );
 		$GLOBALS['_wp_stores']['post_meta'][42] = array(
-			'_convoca_event_address' => 'Plaza <script>alert(1)</script>, Calle Mayor 1, 33003',
+			// Más de 60 caracteres a propósito: es cuando el producto se queda con el municipio.
+			'_convoca_event_address' => 'Plaza <script>alert(1)</script>, Calle Mayor 1, Bajo B, 33003, Oviedo',
 		);
 
 		$html = \Convoca\Core\shortcode_where();
 
 		$this->assertStringNotContainsString( '<script>', $html, 'la dirección sale escapada' );
 		$this->assertStringContainsString( 'Plaza &lt;script&gt;', $html );
+		// En una tarjeta se enseña el municipio, no la dirección postal: el código postal no aporta y ocupa.
+		$this->assertStringNotContainsString( '33003', $html, 'sin la dirección postal completa' );
 	}
 
 	/**
