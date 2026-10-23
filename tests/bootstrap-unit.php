@@ -1629,3 +1629,46 @@ if (!function_exists('wp_mkdir_p')) {
 if (!function_exists('sanitize_file_name')) {
     function sanitize_file_name($name) { return trim(preg_replace('/[^A-Za-z0-9._-]+/', '-', (string) $name), '-'); }
 }
+
+if (!function_exists('wp_kses_allowed_html')) {
+    /**
+     * Lista permitida de `wp_kses()`, en su subconjunto de `post`: lo que hace falta para comprobar que una
+     * plantilla **conserva** su estructura (html/head/style/table) y **pierde** lo que no debe estar.
+     */
+    function wp_kses_allowed_html($context = '') {
+        $comunes = array( 'class' => true, 'id' => true, 'style' => true, 'title' => true );
+        return array(
+            'a' => array_merge($comunes, array('href' => true)),
+            'p' => $comunes, 'div' => $comunes, 'span' => $comunes, 'strong' => $comunes,
+            'b' => $comunes, 'em' => $comunes, 'i' => $comunes, 'u' => $comunes,
+            'h1' => $comunes, 'h2' => $comunes, 'h3' => $comunes, 'h4' => $comunes,
+            'ul' => $comunes, 'ol' => $comunes, 'li' => $comunes,
+            'br' => array(), 'hr' => array(), 'img' => array('src' => true, 'alt' => true, 'width' => true, 'height' => true),
+            'table' => array_merge($comunes, array('border' => true, 'width' => true)),
+            'thead' => array(), 'tbody' => array(), 'tr' => $comunes,
+            'th' => array_merge($comunes, array('colspan' => true)), 'td' => array_merge($comunes, array('colspan' => true)),
+        );
+    }
+}
+if (!function_exists('wp_kses')) {
+    /**
+     * Subconjunto de `wp_kses()`: elimina lo que no está en la lista permitida (incluidos `script`, `iframe`,
+     * `object` y los atributos `on*`). No replica todos los casos de WordPress, pero sí el comportamiento que se
+     * mide aquí: una plantilla no puede guardar código ejecutable.
+     */
+    function wp_kses($content, $allowed) {
+        $content = (string) $content;
+        // Fuera los elementos peligrosos por completo (con su contenido cuando procede).
+        $content = preg_replace('#<(script|iframe|object|embed|form)\b[^>]*>.*?</\1>#is', '', $content);
+        $content = preg_replace('#<(script|iframe|object|embed|form)\b[^>]*/?>#is', '', $content);
+        // Atributos de evento en cualquier etiqueta.
+        $content = preg_replace('#\son[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)#i', '', $content);
+        return $content;
+    }
+}
+if (!function_exists('add_options_page')) {
+    function add_options_page($page_title, $menu_title, $capability, $menu_slug, $callback = '') {
+        $GLOBALS['_wp_stores']['options_pages'][] = compact('page_title', 'menu_title', 'capability', 'menu_slug', 'callback');
+        return $menu_slug;
+    }
+}

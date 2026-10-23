@@ -358,12 +358,23 @@ class Admin_Templates {
 			'/style=["\']([^"\']*)["\']/i',
 			function ( $matches ) use ( $dangerous ) {
 				$style = $matches[1];
+				// `url(...)` y `expression(...)` se quitan **con su argumento**: borrar sólo la palabra dejaba
+				// `background:http://ejemplo.test/x.png)` y `alert(1))` dentro del `style`, que es basura que el
+				// renderizador puede reinterpretar. Y `@import` se lleva la regla entera.
+				$style = preg_replace( '/url\(\s*[^)]*\)/i', '', $style );
+				$style = preg_replace( '/expression\(\s*[^)]*\)/i', '', $style );
+				$style = preg_replace( '/@import[^;]*;?/i', '', $style );
 				foreach ( $dangerous as $bad ) {
 					$style = str_ireplace( $bad, '', $style );
 				}
-				// Clean up any resulting double semicolons or empty styles.
+				// Restos de paréntesis (una función anidada deja el cierre suelto) y limpieza de separadores.
+				$style = preg_replace( '/[()]+/', '', $style );
 				$style = preg_replace( '/;+/', ';', $style );
-				$style = trim( $style, ';' );
+				$style = trim( $style, '; ' );
+				// Sin una sola propiedad no es un estilo: se quita el atributo en vez de dejar `style=")"`.
+				if ( '' === $style || false === strpos( $style, ':' ) ) {
+					return '';
+				}
 				return $style ? 'style="' . esc_attr( $style ) . '"' : '';
 			},
 			$html
