@@ -677,6 +677,14 @@ if (!function_exists('wp_date')) {
 /** Precarga de metas: en unitario se lee del almacén al pedirla, así que no hay nada que precargar. */
 if (!function_exists('update_meta_cache')) { function update_meta_cache($tipo = 'post', $ids = array()) { return true; } }
 
+/** `dbDelta()`: se apunta la sentencia que el instalador quería crear o migrar. */
+if (!function_exists('dbDelta')) {
+    function dbDelta($sql, $args = array()) {
+        $GLOBALS['_wp_stores']['dbdelta'][] = (string) $sql;
+        return array();
+    }
+}
+
 /** Registro y encolado de estilos y scripts: se apuntan para poder afirmar qué se sirve y qué no. */
 if (!function_exists('wp_register_style')) {
     function wp_register_style($h, $src = '', $d = array(), $v = false, $m = 'all') {
