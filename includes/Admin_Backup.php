@@ -175,10 +175,37 @@ class Admin_Backup {
 			}
 		};
 
+		$error = $this->construir_zip( $tmp_file );
+		if ( '' !== $error ) {
+			$cleanup();
+			wp_die( $error );
+		}
+
+		header( 'Content-Type: application/zip' );
+		header( 'Content-Disposition: attachment; filename="convoca-backup-' . wp_date( 'Y-m-d-His' ) . '.zip"' );
+		header( 'Content-Length: ' . filesize( $tmp_file ) );
+		header( 'Pragma: no-cache' );
+		header( 'Expires: 0' );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- serving binary ZIP file, no escaping needed
+		readfile( $tmp_file );
+		$cleanup();
+		exit;
+	}
+
+	/**
+	 * Construye el ZIP de la copia: los cuatro CSV y el `settings.json`.
+	 *
+	 * Se separa de `handle_export()` (nonce, permisos, descarga y `exit`) para poder comprobarlo: un backup que
+	 * se genera mal se descubre el día que hay que restaurarlo. El nombre de cada CSV es la **entidad** (la clave
+	 * del mapa), que es lo que busca el importador; antes se usaba el CPT y no encontraba ninguno.
+	 *
+	 * @param string $tmp_file Ruta del ZIP a crear.
+	 * @return string Vacío si salió bien; el mensaje de error si no.
+	 */
+	private function construir_zip( string $tmp_file ): string {
 		$zip = new \ZipArchive();
 		if ( $zip->open( $tmp_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE ) !== true ) {
-			$cleanup();
-			wp_die( esc_html__( 'No se pudo crear el archivo temporal ZIP.', 'convoca-core' ) );
+			return esc_html__( 'No se pudo crear el archivo temporal ZIP.', 'convoca-core' );
 		}
 
 		$add_csv = function ( $name, $headers, $rows ) use ( $zip ) {
@@ -186,9 +213,9 @@ class Admin_Backup {
 			$handle = fopen( 'php://temp', 'r+' );
 			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- writing BOM + CSV data to temp stream
 			fwrite( $handle, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) ); // BOM for UTF-8.
-			fputcsv( $handle, $headers, ',', '"' );
+			fputcsv( $handle, $headers, ',', '"', '\\' );
 			foreach ( $rows as $row ) {
-				fputcsv( $handle, $row, ',', '"' );
+				fputcsv( $handle, $row, ',', '"', '\\' );
 			}
 			rewind( $handle );
 			$zip->addFromString( $name . '.csv', stream_get_contents( $handle ) );
@@ -307,18 +334,10 @@ class Admin_Backup {
 		$zip->close();
 
 		if ( ! file_exists( $tmp_file ) ) {
-			wp_die( esc_html__( 'Error fatal: ZIP no generado.', 'convoca-core' ) );
+			return esc_html__( 'Error fatal: ZIP no generado.', 'convoca-core' );
 		}
 
-		header( 'Content-Type: application/zip' );
-		header( 'Content-Disposition: attachment; filename="convoca-backup-' . wp_date( 'Y-m-d-His' ) . '.zip"' );
-		header( 'Content-Length: ' . filesize( $tmp_file ) );
-		header( 'Pragma: no-cache' );
-		header( 'Expires: 0' );
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- serving binary ZIP file, no escaping needed
-		readfile( $tmp_file );
-		$cleanup();
-		exit;
+		return '';
 	}
 
 	/* ── Import Preview ── */

@@ -356,4 +356,75 @@ final class AdminBackupTest extends TestCase {
 		$GLOBALS['_wp_stores'] = $this->previo;
 		unset( $GLOBALS['_wp_logged_in'], $GLOBALS['_test_user_id'], $GLOBALS['_wp_json'], $GLOBALS['_wp_die_lanza'] );
 	}
+
+	/**
+	 * El ZIP de la copia: los cuatro CSV con el nombre de la **entidad** (que es lo que busca el importador) y el
+	 * `settings.json` con las opciones permitidas. Un backup con los nombres del CPT restauraba cero filas.
+	 */
+	public function test_el_zip_de_la_copia(): void {
+		$temp = ( getenv( 'TMPDIR' ) ?: sys_get_temp_dir() ) . '/convoca-zip-test-' . getmypid();
+		@mkdir( $temp, 0777, true );
+		$GLOBALS['_wp_stores']['temp_dir'] = $temp;
+
+		$post = static function ( int $id, string $tipo, string $titulo ): \WP_Post {
+			$p               = new \WP_Post();
+			$p->ID           = $id;
+			$p->post_type    = $tipo;
+			$p->post_status  = 'publish';
+			$p->post_title   = $titulo;
+			$p->post_content = '';
+			return $p;
+		};
+		$GLOBALS['_wp_stores']['posts'] = array(
+			1 => $post( 1, 'miembro', 'Ada' ),
+			2 => $post( 2, 'miembro', 'Bea' ),
+			3 => $post( 3, 'inscripcion', 'Inscripción' ),
+			4 => $post( 4, 'proyecto', 'Actividad' ),
+			5 => $post( 5, 'centro_turno', 'Turno' ),
+		);
+		$GLOBALS['_wp_stores']['post_meta'] = array(
+			1 => array(
+				'_convoca_email'          => 'ada@example.test',
+				'_convoca_dni'            => '12345678Z',
+				'_convoca_plan'           => 'base',
+				'_convoca_estado_miembro' => 'activo',
+				'_convoca_vencimiento'    => '2027-01-01',
+			),
+			3 => array( '_convoca_nombre' => 'Ada', '_convoca_actividad_id' => 4 ),
+			4 => array( '_convoca_fecha_inicio' => '2026-01-01', '_convoca_activo' => '1' ),
+			5 => array( '_id_responsable' => '12', '_estado_real' => 'cubierto', '_hora_fin' => '14:00' ),
+		);
+		$GLOBALS['_wp_stores']['options'] = array(
+			'convoca_members_settings' => array( 'cuota' => 30 ),
+			'siteurl'                  => 'https://example.test',
+		);
+
+		$ruta  = $temp . '/backup.zip';
+		$error = $this->privado( 'construir_zip', $ruta );
+		$this->assertSame( '', $error, 'sin error' );
+		$this->assertFileExists( $ruta );
+
+		$zip = new \ZipArchive();
+		$this->assertTrue( $zip->open( $ruta ) );
+
+		$miembros = $zip->getFromName( 'miembros.csv' );
+		$this->assertNotFalse( $miembros, 'el CSV se llama por la entidad, no por el CPT' );
+		$this->assertStringContainsString( 'ID,Nombre,Email,DNI,Plan,Estado,Vencimiento', $miembros );
+		$this->assertStringContainsString( 'ada@example.test', $miembros );
+		$this->assertStringContainsString( '12345678Z', $miembros );
+		$this->assertStringContainsString( 'Bea', $miembros, 'salen los dos socios' );
+		$this->assertFalse( $zip->getFromName( 'miembro.csv' ), 'el nombre del CPT no está: el importador no lo encontraría' );
+
+		foreach ( array( 'inscripciones.csv', 'proyectos.csv', 'turnos.csv' ) as $csv ) {
+			$this->assertNotFalse( $zip->getFromName( $csv ), $csv );
+		}
+
+		$ajustes = (string) $zip->getFromName( 'settings.json' );
+		$this->assertStringContainsString( 'convoca_members_settings', $ajustes );
+		$this->assertStringNotContainsString( 'siteurl', $ajustes, 'la URL del sitio no viaja en la copia' );
+		$zip->close();
+
+		@unlink( $ruta );
+		@rmdir( $temp );
+	}
 }

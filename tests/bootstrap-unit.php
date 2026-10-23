@@ -653,6 +653,17 @@ if (!function_exists('wp_date')) {
 }
 
 // --- Posts ---
+/** Precarga de metas: en unitario se lee del almacén al pedirla, así que no hay nada que precargar. */
+if (!function_exists('update_meta_cache')) { function update_meta_cache($tipo = 'post', $ids = array()) { return true; } }
+
+/** Directorio temporal: el de la prueba si lo fija, para no escribir en /tmp durante el test. */
+if (!function_exists('get_temp_dir')) {
+    function get_temp_dir() {
+        $base = $GLOBALS['_wp_stores']['temp_dir'] ?? (sys_get_temp_dir() . '/');
+        return rtrim((string) $base, '/') . '/';
+    }
+}
+
 if (!function_exists('get_the_title')) {
     function get_the_title($id) {
         // Convencion de pruebas: permite fijar el titulo sin montar la entrada entera.
