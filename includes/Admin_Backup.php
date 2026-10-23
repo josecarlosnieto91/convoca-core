@@ -418,30 +418,30 @@ class Admin_Backup {
 	 * @return array<string, array{label:string,count:int}>
 	 */
 	private function analizar_zip( \ZipArchive $zip ): array {
-	// Robust validation.
-	$entities       = array();
-	$valid_entities = array( 'miembros', 'inscripciones', 'proyectos', 'turnos' );
-	foreach ( $valid_entities as $name ) {
-		if ( $zip->locateName( $name . '.csv' ) !== false ) {
-			$stream = $zip->getStream( $name . '.csv' );
-			$count  = 0;
-			while ( fgets( $stream ) ) {
-				++$count;
+		// Robust validation.
+		$entities       = array();
+		$valid_entities = array( 'miembros', 'inscripciones', 'proyectos', 'turnos' );
+		foreach ( $valid_entities as $name ) {
+			if ( $zip->locateName( $name . '.csv' ) !== false ) {
+				$stream = $zip->getStream( $name . '.csv' );
+				$count  = 0;
+				while ( fgets( $stream ) ) {
+					++$count;
+				}
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- ZipArchive stream cleanup
+				fclose( $stream );
+				$entities[ $name ] = array(
+					'label' => $this->entity_label( $name ),
+					'count' => max( 0, $count - 1 ),
+				);
 			}
-			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- ZipArchive stream cleanup
-			fclose( $stream );
-			$entities[ $name ] = array(
-				'label' => $this->entity_label( $name ),
-				'count' => max( 0, $count - 1 ),
+		}
+		if ( $zip->locateName( 'settings.json' ) !== false ) {
+			$entities['settings'] = array(
+				'label' => __( 'Configuración del Sistema', 'convoca-core' ),
+				'count' => 1,
 			);
 		}
-	}
-	if ( $zip->locateName( 'settings.json' ) !== false ) {
-		$entities['settings'] = array(
-			'label' => __( 'Configuración del Sistema', 'convoca-core' ),
-			'count' => 1,
-		);
-	}
 
 		return $entities;
 	}
