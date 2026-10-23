@@ -105,21 +105,21 @@ final class EventMetaTest extends TestCase {
 		$GLOBALS['_wp_stores']['post_meta'][12]['_convoca_event_address'] = '  Plaza   Mayor  ';
 		$this->assertSame( 'Plaza Mayor', \Convoca\Core\event_where( 12 ), 'espacios de más fuera' );
 
-		$larga = 'Centro Social de La Madriguera, Calle de la Independencia 12, 33004 Oviedo, Asturias';
+		$larga = 'Centro Social de Ejemplo, Calle de Ejemplo 12, 33004, Asturias';
 		$GLOBALS['_wp_stores']['post_meta'][12]['_convoca_event_address'] = $larga;
-		$this->assertSame( 'Centro Social de La Madriguera', \Convoca\Core\event_where( 12 ), 'sin la dirección postal' );
+		$this->assertSame( 'Centro Social de Ejemplo', \Convoca\Core\event_where( 12 ), 'sin la dirección postal' );
 	}
 
 	/**
 	 * Las claves heredadas se declaran con un filtro: el núcleo no arrastra el nombre de ninguna asociación.
 	 */
 	public function test_las_claves_heredadas(): void {
-		$GLOBALS['_wp_stores']['post_meta'][13]['vieja_clave_lugar'] = 'Lugg';
+		$GLOBALS['_wp_stores']['post_meta'][13]['vieja_clave_lugar'] = 'Sede de ejemplo';
 
 		$this->assertSame( '', \Convoca\Core\event_where( 13 ), 'sin el mapa no se lee nada' );
 
 		add_filter( 'convoca_event_meta_legacy_keys', static fn(): array => array( '_convoca_event_address' => 'vieja_clave_lugar' ) );
-		$this->assertSame( 'Lugg', \Convoca\Core\event_where( 13 ), 'con el mapa, sí' );
+		$this->assertSame( 'Sede de ejemplo', \Convoca\Core\event_where( 13 ), 'con el mapa, sí' );
 	}
 
 	/**
