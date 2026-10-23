@@ -472,6 +472,9 @@ if (!function_exists('is_email')) { function is_email($email) { return (bool) fi
 if (!function_exists('post_type_exists')) { function post_type_exists($t) { return in_array($t, ['post', 'page', 'miembro', 'registro_hora', 'actividad', 'inscripcion', 'centro_turno', 'centro_actividad'], true); } }
 if (!function_exists('get_post')) {
     function get_post($id = null, $output = OBJECT, $filter = 'raw') {
+        // `get_post(0)` es `null` en WordPress: un id 0 no es un post. Inventarlo hacía que un handler «sin
+        // sesión» creyera tener ficha y contestara 200 con datos vacíos en vez de 404.
+        if ((int) $id <= 0) { return null; }
         // Convención de tests: _test_posts[id] permite mockear posts completos.
         if (!empty($GLOBALS['_test_posts'][(int) $id])) {
             return $GLOBALS['_test_posts'][(int) $id];
@@ -583,6 +586,42 @@ if (!function_exists('get_posts')) {
 }
 // Términos de un objeto (proyectos del socio en los correos y certificados). Se sirven del almacén; por
 // defecto, ninguno.
+/**
+ * `WP_Query` mínimo sobre `_wp_stores['posts']`: filtra por tipo, estado y `meta_query` (con sus EXISTS y
+ * NOT EXISTS). Lo usan las lecturas del área de socio.
+ */
+if (!class_exists('WP_Query')) {
+    class WP_Query {
+        public $posts = array();
+        public $found_posts = 0;
+        public $post_count = 0;
+        private $i = 0;
+
+        public function __construct($args = array()) {
+            $tipos  = (array) ($args['post_type'] ?? 'post');
+            $estado = (array) ($args['post_status'] ?? ['publish']);
+            $mq     = $args['meta_query'] ?? array();
+            $limit  = (int) ($args['posts_per_page'] ?? 10);
+
+            foreach (($GLOBALS['_wp_stores']['posts'] ?? []) as $post) {
+                if (!in_array($post->post_type ?? '', $tipos, true) && !in_array('any', $tipos, true)) { continue; }
+                $st = $post->post_status ?? 'publish';
+                if (!in_array('any', $estado, true) && !in_array($st, $estado, true)) { continue; }
+                if ($mq && !_wp_stub_meta_matches((int) ($post->ID ?? 0), $mq)) { continue; }
+                $this->posts[] = $post;
+            }
+
+            if (strtoupper((string) ($args['order'] ?? '')) === 'DESC') { $this->posts = array_reverse($this->posts); }
+            if ($limit > 0) { $this->posts = array_slice($this->posts, 0, $limit); }
+            $this->found_posts = count($this->posts);
+            $this->post_count  = count($this->posts);
+        }
+
+        public function have_posts() { return $this->i < count($this->posts); }
+        public function the_post() { return $this->posts[$this->i++] ?? null; }
+        public function get_posts() { return $this->posts; }
+    }
+}
 if (!function_exists('wp_get_object_terms')) {
     function wp_get_object_terms($id, $tax, $args = []) {
         return $GLOBALS['_wp_stores']['object_terms'][(int) $id] ?? [];
@@ -973,6 +1012,20 @@ if (file_exists($autoload)) {
  * arnés no puede comprobar ni el contenido ni el código de estado de un endpoint.
  */
 if (!class_exists('WP_REST_Response')) {
+    /**
+     * Petición REST mínima: lo que un handler lee de verdad es `get_param()`.
+     */
+    class WP_REST_Request {
+        private $params = array();
+        public function __construct($params = array()) { $this->params = (array) $params; }
+        public function get_param($key, $default = null) {
+            return array_key_exists($key, $this->params) ? $this->params[$key] : $default;
+        }
+        public function set_param($key, $value) { $this->params[$key] = $value; }
+        public function get_params() { return $this->params; }
+        public function get_header($name) { return ''; }
+    }
+
     class WP_REST_Response {
         private $data;
         private $status;
