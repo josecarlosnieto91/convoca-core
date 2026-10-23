@@ -461,7 +461,19 @@ if (!function_exists('get_site_option')) {
         return $GLOBALS['_wp_stores']['site_options'][$name] ?? $default;
     }
 }
-if (!function_exists('wp_date')) { function wp_date($f, $ts = null) { return date($f, $ts ?? time()); } }
+if (!function_exists('wp_date')) {
+    /**
+     * `wp_date()` formatea **en la zona del sitio**, no en la del proceso: con `date()` a secas, una fecha
+     * guardada como local se desplazaba una hora (18:00 se leía 19:00) y la prueba lo tomaba por un fallo del
+     * producto.
+     */
+    function wp_date($f, $ts = null, $zona = null) {
+        $tz = $zona instanceof \DateTimeZone ? $zona : new \DateTimeZone(wp_timezone_string());
+        $dt = new \DateTime('@' . (int) ($ts ?? time()));
+        $dt->setTimezone($tz);
+        return $dt->format($f);
+    }
+}
 
 // --- Posts ---
 if (!function_exists('get_the_title')) {
@@ -601,6 +613,10 @@ if (!function_exists('get_posts')) {
             // estricto, un correo escrito en mayúsculas no encontraba a su socio y la exportación de datos
             // personales respondía «no hay nada», que es un falso negativo con consecuencias legales.
             if ($compare === '=' && 0 !== strcasecmp((string) $meta[$key], (string) ($clause['value'] ?? ''))) { return false; }
+            // `compare => 'LIKE'`: subcadena, también sin distinguir mayúsculas. Es como busca la búsqueda
+            // global por correo, DNI, teléfono o número de socio; sin soportarlo, la cláusula no filtraba y
+            // aparecían fichas que no casaban.
+            if ($compare === 'LIKE' && false === mb_stripos((string) $meta[$key], (string) ($clause['value'] ?? ''))) { return false; }
         }
         return true;
     }
@@ -664,15 +680,30 @@ if (!class_exists('WP_Query')) {
             $mq     = $args['meta_query'] ?? array();
             $limit  = (int) ($args['posts_per_page'] ?? 10);
 
+            $busca = isset($args['s']) ? trim((string) $args['s']) : '';
             foreach (($GLOBALS['_wp_stores']['posts'] ?? []) as $post) {
                 if (!in_array($post->post_type ?? '', $tipos, true) && !in_array('any', $tipos, true)) { continue; }
                 $st = $post->post_status ?? 'publish';
                 if (!in_array('any', $estado, true) && !in_array($st, $estado, true)) { continue; }
+                // `s`: WordPress busca en título, extracto y contenido, sin distinguir mayúsculas (colación `_ci`).
+                // Sin esto, una búsqueda devolvía **todo** y la prueba de «un anónimo no ve socios» no probaba nada.
+                if ('' !== $busca) {
+                    $pajar = (string) ($post->post_title ?? '') . ' ' . (string) ($post->post_excerpt ?? '') . ' ' . (string) ($post->post_content ?? '');
+                    if (false === mb_stripos($pajar, $busca)) { continue; }
+                }
                 if ($mq && !_wp_stub_meta_matches((int) ($post->ID ?? 0), $mq)) { continue; }
                 $this->posts[] = $post;
             }
 
-            if (strtoupper((string) ($args['order'] ?? '')) === 'DESC') { $this->posts = array_reverse($this->posts); }
+            // `orderby => 'date'`: por fecha. Con `order => DESC` WordPress pone lo más reciente primero; se
+            // ordena **antes** de recortar, que es lo que decide qué entra en el límite.
+            $orden = strtoupper((string) ($args['order'] ?? ''));
+            if (strtolower((string) ($args['orderby'] ?? '')) === 'date') {
+                usort($this->posts, static function ($a, $b) {
+                    return strcmp((string) ($a->post_date ?? ''), (string) ($b->post_date ?? ''));
+                });
+            }
+            if ('DESC' === $orden) { $this->posts = array_reverse($this->posts); }
             if ($limit > 0) { $this->posts = array_slice($this->posts, 0, $limit); }
             $this->found_posts = count($this->posts);
             $this->post_count  = count($this->posts);
@@ -1230,3 +1261,14 @@ if (!function_exists('wp_nonce_field')) {
         return $campo;
     }
 }
+
+if (!function_exists('rest_url')) {
+    /** URL base de la API REST. La búsqueda devuelve el enlace a `/me` en vez de datos personales. */
+    function rest_url($ruta = '') { return 'https://example.test/wp-json/' . ltrim((string) $ruta, '/'); }
+}
+if (!function_exists('wp_json_encode')) {
+    /** JSON como WordPress (con los flags de siempre). */
+    function wp_json_encode($d, $opciones = 0) { return json_encode($d, $opciones); }
+}
+if (!function_exists('wp_timezone_string')) { function wp_timezone_string() { return 'UTC'; } }
+
