@@ -44,7 +44,9 @@ final class LicenseProTest extends TestCase {
 	 * Deja el arnés como estaba.
 	 */
 	private function limpiar(): void {
-		unset( $GLOBALS['_wp_stores'], $GLOBALS['_wp_http_posts'], $GLOBALS['_wp_scheduled'] );
+		// El cron vive en `_wp_cron` y **sobrevive** entre pruebas: si otra dejó programada la revisión con otro
+		// instante, `ensure_cron()` no la duplica y esta prueba leía 500 donde esperaba 4600 (semilla 83).
+		unset( $GLOBALS['_wp_stores'], $GLOBALS['_wp_http_posts'], $GLOBALS['_wp_scheduled'], $GLOBALS['_wp_cron']['programados']['convoca_license_validate'] );
 
 		$GLOBALS['_wp_stores'] = array(
 			'options'    => array(),
