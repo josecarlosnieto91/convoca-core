@@ -182,11 +182,11 @@ class Admin_Templates {
 
 		$allowed = array_merge( $allowed, $pdf_structural );
 
-		// Sanitize with custom allowed list.
-		$sanitized = wp_kses( $content, $allowed );
-
-		// Remove dangerous JS or URL schemes that KSES might miss in style attributes.
-		return self::sanitize_styles( $sanitized );
+		// Los estilos se limpian **antes** y `wp_kses()` pasa después como red final. Al revés, un HTML mal
+		// formado se rompía justo en la comilla del `style` y el resto quedaba suelto como **atributos nuevos** de
+		// la etiqueta: `style="background:url("javascript:alert(1)")"` acababa en `<p javascript:alert(1)")">`.
+		// Con kses al final, lo que no esté en la lista permitida desaparece.
+		return wp_kses( self::sanitize_styles( $content ), $allowed );
 	}
 
 	/**

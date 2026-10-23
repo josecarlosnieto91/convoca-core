@@ -155,6 +155,20 @@ final class AdminTemplatesTest extends TestCase {
 	}
 
 	/**
+	 * **Un HTML mal formado no puede colar atributos**: con `style="background:url("javascript:…")"`, la comilla
+	 * rompía el atributo y el resto salía como atributo nuevo de la etiqueta. Es una inyección, no un estilo feo.
+	 */
+	public function test_un_estilo_mal_formado_no_inyecta_atributos(): void {
+		$plantilla = '<p style="background:url("javascript:alert(1)")">Hola</p>';
+
+		$salida = (string) $this->privado( 'sanitize_pdf_template', $plantilla );
+
+		$this->assertStringNotContainsString( 'javascript:', $salida, 'ni la URL ni su resto' );
+		$this->assertStringNotContainsString( 'alert(1)', $salida );
+		$this->assertStringContainsString( 'Hola', $salida, 'el contenido se conserva' );
+	}
+
+	/**
 	 * Una plantilla vacía no es un error: se devuelve vacía.
 	 */
 	public function test_plantilla_vacia(): void {

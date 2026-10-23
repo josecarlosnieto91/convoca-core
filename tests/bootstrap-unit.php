@@ -1661,8 +1661,25 @@ if (!function_exists('wp_kses')) {
         // Fuera los elementos peligrosos por completo (con su contenido cuando procede).
         $content = preg_replace('#<(script|iframe|object|embed|form)\b[^>]*>.*?</\1>#is', '', $content);
         $content = preg_replace('#<(script|iframe|object|embed|form)\b[^>]*/?>#is', '', $content);
-        // Atributos de evento en cualquier etiqueta.
-        $content = preg_replace('#\son[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)#i', '', $content);
+        // **Lista blanca de atributos**, como WordPress: un atributo que no esté permitido se va. Sin esto, un
+        // HTML mal formado podía colar `javascript:…` como atributo suelto y el doble no lo veía.
+        $content = preg_replace_callback(
+            '#<([a-zA-Z][a-zA-Z0-9]*)([^>]*)>#',
+            function ($m) use ($allowed) {
+                $etiqueta = strtolower($m[1]);
+                if (!isset($allowed[$etiqueta])) { return $m[0]; }
+                $permitidos = (array) $allowed[$etiqueta];
+                $atributos = preg_replace_callback(
+                    '#\s([a-zA-Z_:][a-zA-Z0-9_:.-]*)(\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+))?#',
+                    function ($a) use ($permitidos) {
+                        return isset($permitidos[strtolower($a[1])]) ? $a[0] : '';
+                    },
+                    $m[2]
+                );
+                return '<' . $etiqueta . $atributos . '>';
+            },
+            $content
+        );
         return $content;
     }
 }
