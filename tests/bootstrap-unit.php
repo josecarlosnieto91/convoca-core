@@ -462,7 +462,21 @@ if (!function_exists('wp_set_current_user')) { function wp_set_current_user($id,
 
 // --- HTTP ---
 if (!function_exists('wp_remote_get')) { function wp_remote_get($u, $a = []) { return ['response' => ['code' => 200], 'body' => '{}']; } }
-if (!function_exists('wp_remote_post')) { function wp_remote_post($u, $a = []) { return ['response' => ['code' => 200], 'body' => '{}']; } }
+if (!function_exists('wp_remote_post')) {
+    /**
+     * POST HTTP: **se apunta lo que sale** (URL, cuerpo y cabeceras) y se puede programar la respuesta.
+     *
+     * Devolvía siempre 200 y no dejaba rastro, así que lo que viaja en un webhook —el cuerpo y, sobre todo, la
+     * firma HMAC— no se podía afirmar. `_wp_stores['http_response']` permite simular un fallo para probar los
+     * reintentos: `array('response' => array('code' => 500), 'body' => '')`.
+     */
+    function wp_remote_post($u, $a = []) {
+        $GLOBALS['_wp_http_posts'][] = ['url' => $u, 'args' => $a];
+        $respuesta = $GLOBALS['_wp_stores']['http_response'] ?? null;
+        if (is_array($respuesta)) { return $respuesta; }
+        return ['response' => ['code' => 200], 'body' => '{}'];
+    }
+}
 if (!function_exists('is_wp_error')) { function is_wp_error($t) { return $t instanceof WP_Error; } }
 if (!function_exists('wp_json_encode')) { function wp_json_encode($d, $o = 0, $d2 = 512) { return json_encode($d, $o, $d2); } }
 
@@ -1324,3 +1338,14 @@ if (!function_exists('wp_json_encode')) {
 }
 if (!function_exists('wp_timezone_string')) { function wp_timezone_string() { return 'UTC'; } }
 
+if (!function_exists('wp_remote_retrieve_response_code')) {
+    /** Código de respuesta de una petición HTTP, como WordPress. Faltaba y un webhook reventaba al leerlo. */
+    function wp_remote_retrieve_response_code($r) { return (int) ($r['response']['code'] ?? 0); }
+}
+if (!function_exists('wp_remote_retrieve_body')) {
+    function wp_remote_retrieve_body($r) { return (string) ($r['body'] ?? ''); }
+}
+if (!function_exists('is_wp_error')) {
+    // Ya suele existir; si no, la mínima: un array de respuesta no es un error.
+    function is_wp_error($t) { return $t instanceof \WP_Error; }
+}
