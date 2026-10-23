@@ -420,6 +420,11 @@ if (!function_exists('get_userdata')) {
             $u->ID = (int) $id;
             return $u;
         }
+        // Un usuario que no está **no existe**: WordPress devuelve `false`. Inventarlo hacía que una fila con un
+        // id de usuario ya borrado se pintara como «Test User» en vez de como su número.
+        if (empty($GLOBALS['_wp_stores']['users_forzados'][(int) $id])) {
+            return false;
+        }
         $u = new WP_User();
         $u->ID = (int) $id;
         $u->display_name = 'Test User';
@@ -514,7 +519,11 @@ if (!function_exists('current_time')) {
 if (!function_exists('wp_timezone_string')) {
     // Sin esto, Utils::format_date() no puede crear la fecha, captura el error y devuelve la
     // cadena sin tocar: cualquier regla que sume dias o años se rompe en silencio.
-    function wp_timezone_string() { return (string) (get_option('timezone_string') ?: 'UTC'); }
+    function wp_timezone_string() {
+        // Si no hay zona configurada se usa la del proceso: `strtotime()` interpreta en esa y, devolviendo 'UTC'
+        // fijo, una fecha guardada como local se leía desplazada (20:15 salía 18:15).
+        return (string) (get_option('timezone_string') ?: date_default_timezone_get());
+    }
 }
 if (!function_exists('wp_timezone')) { function wp_timezone() { return new \DateTimeZone(wp_timezone_string()); } }
 if (!function_exists('date_i18n')) { function date_i18n($f, $ts = null) { return date($f, $ts ?? time()); } }
@@ -1144,6 +1153,7 @@ if (!isset($GLOBALS['wpdb'])) {
         }
         public function get_row($q = null) { return null; }
         public function query($q) {
+            $GLOBALS['_wp_stores']['queries'][] = (string) $q;
             // Los flujos atómicos (p. ej. Hours_Manager::process_approval) cambian
             // el estado con un UPDATE condicional sobre wp_postmeta y solo caen al
             // update_post_meta() si ese UPDATE no afectó a ninguna fila. Sin
@@ -1209,6 +1219,10 @@ if (!isset($GLOBALS['wpdb'])) {
             return 1;
         }
         public function prepare($q, ...$a) {
+            // Un solo argumento que sea array se **expande**: es lo que hace WordPress con `IN (%d,%d,...)`.
+            // Sin esto, un `DELETE ... IN ($placeholders)` salía literalmente como `IN (Array,%d,%d)` y no se
+            // podía afirmar qué filas se borran.
+            if (1 === count($a) && is_array($a[0])) { $a = array_values($a[0]); }
             $sql = $q;
             foreach ($a as $arg) {
                 $p = strpos($sql, '%');
@@ -1404,3 +1418,29 @@ add_filter(
 		return PHP_INT_MAX;
 	}
 );
+
+if (!class_exists('WP_List_Table')) {
+    /**
+     * Doble mínimo de `WP_List_Table`. Las pantallas de listado del panel (registros, etc.) heredan de ella; sin
+     * el doble no se pueden ni construir, así que sus columnas y sus acciones en bloque quedaban sin medir.
+     */
+    class WP_List_Table {
+        public $items = array();
+        public $_column_headers = array();
+        public $screen = null;
+        protected $args = array();
+        public function __construct($args = array()) { $this->args = (array) $args; }
+        public function get_pagenum() { return (int) ($_GET['paged'] ?? 1); }
+        public function current_action() {
+            $accion = $_REQUEST['action'] ?? '';
+            if (in_array($accion, array('', '-1'), true)) { $accion = $_REQUEST['action2'] ?? ''; }
+            return (-1 === (int) $accion || '' === (string) $accion) ? '' : (string) $accion;
+        }
+        public function display() { echo 'tabla-renderizada'; }
+    }
+}
+
+if (!function_exists('check_admin_referer')) {
+    /** Comprobación de nonce de una acción en bloque: en unitario no hay formulario, así que no mata. */
+    function check_admin_referer($accion = -1, $campo = '_wpnonce') { return true; }
+}
