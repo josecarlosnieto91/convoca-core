@@ -1726,3 +1726,47 @@ if (!function_exists('admin_url')) {
 if (!function_exists('get_current_user_id')) {
     function get_current_user_id() { return (int) ($GLOBALS['_test_user_id'] ?? 1); }
 }
+
+if (!class_exists('WP_Screen')) {
+    /** Pantalla del panel: lo único que el producto consulta es `id`, `base` y quitar pestañas. */
+    class WP_Screen {
+        public $id = '';
+        public $base = '';
+        public $ayudas_quitadas = 0;
+        public function remove_help_tabs() { ++$this->ayudas_quitadas; }
+    }
+}
+if (!class_exists('WP_Admin_Bar')) {
+    /** Barra de administración con sus tres operaciones, apuntadas para poder afirmarlas. */
+    class WP_Admin_Bar {
+        public $nodes = array();
+        public function get_node($id) { return $this->nodes[$id] ?? null; }
+        public function add_node($node) {
+            $n = is_object($node) ? clone $node : (object) $node;
+            $n->id = is_array($node) ? ($node['id'] ?? '') : ($node->id ?? '');
+            $this->nodes[$n->id] = $n;
+            $GLOBALS['_wp_stores']['bar_add'][] = $n->id;
+            return true;
+        }
+        public function remove_node($id) {
+            unset($this->nodes[$id]);
+            $GLOBALS['_wp_stores']['bar_remove'][] = $id;
+            return true;
+        }
+    }
+}
+
+if (!function_exists('get_current_screen')) {
+    /** Pantalla actual del panel; las pruebas la fijan con `$GLOBALS['_test_screen']`. */
+    function get_current_screen() {
+        return $GLOBALS['_test_screen'] ?? null;
+    }
+}
+
+if (!function_exists('remove_meta_box')) {
+    /** Quitar una caja del editor: se apunta cuál y en qué pantalla. */
+    function remove_meta_box($id, $screen = '', $context = '') {
+        $GLOBALS['_wp_stores']['meta_boxes_quitadas'][] = array( (string) $id, (string) $screen, (string) $context );
+        return true;
+    }
+}
