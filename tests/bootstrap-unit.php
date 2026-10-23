@@ -92,6 +92,8 @@ if (!function_exists('get_transient')) {
 // --- Post meta functions ---
 if (!function_exists('get_post_meta')) {
     function get_post_meta($id, $key, $single = false) {
+        // Se apunta **qué** se lee: hay guardas que valen precisamente porque no llegan a consultar la base.
+        $GLOBALS['_wp_stores']['meta_reads'][] = array( (int) $id, (string) $key );
         // Lectura de un solo uso (`post_meta_once`): permite que el valor cambie ENTRE dos lecturas, que es
         // justo lo que hay que probar en una carrera (el socio paga mientras el cron está corriendo).
         if (isset($GLOBALS['_wp_stores']['post_meta_once'][(int) $id][$key])) {
@@ -224,7 +226,20 @@ if (!function_exists('add_query_arg')) {
     }
 }
 if (!function_exists('set_url_scheme')) { function set_url_scheme($url, $scheme = null) { return $url; } }
-if (!function_exists('wp_kses_post')) { function wp_kses_post($s) { return $s; } }
+if (!function_exists('wp_kses_post')) {
+    /**
+     * Subconjunto de `wp_kses_post()`: no es el filtro completo de WordPress, pero sí lo que hace falta para poder
+     * afirmar que un contenido de la base **no** se pinta crudo (el arnés anterior era passthrough, así que una
+     * prueba de seguridad con `<script>` habría pasado sin medir nada).
+     */
+    function wp_kses_post($s) {
+        $s = (string) $s;
+        $s = preg_replace('#<script\b[^>]*>.*?</script>#is', '', $s);
+        $s = preg_replace('#<iframe\b[^>]*>.*?</iframe>#is', '', $s);
+        $s = preg_replace('#\son[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)#i', '', $s);
+        return $s;
+    }
+}
 if (!function_exists('wp_strip_all_tags')) { function wp_strip_all_tags($s, $rb = true) { return strip_tags((string) $s); } }
 if (!function_exists('wp_parse_args')) {
     function wp_parse_args($args, $defaults = []) {
@@ -1539,5 +1554,19 @@ if (!function_exists('date_i18n')) {
     function date_i18n($format, $timestamp_with_offset = false, $gmt = false) {
         $ts = (false === $timestamp_with_offset) ? time() : (int) $timestamp_with_offset;
         return wp_date($format, $ts);
+    }
+}
+
+if (!function_exists('register_block_type')) {
+    /** Registro de bloques: se apunta el nombre y sus argumentos. */
+    function register_block_type($name, $args = array()) {
+        $GLOBALS['_wp_stores']['blocks'][(string) $name] = $args;
+        return true;
+    }
+}
+if (!function_exists('make_clickable')) {
+    /** Convierte URLs sueltas en enlaces, como WordPress. */
+    function make_clickable($text) {
+        return preg_replace('~(?<!["\'=>])(https?://[^\s<]+)~i', '<a href="$1" rel="nofollow">$1</a>', (string) $text);
     }
 }
