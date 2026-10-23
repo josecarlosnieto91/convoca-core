@@ -678,6 +678,14 @@ if (!function_exists('wp_date')) {
 if (!function_exists('update_meta_cache')) { function update_meta_cache($tipo = 'post', $ids = array()) { return true; } }
 
 /** `dbDelta()`: se apunta la sentencia que el instalador quería crear o migrar. */
+/** ¿Es una revisión o un autoguardado? Los `save_post` no deben guardar metas en esos casos. */
+if (!function_exists('wp_is_post_revision')) {
+    function wp_is_post_revision($id) { return in_array((int) $id, (array) ($GLOBALS['_wp_stores']['revisiones'] ?? array()), true); }
+}
+if (!function_exists('wp_is_post_autosave')) {
+    function wp_is_post_autosave($id) { return in_array((int) $id, (array) ($GLOBALS['_wp_stores']['autosaves'] ?? array()), true); }
+}
+
 if (!function_exists('dbDelta')) {
     function dbDelta($sql, $args = array()) {
         $GLOBALS['_wp_stores']['dbdelta'][] = (string) $sql;
@@ -750,7 +758,13 @@ if (!function_exists('get_post_type')) {
     function get_post_type($post = null) {
         $id = is_object($post) ? (int) ($post->ID ?? 0) : (int) $post;
         if (!empty($GLOBALS['_test_posts'][$id])) { return $GLOBALS['_test_posts'][$id]->post_type ?? false; }
-        return $GLOBALS['_wp_stores']['post_types'][$id] ?? 'miembro';
+        // El post del almacén manda. Y si no existe, `false` como WordPress: devolver 'miembro' por defecto hacía
+        // que un id inventado pareciera una ficha de socio.
+        if (isset($GLOBALS['_wp_stores']['posts'][$id])) {
+            $p = $GLOBALS['_wp_stores']['posts'][$id];
+            return is_object($p) ? ($p->post_type ?? false) : ($p['post_type'] ?? false);
+        }
+        return $GLOBALS['_wp_stores']['post_types'][$id] ?? false;
     }
 }
 if (!function_exists('is_email')) { function is_email($email) { return (bool) filter_var((string) $email, FILTER_VALIDATE_EMAIL); } }
