@@ -571,7 +571,10 @@ if (!function_exists('get_posts')) {
             if ($compare === 'NOT EXISTS') { if ($has) { return false; } continue; }
             if ($compare === 'EXISTS')     { if (!$has) { return false; } continue; }
             if (!$has) { return false; }
-            if ($compare === '=' && (string) $meta[$key] !== (string) ($clause['value'] ?? '')) { return false; }
+            // MySQL compara con la colación por defecto, que es **insensible a mayúsculas** (`_ci`): con `!==`
+            // estricto, un correo escrito en mayúsculas no encontraba a su socio y la exportación de datos
+            // personales respondía «no hay nada», que es un falso negativo con consecuencias legales.
+            if ($compare === '=' && 0 !== strcasecmp((string) $meta[$key], (string) ($clause['value'] ?? ''))) { return false; }
         }
         return true;
     }
