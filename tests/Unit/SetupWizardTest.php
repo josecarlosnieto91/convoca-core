@@ -39,6 +39,13 @@ final class SetupWizardTest extends TestCase {
 	private Admin_Setup_Wizard $wizard;
 
 	/**
+	 * Registro de shortcodes que había antes de la prueba.
+	 *
+	 * @var array<string, mixed>
+	 */
+	private array $shortcodes_antes = array();
+
+	/**
 	 * Prepara el caso.
 	 */
 	protected function setUp(): void {
@@ -56,7 +63,24 @@ final class SetupWizardTest extends TestCase {
 			'shortcodes'  => array(),
 		);
 		$GLOBALS['_test_caps'] = array();
-		$this->wizard          = new Admin_Setup_Wizard();
+		// El registro de shortcodes es global y otra prueba puede haber registrado los suyos: esta prueba va del
+		// aviso «ningún plugin activo lo registra», así que se parte de un registro vacío — y se restaura al
+		// terminar, porque vaciarlo sin más dejaba sin registro a las pruebas que corren después.
+		$this->shortcodes_antes    = (array) ( $GLOBALS['_wp_shortcodes'] ?? array() );
+		$GLOBALS['_wp_shortcodes'] = array();
+		// Y el tope del `Logger` es un filtro que otra prueba puede haber borrado; sin él, el aviso no se escribe
+		// cuando la suite ya ha generado 50 mensajes.
+		add_filter( 'convoca_logger_rate_limit_max', static function () {
+			return PHP_INT_MAX;
+		} );
+		$this->wizard = new Admin_Setup_Wizard();
+	}
+
+	/**
+	 * Devuelve el registro de shortcodes a como estaba.
+	 */
+	protected function tearDown(): void {
+		$GLOBALS['_wp_shortcodes'] = $this->shortcodes_antes;
 	}
 
 	/**

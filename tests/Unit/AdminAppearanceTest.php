@@ -229,12 +229,21 @@ final class AdminAppearanceTest extends TestCase {
 	}
 
 	/**
-	 * Sin el módulo de inscripciones no hay cifra de «pendientes de pago»: no se enseña un cero que parece un dato.
+	 * La cifra de «pendientes de pago» aparece **exactamente cuando** el módulo de inscripciones está activo: ni se
+	 * inventa un cero sin el módulo, ni desaparece con él. Se compara contra `Features::has()`, y no contra un
+	 * «no está», porque `CONVOCA_ENROLL_VERSION` la define otra prueba del proceso y el orden no puede decidir esto.
 	 */
-	public function test_sin_inscripciones_no_hay_su_cifra(): void {
+	public function test_la_cifra_de_inscripciones_sigue_al_modulo(): void {
 		$metricas = \Convoca\Core\convoca_build_metrics();
 
-		$this->assertArrayNotHasKey( 'inscripciones_pendientes_pago', $metricas );
-		$this->assertArrayNotHasKey( 'inscripciones_url', $metricas );
+		$this->assertSame(
+			\Convoca\Core\Features::has( 'enroll' ),
+			isset( $metricas['inscripciones_pendientes_pago'] ),
+			'la cifra existe si y sólo si el módulo está activo'
+		);
+		$this->assertSame(
+			\Convoca\Core\Features::has( 'enroll' ),
+			isset( $metricas['inscripciones_url'] )
+		);
 	}
 }
