@@ -457,6 +457,16 @@ if (!function_exists('get_the_title')) {
     function get_the_title($id) {
         // Convencion de pruebas: permite fijar el titulo sin montar la entrada entera.
         if (isset($GLOBALS['_test_post_title'])) { return (string) $GLOBALS['_test_post_title']; }
+        // El título del post sembrado: devolver «Post N» siempre hacía que un listado con títulos pareciera
+        // correcto sin serlo.
+        foreach (['posts', 'test_posts'] as $almacen) {
+            if (isset($GLOBALS['_wp_stores'][$almacen][(int) $id]->post_title)) {
+                return (string) $GLOBALS['_wp_stores'][$almacen][(int) $id]->post_title;
+            }
+            if (isset($GLOBALS['_test_posts'][(int) $id]->post_title) && 'test_posts' === $almacen) {
+                return (string) $GLOBALS['_test_posts'][(int) $id]->post_title;
+            }
+        }
         return "Post $id";
     }
 }
@@ -529,6 +539,16 @@ if (!function_exists('wp_delete_post')) { function wp_delete_post($id, $force = 
 if (!function_exists('get_posts')) {
     /** ¿Cumple un post las cláusulas de meta_query? (soporta =, EXISTS, NOT EXISTS) */
     function _wp_stub_meta_matches($id, $mq) {
+        // `relation => OR`: cualquier cláusula basta. Sin esto, las consultas «por correo **o** DNI» exigían
+        // las dos y devolvían vacío (una inscripción se busca así).
+        $relacion = strtoupper((string) ($mq['relation'] ?? 'AND'));
+        if ('OR' === $relacion) {
+            foreach ((array) $mq as $clave => $clause) {
+                if (!is_array($clause) || empty($clause['key'])) { continue; }
+                if (_wp_stub_meta_matches($id, array($clause))) { return true; }
+            }
+            return false;
+        }
         foreach ((array) $mq as $clause) {
             if (!is_array($clause) || empty($clause['key'])) { continue; }
             $key     = $clause['key'];
