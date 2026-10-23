@@ -42,8 +42,12 @@ final class SetupWizardResumenTest extends TestCase {
 	 * Prepara el caso.
 	 */
 	protected function setUp(): void {
-		$this->previo           = $GLOBALS['_wp_stores'] ?? array();
-		$GLOBALS['_wp_filters'] = array();
+		$this->previo             = $GLOBALS['_wp_stores'] ?? array();
+		$GLOBALS['_wp_filters']   = array();
+		// Las redirecciones y la página actual son globales y **sobreviven** entre pruebas: sin limpiarlas, esta
+		// prueba veía las de otra (semilla 71) y creía que había redirigido de más.
+		$GLOBALS['_wp_redirects'] = array();
+		unset( $GLOBALS['pagenow'], $_GET['page'] );
 		$GLOBALS['_wp_stores']  = array(
 			'options'       => array(),
 			'post_meta'     => array(),
@@ -65,6 +69,7 @@ final class SetupWizardResumenTest extends TestCase {
 	 */
 	protected function tearDown(): void {
 		$GLOBALS['_wp_stores'] = $this->previo;
+		unset( $GLOBALS['_wp_redirects'], $GLOBALS['pagenow'], $_GET['page'] );
 	}
 
 	/**
