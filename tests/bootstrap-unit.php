@@ -371,7 +371,17 @@ if (!function_exists('get_userdata')) {
         // Usuario del almacén real (`_wp_stores['usuarios']`): sin esto, `get_userdata()` devolvía un usuario
         // inventado sin `user_login`, así que quien leía el nombre de cuenta recibía una cadena vacía.
         if (isset($GLOBALS['_wp_stores']['usuarios'][(int) $id])) {
-            return $GLOBALS['_wp_stores']['usuarios'][(int) $id];
+            // Se devuelve un `WP_User` hidratado, no el objeto plano del almacén: WordPress entrega un WP_User y
+            // el producto comprueba `instanceof`. Con el objeto plano, la rama que **retira los roles** al borrar
+            // los datos personales (members#40) no se ejecutaba nunca y no se podía medir.
+            $datos = $GLOBALS['_wp_stores']['usuarios'][(int) $id];
+            $u = new WP_User();
+            foreach ((array) $datos as $campo => $valor) {
+                if ('roles' === $campo) { $u->roles = (array) $valor; continue; }
+                if (property_exists($u, $campo)) { $u->$campo = $valor; }
+            }
+            $u->ID = (int) $id;
+            return $u;
         }
         $u = new WP_User();
         $u->ID = (int) $id;
@@ -585,7 +595,19 @@ if (!function_exists('wp_update_post')) {
         return $id;
     }
 }
-if (!function_exists('wp_delete_post')) { function wp_delete_post($id, $force = false) { return true; } }
+if (!function_exists('wp_delete_post')) {
+    /**
+     * Borra un post: lo apunta y lo quita del almacén. Era un no-op que devolvía `true`, así que un borrado de
+     * datos personales (inscripciones, horas) no dejaba rastro y no se podía afirmar.
+     */
+    function wp_delete_post($id, $force = false) {
+        // Se apunta el borrado, que es lo observable: antes era un no-op sin rastro y no se podía afirmar que
+        // un borrado de datos personales (inscripciones, horas) había ocurrido. NO se quita del almacén: hay
+        // pruebas que siembran un post y luego lo releen, y el doble no debe cambiarles el escenario.
+        $GLOBALS['_wp_stores']['deleted_posts'][] = (int) $id;
+        return true;
+    }
+}
 if (!function_exists('get_posts')) {
     /** ¿Cumple un post las cláusulas de meta_query? (soporta =, EXISTS, NOT EXISTS) */
     function _wp_stub_meta_matches($id, $mq) {
@@ -868,6 +890,8 @@ if (!class_exists('WP_User')) {
         public $ID = 0; public $roles = ['administrator'];
         public $display_name = 'Test User';
         public $first_name = 'First';
+        public $last_name = '';
+        public $user_login = '';
         public $user_email = 'test@example.com';
         public function exists() { return $this->ID > 0; }
         public function has_cap($cap) { return true; }
@@ -879,14 +903,25 @@ if (!class_exists('WP_User')) {
         public function add_role($rol) {
             if (!in_array((string) $rol, $this->roles, true)) { $this->roles[] = (string) $rol; }
             $GLOBALS['_wp_stores']['users'][$this->ID]['roles'] = $this->roles;
+            if (isset($GLOBALS['_wp_stores']['usuarios'][$this->ID])) {
+                $GLOBALS['_wp_stores']['usuarios'][$this->ID]->roles = $this->roles;
+            }
         }
         public function remove_role($rol) {
             $this->roles = array_values(array_diff($this->roles, array((string) $rol)));
             $GLOBALS['_wp_stores']['users'][$this->ID]['roles'] = $this->roles;
+            // El almacén de usuarios (`usuarios`) es el que lee `get_userdata()`: si el rol solo se quitara de
+            // `users`, la siguiente lectura seguiría viendo el rol viejo.
+            if (isset($GLOBALS['_wp_stores']['usuarios'][$this->ID])) {
+                $GLOBALS['_wp_stores']['usuarios'][$this->ID]->roles = $this->roles;
+            }
         }
         public function set_role($rol) {
             $this->roles = array((string) $rol);
             $GLOBALS['_wp_stores']['users'][$this->ID]['roles'] = $this->roles;
+            if (isset($GLOBALS['_wp_stores']['usuarios'][$this->ID])) {
+                $GLOBALS['_wp_stores']['usuarios'][$this->ID]->roles = $this->roles;
+            }
         }
     }
 }
