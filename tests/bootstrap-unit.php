@@ -1544,8 +1544,21 @@ if (!class_exists('WP_List_Table')) {
 }
 
 if (!function_exists('check_admin_referer')) {
-    /** Comprobación de nonce de una acción en bloque: en unitario no hay formulario, así que no mata. */
-    function check_admin_referer($accion = -1, $campo = '_wpnonce') { return true; }
+    /**
+     * Nonce de una acción del panel. Si la prueba declara `_wp_stores['nonces_validos']`, se comprueba el nonce del
+     * formulario; si no, se acepta (es lo que esperan las pruebas que no van de nonces).
+     */
+    function check_admin_referer($accion = -1, $campo = '_wpnonce') {
+        if (array_key_exists('nonces_validos', $GLOBALS['_wp_stores'] ?? array())) {
+            // En CLI, `$_REQUEST` no se rellena al escribir `$_POST` después del arranque: se miran los dos.
+            $nonce = (string) ($_REQUEST[$campo] ?? $_POST[$campo] ?? $_GET[$campo] ?? '');
+            if (!in_array($nonce, array_map('strval', (array) $GLOBALS['_wp_stores']['nonces_validos']), true)) {
+                if (!empty($GLOBALS['_wp_die_lanza'])) { throw new \RuntimeException('wp_die: nonce inválido'); }
+                return false;
+            }
+        }
+        return true;
+    }
 }
 
 if (!function_exists('shortcode_atts')) {

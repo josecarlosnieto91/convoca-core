@@ -154,6 +154,7 @@ final class AdminPagesTest extends TestCase {
 	public function test_la_retencion_se_guarda_saneada(): void {
 		$GLOBALS['_test_caps'] = array( 'manage_convoca_logs' => true );
 		$_POST['convoca_log_retention_save'] = '1';
+		$_POST['_wpnonce']                   = 'bueno';
 		$_POST['retention_info']             = '7abc';
 		$_POST['retention_warning']          = '15';
 		$_POST['retention_error']            = '60<script>';
@@ -164,6 +165,25 @@ final class AdminPagesTest extends TestCase {
 			array( 'info' => 7, 'warning' => 15, 'error' => 60 ),
 			$GLOBALS['_wp_stores']['options']['convoca_log_retention_days'] ?? null
 		);
+	}
+
+	/**
+	 * Con la marca del formulario pero **nonce inválido**, tampoco: el nonce no es decorativo.
+	 */
+	public function test_la_retencion_exige_nonce(): void {
+		$GLOBALS['_test_caps'] = array( 'manage_convoca_logs' => true );
+		$GLOBALS['_wp_stores']['nonces_validos'] = array( 'bueno' );
+		$_POST['convoca_log_retention_save'] = '1';
+		$_POST['_wpnonce']                   = 'malo';
+		$_POST['retention_info']             = '7';
+
+		try {
+			$this->pintar( 'Convoca\Core\convoca_logs_page' );
+		} catch ( \RuntimeException $e ) {
+			// El arnés mata como `wp_die`; lo que importa es que no se guardó.
+		}
+
+		$this->assertArrayNotHasKey( 'convoca_log_retention_days', $GLOBALS['_wp_stores']['options'] );
 	}
 
 	/**
