@@ -564,7 +564,26 @@ if (!function_exists('wp_generate_uuid4')) {
         return sprintf('%s-%s-%s-%s-%s', substr($h, 0, 8), substr($h, 8, 4), substr($h, 12, 4), substr($h, 16, 4), substr($h, 20, 12));
     }
 }
-if (!function_exists('register_rest_route')) { function register_rest_route($n, $r, $a) { return true; } }
+// Las rutas REST se APUNTAN: un no-op deja sin poder afirmar qué se expone y con qué puerta, que es
+// justo donde se cuelan las fugas de datos (una ruta de socio contestando a cualquiera).
+// `__return_true` / `__return_false` son de WordPress y se usan como puerta de las rutas públicas: sin ellas
+// `is_callable()` dice que la puerta no existe y no se puede distinguir «pública a propósito» de «sin puerta».
+if (!function_exists('__return_true'))  { function __return_true()  { return true; } }
+if (!function_exists('__return_false')) { function __return_false() { return false; } }
+
+if (!function_exists('register_rest_route')) {
+    function register_rest_route($namespace, $route, $args = array()) {
+        $GLOBALS['_wp_routes'][] = array('namespace' => $namespace, 'route' => $route, 'args' => $args);
+        return true;
+    }
+}
+// `nocache_headers()`: las puertas REST la llaman antes de decidir. Se cuenta, para poder afirmar que se
+// llama también cuando la petición se va a rechazar.
+if (!function_exists('nocache_headers')) {
+    function nocache_headers() {
+        $GLOBALS['_wp_stores']['nocache'] = ($GLOBALS['_wp_stores']['nocache'] ?? 0) + 1;
+    }
+}
 if (!function_exists('wp_redirect')) { function wp_redirect($u) {} }
 if (!function_exists('wp_die')) { function wp_die($m = '', $t = '', $a = []) {} }
 if (!function_exists('wp_cache_delete')) { function wp_cache_delete($k, $g = '') { return true; } }
@@ -588,6 +607,17 @@ if (!class_exists('WP_Error')) {
             $todos = [];
             foreach ($this->errors as $mensajes) { $todos = array_merge($todos, $mensajes); }
             return $todos;
+        }
+
+        /**
+         * Datos del error (`['status' => 403]`), que es lo que mira el cliente para saber el código HTTP.
+         *
+         * @param string $code Código del error.
+         * @return mixed
+         */
+        public function get_error_data($code = '') {
+            $code = $code ?: $this->get_error_code();
+            return $this->error_data[$code] ?? null;
         }
     }
 }
