@@ -88,7 +88,15 @@ class Logger {
 				return ( $now - $t ) < self::RATE_LIMIT_WINDOW;
 			}
 		);
-		if ( count( self::$log_timestamps ) >= self::RATE_LIMIT_MAX ) {
+		/**
+		 * Tope de avisos por ventana. Es filtrable porque el límite es **por proceso**: en un proceso largo (o en
+		 * una suite de pruebas, que comparte proceso) un componente ruidoso agota la cuota y a partir de ahí se
+		 * pierden también los avisos de los demás —incluidos los errores—. Con el filtro, quien mide puede subirlo.
+		 *
+		 * @param int $max Número máximo de avisos por ventana de `RATE_LIMIT_WINDOW` segundos.
+		 */
+		$max = (int) apply_filters( 'convoca_logger_rate_limit_max', self::RATE_LIMIT_MAX );
+		if ( count( self::$log_timestamps ) >= $max ) {
 			return;
 		}
 		self::$log_timestamps[] = $now;
