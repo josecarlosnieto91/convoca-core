@@ -215,6 +215,29 @@ final class LicenseProTest extends TestCase {
 		$this->assertSame( array( 'members' ), $guardada['features'] );
 		$this->assertSame( '2030-01-01', $guardada['expires'] );
 		$this->assertTrue( License_Manager::has_pro( 'members' ), 'y la función se abre' );
+
+		// Y la respuesta queda cacheada: si luego falla la red, se usa esto en vez de quedarse sin validar.
+		$cacheada = get_transient( 'convoca_license_check_' . md5( 'CLAVE-SECRETA' ) );
+		$this->assertIsArray( $cacheada, 'la validación se guarda en caché' );
+		$this->assertTrue( (bool) ( $cacheada['success'] ?? false ) );
+	}
+
+	/**
+	 * Si el servidor acepta pero no manda `status`, la licencia queda **activa**, no inactiva: el servidor dijo
+	 * que sí y darla por inactiva dejaría al cliente sin nada por un campo que falta.
+	 */
+	public function test_una_respuesta_sin_estado_queda_activa(): void {
+		$this->respuesta(
+			array(
+				'success' => true,
+				'data'    => array( 'type' => 'unlimited' ),
+			)
+		);
+
+		License_Manager::validate_key( 'CLAVE-SECRETA' );
+
+		$this->assertSame( 'active', License_Manager::get_license()['status'], 'sin estado explícito, activa' );
+		$this->assertTrue( License_Manager::has_pro( 'members' ), 'y abre' );
 	}
 
 	/**
