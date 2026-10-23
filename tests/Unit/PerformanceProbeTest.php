@@ -113,10 +113,17 @@ final class PerformanceProbeTest extends TestCase {
 		Performance_Probe::hook_exit( 'convoca_lento' );
 		$this->assertArrayHasKey( 'convoca_lento', $this->estatica( 'slow_hooks' ) );
 
-		// El pseudo-hook `all` se ignora: es el que dispara el propio medidor.
+		// El pseudo-hook `all` se ignora: es el que dispara el propio medidor. Con el umbral a **cero** cualquier
+		// duración cuenta, así que si no se ignorara aparecería; con el umbral alto el caso no mediría nada.
+		$umbral->setValue( null, 0.0 );
 		Performance_Probe::hook_enter( 'all' );
 		Performance_Probe::hook_exit( 'all' );
 		$this->assertArrayNotHasKey( 'all', $this->estatica( 'slow_hooks' ) );
+
+		// Y un hook normal, con el mismo umbral a cero, sí se apunta: el caso negativo de arriba no pasa por el umbral.
+		Performance_Probe::hook_enter( 'convoca_cualquiera' );
+		Performance_Probe::hook_exit( 'convoca_cualquiera' );
+		$this->assertArrayHasKey( 'convoca_cualquiera', $this->estatica( 'slow_hooks' ) );
 	}
 
 	/**
