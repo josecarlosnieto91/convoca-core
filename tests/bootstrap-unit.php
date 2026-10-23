@@ -257,7 +257,13 @@ if (!function_exists('wp_mail')) {
     }
 }
 if (!function_exists('sanitize_key')) { function sanitize_key($k) { return preg_replace('/[^a-z0-9_\-]/', '', strtolower((string) $k)); } }
-if (!function_exists('number_format_i18n')) { function number_format_i18n($n, $dec = 0) { return number_format((float) $n, (int) $dec); } }
+// `number_format_i18n()` usa los separadores del **locale del sitio**, no los de C: en español un precio es
+// «30,00 €», no «30.00 €». Con el punto por defecto, cualquier prueba de importes medía la cadena equivocada.
+if (!function_exists('number_format_i18n')) {
+    function number_format_i18n($n, $dec = 0) {
+        return number_format((float) $n, (int) $dec, ',', '.');
+    }
+}
 // `date_i18n()` formatea en la **zona del sitio**, igual que `wp_date()`. Con `gmdate()` se leía en UTC: una
 // fecha de evento a las 18:30 en Madrid salía a las 17:30, y la prueba lo habría tomado por un fallo del producto.
 if (!function_exists('date_i18n')) { function date_i18n($f, $ts = null) { return wp_date($f, $ts ?? time()); } }
