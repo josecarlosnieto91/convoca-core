@@ -748,7 +748,17 @@ if (!function_exists('nocache_headers')) {
     }
 }
 if (!function_exists('wp_redirect')) { function wp_redirect($u) {} }
-if (!function_exists('wp_die')) { function wp_die($m = '', $t = '', $a = []) {} }
+if (!function_exists('wp_die')) {
+    /**
+     * `wp_die()` **mata** cuando se le pide (`_wp_die_lanza`), que es lo que hace en WordPress: sin eso, una
+     * guarda de permiso seguía ejecutando lo que venía detrás y parecía que no protegía nada.
+     */
+    function wp_die($m = '', $t = '', $a = []) {
+        $GLOBALS['_wp_die_llamado'] = $m;
+        if (!empty($GLOBALS['_wp_die_lanza'])) { throw new \RuntimeException('wp_die: ' . (string) $m); }
+        return null;
+    }
+}
 if (!function_exists('wp_cache_delete')) { function wp_cache_delete($k, $g = '') { return true; } }
 if (!function_exists('flush_rewrite_rules')) { function flush_rewrite_rules() {} }
 
@@ -1131,3 +1141,66 @@ if (!class_exists('WP_REST_Response')) {
 }
 
 date_default_timezone_set('Europe/Madrid');
+
+// --- WP_User_Query, wp_nonce_url y esc_js: el panel de voluntariado no se podía medir sin ellos ---
+if (!class_exists('WP_User_Query')) {
+    /**
+     * Consulta de usuarios, con los dos filtros que usa el panel: por meta (`_convoca_aprobado = 0`) y por rol.
+     *
+     * Lee el almacén real (`_wp_stores['usuarios']`, `_wp_stores['user_meta']`), no una lista inventada: si el
+     * almacén cambia, la consulta lo ve. Devuelve `[]` si no hay nadie, como WordPress.
+     */
+    class WP_User_Query {
+        private $args = array();
+        public function __construct($args = array()) { $this->args = (array) $args; }
+        public function get_results() {
+            $usuarios = $GLOBALS['_wp_stores']['usuarios'] ?? array();
+            $meta     = $GLOBALS['_wp_stores']['user_meta'] ?? array();
+            $salida   = array();
+            foreach ($usuarios as $id => $u) {
+                if (isset($this->args['role'])) {
+                    $roles = (array) ($u->roles ?? array());
+                    if (!in_array($this->args['role'], $roles, true)) { continue; }
+                }
+                if (isset($this->args['meta_key'])) {
+                    $clave = $this->args['meta_key'];
+                    $valor = $meta[(int) $id][$clave] ?? null;
+                    if (!array_key_exists('meta_value', $this->args)) {
+                        if (null === $valor) { continue; }
+                    } elseif ((string) $valor !== (string) $this->args['meta_value']) {
+                        continue;
+                    }
+                }
+                $salida[] = $u;
+            }
+            return $salida;
+        }
+    }
+}
+
+if (!function_exists('wp_nonce_url')) {
+    /**
+     * URL con nonce. El nonce se compone de la acción para que la prueba pueda afirmar **cuál** se pidió: un
+     * botón de aprobar con el nonce de revocar es un fallo que no da error, sólo abre lo que no toca.
+     */
+    function wp_nonce_url($url, $action = -1) {
+        $nonce = 'nonce-' . (is_string($action) ? $action : (string) $action);
+        $GLOBALS['_wp_nonces'][] = $nonce;
+        return $url . (false === strpos($url, '?') ? '?' : '&') . '_wpnonce=' . $nonce;
+    }
+}
+
+if (!function_exists('esc_js')) { function esc_js($t) { return addslashes((string) $t); } }
+
+if (!function_exists('wp_nonce_field')) {
+    /**
+     * Campo de nonce. Se registra la acción para poder afirmar **cuál** se firma: un formulario que cambia el
+     * estado de alguien con el nonce de otra acción es un fallo que no da error.
+     */
+    function wp_nonce_field($action = -1, $name = '_wpnonce', $referer = true, $echo = true) {
+        $GLOBALS['_wp_nonces'][] = (string) $action;
+        $campo = '<input type="hidden" name="' . $name . '" value="nonce-' . $action . '">';
+        if ($echo) { echo $campo; }
+        return $campo;
+    }
+}
