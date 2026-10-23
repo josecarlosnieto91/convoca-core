@@ -168,8 +168,8 @@ if (!function_exists('wp_get_current_user')) {
 if (!function_exists('__')) { function __($t, $d = 'default') { return $t; } }
 if (!function_exists('_e')) { function _e($t, $d = 'default') { echo $t; } }
 if (!function_exists('_x')) { function _x($t, $c, $d = 'default') { return $t; } }
-if (!function_exists('esc_html')) { function esc_html($t) { return htmlspecialchars($t, ENT_QUOTES, 'UTF-8'); } }
-if (!function_exists('esc_attr')) { function esc_attr($t) { return htmlspecialchars($t, ENT_QUOTES, 'UTF-8'); } }
+if (!function_exists('esc_html')) { function esc_html($t) { return htmlspecialchars((string) $t, ENT_QUOTES, 'UTF-8'); } }
+if (!function_exists('esc_attr')) { function esc_attr($t) { return htmlspecialchars((string) $t, ENT_QUOTES, 'UTF-8'); } }
 if (!function_exists('esc_url')) { function esc_url($u) { return filter_var($u, FILTER_SANITIZE_URL); } }
 if (!function_exists('_n')) { function _n($s, $p, $n, $d = 'default') { return 1 === (int) $n ? $s : $p; } }
 if (!function_exists('esc_html__')) { function esc_html__($t, $d = 'default') { return $t; } }
@@ -181,7 +181,16 @@ if (!function_exists('wp_parse_url')) { function wp_parse_url($url, $component =
 if (!function_exists('esc_url_raw')) { function esc_url_raw($u) { return (string) $u; } }
 if (!function_exists('add_query_arg')) {
     function add_query_arg($args, $url = '') {
-        if (!is_array($args)) { return $url; }
+        // Dos formas, como WordPress: `add_query_arg( array( ... ), $url )` y `add_query_arg( $clave, $valor, $url )`.
+        // Sólo la primera estaba: con la segunda, `add_query_arg( 'members_success', '1', home_url() )` devolvía
+        // `'1'` y el redirect de un alta quedaba en una cadena sin URL, que ninguna prueba miraba.
+        if (!is_array($args)) {
+            $clave = (string) $args;
+            $valor = (string) $url;
+            $destino = (string) (func_get_args()[2] ?? '');
+            $sep = (false === strpos($destino, '?')) ? '?' : '&';
+            return $destino . $sep . rawurlencode($clave) . '=' . rawurlencode($valor);
+        }
         $sep = (false === strpos($url, '?')) ? '?' : '&';
         return $url . $sep . http_build_query($args);
     }
@@ -497,13 +506,18 @@ if (!function_exists('get_post')) {
         if (!empty($GLOBALS['_wp_stores']['posts'][(int) $id])) {
             return $GLOBALS['_wp_stores']['posts'][(int) $id];
         }
-        $p = new WP_Post();
-        $p->ID = (int) $id;
-        // Permitir que los tests configuren el tipo por ID (convención: _wp_post_type_{id}).
-        $type = $GLOBALS['_wp_stores']['post_types'][(int) $id] ?? 'miembro';
-        $p->post_type = $type;
-        $p->post_status = 'publish';
-        return $p;
+        // Un id que no está en el almacén **no es un post**: WordPress devuelve `null`. Inventarlo hacía que una
+        // ficha borrada a mano siguiera «existiendo» para el código, que entonces la reactivaba en el aire en vez
+        // de avisar. La convención `_wp_stores['post_types'][$id]` sigue valiendo para declarar el tipo de un id
+        // que se da por existente a propósito.
+        if (isset($GLOBALS['_wp_stores']['post_types'][(int) $id])) {
+            $p              = new WP_Post();
+            $p->ID          = (int) $id;
+            $p->post_type   = $GLOBALS['_wp_stores']['post_types'][(int) $id];
+            $p->post_status = 'publish';
+            return $p;
+        }
+        return null;
     }
 }
 if (!function_exists('wp_insert_post')) {
@@ -543,6 +557,18 @@ if (!function_exists('wp_update_post')) {
         $GLOBALS['_wp_stores']['post_meta'][$id]['_wp_update_data'] = $data;
         if (!empty($data['post_title'])) {
             $GLOBALS['_wp_stores']['post_meta'][$id]['_wp_updated_title'] = $data['post_title'];
+        }
+        // Y **actualiza** el post: se quedaba en el espía y la ficha seguía con el título viejo, así que un
+        // renombrado (el re-alta lo hace) no se podía afirmar. WordPress cambia el post, no un metadato.
+        foreach (array('post_title', 'post_status', 'post_content', 'post_excerpt', 'post_name') as $campo) {
+            if (array_key_exists($campo, $data)) {
+                if (!empty($GLOBALS['_wp_stores']['posts'][$id])) {
+                    $GLOBALS['_wp_stores']['posts'][$id]->$campo = $data[$campo];
+                }
+                if (!empty($GLOBALS['_test_posts'][$id])) {
+                    $GLOBALS['_test_posts'][$id]->$campo = $data[$campo];
+                }
+            }
         }
         return $id;
     }
