@@ -1280,8 +1280,16 @@ if (!isset($GLOBALS['wpdb'])) {
             if (is_string($q) && preg_match("/option_name\s+LIKE\s+'?([^'\s]+)'?/i", $q, $m)) {
                 $patron  = str_replace(array('\\_', '\\%', '\\\\'), array('_', '%', '\\'), stripcslashes($m[1]));
                 $prefijo = rtrim($patron, '%');
+                // El listado de bloqueos excluye las etiquetas (`NOT LIKE 'convoca_rl_quien_%'`): su `option_value`
+                // es un array y el producto lo leería como vencimiento 0, así que sin excluirlas el listado
+                // borraría el nombre de cada persona cortada.
+                $excluir = null;
+                if (preg_match("/NOT\\s+LIKE\\s+'?([^'\\s]+)'?/i", $q, $mn)) {
+                    $excluir = rtrim(str_replace(array('\\_', '\\%'), array('_', '%'), $mn[1]), '%');
+                }
                 $filas   = array();
                 foreach (($GLOBALS['_wp_stores']['options'] ?? array()) as $nombre => $valor) {
+                    if (null !== $excluir && 0 === strpos((string) $nombre, $excluir)) { continue; }
                     if (0 === strpos((string) $nombre, $prefijo)) {
                         $filas[] = (object) array('option_name' => $nombre, 'option_value' => $valor);
                     }
@@ -1338,6 +1346,27 @@ if (!isset($GLOBALS['wpdb'])) {
                 }
                 $GLOBALS['_wp_stores']['locks'][$k[1]] = $nuevo;
                 return 1;
+            }
+            // Borrado masivo por vencimiento: `cleanup_expired_locks()` se lleva de golpe todo lo caducado y
+            // devuelve cuántas filas tocó. Sin esto el método decía «1» y el cerrojo seguía ahí.
+            if (preg_match('/DELETE FROM\s+\S*locks\s+WHERE\s+expires\s*<\s*(\d+)/i', (string) $q, $m)) {
+                $limite = (int) $m[1];
+                $fuera  = 0;
+                foreach (($GLOBALS['_wp_stores']['locks'] ?? array()) as $lk => $vence) {
+                    if ((int) $vence < $limite) { unset($GLOBALS['_wp_stores']['locks'][$lk]); ++$fuera; }
+                }
+                return $fuera;
+            }
+            if (preg_match('/CAST\(option_value AS SIGNED\)\s*<\s*(\d+)/i', (string) $q, $m)) {
+                $limite = (int) $m[1];
+                $fuera  = 0;
+                foreach (($GLOBALS['_wp_stores']['options'] ?? array()) as $nombre => $valor) {
+                    if (0 === strpos((string) $nombre, 'convoca_lock_') && (int) $valor < $limite) {
+                        unset($GLOBALS['_wp_stores']['options'][$nombre]);
+                        ++$fuera;
+                    }
+                }
+                return $fuera;
             }
             if (preg_match('/DELETE FROM \S*(?:locks|options)/i', (string) $q)
                 && preg_match('/(convoca_lock_[A-Za-z0-9_]+)/', (string) $q, $k)) {
