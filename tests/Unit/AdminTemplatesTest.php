@@ -115,6 +115,29 @@ final class AdminTemplatesTest extends TestCase {
 	}
 
 	/**
+	 * Una propiedad **con** valor ejecutable se limpia y deja sólo el nombre: `background:alert(1)` no es CSS
+	 * válido y no puede quedarse.
+	 */
+	public function test_una_propiedad_que_se_queda_sin_valor_desaparece(): void {
+		$salida = (string) $this->privado( 'sanitize_styles', '<p style="color:red;background:expression(alert(1))">Hola</p>' );
+
+		$this->assertStringContainsString( 'color:red', $salida, 'la propiedad buena se queda' );
+		$this->assertStringNotContainsString( 'alert', $salida );
+		$this->assertStringNotContainsString( 'background:', $salida, 'y la que se quedó sin valor, fuera' );
+	}
+
+	/**
+	 * `@import` se lleva la regla entera: una plantilla no puede traerse CSS de fuera.
+	 */
+	public function test_el_import_se_elimina(): void {
+		$salida = (string) $this->privado( 'sanitize_styles', '<p style="@import url(https://ejemplo.test/x.css);color:red">Hola</p>' );
+
+		$this->assertStringNotContainsString( '@import', $salida );
+		$this->assertStringNotContainsString( 'ejemplo.test', $salida );
+		$this->assertStringContainsString( 'color:red', $salida );
+	}
+
+	/**
 	 * **La plantilla pierde lo ejecutable y conserva su estructura**: es un documento, no una página web.
 	 */
 	public function test_la_plantilla_pierde_lo_ejecutable(): void {
@@ -168,7 +191,9 @@ final class AdminTemplatesTest extends TestCase {
 	 * Un base64 enorme se rechaza: el PDF tardaría minutos y el proceso se comería la memoria.
 	 */
 	public function test_el_limite_de_base64(): void {
-		$grande = '<img src="data:image/png;base64,' . str_repeat( 'A', 60000 ) . '">';
+		// Sin comillas a propósito: con comillas lo rechazaría antes el límite de atributos de 500 caracteres y
+		// esta comprobación no se estaría midiendo.
+		$grande = '<img src=data:image/png;base64,' . str_repeat( 'A', 60000 ) . '>';
 
 		$this->assertFalse( $this->privado( 'validate_template', $grande ) );
 	}

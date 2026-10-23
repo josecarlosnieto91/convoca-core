@@ -369,10 +369,13 @@ class Admin_Templates {
 				}
 				// Restos de paréntesis (una función anidada deja el cierre suelto) y limpieza de separadores.
 				$style = preg_replace( '/[()]+/', '', $style );
+				// Declaraciones que se quedaron sin valor (`background:`) fuera.
+				$style = preg_replace( '/[a-z-]+\s*:\s*(?=;|$)/i', '', $style );
 				$style = preg_replace( '/;+/', ';', $style );
 				$style = trim( $style, '; ' );
-				// Sin una sola propiedad no es un estilo: se quita el atributo en vez de dejar `style=")"`.
-				if ( '' === $style || false === strpos( $style, ':' ) ) {
+				// Sin una declaración completa (`propiedad: valor`) no es un estilo: se quita el atributo en vez de
+				// dejar `style=")"` o `style="background:"`.
+				if ( ! preg_match( '/[a-z-]+\s*:\s*[^;\s]/i', $style ) ) {
 					return '';
 				}
 				return $style ? 'style="' . esc_attr( $style ) . '"' : '';
