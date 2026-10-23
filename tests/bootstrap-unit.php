@@ -284,8 +284,16 @@ if (!function_exists('get_bloginfo')) {
 }
 // El branding de emails y PDFs sale del logo del sitio (custom_logo). Sin logo
 // configurado cae al nombre del sitio, que es lo que se prueba por defecto.
-if (!function_exists('get_theme_mod')) { function get_theme_mod($name = '', $default = false) { return $default; } }
-if (!function_exists('wp_get_attachment_image_src')) { function wp_get_attachment_image_src($id, $size = 'thumbnail', $icon = false) { return false; } }
+if (!function_exists('get_theme_mod')) {
+    function get_theme_mod($name = '', $default = false) {
+        return $GLOBALS['_wp_stores']['theme_mods'][$name] ?? $default;
+    }
+}
+if (!function_exists('wp_get_attachment_image_src')) {
+    function wp_get_attachment_image_src($id, $size = 'thumbnail', $icon = false) {
+        return $GLOBALS['_wp_stores']['attachments'][(int) $id] ?? false;
+    }
+}
 // Resolución de páginas por shortcode (Email_Links). `get_page_by_path` lee del
 // mismo almacén que get_posts, para poder montar un sitio de prueba coherente.
 if (!function_exists('has_shortcode')) {
@@ -367,7 +375,12 @@ if (!function_exists('remove_all_filters')) {
 // plugin y con un no-op no se puede afirmar que se disparen.
 if (!function_exists('do_action')) {
     function do_action($hook, ...$args) {
+        // Se apunta **y** se ejecuta: hay productos que sólo se comportan bien si el callback corre (un hook que
+        // únicamente se apunta convierte en vacía cualquier prueba que espere su efecto).
         $GLOBALS['_wp_actions'][] = array('hook' => $hook, 'args' => $args);
+        foreach ((array) ($GLOBALS['_wp_hooks'][$hook] ?? array()) as $cb) {
+            if (is_callable($cb)) { $cb(...$args); }
+        }
     }
 }
 if (!function_exists('add_action')) {
@@ -398,10 +411,18 @@ if (!function_exists('do_action_deprecated')) {
      */
     function do_action_deprecated($t, $a = [], $v = '', $alt = '') {
         $GLOBALS['_wp_actions'][] = array('hook' => $t, 'args' => (array) $a, 'deprecated_por' => $alt);
+        foreach ((array) ($GLOBALS['_wp_hooks'][$t] ?? array()) as $cb) {
+            if (is_callable($cb)) { $cb(...array_values((array) $a)); }
+        }
         return null;
     }
 }
-if (!function_exists('apply_filters_deprecated')) { function apply_filters_deprecated($t, $a = [], $v = '', $alt = '') { return $a[0] ?? null; } }
+if (!function_exists('apply_filters_deprecated')) {
+    /** Aplica el filtro antiguo de verdad, con el valor como primer argumento. */
+    function apply_filters_deprecated($t, $a = array(), $v = '', $alt = '') {
+        return apply_filters($t, $a[0] ?? null, ...array_slice((array) $a, 1));
+    }
+}
 if (!function_exists('did_action')) { function did_action($t) { return 0; } }
 
 // --- Auth ---
@@ -1811,5 +1832,19 @@ if (!function_exists('selected')) {
         $r = ((string) $selected === (string) $current) ? " selected='selected'" : '';
         if ($echo) { echo $r; }
         return $r;
+    }
+}
+
+if (!function_exists('is_plugin_active')) {
+    /** Plugins activos: se declaran en `_wp_stores['active_plugins']`. */
+    function is_plugin_active($plugin) {
+        return in_array((string) $plugin, (array) ($GLOBALS['_wp_stores']['active_plugins'] ?? array()), true);
+    }
+}
+if (!function_exists('get_plugin_data')) {
+    /** Cabecera de un plugin: bastan `Name` y `Version` para lo que el producto lee. */
+    function get_plugin_data($file = '', $markup = true, $translate = true) {
+        $datos = (array) ($GLOBALS['_wp_stores']['plugin_data'][(string) $file] ?? array());
+        return array_merge(array('Name' => '', 'Version' => ''), $datos);
     }
 }
