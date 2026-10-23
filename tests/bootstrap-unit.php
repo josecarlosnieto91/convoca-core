@@ -491,6 +491,12 @@ if (!function_exists('get_post')) {
         if (!empty($GLOBALS['_test_posts'][(int) $id])) {
             return $GLOBALS['_test_posts'][(int) $id];
         }
+        // Y un post **creado** con `wp_insert_post()` se puede volver a leer: se escribe en
+        // `_wp_stores['posts']` y `get_post()` lo ignoraba, así que lo recién creado se leía como un post
+        // inventado sin cuerpo (la descripción de un registro de horas se perdía por el camino).
+        if (!empty($GLOBALS['_wp_stores']['posts'][(int) $id])) {
+            return $GLOBALS['_wp_stores']['posts'][(int) $id];
+        }
         $p = new WP_Post();
         $p->ID = (int) $id;
         // Permitir que los tests configuren el tipo por ID (convención: _wp_post_type_{id}).
@@ -513,6 +519,10 @@ if (!function_exists('wp_insert_post')) {
         $p->post_type   = $data['post_type'] ?? 'post';
         $p->post_status = $data['post_status'] ?? 'publish';
         $p->post_title  = $data['post_title'] ?? '';
+        // El cuerpo y el extracto también se guardan: sin `post_content`, lo que el socio escribe en la
+        // descripción de sus horas se perdía y ninguna prueba podía notarlo.
+        $p->post_content = $data['post_content'] ?? '';
+        $p->post_excerpt = $data['post_excerpt'] ?? '';
         $p->post_author = (int) ($data['post_author'] ?? 0);
 
         $GLOBALS['_wp_stores']['posts'][$id]       = $p;
@@ -777,6 +787,7 @@ if (!class_exists('WP_Post')) {
     class WP_Post {
         public $ID = 0; public $post_title = ''; public $post_type = 'post';
         public $post_status = 'publish'; public $post_content = '';
+        public $post_excerpt = ''; public $post_modified = ''; public $post_parent = 0;
         public $post_author = 0; public $post_date = ''; public $post_name = '';
     }
 }
