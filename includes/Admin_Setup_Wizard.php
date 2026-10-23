@@ -977,69 +977,19 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 		}
 		$step = (int) $_POST['wizard_step'];
 		if ( $step === 3 ) {
-			// Guardar planes de membresía: activo, nombre visible, id corto (slug),
-			// modalidad y precio. Al renombrar un slug se migran los miembros que lo usan.
-			$plans = apply_filters( 'convoca_member_plans', array() );
-			if ( array() !== $plans ) {
-				$post = isset( $_POST['convoca_plans'] ) ? (array) wp_unslash( $_POST['convoca_plans'] ) : array();
-				// Los planes editables son los de modalidad real (Numerario/Familiar/Juvenil).
-				$real_mods  = array( 'Numerario', 'Familiar', 'Juvenil' );
-				$new_plans  = array();
-				$slug_moves = array(); // slug_viejo => slug_nuevo para migrar metas.
-				$used_slugs = array( 'familiar', 'juvenil' ); // Selectores internos: reservados.
-				$collision  = '';
+			$procesado = $this->procesar_planes( isset( $_POST['convoca_plans'] ) ? (array) wp_unslash( $_POST['convoca_plans'] ) : array() );
 
-				foreach ( $plans as $key => $plan ) {
-					$mod = $plan['modalidad'] ?? 'Numerario';
-					if ( ! in_array( $mod, $real_mods, true ) ) {
-						$new_plans[ $key ] = $plan; // Selectores: intactos.
-						continue;
-					}
-					if ( ! isset( $post[ $key ] ) ) {
-						$plan['active']    = false; // Checkbox desmarcado → no viaja → desactivar.
-						$new_plans[ $key ] = $plan;
-						continue;
-					}
-					$data = $post[ $key ];
-					// Slug nuevo: validar formato y unicidad.
-					$new_slug = isset( $data['slug'] ) ? sanitize_key( $data['slug'] ) : $key;
-					if ( '' === $new_slug ) {
-						$new_slug = $key;
-					}
-					if ( $new_slug !== $key ) {
-						if ( in_array( $new_slug, $used_slugs, true ) || isset( $new_plans[ $new_slug ] ) || isset( $plans[ $new_slug ] ) ) {
-							$collision = $new_slug;
-							break;
-						}
-						$slug_moves[ $key ] = $new_slug;
-					}
-					$used_slugs[] = $new_slug;
+			if ( '' !== $procesado['colision'] ) {
+				add_settings_error( 'convoca_wizard', 'slug_collision', sprintf( /* translators: %s: slug en conflicto */ __( 'El ID corto «%s» ya está en uso. Elige otro.', 'convoca-core' ), $procesado['colision'] ), 'error' );
+				set_transient( 'convoca_wizard_plans_notice', __( 'No se guardó: el ID corto introducido ya existe.', 'convoca-core' ), 30 );
+				wp_safe_redirect( admin_url( 'admin.php?page=conv-setup-wizard&step=3&plans_error=1' ) );
+				exit;
+			}
 
-					$plan['active'] = ! empty( $data['active'] );
-					if ( isset( $data['label'] ) ) {
-						$plan['label'] = sanitize_text_field( $data['label'] );
-					}
-					if ( isset( $data['modalidad'] ) && in_array( $data['modalidad'], $real_mods, true ) ) {
-						$plan['modalidad'] = $data['modalidad'];
-					}
-					if ( isset( $data['price'] ) && is_numeric( $data['price'] ) ) {
-						$plan['price'] = (float) $data['price'];
-					}
-					$new_plans[ $new_slug ] = $plan;
-				}
-
-				if ( '' !== $collision ) {
-					// No guardar; volver al paso 3 con aviso.
-					add_settings_error( 'convoca_wizard', 'slug_collision', sprintf( /* translators: %s: slug en conflicto */ __( 'El ID corto «%s» ya está en uso. Elige otro.', 'convoca-core' ), $collision ), 'error' );
-					set_transient( 'convoca_wizard_plans_notice', __( 'No se guardó: el ID corto introducido ya existe.', 'convoca-core' ), 30 );
-					wp_safe_redirect( admin_url( 'admin.php?page=conv-setup-wizard&step=3&plans_error=1' ) );
-					exit;
-				}
-
-				// Migrar miembros que referencien el slug antiguo.
-				if ( ! empty( $slug_moves ) && function_exists( 'update_post_meta' ) ) {
+			if ( null !== $procesado['planes'] ) {
+				if ( ! empty( $procesado['movimientos'] ) && function_exists( 'update_post_meta' ) ) {
 					global $wpdb;
-					foreach ( $slug_moves as $old => $new ) {
+					foreach ( $procesado['movimientos'] as $old => $new ) {
 						// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- migración puntual de metas.
 						$wpdb->query(
 							$wpdb->prepare(
@@ -1051,7 +1001,7 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 					}
 				}
 
-				update_option( 'convoca_members_plans', $new_plans );
+				update_option( 'convoca_members_plans', $procesado['planes'] );
 			}
 		}
 		if ( $step === 4 ) {
@@ -1075,6 +1025,81 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 		update_option( self::PROGRESS_OPTION, $step + 1 );
 		wp_safe_redirect( admin_url( 'admin.php?page=conv-setup-wizard&step=' . ( $step + 1 ) ) );
 		exit;
+	}
+
+	/**
+	 * Los planes del paso 3, procesados sin escribir: qué queda activo, qué slugs se mueven y si hay colisión.
+	 *
+	 * Se separa de `handle_save()` (nonce, permiso, redirección y `exit`) porque aquí están las reglas que importan:
+	 * un checkbox desmarcado desactiva (no borra), un slug repetido **no** se guarda, y un selector de modalidad no
+	 * se toca.
+	 *
+	 * @param array $post Datos del formulario para los planes.
+	 * @return array{planes:?array,movimientos:array<string,string>,colision:string}
+	 */
+	private function procesar_planes( array $post ): array {
+		$plans = apply_filters( 'convoca_member_plans', array() );
+		if ( array() === $plans ) {
+			return array(
+				'planes'      => null,
+				'movimientos' => array(),
+				'colision'    => '',
+			);
+		}
+
+		$real_mods  = array( 'Numerario', 'Familiar', 'Juvenil' );
+		$new_plans  = array();
+		$slug_moves = array();
+		// Selectores internos: reservados para que un plan no los pise.
+		$used_slugs = array( 'familiar', 'juvenil' );
+		$collision  = '';
+
+		foreach ( $plans as $key => $plan ) {
+			$mod = $plan['modalidad'] ?? 'Numerario';
+			if ( ! in_array( $mod, $real_mods, true ) ) {
+				// Selectores de modalidad: intactos.
+				$new_plans[ $key ] = $plan;
+				continue;
+			}
+			if ( ! isset( $post[ $key ] ) ) {
+				// Checkbox desmarcado: el campo no viaja → se desactiva, no se borra.
+				$plan['active']    = false;
+				$new_plans[ $key ] = $plan;
+				continue;
+			}
+
+			$data     = $post[ $key ];
+			$new_slug = isset( $data['slug'] ) ? sanitize_key( $data['slug'] ) : $key;
+			if ( '' === $new_slug ) {
+				$new_slug = $key;
+			}
+			if ( $new_slug !== $key ) {
+				if ( in_array( $new_slug, $used_slugs, true ) || isset( $new_plans[ $new_slug ] ) || isset( $plans[ $new_slug ] ) ) {
+					$collision = $new_slug;
+					break;
+				}
+				$slug_moves[ $key ] = $new_slug;
+			}
+			$used_slugs[] = $new_slug;
+
+			$plan['active'] = ! empty( $data['active'] );
+			if ( isset( $data['label'] ) ) {
+				$plan['label'] = sanitize_text_field( $data['label'] );
+			}
+			if ( isset( $data['modalidad'] ) && in_array( $data['modalidad'], $real_mods, true ) ) {
+				$plan['modalidad'] = $data['modalidad'];
+			}
+			if ( isset( $data['price'] ) && is_numeric( $data['price'] ) ) {
+				$plan['price'] = (float) $data['price'];
+			}
+			$new_plans[ $new_slug ] = $plan;
+		}
+
+		return array(
+			'planes'      => $new_plans,
+			'movimientos' => $slug_moves,
+			'colision'    => $collision,
+		);
 	}
 
 	public function handle_complete(): void {

@@ -263,4 +263,124 @@ final class SetupWizardResumenTest extends TestCase {
 		$this->assertStringContainsString( 'Convoca Gateway', $detalle );
 		$this->assertStringContainsString( 'Faltan:', $detalle );
 	}
+
+	/**
+	 * Los planes del paso 3, sin escribir: lo que se guardaría.
+	 */
+	public function test_los_planes_del_paso_3(): void {
+		add_filter(
+			'convoca_member_plans',
+			static fn(): array => array(
+				'base'     => array(
+					'label'     => 'Base',
+					'modalidad' => 'Numerario',
+					'price'     => 30,
+					'active'    => true,
+				),
+				'selector' => array(
+					'label'     => 'Selector',
+					'modalidad' => 'Otra',
+				),
+				'juvenil2' => array(
+					'label'     => 'Joven',
+					'modalidad' => 'Juvenil',
+					'price'     => 15,
+					'active'    => true,
+				),
+			)
+		);
+
+		$res = $this->privado(
+			'procesar_planes',
+			array(
+				'base'     => array(
+					'label'     => '  Base renombrada ',
+					'modalidad' => 'Familiar',
+					'price'     => '45.5',
+					'active'    => '1',
+					'slug'      => 'base-nueva',
+				),
+				// `juvenil2` no viaja: el checkbox estaba desmarcado.
+			)
+		);
+
+		$this->assertSame( '', $res['colision'] );
+		$this->assertArrayHasKey( 'base-nueva', $res['planes'], 'el slug nuevo es la clave' );
+		$this->assertArrayNotHasKey( 'base', $res['planes'] );
+		$this->assertSame( 'Base renombrada', $res['planes']['base-nueva']['label'] );
+		$this->assertSame( 'Familiar', $res['planes']['base-nueva']['modalidad'] );
+		$this->assertSame( 45.5, $res['planes']['base-nueva']['price'] );
+		$this->assertTrue( $res['planes']['base-nueva']['active'] );
+		$this->assertSame( array( 'base' => 'base-nueva' ), $res['movimientos'], 'hay que migrar los socios' );
+
+		$this->assertTrue( $res['planes']['juvenil2']['active'] === false, 'desmarcado → desactivado, no borrado' );
+		$this->assertSame( 'Selector', $res['planes']['selector']['label'], 'el selector no se toca' );
+		$this->assertArrayNotHasKey( 'active', $res['planes']['selector'] );
+	}
+
+	/**
+	 * Un slug reservado o ya usado **no se guarda**: vuelve al paso con aviso y no pisa el plan existente.
+	 */
+	public function test_el_slug_en_conflicto(): void {
+		add_filter(
+			'convoca_member_plans',
+			static fn(): array => array(
+				'base'  => array(
+					'label'     => 'Base',
+					'modalidad' => 'Numerario',
+					'active'    => true,
+				),
+				'otro' => array(
+					'label'     => 'Otro',
+					'modalidad' => 'Familiar',
+				),
+			)
+		);
+
+		$reservado = $this->privado(
+			'procesar_planes',
+			array(
+				'base' => array(
+					'label'     => 'Base',
+					'modalidad' => 'Numerario',
+					'active'    => '1',
+					'slug'      => 'familiar',
+				),
+				'otro' => array(
+					'label'     => 'Otro',
+					'modalidad' => 'Familiar',
+					'slug'      => 'otro',
+				),
+			)
+		);
+		$this->assertSame( 'familiar', $reservado['colision'], '«familiar» está reservado' );
+
+		$repetido = $this->privado(
+			'procesar_planes',
+			array(
+				'base' => array(
+					'label'     => 'Base',
+					'modalidad' => 'Numerario',
+					'active'    => '1',
+					'slug'      => 'otro',
+				),
+				'otro' => array(
+					'label'     => 'Otro',
+					'modalidad' => 'Familiar',
+					'slug'      => 'otro',
+				),
+			)
+		);
+		$this->assertSame( 'otro', $repetido['colision'], 'ya existe' );
+	}
+
+	/**
+	 * Sin el módulo de socios no hay nada que procesar.
+	 */
+	public function test_sin_planes_no_hay_nada(): void {
+		$res = $this->privado( 'procesar_planes', array( 'base' => array( 'label' => 'x' ) ) );
+
+		$this->assertNull( $res['planes'] );
+		$this->assertSame( array(), $res['movimientos'] );
+	}
 }
