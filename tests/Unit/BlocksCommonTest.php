@@ -68,6 +68,33 @@ final class BlocksCommonTest extends TestCase {
 	}
 
 	/**
+	 * `init()` engancha el registro y las categorías. Sin esto, el bloque existe pero WordPress no lo registra
+	 * nunca: todo lo demás de este fichero seguiría verde con el plugin mudo en el editor.
+	 */
+	public function test_init_engancha_el_registro_y_las_categorias(): void {
+		Blocks_Common::init();
+
+		$acciones = (array) ( $GLOBALS['_wp_hooks']['init'] ?? array() );
+		$this->assertContains( array( 'Convoca\Core\Blocks_Common', 'register_blocks' ), $acciones, 'el registro va en init' );
+
+		$filtros = (array) ( $GLOBALS['_wp_filters']['block_categories_all'] ?? array() );
+		$this->assertArrayHasKey( 1, $filtros, 'las categorías entran con prioridad 1' );
+		$this->assertContains( array( 'Convoca\Core\Blocks_Common', 'add_custom_categories' ), $filtros[1] );
+	}
+
+	/**
+	 * Y el filtro funciona de verdad al aplicarse: no basta con estar enganchado.
+	 */
+	public function test_el_filtro_de_categorias_se_aplica(): void {
+		Blocks_Common::init();
+
+		$salida = apply_filters( 'block_categories_all', array( array( 'slug' => 'text', 'title' => 'Texto' ) ), null );
+
+		$this->assertSame( 'convoca-enroll', $salida[0]['slug'], 'las de Convoca van delante' );
+		$this->assertSame( 'text', end( $salida )['slug'], 'y las del sitio detrás' );
+	}
+
+	/**
 	 * Las categorías del editor: las cinco de Convoca, con el nombre del sitio delante.
 	 */
 	public function test_las_categorias_del_editor(): void {
