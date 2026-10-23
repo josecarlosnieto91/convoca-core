@@ -151,11 +151,12 @@ final class SetupWizardResumenTest extends TestCase {
 		$this->assertFalse( $filas['1']['ok'] );
 		$this->assertStringContainsString( 'Faltan tablas', implode( ' ', $filas['1']['detail'] ) );
 		$this->assertStringContainsString( 'paso 1', $filas['1']['missing'] );
-		$this->assertFalse( $this->privado( 'is_config_complete' ) );
 
-		// Y con todo lo demás en orden, lo que impide completar es **la tabla**: así el caso de arriba no pasa por
-		// otra causa y el mutante que quita la comprobación de tablas no sobrevive.
+		// Aislamiento: con las **páginas ya sembradas**, lo único que puede impedir completar es la tabla. Si no se
+		// aísla, el caso también falla por las páginas y la comprobación de tablas podría no existir sin notarse.
 		$this->sembrar_paginas();
+		$this->assertFalse( $this->privado( 'is_config_complete' ), 'faltan tablas' );
+
 		unset( $GLOBALS['_wp_stores']['get_var_mapa'] );
 		$this->assertTrue( $this->privado( 'is_config_complete' ), 'con las páginas y las tablas, sí' );
 	}
