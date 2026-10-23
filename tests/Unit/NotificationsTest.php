@@ -26,7 +26,15 @@ final class NotificationsTest extends TestCase {
 	/**
 	 * Prepara el caso.
 	 */
+	/**
+	 * Estado global previo, para devolverlo al terminar.
+	 *
+	 * @var array
+	 */
+	private array $previo = array();
+
 	protected function setUp(): void {
+		$this->previo = $GLOBALS['_wp_stores'] ?? array();
 		$GLOBALS['_wp_filters'] = array();
 		$GLOBALS['_wp_logged_in'] = false;
 		unset( $_POST['id'], $_POST['nonce'] );
@@ -309,5 +317,13 @@ final class NotificationsTest extends TestCase {
 
 		$this->assertFalse( $GLOBALS['_wp_stores']['user_meta'][0][ Notifications::META_KEY ][0]['read'] );
 		$this->assertSame( array(), $GLOBALS['_wp_json'] );
+	}
+
+	/**
+	 * Devuelve el almacén a como estaba: una prueba no puede dejar el terreno preparado a la siguiente.
+	 */
+	protected function tearDown(): void {
+		$GLOBALS['_wp_stores'] = $this->previo;
+		unset( $GLOBALS['_wp_logged_in'], $GLOBALS['_test_user_id'], $GLOBALS['_wp_json'], $GLOBALS['_wp_die_lanza'] );
 	}
 }

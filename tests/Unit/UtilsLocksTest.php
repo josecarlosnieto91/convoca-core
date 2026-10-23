@@ -25,7 +25,15 @@ final class UtilsLocksTest extends TestCase {
 	/**
 	 * Prepara el caso.
 	 */
+	/**
+	 * Estado global previo, para devolverlo al terminar.
+	 *
+	 * @var array
+	 */
+	private array $previo = array();
+
 	protected function setUp(): void {
+		$this->previo = $GLOBALS['_wp_stores'] ?? array();
 		$GLOBALS['_wp_filters'] = array();
 		$GLOBALS['_wp_stores']  = array(
 			'options'    => array(),
@@ -244,5 +252,13 @@ final class UtilsLocksTest extends TestCase {
 		$this->assertSame( 'a***@example.test', $reflejo->invoke( null, 'ana@example.test' ) );
 		$this->assertSame( '1.2.3.x', $reflejo->invoke( null, '1.2.3.4' ) );
 		$this->assertSame( '(conexión)', $reflejo->invoke( null, 'sin-forma' ) );
+	}
+
+	/**
+	 * Devuelve el almacén a como estaba: una prueba no puede dejar el terreno preparado a la siguiente.
+	 */
+	protected function tearDown(): void {
+		$GLOBALS['_wp_stores'] = $this->previo;
+		unset( $GLOBALS['_wp_logged_in'], $GLOBALS['_test_user_id'], $GLOBALS['_wp_json'], $GLOBALS['_wp_die_lanza'] );
 	}
 }

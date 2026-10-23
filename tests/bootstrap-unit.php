@@ -1391,7 +1391,14 @@ if (!isset($GLOBALS['wpdb'])) {
             $this->insert_id = (int) ($GLOBALS['_wp_insert_id'] ?? 42);
             return 1;
         }
-        public function update($t, $d, $w) { return 1; }
+        /**
+         * UPDATE: se apunta qué tabla, qué filas y con qué valores. Sin esto no se puede afirmar que un reintento
+         * quedó reprogramado (el producto no vuelve a insertarlo, lo actualiza).
+         */
+        public function update($t, $d, $w) {
+            $GLOBALS['_wp_stores']['db_updates'][] = array('table' => $t, 'data' => $d, 'where' => $w);
+            return 1;
+        }
         public function delete($t, $w) {
             if (is_array($w) && isset($w['option_name']) && isset($GLOBALS['_wp_stores']['locks'][$w['option_name']])) {
                 unset($GLOBALS['_wp_stores']['locks'][$w['option_name']]);

@@ -44,7 +44,15 @@ final class AdminBackupTest extends TestCase {
 	/**
 	 * Prepara el caso.
 	 */
+	/**
+	 * Estado global previo, para devolverlo al terminar.
+	 *
+	 * @var array
+	 */
+	private array $previo = array();
+
 	protected function setUp(): void {
+		$this->previo = $GLOBALS['_wp_stores'] ?? array();
 		unset( $GLOBALS['_test_user_id'], $GLOBALS['_test_caps'] );
 		$GLOBALS['_wp_stores'] = array(
 			'options'       => array(),
@@ -339,5 +347,13 @@ final class AdminBackupTest extends TestCase {
 		@unlink( $ruta );
 
 		$this->assertArrayNotHasKey( 'convoca_members_settings', $GLOBALS['_wp_stores']['options'] );
+	}
+
+	/**
+	 * Devuelve el almacén a como estaba: una prueba no puede dejar el terreno preparado a la siguiente.
+	 */
+	protected function tearDown(): void {
+		$GLOBALS['_wp_stores'] = $this->previo;
+		unset( $GLOBALS['_wp_logged_in'], $GLOBALS['_test_user_id'], $GLOBALS['_wp_json'], $GLOBALS['_wp_die_lanza'] );
 	}
 }
