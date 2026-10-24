@@ -459,6 +459,35 @@ if (!function_exists('wp_safe_redirect')) {
 }
 
 /**
+ * A dónde volvería una redirección de WordPress.
+ */
+if (!function_exists('wp_get_referer')) {
+    function wp_get_referer() {
+        return (string) ($GLOBALS['convoca_test_referer'] ?? '');
+    }
+}
+
+/**
+ * Color hexadecimal válido, o vacío (como WordPress).
+ */
+if (!function_exists('sanitize_hex_color')) {
+    function sanitize_hex_color($color) {
+        $color = trim((string) $color);
+        return preg_match('/^#([0-9a-f]{3}|[0-9a-f]{6})$/i', $color) ? $color : '';
+    }
+}
+
+/**
+ * Registro de un ajuste: se apunta grupo, opción y callback para poder afirmarlo.
+ */
+if (!function_exists('register_setting')) {
+    function register_setting($grupo, $opcion, $args = array()) {
+        $GLOBALS['convoca_test_settings'][$opcion] = array('grupo' => $grupo, 'args' => $args);
+        return true;
+    }
+}
+
+/**
  * Respuesta JSON de ajax: se apunta lo que se habría enviado y se sigue (el `wp_die` final no se puede medir).
  */
 if (!function_exists('wp_send_json_success')) {
