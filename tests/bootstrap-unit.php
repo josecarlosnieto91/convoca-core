@@ -503,10 +503,20 @@ if (!function_exists('wp_send_json_success')) {
  * Sin el corte, todo lo que va después de un error se ejecutaba igual y una prueba podía dar por bueno un flujo que en
  * producción nunca llega ahí.
  */
+/**
+ * Widget del escritorio: se apunta el id, el título y el callback para poder comprobarlos.
+ */
+if (!function_exists('wp_add_dashboard_widget')) {
+    function wp_add_dashboard_widget($id, $titulo, $callback, $control = null) {
+        $GLOBALS['_wp_dashboard_widgets'][$id] = array('titulo' => $titulo, 'callback' => $callback);
+        return true;
+    }
+}
+
 if (!function_exists('wp_send_json_error')) {
     function wp_send_json_error($data = null, $status = null) {
         $GLOBALS['_wp_json'][] = array('ok' => false, 'data' => $data, 'status' => $status);
-        $mensaje = is_array($data) && isset($data['message']) ? (string) $data['message'] : '';
+        $mensaje = is_array($data) && isset($data['message']) ? (string) $data['message'] : (is_string($data) ? $data : '');
         throw new \RuntimeException('wp_send_json_error: ' . $mensaje);
     }
 }
