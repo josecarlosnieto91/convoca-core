@@ -1230,7 +1230,11 @@ if (!function_exists('add_shortcode')) {
      * ¿Está registrado un shortcode? WordPress lo tiene siempre; el arnés no lo tenía y un plugin que lo
      * usa legítimamente (para no pintar nada si el otro plugin no está) reventaba al probarse.
      */
-    function shortcode_exists($tag) { return isset($GLOBALS['_wp_shortcodes'][$tag]); }
+    // Las pruebas siembran en dos sitios según el repo (`_wp_shortcodes` del núcleo y `_wp_stores['shortcodes']`
+    // de members). Si solo se mira uno, la otra mitad ve «no existe» y las URLs caen todas al mismo respaldo.
+    function shortcode_exists($tag) {
+        return isset($GLOBALS['_wp_shortcodes'][$tag]) || isset($GLOBALS['_wp_stores']['shortcodes'][$tag]);
+    }
 
     /**
      * Renderizado mínimo: si el shortcode está registrado, se llama a su devolución con los atributos; si no,
@@ -1411,8 +1415,12 @@ if (!isset($GLOBALS['wpdb'])) {
             // simularlo, el store de metadatos no cambiaba y los tests veían el
             // estado antiguo. Se aplica el UPDATE al store y se devuelve el número
             // de filas realmente afectadas.
-            if (preg_match('/UPDATE\s+\S*postmeta\s+SET\s+meta_value\s*=\s*(\S+)\s+WHERE\s+post_id\s*=\s*(\d+)\s+AND\s+meta_key\s*=\s*\'([^\']+)\'/i', (string) $q, $m)) {
-                $new   = $m[1];
+            if (preg_match('/UPDATE\s+\S*postmeta\s+SET\s+meta_value\s*=\s*(.+?)\s+WHERE\s+post_id\s*=\s*(\d+)\s+AND\s+meta_key\s*=\s*\'([^\']+)\'/i', (string) $q, $m)) {
+                // `prepare()` entrecomilla el valor: al store entra SIN las comillas, como en la base.
+                // Con las comillas dentro, `get_post_meta()` devolvía `'aprobada'` y las comparaciones del
+                // producto fallaban por un carácter invisible.
+                $new   = stripslashes(trim((string) $m[1], "'\""));
+                if (is_numeric($new) && strpos($new, '.') === false) { $new = (string) (int) $new; }
                 $post  = (int) $m[2];
                 $key   = $m[3];
                 $store = &$GLOBALS['_wp_stores']['post_meta'];
