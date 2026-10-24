@@ -498,6 +498,20 @@ if (!function_exists('wp_send_json_success')) {
 }
 
 /**
+ * Respuesta JSON de error: en WordPress termina la petición, así que aquí **corta**.
+ *
+ * Sin el corte, todo lo que va después de un error se ejecutaba igual y una prueba podía dar por bueno un flujo que en
+ * producción nunca llega ahí.
+ */
+if (!function_exists('wp_send_json_error')) {
+    function wp_send_json_error($data = null, $status = null) {
+        $GLOBALS['_wp_json'][] = array('ok' => false, 'data' => $data, 'status' => $status);
+        $mensaje = is_array($data) && isset($data['message']) ? (string) $data['message'] : '';
+        throw new \RuntimeException('wp_send_json_error: ' . $mensaje);
+    }
+}
+
+/**
  * Nonce de ajax: usa el mismo `nonces_validos` que el resto (si la prueba no declara ninguna, vale cualquiera).
  */
 if (!function_exists('check_ajax_referer')) {
