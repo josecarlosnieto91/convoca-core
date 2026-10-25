@@ -1430,8 +1430,16 @@ if (!isset($GLOBALS['wpdb'])) {
 
         public function get_var($q = null, $x = 0, $y = 0) {
             $GLOBALS['_wp_stores']['db_reads'][] = (string) (is_string($q) ? $q : '');
-            // Lectura del contador que escribe el bloque de arriba.
-            if (is_string($q) && preg_match("/SELECT option_value FROM \S*options WHERE option_name = '([^']+)'/i", $q, $gm)
+            // Lectura del contador que escribe el bloque de arriba, **salvo** que la prueba haya sembrado la respuesta
+            // con `get_var_mapa`: hay pruebas que miden el bloqueo poniendo el contador a mano, y pisárselo las
+            // dejaría midiendo otra cosa.
+            $q_sin_barras = is_string($q) ? str_replace('\\', '', $q) : '';
+            $trae_mapa    = false;
+            foreach (($GLOBALS['_wp_stores']['get_var_mapa'] ?? []) as $aguja_mapa => $valor_mapa) {
+                if ('' !== $q_sin_barras && false !== strpos($q_sin_barras, (string) $aguja_mapa)) { $trae_mapa = true; break; }
+            }
+            if (!$trae_mapa
+                && is_string($q) && preg_match("/SELECT option_value FROM \S*options WHERE option_name = '([^']+)'/i", $q, $gm)
                 && isset($GLOBALS['_wp_stores']['rate_limits'][ $gm[1] ])) {
                 return (string) $GLOBALS['_wp_stores']['rate_limits'][ $gm[1] ];
             }
