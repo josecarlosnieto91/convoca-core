@@ -1008,6 +1008,10 @@ if (!function_exists('wp_delete_post')) {
         // un borrado de datos personales (inscripciones, horas) había ocurrido. NO se quita del almacén: hay
         // pruebas que siembran un post y luego lo releen, y el doble no debe cambiarles el escenario.
         $GLOBALS['_wp_stores']['deleted_posts'][] = (int) $id;
+        // El `$force` sí importa: con `false` el post va a la papelera y **no** se borra. Apuntarlo permite
+        // afirmar que un borrado de datos personales es definitivo y no un envío a la papelera que parece
+        // lo mismo desde fuera (fue justo el defecto de members#27).
+        $GLOBALS['_wp_stores']['deleted_posts_force'][] = (bool) $force;
         return true;
     }
 }
