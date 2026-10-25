@@ -926,6 +926,12 @@ if (!function_exists('get_post')) {
 }
 if (!function_exists('wp_insert_post')) {
     function wp_insert_post($data, $error = false) {
+        // Override por prueba: hay caminos que solo existen cuando la escritura **falla** (un rollback que borra el
+        // borrador, un aviso de error al usuario). Sin esta puerta, `wp_insert_post()` siempre creaba y esas ramas
+        // eran inalcanzables desde una prueba.
+        if (!empty($GLOBALS['_wp_insert_devuelve_error'])) {
+            return new \WP_Error('insert_fallido', (string) $GLOBALS['_wp_insert_devuelve_error']);
+        }
         // Store de posts para los tests que necesitan recorrer un ciclo real
         // (crear → consultar → actualizar). El primer ID sigue siendo 99, así que los
         // tests que solo comprobaban "se creó algo" no cambian.
