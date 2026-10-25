@@ -1506,6 +1506,10 @@ if (!isset($GLOBALS['wpdb'])) {
          * @return array
          */
         public function get_col($q = null, $x = 0) {
+            // Se apunta la consulta, como en `get_var()`: hay guardas que solo se pueden medir mirando **qué** se
+            // preguntó a la base (p. ej. que la fecha de expiración se compare con la de hoy y con el marcador ya
+            // sustituido). Sin esto, `get_col()` era la única lectura de la base invisible para una prueba.
+            $GLOBALS['_wp_stores']['col_reads'][] = (string) (is_string($q) ? $q : '');
             // Cola por consulta (`col_cola`): un método que consulta varias veces con filtros distintos —los
             // avisos de renovación a 30, 15 y 7 días— necesita respuestas distintas, no la misma para todas.
             if (!empty($GLOBALS['_wp_stores']['col_cola'])) {
