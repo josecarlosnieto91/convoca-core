@@ -1430,6 +1430,11 @@ if (!isset($GLOBALS['wpdb'])) {
 
         public function get_var($q = null, $x = 0, $y = 0) {
             $GLOBALS['_wp_stores']['db_reads'][] = (string) (is_string($q) ? $q : '');
+            // Lectura del contador que escribe el bloque de arriba.
+            if (is_string($q) && preg_match("/SELECT option_value FROM \S*options WHERE option_name = '([^']+)'/i", $q, $gm)
+                && isset($GLOBALS['_wp_stores']['rate_limits'][ $gm[1] ])) {
+                return (string) $GLOBALS['_wp_stores']['rate_limits'][ $gm[1] ];
+            }
             // Mapa por consulta (`get_var_mapa`): un método que busca la página de un shortcode y también, más
             // abajo, un pago pendiente recibe respuestas distintas según lo que pregunte. Sin esto las dos
             // páginas (`[convoca_renovar]` y `[convoca_pago]`) daban el mismo id y sus URL coincidían.
@@ -1533,6 +1538,34 @@ if (!isset($GLOBALS['wpdb'])) {
         }
         public function query($q) {
             $GLOBALS['_wp_stores']['queries'][] = (string) $q;
+            // Contador atómico de `Utils::contar_intento()` (rate limit). Es un
+            // `INSERT ... ON DUPLICATE KEY UPDATE` sobre wp_options con los bits altos = caducidad y los bajos =
+            // intentos, y sin emularlo **la guarda del límite de intentos no se podía medir**: `query()` devolvía 1
+            // sin tocar nada, así que el cuarto intento de una persona nunca se bloqueaba en una prueba. Medido en
+            // el alta de voluntariado.
+            if (preg_match('/INSERT\s+INTO\s+\S*options/i', (string) $q)
+                && preg_match('/>>\s*20/i', (string) $q)
+                && preg_match("/VALUES\s*\(\s*'([^']+)'\s*,\s*(\d+)/i", (string) $q, $rm)) {
+                $nombre = $rm[1];
+                $inicial = (int) $rm[2];
+                preg_match_all('/\b(\d{6,})\b/', (string) $q, $numeros);
+                $numeros = array_map('intval', $numeros[1]);
+                $ahora = null;
+                foreach ($numeros as $n) {
+                    if ($n === $inicial) { continue; }
+                    if ($n > 1000000000 && $n < 4000000000) { $ahora = $n; break; }
+                }
+                $vigente = $GLOBALS['_wp_stores']['rate_limits'][ $nombre ] ?? null;
+                if (null === $vigente) {
+                    $GLOBALS['_wp_stores']['rate_limits'][ $nombre ] = $inicial;
+                } elseif (null !== $ahora && ($vigente >> 20) < $ahora) {
+                    // Caducado: se reinicia a la caducidad nueva (que ya viene en $inicial).
+                    $GLOBALS['_wp_stores']['rate_limits'][ $nombre ] = $inicial;
+                } else {
+                    $GLOBALS['_wp_stores']['rate_limits'][ $nombre ] = $vigente + 1;
+                }
+                return 1;
+            }
             // Los flujos atómicos (p. ej. Hours_Manager::process_approval) cambian
             // el estado con un UPDATE condicional sobre wp_postmeta y solo caen al
             // update_post_meta() si ese UPDATE no afectó a ninguna fila. Sin
