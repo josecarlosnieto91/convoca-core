@@ -1030,13 +1030,28 @@ if (!function_exists('get_posts')) {
         $relacion = strtoupper((string) ($mq['relation'] ?? 'AND'));
         if ('OR' === $relacion) {
             foreach ((array) $mq as $clave => $clause) {
-                if (!is_array($clause) || empty($clause['key'])) { continue; }
+                if (!is_array($clause)) { continue; }
+                // Sub-grupo anidado (un OR dentro de un AND, que WordPress soporta): se evalúa con su propia
+                // `relation`. Sin esto el sub-grupo se ignoraba —no tiene `key`— y la búsqueda que lo usaba
+                // dejaba de filtrar: la consulta devolvía todo y la prueba no lo notaba.
+                if (empty($clause['key'])) {
+                    if (isset($clause['relation']) || isset($clause[0])) {
+                        if (_wp_stub_meta_matches($id, $clause)) { return true; }
+                    }
+                    continue;
+                }
                 if (_wp_stub_meta_matches($id, array($clause))) { return true; }
             }
             return false;
         }
-        foreach ((array) $mq as $clause) {
-            if (!is_array($clause) || empty($clause['key'])) { continue; }
+        foreach ((array) $mq as $clave => $clause) {
+            if (!is_array($clause)) { continue; }
+            if (empty($clause['key'])) {
+                if (isset($clause['relation']) || isset($clause[0])) {
+                    if (!_wp_stub_meta_matches($id, $clause)) { return false; }
+                }
+                continue;
+            }
             $key     = $clause['key'];
             $compare = strtoupper((string) ($clause['compare'] ?? '='));
             $meta    = $GLOBALS['_wp_stores']['post_meta'][$id] ?? [];
@@ -1108,6 +1123,9 @@ if (!class_exists('WP_Query')) {
         public $posts = array();
         public $found_posts = 0;
         public $post_count = 0;
+        // `max_num_pages` lo leen las tablas del panel para pintar la paginación; sin declararlo, cada
+        // `prepare_items()` soltaba un «Undefined property» y el aviso tapaba los warnings de verdad.
+        public $max_num_pages = 0;
         private $i = 0;
 
         public function __construct($args = array()) {
@@ -1152,6 +1170,7 @@ if (!class_exists('WP_Query')) {
             // `found_posts` es el total que casa, no lo que cabe en la página: WordPress devuelve ahí el total
             // de la consulta, y con `posts_per_page => 1` hay quien cuenta con ese número (cifras del sitio).
             $this->found_posts = count($this->posts);
+            $this->max_num_pages = ($limit > 0) ? (int) ceil($this->found_posts / $limit) : 1;
             if ($limit > 0) { $this->posts = array_slice($this->posts, 0, $limit); }
             $this->post_count = count($this->posts);
         }
