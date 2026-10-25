@@ -151,15 +151,27 @@ if (!function_exists('get_users')) {
     function get_users($args = []) {
         $roles  = (array) ($args['role__in'] ?? ($args['role'] ?? []));
         $campos = $args['fields'] ?? '';
+        // `meta_key`/`meta_value`: el contrato real filtra por usermeta. Sin esto, una comprobación de duplicado
+        // («¿hay alguien con este DNI?») devolvía **todos** los usuarios y daba positivo siempre, así que el camino
+        // feliz de cualquier alta era inalcanzable desde una prueba.
+        $meta_key   = $args['meta_key'] ?? null;
+        $meta_value = $args['meta_value'] ?? null;
         $salida = [];
         foreach (($GLOBALS['_wp_stores']['usuarios'] ?? []) as $id => $u) {
             if ($roles) {
                 $suyos = (array) ($u->roles ?? []);
                 if (!array_intersect($roles, $suyos)) { continue; }
             }
+            if (null !== $meta_key) {
+                $propio = $GLOBALS['_wp_stores']['user_meta'][ (int) $id ][ $meta_key ] ?? null;
+                if (null === $propio) { continue; }
+                if (null !== $meta_value && (string) $propio !== (string) $meta_value) { continue; }
+            }
             if ('ID' === $campos) { $salida[] = (int) $id; continue; }
             $salida[] = $u;
         }
+        $number = isset($args['number']) ? (int) $args['number'] : 0;
+        if ($number > 0) { $salida = array_slice($salida, 0, $number); }
         return $salida;
     }
 }
@@ -648,6 +660,22 @@ if (!function_exists('get_userdata')) {
 // Usuarios del sitio con registro REAL (`_wp_stores['usuarios']`, id => datos). Antes `get_user_by()`
 // devolvía siempre el usuario 1, así que cualquier código que decida «¿ya existe una cuenta con este correo?»
 // tomaba siempre la misma rama y no había manera de probar las demás.
+/**
+ * `email_exists()`: devuelve el ID del usuario con ese correo, o `false`. Lo usa el alta de voluntariado para no
+ * crear dos cuentas con el mismo correo, así que sin él esa guarda no se podía medir.
+ */
+if (!function_exists('email_exists')) {
+    function email_exists($email) {
+        foreach (($GLOBALS['_wp_stores']['usuarios'] ?? []) as $id => $u) {
+            $suyo = is_object($u) ? ($u->user_email ?? null) : ($u['user_email'] ?? null);
+            if (null !== $suyo && strtolower((string) $suyo) === strtolower((string) $email)) {
+                return (int) $id;
+            }
+        }
+        return false;
+    }
+}
+
 if (!function_exists('get_user_by')) {
     function get_user_by($field, $value) {
         $campo = 'email' === $field ? 'user_email' : ('login' === $field ? 'user_login' : ('id' === $field ? 'ID' : $field));
