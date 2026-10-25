@@ -1623,13 +1623,24 @@ if (!class_exists('WP_REST_Response')) {
      */
     class WP_REST_Request {
         private $params = array();
+        private $json = array();
+        private $headers = array();
         public function __construct($params = array()) { $this->params = (array) $params; }
         public function get_param($key, $default = null) {
             return array_key_exists($key, $this->params) ? $this->params[$key] : $default;
         }
         public function set_param($key, $value) { $this->params[$key] = $value; }
         public function get_params() { return $this->params; }
-        public function get_header($name) { return ''; }
+        /**
+         * Cabecera de la petición. Antes devolvía siempre cadena vacía, así que un nonce que viaja en
+         * cabecera (`X-Conv-Nonce`) era indistinguible de no mandarlo: la guarda no se podía medir.
+         */
+        public function set_header($name, $value) { $this->headers[strtolower((string) $name)] = $value; }
+        public function get_header($name) { return $this->headers[strtolower((string) $name)] ?? ''; }
+
+        /** Cuerpo JSON ya decodificado (WordPress lo da así al manejador). */
+        public function set_json_params($datos) { $this->json = (array) $datos; }
+        public function get_json_params() { return $this->json; }
         // Ruta de la petición: la usa el monitor de seguridad para decidir si la respuesta es de las nuestras.
         // Faltaba, y sin ella no se podía probar qué se vigila y qué no.
         public function set_route($ruta) { $this->params['__route'] = (string) $ruta; }
