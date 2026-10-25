@@ -639,6 +639,13 @@ if (!function_exists('wp_verify_nonce')) {
      * y, peor, una prueba que debía morir seguía adelante y llegaba a un `exit` que mataba PHPUnit en silencio.
      */
     function wp_verify_nonce($n, $a = -1) {
+        // Mapa por acción (`nonces_por_accion[accion] = nonce`): comprueba que un nonce emitido para una
+        // acción **no** vale para otra. Sin esto el doble acepta cualquier nonce de la lista plana y un
+        // cruce de nonces —una baja que borra, un export que importa— no lo nota ninguna prueba.
+        if (isset($GLOBALS['_wp_stores']['nonces_por_accion'])) {
+            $mapa = (array) $GLOBALS['_wp_stores']['nonces_por_accion'];
+            return isset($mapa[$a]) && hash_equals((string) $mapa[$a], (string) $n);
+        }
         if (array_key_exists('nonces_validos', $GLOBALS['_wp_stores'] ?? array())) {
             return in_array((string) $n, array_map('strval', (array) $GLOBALS['_wp_stores']['nonces_validos']), true);
         }
