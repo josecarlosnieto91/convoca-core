@@ -182,10 +182,42 @@ if (!function_exists('is_user_logged_in')) {
     function is_user_logged_in() { return (bool) ($GLOBALS['_wp_logged_in'] ?? false); }
 }
 if (!function_exists('wp_get_current_user')) {
+    /**
+     * Usuario actual.
+     *
+     * El ID sale de `get_current_user_id()` (que la prueba fija con `_test_user_id`), pero los ROLES se quedaban en
+     * el `['administrator']` por defecto del doble: cualquier prueba que quisiera medir una guarda de permisos de un
+     * no-admin era imposible, porque `wp_get_current_user()` siempre devolvía un administrador (members#70).
+     *
+     * Ahora se leen del almacén si la prueba los ha fijado:
+     *
+     *     $GLOBALS['_test_user_id'] = 77;
+     *     $GLOBALS['_wp_stores']['users'][77]['roles'] = array( 'monitor_actividad' );
+     *
+     * Es ADITIVO: si no hay nada en el almacén, se mantiene el rol por defecto y todo lo que ya pasaba sigue igual.
+     *
+     * @return WP_User
+     */
     function wp_get_current_user() {
+        $id = get_current_user_id();
         $u = new WP_User();
-        $u->ID = get_current_user_id();
+        $u->ID = $id;
         $u->user_email = 'test@example.com';
+
+        $roles = $GLOBALS['_wp_stores']['users'][ $id ]['roles']
+            ?? ( $GLOBALS['_wp_stores']['usuarios'][ $id ]->roles ?? null );
+
+        if ( is_array( $roles ) ) {
+            $u->roles = array_values( $roles );
+        }
+
+        $datos = $GLOBALS['_wp_stores']['users'][ $id ] ?? ( $GLOBALS['_wp_stores']['usuarios'][ $id ] ?? null );
+        if ( is_array( $datos ) && isset( $datos['email'] ) ) {
+            $u->user_email = (string) $datos['email'];
+        } elseif ( is_object( $datos ) && isset( $datos->user_email ) ) {
+            $u->user_email = (string) $datos->user_email;
+        }
+
         return $u;
     }
 }
