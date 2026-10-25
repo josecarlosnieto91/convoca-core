@@ -377,7 +377,19 @@ if (!function_exists('sanitize_textarea_field')) {
 // dispara el deprecado de `strip_tags(null)`.
 if (!function_exists('sanitize_text_field')) { function sanitize_text_field($s = '') { return trim(strip_tags((string) $s)); } }
 if (!function_exists('sanitize_title')) { function sanitize_title($t) { return strtolower(str_replace(' ', '-', trim($t))); } }
-if (!function_exists('sanitize_email')) { function sanitize_email($e) { return filter_var(trim((string) $e), FILTER_SANITIZE_EMAIL); } }
+/**
+ * `sanitize_email()` de WordPress devuelve **cadena vacía** si el correo no es válido (`FILTER_VALIDATE_EMAIL`
+ * después de limpiar), no el texto limpio. Con `FILTER_SANITIZE_EMAIL` un `no-es-un-correo` se guardaba tal cual y una
+ * guarda que descarta correos inválidos parecía no hacer nada.
+ */
+if (!function_exists('sanitize_email')) {
+    function sanitize_email($e) {
+        $limpio = trim((string) $e);
+        if ('' === $limpio) { return ''; }
+        $limpio = (string) filter_var($limpio, FILTER_SANITIZE_EMAIL);
+        return (false !== filter_var($limpio, FILTER_VALIDATE_EMAIL)) ? $limpio : '';
+    }
+}
 if (!function_exists('sanitize_url')) { function sanitize_url($u) { return filter_var($u, FILTER_SANITIZE_URL); } }
 if (!function_exists('absint')) { function absint($v) { return abs((int)$v); } }
 if (!function_exists('wp_unslash')) { function wp_unslash($s) { return is_string($s) ? stripslashes($s) : $s; } }
