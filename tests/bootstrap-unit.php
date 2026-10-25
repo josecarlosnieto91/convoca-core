@@ -495,7 +495,18 @@ if (!function_exists('did_action')) { function did_action($t) { return 0; } }
 if (!function_exists('current_user_can')) {
     // Override por prueba: $GLOBALS['_test_caps'][capacidad] = false. Sin entrada, se
     // concede, que es como se comportaba antes (no cambia ninguna prueba existente).
-    function current_user_can($c, ...$a) { return $GLOBALS['_test_caps'][$c] ?? true; }
+    /**
+     * `current_user_can( $cap, $post_id )`: el contrato real decide **por objeto** — se puede editar una ficha y no
+     * otra. El doble ignoraba los argumentos extra, así que una guarda por ficha («¿puedo editar ESTE socio?») no se
+     * podía medir: o valía para todas o para ninguna. `_test_post_caps[ $post_id ][ $cap ]` manda sobre el global.
+     */
+    function current_user_can($c, ...$a) {
+        $post_id = (int) ($a[0] ?? 0);
+        if ($post_id > 0 && isset($GLOBALS['_test_post_caps'][ $post_id ][ $c ])) {
+            return (bool) $GLOBALS['_test_post_caps'][ $post_id ][ $c ];
+        }
+        return $GLOBALS['_test_caps'][$c] ?? true;
+    }
 }
 
 /**
