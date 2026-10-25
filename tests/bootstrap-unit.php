@@ -1215,7 +1215,14 @@ if (!class_exists('WP_User')) {
         public $user_login = '';
         public $user_email = 'test@example.com';
         public function exists() { return $this->ID > 0; }
-        public function has_cap($cap) { return true; }
+        /** Capacidades sueltas del usuario (las que no vienen del rol). */
+        public $caps = [];
+
+        /**
+         * ¿Tiene la capacidad? Antes devolvía SIEMPRE true, así que ninguna rama de permisos que
+         * preguntara por una capacidad suelta era medible: la guarda parecía cumplirse siempre.
+         */
+        public function has_cap($cap) { return ! empty($this->caps[(string) $cap]); }
 
         // add_role/remove_role/set_role existen en la clase REAL de WordPress y faltaban en el doble:
         // sin ellos, cualquier código que retire un rol no se podía probar (se estrenó con el borrado de
