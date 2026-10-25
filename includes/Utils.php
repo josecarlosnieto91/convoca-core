@@ -208,15 +208,40 @@ class Utils {
 	}
 
 	/**
+	 * Neutraliza una fórmula sin romper la celda.
+	 *
+	 * `escape_csv_field()` entrecomilla, y eso está bien para quien construye el CSV a mano. Pero `stream_csv()`
+	 * delega el entrecomillado en `fputcsv()`, así que pasarle un valor ya entrecomillado lo escapa **dos veces**:
+	 * una celda `=SUM(A1:A9)` acababa en el fichero como `"""=SUM(A1:A9)"""` y quien la abría leía
+	 * `"=SUM(A1:A9)"` — la fórmula neutralizada, sí, pero el dato con comillas dentro (core#27).
+	 *
+	 * Aquí se antepone un apóstrofo, que es lo que recomienda OWASP para hojas de cálculo y no necesita comillas.
+	 *
+	 * @param mixed $field Valor de la celda.
+	 * @return string
+	 */
+	public static function neutralizar_formula( $field ): string {
+		$field = (string) $field;
+
+		if ( '' === $field ) {
+			return '';
+		}
+
+		return preg_match( '/^[=+\-@	\r;]/', $field ) ? "'" . $field : $field;
+	}
+
+	/**
 	 * Vuelca un CSV al navegador: cabeceras, BOM y filas, todo en UN solo flujo.
 	 *
 	 * Por qué no vale `csv_headers()`: abría el flujo, escribía el BOM y lo cerraba, así que quien
 	 * siguiera escribiendo se quedaba sin BOM —medido: la exportación de inscripciones salía sin él y
 	 * Excel rompía los acentos—. Aquí el flujo se abre una vez y no se cierra hasta escribir todo.
 	 *
-	 * Cada celda pasa por `escape_csv_field()`, así que ningún exportador puede olvidarse de la
+	 * Cada celda pasa por `neutralizar_formula()`, así que ningún exportador puede olvidarse de la
 	 * protección contra fórmulas: antes estaba copiada a mano en unos y ausente en otros (medido el
 	 * 15/10/2026: la pasarela tenía una versión más corta que no cubría tabulador, retorno ni `;`).
+	 * Se neutraliza con apóstrofo y **no** con `escape_csv_field()`: `fputcsv()` ya entrecomilla, y
+	 * entrecomillar antes lo escapaba dos veces (core#27).
 	 *
 	 * Separador `;` por defecto, que es el que espera el ecosistema, y una sola cabecera de contenido.
 	 * El separador es un parámetro porque hay una descarga cuyo lector manda: la plantilla de
@@ -251,7 +276,9 @@ class Utils {
 				$out,
 				array_map(
 					static function ( $celda ): string {
-						return self::escape_csv_field( (string) $celda );
+						// `neutralizar_formula()` y **no** `escape_csv_field()`: `fputcsv()` ya entrecomilla, y
+						// pasarle un valor entrecomillado lo escapa dos veces (core#27).
+						return self::neutralizar_formula( (string) $celda );
 					},
 					$fila
 				),

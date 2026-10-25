@@ -117,7 +117,7 @@ final class UtilsCsvExportacionTest extends TestCase {
 	}
 
 	/**
-	 * La protección va **en el flujo**, no en cada exportador: una celda con fórmula sale entrecomillada.
+	 * La protección va **en el flujo**, no en cada exportador: una celda con fórmula sale neutralizada.
 	 */
 	public function test_la_proteccion_viaja_en_el_flujo(): void {
 		$salida = $this->salida(
@@ -130,14 +130,14 @@ final class UtilsCsvExportacionTest extends TestCase {
 		$this->assertSame( '0', $filas[2][0], 'un cero sigue siendo un dato, no una celda vacía' );
 		$this->assertStringNotContainsString( '=SUM(A1:A9)\n', $salida, 'la fórmula queda neutralizada en el fichero' );
 
-		// El valor leído NO es el original: sale con comillas espurias porque `stream_csv()` escapa dos veces
-		// (escapado propio + `fputcsv`). Es un defecto abierto (convoca-core#27), no el comportamiento deseado:
-		// la prueba lo deja anotado en vez de bendecirlo.
+		// Arreglado core#27: se neutraliza con **apóstrofo** y el dato llega entero. Antes salía `"=SUM(A1:A9)"`
+		// —entrecomillado dos veces, porque `stream_csv()` ya entrecomillaba y `fputcsv()` lo volvía a hacer—.
 		$this->assertSame(
-			'"=SUM(A1:A9)"',
+			"'=SUM(A1:A9)",
 			$filas[1][0],
-			'core#27: hoy el valor llega con comillas; cuando se arregle, esto pasará a ser «=SUM(A1:A9)»'
+			'el apóstrofo quita la fórmula sin corromper el dato'
 		);
+		$this->assertStringNotContainsString( '"', (string) $filas[1][0], 'sin comillas espurias en el valor' );
 	}
 
 	/**

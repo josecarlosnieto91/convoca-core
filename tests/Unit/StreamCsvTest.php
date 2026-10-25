@@ -66,7 +66,7 @@ class StreamCsvTest extends TestCase {
 	 * @param string                          $separator Separador de campos.
 	 * @return string Bytes que producía la ceremonia copiada a mano.
 	 */
-	private function ceremoniaAnterior( array $headers, iterable $rows, string $separator = ';' ): string {
+	private function ceremoniaEsperada( array $headers, iterable $rows, string $separator = ';' ): string {
 		$h = fopen( 'php://temp', 'r+' );
 		fprintf( $h, self::BOM );
 		$escribir = static function ( array $fila ) use ( $h, $separator ): void {
@@ -74,7 +74,9 @@ class StreamCsvTest extends TestCase {
 				$h,
 				array_map(
 					static function ( $celda ): string {
-						return \Convoca\Core\Utils::escape_csv_field( (string) $celda );
+						// La misma mitigación que el producto: **apóstrofo**, no comillas. Con
+						// `escape_csv_field()` aquí, la referencia reproducía el doble escape (core#27).
+						return \Convoca\Core\Utils::neutralizar_formula( (string) $celda );
 					},
 					$fila
 				),
@@ -118,7 +120,7 @@ class StreamCsvTest extends TestCase {
 	 */
 	public function test_la_salida_es_byte_a_byte_la_de_la_ceremonia_anterior(): void {
 		list( $bytes ) = $this->capturar( $this->cabeceras(), $this->filas() );
-		$esperado      = $this->ceremoniaAnterior( $this->cabeceras(), $this->filas() );
+		$esperado      = $this->ceremoniaEsperada( $this->cabeceras(), $this->filas() );
 
 		$this->assertSame(
 			md5( $esperado ),
@@ -150,11 +152,19 @@ class StreamCsvTest extends TestCase {
 		$filas = $this->leerDeVuelta( $bytes );
 
 		$this->assertCount( 4, $filas, 'Cabecera + tres filas' );
-		$this->assertSame( '=1+1', str_replace( '"', '', (string) $filas[1][2] ) );
+
+		$celda = (string) $filas[1][2];
+
+		$this->assertSame(
+			"'=1+1",
+			$celda,
+			'se neutraliza con apóstrofo y el dato llega **entero**: sin comillas dentro y sin perder el ='
+		);
+		$this->assertStringNotContainsString( '"', $celda, 'nada de comillas espurias (core#27)' );
 		$this->assertNotSame(
 			'=',
-			substr( trim( (string) $filas[1][2] ), 0, 1 ),
-			'Una celda que empieza por = es una fórmula para Excel: tiene que salir entrecomillada'
+			substr( $celda, 0, 1 ),
+			'Una celda que empieza por = es una fórmula para Excel: no puede salir tal cual'
 		);
 	}
 
@@ -204,7 +214,7 @@ class StreamCsvTest extends TestCase {
 		list( $bytes ) = $this->capturar( array( 'nombre', 'email' ), array( array( 'Juan', 'j@example.org' ) ), ',' );
 
 		$this->assertStringContainsString( "nombre,email\n", $bytes );
-		$this->assertSame( $this->ceremoniaAnterior( array( 'nombre', 'email' ), array( array( 'Juan', 'j@example.org' ) ), ',' ), $bytes );
+		$this->assertSame( $this->ceremoniaEsperada( array( 'nombre', 'email' ), array( array( 'Juan', 'j@example.org' ) ), ',' ), $bytes );
 	}
 
 	/**
