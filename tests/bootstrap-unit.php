@@ -64,8 +64,12 @@ if ( ! function_exists( 'add_role' ) ) {
 // --- WordPress option functions ---
 if (!function_exists('get_option')) {
     function get_option($key, $default = false) {
-        $s = &$GLOBALS['_wp_stores']['options'];
-        return array_key_exists($key, $s) ? $s[$key] : $default;
+        // SIN referencia y con `?? array()`: `$s = &$GLOBALS['_wp_stores']['options']` CREA la clave con `null`
+        // cuando no existe, y el `array_key_exists()` siguiente revienta con TypeError — en una suite que no tiene
+        // nada que ver, porque este doble se define una sola vez y `get_option` se llama en todas. `get_option` no
+        // muta nada, así que la referencia no hacía falta (core#28).
+        $s = $GLOBALS['_wp_stores']['options'] ?? array();
+        return is_array($s) && array_key_exists($key, $s) ? $s[$key] : $default;
     }
     function update_option($key, $value, $autoload = null) {
         $GLOBALS['_wp_stores']['options'][$key] = $value; return true;
