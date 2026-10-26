@@ -1,5 +1,11 @@
+includes:
+    - phpstan-baseline.neon
+
 parameters:
-    level: 5
+    level: 8
+    # Base generada en local (PHP 8.5) y evaluada en CI con otra versión: las entradas que
+    # cambian de número de ocurrencias no deben tumbar el job. Los errores NUEVOS sí fallan.
+    reportUnmatchedIgnoredErrors: false
     paths:
         - ./
     excludePaths:

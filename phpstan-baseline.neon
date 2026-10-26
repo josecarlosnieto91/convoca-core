@@ -1,0 +1,1075 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Function Convoca\\Core\\assoc_build_metrics\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: convoca-core.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$href\.$#'
+			identifier: property.notFound
+			count: 1
+			path: includes/Admin/Pantalla_Admin.php
+
+		-
+			message: '#^Parameter \#1 \$parent_slug of function add_submenu_page expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Admin/Pantalla_Admin.php
+
+		-
+			message: '#^Parameter \#2 \$callback of function add_action expects callable\(\)\: mixed, array\{\$this\(Convoca\\Core\\Admin\\Pantalla_Admin\), string\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Admin/Pantalla_Admin.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Analytics\:\:get_all\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Admin_Analytics.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Analytics\:\:get_inscription_stats\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Admin_Analytics.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Analytics\:\:get_member_stats\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Admin_Analytics.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Analytics\:\:get_payment_stats\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Admin_Analytics.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Analytics\:\:get_trends\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Admin_Analytics.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Analytics\:\:get_turno_stats\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Admin_Analytics.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Analytics\:\:render_chart\(\) has parameter \$datasets with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Admin_Analytics.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Analytics\:\:render_chart\(\) has parameter \$labels with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Admin_Analytics.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Analytics\:\:render_chart\(\) has parameter \$opts with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Admin_Analytics.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Backup\:\:apply_meta\(\) has parameter \$data with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Backup\:\:apply_meta\(\) has parameter \$entity with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Backup\:\:apply_meta\(\) has parameter \$id with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Backup\:\:import_settings\(\) has parameter \$zip with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Backup\:\:preparar_importacion\(\) has parameter \$file with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fclose expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 4
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fgetcsv expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 2
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fgets expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fputcsv expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 2
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fread expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fwrite expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function rewind expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 2
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function stream_get_contents expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Parameter \#2 \$content of method ZipArchive\:\:addFromString\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Admin_Backup.php
+
+		-
+			message: '#^Cannot call method get_tests\(\) on WP_Site_Health\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: includes/Admin_Entrada.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Entrada\:\:salud\(\) should return array\{estado\: string, texto\: string, detalle\: string\} but returns non\-empty\-array\<mixed, mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: includes/Admin_Entrada.php
+
+		-
+			message: '#^Parameter \#1 \$object_or_class of function method_exists expects object\|string, WP_Site_Health\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Admin_Entrada.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: includes/Admin_Logs_List.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Logs_List\:\:column_cb\(\) has parameter \$item with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Admin_Logs_List.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Logs_List\:\:column_context\(\) has parameter \$item with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Admin_Logs_List.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Logs_List\:\:column_created_at\(\) has parameter \$item with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Admin_Logs_List.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Logs_List\:\:column_level\(\) has parameter \$item with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Admin_Logs_List.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Logs_List\:\:column_message\(\) has parameter \$item with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Admin_Logs_List.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Logs_List\:\:column_object_id\(\) has parameter \$item with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Admin_Logs_List.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Logs_List\:\:column_user_id\(\) has parameter \$item with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Admin_Logs_List.php
+
+		-
+			message: '#^Parameter \#1 \$text of function esc_html expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Admin_Logs_List.php
+
+		-
+			message: '#^Property Convoca\\Core\\Admin_Logs_List\:\:\$approx_total has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: includes/Admin_Logs_List.php
+
+		-
+			message: '#^Unable to resolve the template type T in call to function sanitize_sql_orderby$#'
+			identifier: argument.templateType
+			count: 2
+			path: includes/Admin_Logs_List.php
+
+		-
+			message: '#^Cannot access property \$ID on WP_Post\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: includes/Admin_Setup_Wizard.php
+
+		-
+			message: '#^Cannot access property \$post_content on WP_Post\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: includes/Admin_Setup_Wizard.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Setup_Wizard\:\:check_item\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Admin_Setup_Wizard.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Setup_Wizard\:\:get_completion_status\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Admin_Setup_Wizard.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Setup_Wizard\:\:procesar_planes\(\) has parameter \$post with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Admin_Setup_Wizard.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Setup_Wizard\:\:procesar_planes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Admin_Setup_Wizard.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Setup_Wizard\:\:summary_rows\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Admin_Setup_Wizard.php
+
+		-
+			message: '#^Parameter \#1 \$text of function esc_html expects string, int\<1, 7\>\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Admin_Setup_Wizard.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Templates\:\:add_menu_page\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Templates\:\:backup_corrupted\(\) has parameter \$data with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Templates\:\:get_templates\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Templates\:\:handle_actions\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Templates\:\:init\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Templates\:\:render_page\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Templates\:\:restore_default_templates\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Templates\:\:sanitize_pdf_template\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Templates\:\:sanitize_pdf_template\(\) has parameter \$content with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Method Convoca\\Core\\Admin_Templates\:\:sanitize_styles\(\) has parameter \$html with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Parameter \#1 \$string of function trim expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Parameter \#2 \$replace of function str_replace expects array\<string\>\|string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Parameter \#3 \$subject of function preg_replace expects array\<float\|int\|string\>\|string, string\|null given\.$#'
+			identifier: argument.type
+			count: 4
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Parameter \#3 \$subject of function str_ireplace expects array\<string\>\|string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Property Convoca\\Core\\Admin_Templates\:\:\$option_name has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: includes/Admin_Templates.php
+
+		-
+			message: '#^Method Convoca\\Core\\Blocks_Common\:\:add_custom_categories\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: includes/Blocks_Common.php
+
+		-
+			message: '#^Method Convoca\\Core\\Blocks_Common\:\:add_custom_categories\(\) has parameter \$categories with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Blocks_Common.php
+
+		-
+			message: '#^Method Convoca\\Core\\Blocks_Common\:\:add_custom_categories\(\) has parameter \$post with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Blocks_Common.php
+
+		-
+			message: '#^Method Convoca\\Core\\Blocks_Common\:\:init\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: includes/Blocks_Common.php
+
+		-
+			message: '#^Method Convoca\\Core\\Blocks_Common\:\:register_blocks\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: includes/Blocks_Common.php
+
+		-
+			message: '#^Method Convoca\\Core\\Blocks_Common\:\:render_post_meta_field\(\) has parameter \$attributes with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Blocks_Common.php
+
+		-
+			message: '#^Method Convoca\\Core\\Common_Upgrade_Manager\:\:get_upgrade_callbacks\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Common_Upgrade_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\Common_Upgrade_Manager\:\:limpiar_tablas_del_prefijo_viejo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Common_Upgrade_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\Email_Copy\:\:describe_origin\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Email_Copy.php
+
+		-
+			message: '#^Method Convoca\\Core\\Email_Copy\:\:maybe_copy\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Email_Copy.php
+
+		-
+			message: '#^Method Convoca\\Core\\Email_Copy\:\:recipients\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Email_Copy.php
+
+		-
+			message: '#^Method Convoca\\Core\\Email_Layout\:\:meta_table\(\) has parameter \$rows with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Email_Layout.php
+
+		-
+			message: '#^Method Convoca\\Core\\Email_Layout\:\:render\(\) has parameter \$opts with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Email_Layout.php
+
+		-
+			message: '#^Method Convoca\\Core\\Email_Layout\:\:render\(\) should return string but returns string\|false\.$#'
+			identifier: return.type
+			count: 1
+			path: includes/Email_Layout.php
+
+		-
+			message: '#^Parameter \#1 \$text of function esc_html expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Email_Layout.php
+
+		-
+			message: '#^Method Convoca\\Core\\Features\:\:get_missing_dependencies\(\) has parameter \$required_features with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Features.php
+
+		-
+			message: '#^Method Convoca\\Core\\Features\:\:get_missing_dependencies\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Features.php
+
+		-
+			message: '#^Method Convoca\\Core\\Hour_Ledger\:\:credit\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Hour_Ledger.php
+
+		-
+			message: '#^Method Convoca\\Core\\License_Manager\:\:deactivate\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/License_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\License_Manager\:\:get_license\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/License_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\License_Manager\:\:pro_features\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/License_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\License_Manager\:\:validate_key\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/License_Manager.php
+
+		-
+			message: '#^Parameter \#1 \$location of function wp_safe_redirect expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/License_Manager.php
+
+		-
+			message: '#^Parameter \#2 \$args of function wp_remote_post expects array\{method\?\: string, timeout\?\: float, redirection\?\: int, httpversion\?\: string, user\-agent\?\: string, reject_unsafe_urls\?\: bool, blocking\?\: bool, headers\?\: array\|string, \.\.\.\}, array\{timeout\: 10, headers\: array\{Content\-Type\: ''application/json''\}, body\: non\-empty\-string\|false\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/License_Manager.php
+
+		-
+			message: '#^Parameter \#2 \$args of function wp_remote_post expects array\{method\?\: string, timeout\?\: float, redirection\?\: int, httpversion\?\: string, user\-agent\?\: string, reject_unsafe_urls\?\: bool, blocking\?\: bool, headers\?\: array\|string, \.\.\.\}, array\{timeout\: 15, headers\: array\{Content\-Type\: ''application/json''\}, body\: non\-empty\-string\|false\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/License_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\Logger\:\:get_logs\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Logger.php
+
+		-
+			message: '#^Method Convoca\\Core\\Logger\:\:get_logs\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Logger.php
+
+		-
+			message: '#^Method Convoca\\Core\\Logger\:\:get_stats\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Logger.php
+
+		-
+			message: '#^Property Convoca\\Core\\Logger\:\:\$log_depth has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: includes/Logger.php
+
+		-
+			message: '#^Property Convoca\\Core\\Logger\:\:\$log_timestamps has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: includes/Logger.php
+
+		-
+			message: '#^Method Convoca\\Core\\Member_Identity\:\:datos\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Member_Identity.php
+
+		-
+			message: '#^Property Convoca\\Core\\Member_Identity\:\:\$identidad type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Member_Identity.php
+
+		-
+			message: '#^Parameter \#1 \$filename of function sanitize_file_name expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Memory_Report.php
+
+		-
+			message: '#^Parameter \#1 \$string of function ucfirst expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Memory_Report.php
+
+		-
+			message: '#^Parameter \#1 \$timestamp of static method Convoca\\Core\\Memory_Report\:\:generate_pdf\(\) expects int, int\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Memory_Report.php
+
+		-
+			message: '#^Parameter \#2 \$timestamp of function wp_date expects int\|null, int\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Memory_Report.php
+
+		-
+			message: '#^Method Convoca\\Core\\Migration_History\:\:get_all\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Migration_History.php
+
+		-
+			message: '#^Method Convoca\\Core\\Migration_History\:\:get_for_plugin\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Migration_History.php
+
+		-
+			message: '#^Method Convoca\\Core\\Migration_History\:\:record\(\) has parameter \$meta with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Migration_History.php
+
+		-
+			message: '#^Method Convoca\\Core\\Notifications\:\:get\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Notifications.php
+
+		-
+			message: '#^Method Convoca\\Core\\Notifications\:\:get_member\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Notifications.php
+
+		-
+			message: '#^Method Convoca\\Core\\Notifications\:\:on_member_created\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Notifications.php
+
+		-
+			message: '#^Method Convoca\\Core\\Notifications\:\:push\(\) has parameter \$tags with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Notifications.php
+
+		-
+			message: '#^Method Convoca\\Core\\Notifications\:\:render_dropdown\(\) has parameter \$notifications with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Notifications.php
+
+		-
+			message: '#^Parameter \#1 \$string of function substr expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Performance_Probe.php
+
+		-
+			message: '#^Property Convoca\\Core\\Performance_Probe\:\:\$hook_stack type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Performance_Probe.php
+
+		-
+			message: '#^Property Convoca\\Core\\Performance_Probe\:\:\$slow_hooks type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Performance_Probe.php
+
+		-
+			message: '#^Property Convoca\\Core\\Performance_Probe\:\:\$slow_queries type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Performance_Probe.php
+
+		-
+			message: '#^Method Convoca\\Core\\Push_Notifier\:\:get_config\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Push_Notifier.php
+
+		-
+			message: '#^Method Convoca\\Core\\Push_Notifier\:\:get_defaults\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Push_Notifier.php
+
+		-
+			message: '#^Method Convoca\\Core\\Push_Notifier\:\:notify_admins\(\) has parameter \$tags with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Push_Notifier.php
+
+		-
+			message: '#^Method Convoca\\Core\\Push_Notifier\:\:save_config\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Push_Notifier.php
+
+		-
+			message: '#^Method Convoca\\Core\\Push_Notifier\:\:send\(\) has parameter \$tags with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Push_Notifier.php
+
+		-
+			message: '#^Parameter \#2 \$args of function wp_remote_post expects array\{method\?\: string, timeout\?\: float, redirection\?\: int, httpversion\?\: string, user\-agent\?\: string, reject_unsafe_urls\?\: bool, blocking\?\: bool, headers\?\: array\|string, \.\.\.\}, array\{headers\: array\{Content\-Type\: ''application/json''\}, body\: non\-empty\-string\|false, timeout\: 10\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Push_Notifier.php
+
+		-
+			message: '#^Method Convoca\\Core\\Rest_Hardening\:\:sin_rutas_de_enumeracion\(\) has parameter \$endpoints with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Rest_Hardening.php
+
+		-
+			message: '#^Method Convoca\\Core\\Rest_Hardening\:\:sin_rutas_de_enumeracion\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Rest_Hardening.php
+
+		-
+			message: '#^Method Convoca\\Core\\Security_Monitor\:\:count_last_24h\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Security_Monitor.php
+
+		-
+			message: '#^Method Convoca\\Core\\Signature\:\:add_acceptance_stamp\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Method Convoca\\Core\\Signature\:\:add_acceptance_stamp\(\) has parameter \$acceptor_name with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Method Convoca\\Core\\Signature\:\:add_acceptance_stamp\(\) has parameter \$ip with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Method Convoca\\Core\\Signature\:\:add_acceptance_stamp\(\) has parameter \$pdf_path with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Method Convoca\\Core\\Signature\:\:add_acceptance_stamp\(\) has parameter \$timestamp with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Method Convoca\\Core\\Signature\:\:ensure_upload_protection\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Method Convoca\\Core\\Signature\:\:ensure_upload_protection\(\) has parameter \$dir with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Method Convoca\\Core\\Signature\:\:generate_pdf\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Method Convoca\\Core\\Signature\:\:generate_pdf\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Method Convoca\\Core\\Signature\:\:get_acceptance_stamp_html\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Method Convoca\\Core\\Signature\:\:get_acceptance_stamp_html\(\) has parameter \$acceptor_name with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Method Convoca\\Core\\Signature\:\:get_acceptance_stamp_html\(\) has parameter \$content_to_hash with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Method Convoca\\Core\\Signature\:\:get_acceptance_stamp_html\(\) has parameter \$ip with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Method Convoca\\Core\\Signature\:\:get_acceptance_stamp_html\(\) has parameter \$timestamp with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Method Convoca\\Core\\Signature\:\:get_last_error\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Parameter \#1 \$text of function esc_html expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Property Convoca\\Core\\Signature\:\:\$last_error has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: includes/Signature.php
+
+		-
+			message: '#^Method Convoca\\Core\\Upgrade_Manager\:\:get_upgrade_callbacks\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Upgrade_Manager.php
+
+		-
+			message: '#^Parameter \#2 \$callback of function uksort expects callable\(int\|string, int\|string\)\: int, ''version_compare'' given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Upgrade_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\Utils\:\:create_payment\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Method Convoca\\Core\\Utils\:\:create_payment\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Method Convoca\\Core\\Utils\:\:format_date\(\) should return string but returns string\|false\.$#'
+			identifier: return.type
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Method Convoca\\Core\\Utils\:\:get_payment_link\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Method Convoca\\Core\\Utils\:\:get_payment_link\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Method Convoca\\Core\\Utils\:\:get_pdf_template\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Method Convoca\\Core\\Utils\:\:get_pdf_templates\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Method Convoca\\Core\\Utils\:\:render_diagnostic_panel\(\) has parameter \$checks with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Method Convoca\\Core\\Utils\:\:rest_cache_get\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Parameter \#1 \$hook_name of function apply_filters expects non\-empty\-string, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Parameter \#1 \$hook_name of function do_action expects non\-empty\-string, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fclose expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 2
+			path: includes/Utils.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fprintf expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 2
+			path: includes/Utils.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fputcsv expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Utils.php
+
+		-
+			message: '#^Method Convoca\\Core\\Webhook_Manager\:\:add_webhook\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\Webhook_Manager\:\:deliver\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\Webhook_Manager\:\:deliver\(\) has parameter \$webhook with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\Webhook_Manager\:\:dispatch\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\Webhook_Manager\:\:events\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\Webhook_Manager\:\:get_delivery_logs\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\Webhook_Manager\:\:get_webhook\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\Webhook_Manager\:\:get_webhooks\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\Webhook_Manager\:\:on_payment_completed\(\) has parameter \$meta with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\Webhook_Manager\:\:schedule_retry\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\Webhook_Manager\:\:schedule_retry\(\) has parameter \$webhook with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Method Convoca\\Core\\Webhook_Manager\:\:update_webhook\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Parameter \#1 \$string of function md5 expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Parameter \#2 \$args of function wp_remote_post expects array\{method\?\: string, timeout\?\: float, redirection\?\: int, httpversion\?\: string, user\-agent\?\: string, reject_unsafe_urls\?\: bool, blocking\?\: bool, headers\?\: array\|string, \.\.\.\}, array\{body\: non\-empty\-string\|false, headers\: array\{Content\-Type\: ''application/json'', X\-Convoca\-Event\: mixed, X\-Convoca\-Delivery\: non\-falsy\-string, X\-Convoca\-Signature\?\: non\-falsy\-string\}, timeout\: 5, redirection\: 2, blocking\: true, sslverify\: mixed\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Parameter \#2 \$data of function hash_hmac expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/Webhook_Manager.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$href\.$#'
+			identifier: property.notFound
+			count: 1
+			path: includes/admin-appearance.php
+
+		-
+			message: '#^Function Convoca\\Core\\convoca_build_metrics\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/admin-appearance.php
+
+		-
+			message: '#^Function Convoca\\Core\\convoca_export_pdf\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/admin-appearance.php
+
+		-
+			message: '#^Function Convoca\\Core\\convoca_export_pdf\(\) has parameter \$rows with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/admin-appearance.php
+
+		-
+			message: '#^Method Convoca\\Core\\Module_Registry\:\:get_modules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/class-module-registry.php
+
+		-
+			message: '#^Method Convoca\\Core\\Module_Registry\:\:register\(\) has parameter \$definition with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/class-module-registry.php
+
+		-
+			message: '#^Property Convoca\\Core\\Module_Registry\:\:\$modules type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/class-module-registry.php
+
+		-
+			message: '#^Parameter \#1 \$text of function esc_html expects string, int\|string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/front-shortcodes.php
+
+		-
+			message: '#^Parameter \#1 \$url of function esc_url expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 2
+			path: includes/front-shortcodes.php
+
+		-
+			message: '#^Parameter \#2 \$atts of function shortcode_atts expects array, array\<string, string\>\|string given\.$#'
+			identifier: argument.type
+			count: 2
+			path: includes/front-shortcodes.php
