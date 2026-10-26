@@ -1,3 +1,11 @@
+## [2.3.50] — 2026-10-26
+
+### Cambiado
+
+- **cobertura completa y cierre de los issues del repositorio**
+- El arnes emula meta_query estricto y resuelve get_users por usermeta.
+- Los CSV neutralizan formulas antes de escribirlas.
+
 ## [2.3.49] — 2026-10-21
 
 ### Arreglado
