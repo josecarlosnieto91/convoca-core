@@ -301,30 +301,6 @@ parameters:
 			path: includes/Admin_Templates.php
 
 		-
-			message: '#^Parameter \#1 \$string of function trim expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: includes/Admin_Templates.php
-
-		-
-			message: '#^Parameter \#2 \$replace of function str_replace expects array\<string\>\|string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: includes/Admin_Templates.php
-
-		-
-			message: '#^Parameter \#3 \$subject of function preg_replace expects array\<float\|int\|string\>\|string, string\|null given\.$#'
-			identifier: argument.type
-			count: 4
-			path: includes/Admin_Templates.php
-
-		-
-			message: '#^Parameter \#3 \$subject of function str_ireplace expects array\<string\>\|string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: includes/Admin_Templates.php
-
-		-
 			message: '#^Property Convoca\\Core\\Admin_Templates\:\:\$option_name has no type specified\.$#'
 			identifier: missingType.property
 			count: 1
@@ -521,30 +497,6 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: includes/Member_Identity.php
-
-		-
-			message: '#^Parameter \#1 \$filename of function sanitize_file_name expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: includes/Memory_Report.php
-
-		-
-			message: '#^Parameter \#1 \$string of function ucfirst expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: includes/Memory_Report.php
-
-		-
-			message: '#^Parameter \#1 \$timestamp of static method Convoca\\Core\\Memory_Report\:\:generate_pdf\(\) expects int, int\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: includes/Memory_Report.php
-
-		-
-			message: '#^Parameter \#2 \$timestamp of function wp_date expects int\|null, int\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: includes/Memory_Report.php
 
 		-
 			message: '#^Method Convoca\\Core\\Migration_History\:\:get_all\(\) return type has no value type specified in iterable type array\.$#'

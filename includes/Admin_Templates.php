@@ -283,7 +283,7 @@ class Admin_Templates {
 
 		$rendered_content = $content;
 		foreach ( $mock_data as $key => $value ) {
-			$rendered_content = str_replace( '{{' . $key . '}}', $value, $rendered_content );
+			$rendered_content = str_replace( '{{' . $key . '}}', (string) $value, $rendered_content );
 		}
 
 		// Detect pathological CSS patterns before rendering.
@@ -361,17 +361,17 @@ class Admin_Templates {
 				// `url(...)` y `expression(...)` se quitan **con su argumento**: borrar sólo la palabra dejaba
 				// `background:http://ejemplo.test/x.png)` y `alert(1))` dentro del `style`, que es basura que el
 				// renderizador puede reinterpretar. Y `@import` se lleva la regla entera.
-				$style = preg_replace( '/url\(\s*[^)]*\)/i', '', $style );
-				$style = preg_replace( '/expression\(\s*[^)]*\)/i', '', $style );
-				$style = preg_replace( '/@import[^;]*;?/i', '', $style );
+				$style = (string) preg_replace( '/url\(\s*[^)]*\)/i', '', $style );
+				$style = (string) preg_replace( '/expression\(\s*[^)]*\)/i', '', $style );
+				$style = (string) preg_replace( '/@import[^;]*;?/i', '', $style );
 				foreach ( $dangerous as $bad ) {
 					$style = str_ireplace( $bad, '', $style );
 				}
 				// Restos de paréntesis (una función anidada deja el cierre suelto) y limpieza de separadores.
-				$style = preg_replace( '/[()]+/', '', $style );
+				$style = (string) preg_replace( '/[()]+/', '', $style );
 				// Declaraciones que se quedaron sin valor (`background:`) fuera.
-				$style = preg_replace( '/[a-z-]+\s*:\s*(?=;|$)/i', '', $style );
-				$style = preg_replace( '/;+/', ';', $style );
+				$style = (string) preg_replace( '/[a-z-]+\s*:\s*(?=;|$)/i', '', $style );
+				$style = (string) preg_replace( '/;+/', ';', $style );
 				$style = trim( $style, '; ' );
 				// Sin una declaración completa (`propiedad: valor`) no es un estilo: se quita el atributo en vez de
 				// dejar `style=")"` o `style="background:"`.

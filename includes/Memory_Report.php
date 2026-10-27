@@ -69,7 +69,7 @@ class Memory_Report {
 			if ( ! is_dir( $dir ) ) {
 				wp_mkdir_p( $dir );
 			}
-			$path = $dir . '/memoria-' . sanitize_file_name( $label ) . '.pdf';
+			$path = $dir . '/memoria-' . sanitize_file_name( (string) $label ) . '.pdf';
 			file_put_contents( $path, $pdf );
 
 			// Notify admin.
@@ -108,6 +108,7 @@ class Memory_Report {
 		$month     = isset( $_GET['month'] ) ? (int) $_GET['month'] : 0;
 		$year      = isset( $_GET['year'] ) ? (int) $_GET['year'] : (int) wp_date( 'Y' );
 		$timestamp = $month ? mktime( 0, 0, 0, $month, 1, $year ) : strtotime( 'first day of last month' );
+		$timestamp = false === $timestamp ? time() : $timestamp;
 
 		$pdf = self::generate_pdf( $timestamp );
 		if ( ! $pdf ) {
@@ -133,7 +134,7 @@ class Memory_Report {
 			return null;
 		}
 
-		$label       = ucfirst( wp_date( 'F \d\e Y', $timestamp ) );
+		$label       = ucfirst( (string) wp_date( 'F \d\e Y', $timestamp ) );
 		$year        = wp_date( 'Y', $timestamp );
 		$month_num   = wp_date( 'm', $timestamp );
 		$month_start = $timestamp;
