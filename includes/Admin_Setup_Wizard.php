@@ -267,6 +267,11 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 		$this->step_nav( 1, $all_ok );
 	}
 
+	/**
+	 * Construye una fila de comprobación.
+	 *
+	 * @return array{label: string, ok: bool, msg: string}
+	 */
 	private function check_item( string $label, bool $ok, string $ok_msg, string $err_msg ): array {
 		return array(
 			'label' => $label,
@@ -503,6 +508,13 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 				}
 				continue;
 			}
+
+			/**
+			 * La página existe: `page_state()` solo devuelve 'no_shortcode' cuando
+			 * recibió un WP_Post (null da 'missing' y ya salió antes).
+			 *
+			 * @var \WP_Post $page
+			 */
 
 			// La página existe pero le falta el shortcode correcto: se repara sin
 			// pisar el texto del autor — primero sustituye shortcodes retirados y,
@@ -841,7 +853,7 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 	/**
 	 * Construye las filas del resumen: un bloque por paso del asistente.
 	 *
-	 * @return array[] Cada fila: title, ok, detail[], missing.
+	 * @return array<int, array<string, mixed>> Cada fila: title, ok, detail[], missing.
 	 */
 	private function summary_rows(): array {
 		global $wpdb;
@@ -966,6 +978,11 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 		return $rows;
 	}
 
+	/**
+	 * Estado de finalización del asistente.
+	 *
+	 * @return array<string, mixed>
+	 */
 	private function get_completion_status(): array {
 		return array( 'is_ready' => $this->is_config_complete() );
 	}
@@ -1034,8 +1051,8 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 	 * un checkbox desmarcado desactiva (no borra), un slug repetido **no** se guarda, y un selector de modalidad no
 	 * se toca.
 	 *
-	 * @param array $post Datos del formulario para los planes.
-	 * @return array{planes:?array,movimientos:array<string,string>,colision:string}
+	 * @param array<string, mixed> $post Datos del formulario para los planes.
+	 * @return array<string, mixed>
 	 */
 	private function procesar_planes( array $post ): array {
 		$plans = apply_filters( 'convoca_member_plans', array() );

@@ -57,9 +57,9 @@ class Rest_Hardening {
 	/**
 	 * Parte pura del filtro, para poder probarla sin WordPress cargado.
 	 *
-	 * @param array $endpoints  Rutas de la API REST.
+	 * @param array<string, mixed> $endpoints  Rutas de la API REST.
 	 * @param bool  $con_sesion Si quien llama ha iniciado sesión.
-	 * @return array Las rutas que correspondan a ese estado.
+	 * @return array<string, mixed> Las rutas que correspondan a ese estado.
 	 */
 	public static function sin_rutas_de_enumeracion( array $endpoints, bool $con_sesion ): array {
 		if ( $con_sesion ) {

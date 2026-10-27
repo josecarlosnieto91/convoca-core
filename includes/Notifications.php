@@ -114,6 +114,8 @@ class Notifications {
 
 	/**
 	 * Get notifications for a specific member.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public static function get_member( int $member_id, int $limit = 10 ): array {
 		$all = get_post_meta( $member_id, self::META_KEY, true ) ?: array();
@@ -155,6 +157,8 @@ class Notifications {
 
 	/**
 	 * Get notifications for the current user.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public static function get( int $limit = 10, bool $unread_only = false ): array {
 		$all = get_user_meta( get_current_user_id(), self::META_KEY, true ) ?: array();
@@ -201,6 +205,11 @@ class Notifications {
 		);
 	}
 
+	/**
+	 * Pinta el desplegable de avisos.
+	 *
+	 * @param array<string, mixed> $notifications
+	 */
 	private static function render_dropdown( array $notifications, int $total ): string {
 		$html  = '<div class="conv-notif-dropdown">';
 		$html .= '<div class="conv-notif-header">';
@@ -388,6 +397,12 @@ class Notifications {
 
 	/* ── Event Hooks ── */
 
+	/**
+	 * Aviso al crear un socio.
+	 *
+	 * @param int                $member_id Id del socio.
+	 * @param array<string, mixed> $data    Datos del socio.
+	 */
 	public static function on_member_created( int $member_id, array $data ): void {
 		/* translators: %s: member name */
 		$title = sprintf( __( 'Nuevo socio pendiente: %s', 'convoca-core' ), $data['nombre'] ?? '' );
@@ -529,6 +544,8 @@ class Notifications {
 
 	/**
 	 * Helper to send push notification.
+	 *
+	 * @param array<int, string> $tags
 	 */
 	private static function push( string $title, string $message, string $priority = 'default', array $tags = array() ): void {
 		if ( class_exists( '\Convoca\Core\Push_Notifier' ) ) {

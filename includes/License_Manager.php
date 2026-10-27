@@ -37,6 +37,8 @@ class License_Manager {
 
 	/**
 	 * Available PRO features.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public static function pro_features(): array {
 		return array(
@@ -134,7 +136,7 @@ class License_Manager {
 	/**
 	 * Get stored license data.
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	public static function get_license(): array {
 		return get_option(
@@ -169,7 +171,7 @@ class License_Manager {
 	 * Validate license key against remote API.
 	 *
 	 * @param string $key License key.
-	 * @return array{success: bool, message: string, data?: array}
+	 * @return array<string, mixed> bool, message: string, data?: array}
 	 */
 	public static function validate_key( string $key ): array {
 		$site_url = home_url();
@@ -186,7 +188,7 @@ class License_Manager {
 			array(
 				'timeout' => 15,
 				'headers' => array( 'Content-Type' => 'application/json' ),
-				'body'    => wp_json_encode(
+				'body'    => (string) wp_json_encode(
 					array(
 						'license_key' => $key,
 						'site_url'    => $site_url,
@@ -259,6 +261,8 @@ class License_Manager {
 
 	/**
 	 * Deactivate license remotely.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public static function deactivate(): array {
 		$license = self::get_license();
@@ -275,7 +279,7 @@ class License_Manager {
 			array(
 				'timeout' => 10,
 				'headers' => array( 'Content-Type' => 'application/json' ),
-				'body'    => wp_json_encode(
+				'body'    => (string) wp_json_encode(
 					array(
 						'license_key' => $license['key'],
 						'site_url'    => home_url(),

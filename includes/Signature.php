@@ -35,6 +35,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Signature {
 
+	/**
+	 * Último error de validación.
+	 *
+	 * @var string
+	 */
 	protected $last_error = '';
 
 	public function __construct() {
@@ -47,6 +52,8 @@ class Signature {
 
 	/**
 	 * Get the last error message occurred during PDF generation.
+	 *
+	 * @return mixed
 	 */
 	public function get_last_error() {
 		return $this->last_error;
@@ -56,9 +63,9 @@ class Signature {
 	 * Generates a PDF from an HTML template and saves it to a path.
 	 *
 	 * @param string $template_content The raw HTML template.
-	 * @param array  $data Associative array of placeholder replacements (e.g., ['nombre' => 'Juan']).
+	 * @param mixed $data Associative array of placeholder replacements (e.g., ['nombre' => 'Juan']).
 	 * @param string $output_path Absolute path to save the PDF.
-	 * @param array  $options Optional configuration for Dompdf.
+	 * @param mixed $options Optional configuration for Dompdf.
 	 * @return string|false Path to the saved PDF or false on failure.
 	 */
 	public function generate_pdf( $template_content, $data, $output_path, $options = array() ) {
@@ -223,6 +230,12 @@ class Signature {
 	 * Actually, if we only have Dompdf, we CANNOT append to an existing PDF file easily.
 	 * So I will provide a method that returns the HTML snippet for the stamp, which the caller can append to their HTML BEFORE calling generate_pdf.
 	 * I'll also try to implement the requested signature, but note its limitations.
+	 *
+	 * @param mixed $acceptor_name
+	 * @param mixed $ip
+	 * @param mixed $pdf_path
+	 * @param mixed $timestamp
+	 * @return mixed
 	 */
 	public function add_acceptance_stamp( $pdf_path, $acceptor_name, $ip, $timestamp ) {
 		// Without FPDI, we can't edit the binary PDF.
@@ -244,6 +257,12 @@ class Signature {
 	/**
 	 * Generates a digital stamp HTML snippet to append to templates before rendering.
 	 * This is the recommended way to use Dompdf.
+	 *
+	 * @param mixed $acceptor_name
+	 * @param mixed $content_to_hash
+	 * @param mixed $ip
+	 * @param mixed $timestamp
+	 * @return mixed
 	 */
 	public function get_acceptance_stamp_html( $acceptor_name, $ip, $timestamp, $content_to_hash ) {
 		$hash = $this->create_hash( $content_to_hash, $ip, $timestamp );
@@ -274,6 +293,9 @@ class Signature {
 
 	/**
 	 * Secures a directory to prevent direct web access.
+	 *
+	 * @param mixed $dir
+	 * @return mixed
 	 */
 	public function ensure_upload_protection( $dir ) {
 		$htaccess_file = trailingslashit( $dir ) . '.htaccess';

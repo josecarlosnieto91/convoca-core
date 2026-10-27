@@ -115,7 +115,12 @@ abstract class Upgrade_Manager {
 	 */
 	protected function run_upgrades( string $from, string $to ): void {
 		$callbacks = $this->get_upgrade_callbacks();
-		uksort( $callbacks, 'version_compare' );
+		uksort(
+			$callbacks,
+			static function ( $a, $b ) {
+				return version_compare( (string) $a, (string) $b );
+			}
+		);
 		$last_successful = $from;
 
 		foreach ( $callbacks as $version => $callback ) {
@@ -241,6 +246,8 @@ abstract class Upgrade_Manager {
 	 *
 	 * Callbacks are sorted by version and executed in order.
 	 * Each callback must be idempotent (safe to run multiple times).
+	 *
+	 * @return array<string, mixed>
 	 */
 	abstract protected function get_upgrade_callbacks(): array;
 }

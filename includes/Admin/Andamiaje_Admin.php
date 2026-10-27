@@ -99,7 +99,13 @@ trait Andamiaje_Admin {
 			$prioridad = is_array( $destino ) ? (int) ( $destino[1] ?? 10 ) : 10;
 			$args      = is_array( $destino ) ? (int) ( $destino[2] ?? 1 ) : 1;
 
-			add_action( $hook, array( $this, $metodo ), $prioridad, $args );
+			/**
+			 * Callback del gancho para este método.
+			 *
+			 * @var callable $callback
+			 */
+			$callback = array( $this, $metodo );
+			add_action( $hook, $callback, $prioridad, $args );
 		}
 	}
 
@@ -119,7 +125,7 @@ trait Andamiaje_Admin {
 	 * @return string Sufijo del hook devuelto por WordPress ('' si no se pudo registrar).
 	 */
 	protected function registrar_subpagina( ?string $padre, string $titulo, string $menu, string $capacidad, string $slug, callable $callback ): string {
-		$hook = add_submenu_page( $padre, $titulo, $menu, $capacidad, $slug, $callback );
+		$hook = add_submenu_page( (string) $padre, $titulo, $menu, $capacidad, $slug, $callback );
 
 		return is_string( $hook ) ? $hook : '';
 	}
@@ -273,7 +279,7 @@ trait Andamiaje_Admin {
 		}
 
 		$node = $wp_admin_bar->get_node( $config['nodo'] );
-		if ( $node ) {
+		if ( $node instanceof \stdClass ) {
 			$node->href = admin_url( 'admin.php?page=' . $config['slug'] );
 			$wp_admin_bar->add_node( (array) $node );
 		}

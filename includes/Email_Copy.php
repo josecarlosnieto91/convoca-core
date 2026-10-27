@@ -94,7 +94,7 @@ class Email_Copy {
 	/**
 	 * Destinatarios de la copia para un contexto dado.
 	 *
-	 * @param array $context Contexto del correo (actividad_id, …).
+	 * @param array<string, mixed> $context Contexto del correo (actividad_id, …).
 	 * @return array<int, string> Correos válidos.
 	 */
 	public static function recipients( array $context = array() ): array {
@@ -140,8 +140,9 @@ class Email_Copy {
 	 * Nunca altera el envío original: si no hay destinatario o el envío falla, deja
 	 * constancia en el log y devuelve false.
 	 *
-	 * @param array $context Contexto: to, subject, body, plugin, template, actividad_id,
+	 * @param array<string, mixed> $context Contexto: to, subject, body, plugin, template, actividad_id,
 	 *                       inscripcion_id, entity_id, has_attachments, send (callable).
+	 *
 	 * @return bool Verdadero si la copia se envió.
 	 */
 	public static function maybe_copy( array $context ): bool {
@@ -237,7 +238,7 @@ class Email_Copy {
 	/**
 	 * Texto legible del origen del correo (plugin, plantilla, entidad).
 	 *
-	 * @param array $context Contexto del correo.
+	 * @param array<string, mixed> $context Contexto del correo.
 	 */
 	private static function describe_origin( array $context ): string {
 		$parts = array();

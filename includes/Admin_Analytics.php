@@ -43,7 +43,7 @@ class Admin_Analytics {
 	 * Get all metrics aggregated across plugins.
 	 *
 	 * @param bool $force_refresh Skip transient cache.
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	public static function get_all( bool $force_refresh = false ): array {
 		$cache_key = self::CACHE_PREFIX . 'all';
@@ -71,6 +71,8 @@ class Admin_Analytics {
 
 	/**
 	 * Member statistics: counts by estado, new this month, expiring soon.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public static function get_member_stats(): array {
 		global $wpdb;
@@ -143,6 +145,8 @@ class Admin_Analytics {
 
 	/**
 	 * Inscription statistics: by status, occupation %, waitlist.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public static function get_inscription_stats(): array {
 		global $wpdb;
@@ -204,6 +208,8 @@ class Admin_Analytics {
 
 	/**
 	 * Payment statistics: month totals, method breakdown, 7-day history.
+	 *
+	 * @return array<string, mixed> mixed> mixed>
 	 */
 	public static function get_payment_stats(): array {
 		global $wpdb;
@@ -328,6 +334,11 @@ class Admin_Analytics {
 
 	/* ── Turnos (centro-social) ───────────────────── */
 
+	/**
+	 * Estadísticas de turnos.
+	 *
+	 * @return array<string, mixed>
+	 */
 	public static function get_turno_stats(): array {
 		global $wpdb;
 
@@ -356,6 +367,8 @@ class Admin_Analytics {
 
 	/**
 	 * 6-month trends: members, inscriptions, payments.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public static function get_trends(): array {
 		global $wpdb;
@@ -445,9 +458,9 @@ class Admin_Analytics {
 	 *
 	 * @param string $canvas_id DOM id.
 	 * @param string $type      'line'|'bar'|'pie'|'doughnut '
-	 * @param array  $labels    X-axis / segment labels.
-	 * @param array  $datasets  Array of ['label','data','color'].
-	 * @param array  $opts      Extra Chart.js options.
+	 * @param array<int, mixed> $labels    X-axis / segment labels.
+	 * @param array<int, mixed> $datasets  Array of ['label','data','color'].
+	 * @param array<string, mixed> $opts      Extra Chart.js options.
 	 * @return string HTML with <canvas> + inline <script>.
 	 */
 	public static function render_chart( string $canvas_id, string $type, array $labels, array $datasets, array $opts = array() ): string {

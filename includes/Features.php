@@ -99,6 +99,9 @@ class Features {
 	/**
 	 * Devuelve información de dependencias faltantes para un contexto dado.
 	 * Útil para mostrar avisos en el admin de WP.
+	 *
+	 * @param array<string, mixed> $required_features
+	 * @return array<int, string>
 	 */
 	public static function get_missing_dependencies( array $required_features ): array {
 		$missing = array();

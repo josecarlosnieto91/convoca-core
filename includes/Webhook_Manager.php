@@ -37,7 +37,11 @@ class Webhook_Manager {
 	/** Option key for stored webhooks. */
 	private const OPTION = 'convoca_webhooks';
 
-	/** Supported event types. */
+	/**
+	 * Supported event types.
+	 *
+	 * @return array<string, string>
+	 */
 	public static function events(): array {
 		return array(
 			'member.created'           => __( 'Nuevo socio registrado', 'convoca-core' ),
@@ -204,6 +208,11 @@ class Webhook_Manager {
 		);
 	}
 
+	/**
+	 * Aviso de pago completado.
+	 *
+	 * @param array<string, mixed> $meta
+	 */
 	public function on_payment_completed( int $pago_id, string $origin, int $origin_id, array $meta ): void {
 		$this->dispatch(
 			'payment.completed',
@@ -309,7 +318,7 @@ class Webhook_Manager {
 	 * Dispatch a webhook event to all registered URLs.
 	 *
 	 * @param string $event   Event type key.
-	 * @param array  $payload Data to send.
+	 * @param array<string, mixed> $payload Data to send.
 	 */
 	public function dispatch( string $event, array $payload = array() ): void {
 		$webhooks = self::get_webhooks();
@@ -362,8 +371,8 @@ class Webhook_Manager {
 	 * Performs the HTTP POST, logs the outcome and stores a delivery log entry.
 	 * Retry scheduling is handled by the caller (dispatch() / process_retries()).
 	 *
-	 * @param array $webhook Webhook definition (url, secret, id).
-	 * @param array $payload Full payload (event, timestamp, site_url, data).
+	 * @param array<string, mixed> $webhook Webhook definition (url, secret, id).
+	 * @param array<string, mixed> $payload Full payload (event, timestamp, site_url, data).
 	 * @return bool True if delivery succeeded, false otherwise.
 	 */
 	private function deliver( array $webhook, array $payload ): bool {
@@ -425,6 +434,9 @@ class Webhook_Manager {
 
 	/**
 	 * Schedule a webhook retry with exponential backoff.
+	 *
+	 * @param array<string, mixed> $payload
+	 * @param array<string, mixed> $webhook
 	 */
 	private function schedule_retry( array $webhook, array $payload, int $attempt, int $delay ): void {
 		global $wpdb;
@@ -574,6 +586,8 @@ class Webhook_Manager {
 
 	/**
 	 * Get all registered webhooks.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public static function get_webhooks(): array {
 		return get_option( self::OPTION, array() );
@@ -581,6 +595,8 @@ class Webhook_Manager {
 
 	/**
 	 * Get a single webhook by ID.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public static function get_webhook( string $id ): ?array {
 		$webhooks = self::get_webhooks();
@@ -595,12 +611,13 @@ class Webhook_Manager {
 	/**
 	 * Register a new webhook.
 	 *
-	 * @param array $data {
+	 * @param array<string, mixed> $data {
 	 *     @type string   $url     Target URL.
 	 *     @type string   $secret  Signing secret (optional).
 	 *     @type string[] $events  Event types to subscribe to (empty = all).
 	 *     @type string   $label   Human-readable label.
 	 * }
+	 *
 	 * @return string Webhook ID.
 	 */
 	public static function add_webhook( array $data ): string {
@@ -637,6 +654,8 @@ class Webhook_Manager {
 
 	/**
 	 * Update an existing webhook.
+	 *
+	 * @param array<string, mixed> $data
 	 */
 	public static function update_webhook( string $id, array $data ): bool {
 		if ( ! Utils::acquire_lock( 'webhook_crud', 30 ) ) {
@@ -758,6 +777,8 @@ class Webhook_Manager {
 
 	/**
 	 * Get delivery logs for a webhook.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public static function get_delivery_logs( string $webhook_id, int $limit = 20 ): array {
 		$logs = get_option( 'convoca_webhook_log_' . $webhook_id, array() );

@@ -44,7 +44,7 @@ class Push_Notifier {
 	 * @param string $title   Notification title.
 	 * @param string $message Notification message body.
 	 * @param string $priority Priority: 'default', 'low', 'high', 'urgent', 'min', 'max '
-	 * @param array  $tags    Optional tags/emojis (e.g., ['warning', 'bell']).
+	 * @param array<int, string> $tags    Optional tags/emojis (e.g., ['warning', 'bell']).
 	 * @return bool True on success.
 	 */
 	public static function send( string $topic, string $title, string $message, string $priority = 'default', array $tags = array() ): bool {
@@ -78,7 +78,7 @@ class Push_Notifier {
 			'headers' => array(
 				'Content-Type' => 'application/json',
 			),
-			'body'    => wp_json_encode( $payload ),
+			'body'    => (string) wp_json_encode( $payload ),
 			'timeout' => 10,
 		);
 
@@ -117,7 +117,7 @@ class Push_Notifier {
 	 * @param string $title    Notification title.
 	 * @param string $message  Notification body.
 	 * @param string $priority Priority level.
-	 * @param array  $tags     Optional tags.
+	 * @param array<int, string> $tags      Optional tags.
 	 * @return bool True on success.
 	 */
 	public static function notify_admins( string $title, string $message, string $priority = 'default', array $tags = array() ): bool {
@@ -133,6 +133,8 @@ class Push_Notifier {
 
 	/**
 	 * Get the default config values.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public static function get_defaults(): array {
 		return array(
@@ -144,6 +146,8 @@ class Push_Notifier {
 
 	/**
 	 * Get current config.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public static function get_config(): array {
 		$config = get_option( self::CONFIG_OPTION, array() );
@@ -152,6 +156,8 @@ class Push_Notifier {
 
 	/**
 	 * Save config.
+	 *
+	 * @param array<string, mixed> $config
 	 */
 	public static function save_config( array $config ): void {
 		$config            = wp_parse_args( $config, self::get_defaults() );

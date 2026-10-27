@@ -52,6 +52,11 @@ class Common_Upgrade_Manager extends Upgrade_Manager {
 		return 'convoca_common';
 	}
 
+	/**
+	 * Callbacks de migración indexados por versión.
+	 *
+	 * @return array<string, mixed>
+	 */
 	protected function get_upgrade_callbacks(): array {
 		return array(
 			'1.0.1'  => array( $this, 'upgrade_to_1_0_1' ),
@@ -71,7 +76,7 @@ class Common_Upgrade_Manager extends Upgrade_Manager {
 	 * nueva tiene al menos tantas filas. Si la vieja tiene más, no se toca y se avisa en el log para que lo
 	 * mire una persona: no se destruye nada que no se pueda cuadrar.
 	 *
-	 * @return array Resumen: [ tabla_vieja => estado ].
+	 * @return array<string, mixed> Resumen: [ tabla_vieja => estado ].
 	 */
 	public static function limpiar_tablas_del_prefijo_viejo(): array {
 		global $wpdb;

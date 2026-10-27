@@ -34,7 +34,7 @@ class Migration_History {
 	 * @param string $from     Previous DB version.
 	 * @param string $to       New DB version.
 	 * @param float  $duration Seconds taken.
-	 * @param array  $meta     Extra data (rows affected, etc.).
+	 * @param array<string, mixed> $meta     Extra data (rows affected, etc.).
 	 */
 	public static function record( string $plugin, string $from, string $to, float $duration, array $meta = array() ): void {
 		$history   = self::get_all();
@@ -79,7 +79,7 @@ class Migration_History {
 	/**
 	 * Get the full migration history (newest last).
 	 *
-	 * @return array
+	 * @return array<int, mixed>
 	 */
 	public static function get_all(): array {
 		$history = get_option( self::OPTION, array() );
@@ -91,7 +91,7 @@ class Migration_History {
 	 *
 	 * @param string $plugin Plugin prefix.
 	 * @param int    $limit  Max entries.
-	 * @return array
+	 * @return array<int, mixed>
 	 */
 	public static function get_for_plugin( string $plugin, int $limit = 20 ): array {
 		$rows = array();

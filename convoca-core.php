@@ -239,7 +239,11 @@ add_action(
 	}
 );
 
-/** Build metrics data for REST response. */
+/**
+ * Build metrics data for REST response.
+ *
+ * @return array<string, mixed>
+ */
 function assoc_build_metrics(): array {
 	$metrics = array(
 		'timestamp'   => current_time( 'mysql' ),

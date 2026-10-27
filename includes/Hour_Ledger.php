@@ -93,7 +93,7 @@ class Hour_Ledger {
 	 * @param int    $origen_id ID del hecho (inscripción o turno).
 	 * @param int    $user_id   Usuario que realizó el hecho.
 	 * @param float  $hours     Horas acreditadas.
-	 * @param array  $args      title, tareas, actividad_id, fecha.
+	 * @param array<string, mixed> $args      title, tareas, actividad_id, fecha.
 	 * @return int ID del registro, o 0 si no se pudo acreditar.
 	 */
 	public static function credit( string $origen, int $origen_id, int $user_id, float $hours, array $args = array() ): int {

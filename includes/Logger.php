@@ -48,15 +48,17 @@ class Logger {
 	/**
 	 * Track logging depth to prevent recursion.
 	 */
-	private static $log_depth = 0;
-	const MAX_LOG_DEPTH       = 5;
+	private static int $log_depth = 0;
+	const MAX_LOG_DEPTH           = 5;
 
 	/**
 	 * Rate limiting: track calls per time window.
+	 *
+	 * @var array<int, float>
 	 */
-	private static $log_timestamps = array();
-	const RATE_LIMIT_WINDOW        = 60;
-	const RATE_LIMIT_MAX           = 50;
+	private static array $log_timestamps = array();
+	const RATE_LIMIT_WINDOW              = 60;
+	const RATE_LIMIT_MAX                 = 50;
 
 	/**
 	 * Log a message to the custom DB table.
@@ -247,6 +249,12 @@ class Logger {
 		return $ranks[ $level ] ?? 1;
 	}
 
+	/**
+	 * Devuelve las entradas del registro.
+	 *
+	 * @param array<string, mixed> $args
+	 * @return array<string, mixed>
+	 */
 	public static function get_logs( array $args = array() ): array {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'convoca_logs';
@@ -370,6 +378,8 @@ class Logger {
 
 	/**
 	 * Get log statistics for dashboard.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public static function get_stats(): array {
 		global $wpdb;

@@ -22,7 +22,7 @@ class Module_Registry {
 	/**
 	 * Registered modules.
 	 *
-	 * @var array<string,array>
+	 * @var array<string, array<string, mixed>>
 	 */
 	private static $modules = array();
 
@@ -60,7 +60,7 @@ class Module_Registry {
 	 * Register a single module after validating its contract.
 	 *
 	 * @param string $slug       Module identifier (lowercase, hyphens).
-	 * @param array  $definition Module definition.
+	 * @param mixed $definition Module definition.
 	 */
 	public static function register( string $slug, $definition ): void {
 		$slug = sanitize_key( $slug );
@@ -125,7 +125,7 @@ class Module_Registry {
 	/**
 	 * Get registered modules.
 	 *
-	 * @return array<string,array>
+	 * @return array<string, mixed>
 	 */
 	public static function get_modules(): array {
 		return self::$modules;

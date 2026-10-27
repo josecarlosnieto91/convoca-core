@@ -389,7 +389,7 @@ class Admin_Backup {
 	 * fichero entra o no: extensión, tamaño, que sea un ZIP legible y que traiga algo conocido. Un ZIP ajeno no se
 	 * acepta «por si acaso».
 	 *
-	 * @param array $file    Entrada de `$_FILES`.
+	 * @param array<string, mixed> $file    Entrada de `$_FILES`.
 	 * @param int   $usuario Usuario que sube (la vista previa es suya).
 	 * @return array{token:string,entities:array<string, array{label:string,count:int}>}
 	 * @throws \RuntimeException Con el mensaje para quien sube.
@@ -576,6 +576,7 @@ class Admin_Backup {
 	 * @param string[]    $seleccion Entidades a importar.
 	 * @param int[]       $creados   Acumulador de posts creados (por referencia: si falla a medias, el llamador
 	 *                               tiene que saber qué borrar).
+	 *
 	 * @return int Filas importadas.
 	 * @throws \RuntimeException Si un post no se puede crear.
 	 */
@@ -650,6 +651,13 @@ class Admin_Backup {
 		return $total;
 	}
 
+	/**
+	 * Aplica los metadatos importados.
+	 *
+	 * @param mixed $data
+	 * @param mixed $entity
+	 * @param mixed $id
+	 */
 	private function apply_meta( $entity, $id, $data ): void {
 		switch ( $entity ) {
 			case 'miembros':
@@ -706,6 +714,11 @@ class Admin_Backup {
 		}
 	}
 
+	/**
+	 * Importa los ajustes.
+	 *
+	 * @param mixed $zip
+	 */
 	private function import_settings( $zip ): void {
 		$json = $zip->getFromName( 'settings.json' );
 		if ( ! $json ) {

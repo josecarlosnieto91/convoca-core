@@ -160,11 +160,19 @@ class Admin_Entrada {
 		// Con caché media hora: correr las pruebas de salud en cada carga del Escritorio lo haría lento, y el
 		// Escritorio se abre muchas veces al día.
 		$guardado = get_transient( 'convoca_core_salud' );
-		if ( is_array( $guardado ) && isset( $guardado['estado'] ) ) {
+		if ( is_array( $guardado ) && isset( $guardado['estado'], $guardado['texto'], $guardado['detalle'] ) ) {
+			/**
+			 * Resultado guardado en la caché.
+			 *
+			 * @var array{estado: string, texto: string, detalle: string} $guardado
+			 */
 			return $guardado;
 		}
 
-		$salud   = \WP_Site_Health::get_instance();
+		$salud = \WP_Site_Health::get_instance();
+		if ( ! $salud ) {
+			return $sin_datos;
+		}
 		$pruebas = $salud->get_tests();
 		if ( empty( $pruebas ) ) {
 			return $sin_datos;

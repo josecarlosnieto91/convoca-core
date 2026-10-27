@@ -200,7 +200,7 @@ class Security_Monitor {
 	/**
 	 * Count security-relevant log entries from the last 24 hours.
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	private static function count_last_24h(): array {
 		global $wpdb;

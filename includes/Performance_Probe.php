@@ -41,14 +41,14 @@ class Performance_Probe {
 	/**
 	 * Slow hooks collected.
 	 *
-	 * @var array
+	 * @var array<string, float>
 	 */
 	private static $slow_hooks = array();
 
 	/**
 	 * Query timings collected.
 	 *
-	 * @var array
+	 * @var array<int, array<string, mixed>>
 	 */
 	private static $slow_queries = array();
 
@@ -187,7 +187,7 @@ class Performance_Probe {
 	/**
 	 * Hook stack (per-hook timers).
 	 *
-	 * @var array
+	 * @var array<string, array<int, float>>
 	 */
 	private static $hook_stack = array();
 }

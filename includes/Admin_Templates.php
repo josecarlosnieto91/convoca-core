@@ -31,13 +31,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Admin_Templates {
 
+	/**
+	 * Nombre de la opción con las plantillas.
+	 *
+	 * @var string
+	 */
 	private static $option_name = 'convoca_pdf_templates';
 
+	/**
+	 * Arranca el módulo.
+	 *
+	 * @return void
+	 */
 	public static function init() {
 		add_action( 'admin_menu', array( self::class, 'add_menu_page' ) );
 		add_action( 'admin_init', array( self::class, 'handle_actions' ) );
 	}
 
+	/**
+	 * Registra la página del menú.
+	 *
+	 * @return void
+	 */
 	public static function add_menu_page() {
 		add_options_page(
 			__( 'Plantillas PDF (Convoca)', 'convoca-core' ),
@@ -48,6 +63,11 @@ class Admin_Templates {
 		);
 	}
 
+	/**
+	 * Procesa las acciones del panel.
+	 *
+	 * @return void
+	 */
 	public static function handle_actions() {
 		if ( ! isset( $_GET['page'] ) || $_GET['page'] !== 'conv-pdf-templates' ) {
 			return;
@@ -131,6 +151,9 @@ class Admin_Templates {
 
 	/**
 	 * Sanitize PDF template content with granular rules for Dompdf.
+	 *
+	 * @param mixed $content
+	 * @return mixed
 	 */
 	private static function sanitize_pdf_template( $content ) {
 		if ( empty( $content ) ) {
@@ -341,6 +364,8 @@ class Admin_Templates {
 
 	/**
 	 * Remove dangerous CSS properties from style attributes.
+	 *
+	 * @param mixed $html
 	 */
 	private static function sanitize_styles( $html ): string {
 		// CSS properties that could be dangerous in PDFs.
@@ -384,6 +409,11 @@ class Admin_Templates {
 		);
 	}
 
+	/**
+	 * Devuelve las plantillas guardadas.
+	 *
+	 * @return mixed
+	 */
 	public static function get_templates() {
 		$raw = get_option( self::$option_name, null );
 
@@ -435,6 +465,8 @@ class Admin_Templates {
 
 	/**
 	 * Save a backup of corrupted template data before restoring defaults.
+	 *
+	 * @param mixed $data
 	 */
 	private static function backup_corrupted( $data ): void {
 		// Con retención (issue #9): antes cada restauración dejaba una opción nueva y no se borraba ninguna.
@@ -445,6 +477,11 @@ class Admin_Templates {
 		);
 	}
 
+	/**
+	 * Restaura las plantillas de fábrica.
+	 *
+	 * @return void
+	 */
 	public static function restore_default_templates() {
 		$default_keys = array(
 			'acuerdo_incorporacion' => __( 'Acuerdo de Incorporación', 'convoca-core' ),
@@ -476,6 +513,11 @@ class Admin_Templates {
 		update_option( self::$option_name, $templates );
 	}
 
+	/**
+	 * Pinta la página del panel.
+	 *
+	 * @return mixed
+	 */
 	public static function render_page() {
 		if ( ! current_user_can( 'manage_convoca_templates' ) ) {
 			return;

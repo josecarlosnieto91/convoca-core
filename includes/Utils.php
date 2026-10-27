@@ -138,8 +138,8 @@ class Utils {
 	 * (hoy `build_payment_url()`), que hace lo contrario: **construye la URL** de un pago que ya existe. Este
 	 * nombre no dice lo que hace y encima invita a confundirlas: aquí se CREA el pago.
 	 *
-	 * @param array $args Payment details.
-	 * @return array|\WP_Error Result with URL.
+	 * @param array<string, mixed> $args Payment details.
+	 * @return array<string, mixed> Result with URL.
 	 */
 	public static function create_payment( array $args ): array|\WP_Error {
 		if ( ! class_exists( '\\Convoca\\Core\\Payments' ) ) {
@@ -164,8 +164,8 @@ class Utils {
 	 *
 	 * @deprecated 2.3.33 Usa `create_payment()`.
 	 *
-	 * @param array $args Payment details.
-	 * @return array|\WP_Error Result with URL.
+	 * @param array<string, mixed> $args Payment details.
+	 * @return array<string, mixed> Result with URL.
 	 */
 	public static function get_payment_link( array $args ): array|\WP_Error {
 		return self::create_payment( $args );
@@ -997,7 +997,7 @@ class Utils {
 	/**
 	 * Render a diagnostic status panel.
 	 *
-	 * @param array  $checks Array of check items with keys: title, status (ok|warning|error), message, fix (optional).
+	 * @param array<int, mixed> $checks Array of check items with keys: title, status (ok|warning|error), message, fix (optional).
 	 * @param string $title Optional title override.
 	 */
 	public static function render_diagnostic_panel( array $checks, string $title = '' ): void {
@@ -1155,7 +1155,7 @@ class Utils {
 	 * All plugins should use this instead of get_option('convoca_pdf_templates') directly.
 	 *
 	 * @param string $key Template key.
-	 * @return array|null Template data with 'name' and 'content', or null.
+	 * @return array<string, mixed> Template data with 'name' and 'content', or null.
 	 */
 	public static function get_pdf_template( string $key ): ?array {
 		$templates = get_option( 'convoca_pdf_templates', array() );
@@ -1165,7 +1165,7 @@ class Utils {
 	/**
 	 * Get all PDF templates.
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	public static function get_pdf_templates(): array {
 		return get_option( 'convoca_pdf_templates', array() );
@@ -1209,7 +1209,7 @@ class Utils {
 	 * @param string   $key    Cache key.
 	 * @param int      $ttl    Time-to-live (seconds).
 	 * @param callable $callback Function that returns the response data array.
-	 * @return array Response data.
+	 * @return array<string, mixed> Response data.
 	 */
 	public static function rest_cache_get( string $key, int $ttl, callable $callback ): array {
 		$cache_key = 'convoca_rest_' . md5( $key );

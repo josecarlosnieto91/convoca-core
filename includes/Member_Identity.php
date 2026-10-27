@@ -39,7 +39,7 @@ class Member_Identity {
 	/**
 	 * Una sola pregunta por petición: el filtro se llama una vez y se reutiliza.
 	 *
-	 * @var array{autenticado: bool, member_id: int, datos: array}|null
+	 * @var array{autenticado: bool, member_id: int, datos: array<string, mixed>}|null
 	 */
 	private static $identidad = null;
 
@@ -106,7 +106,7 @@ class Member_Identity {
 	 * Se normaliza aquí y no en cada llamador porque un plugin puede contestar cualquier cosa: lo que no
 	 * encaje se convierte en «no hay socio», que es el camino seguro.
 	 *
-	 * @return array{autenticado: bool, member_id: int, datos: array}
+	 * @return array<string, mixed> bool, member_id: int, datos: array}
 	 */
 	private static function datos(): array {
 		if ( null !== self::$identidad ) {

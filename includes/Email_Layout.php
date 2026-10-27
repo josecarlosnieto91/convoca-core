@@ -48,7 +48,7 @@ class Email_Layout {
 	 *
 	 * @param string $body        Inner HTML content.
 	 * @param string $subject     Email subject (used in <title>).
-	 * @param array  $opts        {
+	 * @param array<string, mixed> $opts        {
 	 *     Optional overrides.
 	 *     @type string $theme          'light'|'dark'. Default: opción global convoca_document_theme (light).
 	 *     @type string $preheader      Hidden preview text (max 150 chars).
@@ -58,6 +58,7 @@ class Email_Layout {
 	 *     @type string $header_color   Header background (default: #ffffff light / #320028 dark).
 	 *     @type string $accent_color   Accent color for buttons/links (default: #FF8700).
 	 * }
+	 *
 	 * @return string Complete <html> document.
 	 */
 	public static function render( string $body, string $subject = '', array $opts = array() ): string {
@@ -181,7 +182,7 @@ img{display:block;border:0;height:auto;line-height:100%;outline:none;text-decora
 		<?php endif; ?>
 </td></tr>
 <tr><td class="email-footer">
-<p style="margin:0 0 8px">&copy; <?php echo esc_html( $year ); ?> <?php echo esc_html( $site_name ); ?></p>
+<p style="margin:0 0 8px">&copy; <?php echo esc_html( (string) $year ); ?> <?php echo esc_html( $site_name ); ?></p>
 <p style="margin:0 0 8px"><?php echo esc_html( (string) $footer_text ); ?></p>
 <p style="margin:0">
 		<?php
@@ -216,7 +217,7 @@ img{display:block;border:0;height:auto;line-height:100%;outline:none;text-decora
 	/**
 	 * Generate a meta details table (2-column: label | value).
 	 *
-	 * @param array $rows Array of ['label' => string, 'value' => string].
+	 * @param array<string, mixed> $rows Array of ['label' => string, 'value' => string].
 	 * @return string HTML table inside a .email-meta div.
 	 */
 	public static function meta_table( array $rows ): string {

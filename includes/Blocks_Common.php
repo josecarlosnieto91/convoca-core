@@ -29,11 +29,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Blocks_Common {
 
+	/**
+	 * Arranca el módulo.
+	 *
+	 * @return void
+	 */
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'register_blocks' ) );
 		add_filter( 'block_categories_all', array( __CLASS__, 'add_custom_categories' ), 1, 2 );
 	}
 
+	/**
+	 * Registra las categorías propias.
+	 *
+	 * @param mixed $categories
+	 * @param mixed $post
+	 * @return mixed
+	 */
 	public static function add_custom_categories( $categories, $post ) {
 		$new_categories = array(
 			array(
@@ -75,6 +87,11 @@ class Blocks_Common {
 		return array_merge( array_values( $filtered ), $categories );
 	}
 
+	/**
+	 * Registra los bloques.
+	 *
+	 * @return void
+	 */
 	public static function register_blocks() {
 		register_block_type(
 			'convoca-common/post-meta-field',
@@ -110,7 +127,7 @@ class Blocks_Common {
 	 * Render a post meta field as a formatted block attribute.
 	 * Properly escapes output to prevent XSS.
 	 *
-	 * @param array          $attributes Block attributes.
+	 * @param mixed $attributes Block attributes.
 	 * @param string         $content Inner content.
 	 * @param \WP_Block|null $block Block instance.
 	 * @return string Rendered HTML.

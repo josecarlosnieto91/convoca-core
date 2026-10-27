@@ -33,6 +33,11 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 
 class Admin_Logs_List extends \WP_List_Table {
 
+	/**
+	 * Total aproximado de filas (false si no se ha calculado).
+	 *
+	 * @var int|bool
+	 */
 	public $approx_total = false;
 
 	public function __construct() {
@@ -66,23 +71,48 @@ class Admin_Logs_List extends \WP_List_Table {
 		);
 	}
 
+	/**
+	 * Casilla de selección de la fila.
+	 *
+	 * @param object{id: int|string}|array{id?: int|string} $item Fila del listado.
+	 */
 	protected function column_cb( $item ): string {
 		$id = is_object( $item ) ? (int) $item->id : (int) ( $item['id'] ?? 0 );
 		return sprintf( '<input type="checkbox" name="log_ids[]" value="%d">', $id );
 	}
 
+	/**
+	 * Fecha de la entrada.
+	 *
+	 * @param mixed $item
+	 */
 	protected function column_created_at( $item ): string {
 		return '<strong>' . esc_html( (string) wp_date( 'd/m/Y H:i:s', (int) strtotime( (string) $item->created_at ) ) ) . '</strong>';
 	}
 
+	/**
+	 * Nivel de la entrada.
+	 *
+	 * @param mixed $item
+	 */
 	protected function column_level( $item ): string {
 		return Utils::render_log_level_badge( $item->level );
 	}
 
+	/**
+	 * Contexto de la entrada.
+	 *
+	 * @param mixed $item
+	 */
 	protected function column_context( $item ): string {
 		return '<code style="background:#f1f5f9;color:#475569;padding:2px 6px;border-radius:4px;">' . esc_html( $item->context ) . '</code>';
 	}
 
+	/**
+	 * Mensaje de la entrada.
+	 *
+	 * @param mixed $item
+	 */
 	protected function column_message( $item ): string {
 		$msg = esc_html( mb_substr( $item->message, 0, 200 ) );
 		if ( mb_strlen( $item->message ) > 200 ) {
@@ -91,6 +121,11 @@ class Admin_Logs_List extends \WP_List_Table {
 		return $msg;
 	}
 
+	/**
+	 * Usuario que originó la entrada.
+	 *
+	 * @param mixed $item
+	 */
 	protected function column_user_id( $item ): string {
 		if ( ! $item->user_id ) {
 			return '<span style="color:#94a3b8;">—</span>';
@@ -99,6 +134,11 @@ class Admin_Logs_List extends \WP_List_Table {
 		return $u ? esc_html( $u->display_name ) : '#' . $item->user_id;
 	}
 
+	/**
+	 * Objeto afectado.
+	 *
+	 * @param mixed $item
+	 */
 	protected function column_object_id( $item ): string {
 		return $item->object_id ? '<span style="background:#e0f2fe;color:#0369a1;padding:2px 5px;border-radius:4px;font-size:11px;">#' . (int) $item->object_id . '</span>' : '<span style="color:#94a3b8;">—</span>';
 	}
@@ -164,9 +204,9 @@ class Admin_Logs_List extends \WP_List_Table {
 		// sanitize_sql_orderby() devuelve false si el valor no es válido: sin el
 		// respaldo, un `?orderby=lo que sea` dejaba «ORDER BY  DESC» y la consulta
 		// reventaba (orden no inyectable, pero sí roto).
-		$orderby = ! empty( $_GET['orderby'] ) ? sanitize_sql_orderby( $_GET['orderby'] ) : 'created_at';
+		$orderby = ! empty( $_GET['orderby'] ) ? sanitize_sql_orderby( (string) $_GET['orderby'] ) : 'created_at';
 		$orderby = $orderby ? $orderby : 'created_at';
-		$order   = ! empty( $_GET['order'] ) ? sanitize_sql_orderby( $_GET['order'] ) : 'DESC';
+		$order   = ! empty( $_GET['order'] ) ? sanitize_sql_orderby( (string) $_GET['order'] ) : 'DESC';
 		$order   = $order ? $order : 'DESC';
 
 		$sql       = "SELECT * FROM $table WHERE $where_clause ORDER BY $orderby $order LIMIT %d OFFSET %d";

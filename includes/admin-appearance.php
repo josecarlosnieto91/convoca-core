@@ -101,7 +101,7 @@ function convoca_customize_new_menu( \WP_Admin_Bar $wp_admin_bar ): void {
 
 	foreach ( $custom_links as $node_id => $url ) {
 		$node = $wp_admin_bar->get_node( $node_id );
-		if ( $node ) {
+		if ( $node instanceof \stdClass ) {
 			$node->href = $url;
 			$wp_admin_bar->add_node( $node );
 		}
@@ -133,8 +133,8 @@ function convoca_add_wizard_link( \WP_Admin_Bar $wp_admin_bar ): void {
  * Generate and stream a PDF from a list table.
  *
  * @param string $title   Title of the report.
- * @param array  $headers Column headers.
- * @param array  $rows    Data rows (arrays of strings).
+ * @param array<int, mixed> $headers Column headers.
+ * @param array<int, mixed> $rows    Data rows (arrays of strings).
  * @param string $filename Output filename (without .pdf).
  */
 function convoca_export_pdf( string $title, array $headers, array $rows, string $filename ): void {
@@ -684,6 +684,11 @@ function convoca_dashboard_page(): void {
 	<?php
 }
 
+/**
+ * Métricas del sistema para el panel.
+ *
+ * @return array<string, mixed>
+ */
 function convoca_build_metrics(): array {
 	global $wpdb;
 	$metrics = array();
