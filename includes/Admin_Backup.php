@@ -211,6 +211,9 @@ class Admin_Backup {
 		$add_csv = function ( $name, $headers, $rows ) use ( $zip ) {
 			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- temp stream for CSV in memory
 			$handle = fopen( 'php://temp', 'r+' );
+			if ( false === $handle ) {
+				return;
+			}
 			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- writing BOM + CSV data to temp stream
 			fwrite( $handle, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) ); // BOM for UTF-8.
 			fputcsv( $handle, $headers, ',', '"', '\\' );
@@ -329,7 +332,7 @@ class Admin_Backup {
 		foreach ( $allowed_options as $k ) {
 			$settings[ $k ] = get_option( $k );
 		}
-		$zip->addFromString( 'settings.json', wp_json_encode( $settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) );
+		$zip->addFromString( 'settings.json', (string) wp_json_encode( $settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) );
 
 		$zip->close();
 
@@ -439,7 +442,10 @@ class Admin_Backup {
 		foreach ( $valid_entities as $name ) {
 			if ( $zip->locateName( $name . '.csv' ) !== false ) {
 				$stream = $zip->getStream( $name . '.csv' );
-				$count  = 0;
+				if ( false === $stream ) {
+					continue;
+				}
+				$count = 0;
 				while ( fgets( $stream ) ) {
 					++$count;
 				}
@@ -579,6 +585,9 @@ class Admin_Backup {
 			}
 
 			$stream = $zip->getStream( $csv_name );
+			if ( false === $stream ) {
+				continue;
+			}
 			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fread -- reading BOM check from ZipArchive stream, no WP alternative
 			if ( fread( $stream, 3 ) !== chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) ) {
 				rewind( $stream );
