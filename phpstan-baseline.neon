@@ -853,24 +853,6 @@ parameters:
 			path: includes/Utils.php
 
 		-
-			message: '#^Parameter \#1 \$stream of function fclose expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: includes/Utils.php
-
-		-
-			message: '#^Parameter \#1 \$stream of function fprintf expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: includes/Utils.php
-
-		-
-			message: '#^Parameter \#1 \$stream of function fputcsv expects resource, resource\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: includes/Utils.php
-
-		-
 			message: '#^Method Convoca\\Core\\Webhook_Manager\:\:add_webhook\(\) has parameter \$data with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -939,24 +921,6 @@ parameters:
 		-
 			message: '#^Method Convoca\\Core\\Webhook_Manager\:\:update_webhook\(\) has parameter \$data with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: includes/Webhook_Manager.php
-
-		-
-			message: '#^Parameter \#1 \$string of function md5 expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: includes/Webhook_Manager.php
-
-		-
-			message: '#^Parameter \#2 \$args of function wp_remote_post expects array\{method\?\: string, timeout\?\: float, redirection\?\: int, httpversion\?\: string, user\-agent\?\: string, reject_unsafe_urls\?\: bool, blocking\?\: bool, headers\?\: array\|string, \.\.\.\}, array\{body\: non\-empty\-string\|false, headers\: array\{Content\-Type\: ''application/json'', X\-Convoca\-Event\: mixed, X\-Convoca\-Delivery\: non\-falsy\-string, X\-Convoca\-Signature\?\: non\-falsy\-string\}, timeout\: 5, redirection\: 2, blocking\: true, sslverify\: mixed\} given\.$#'
-			identifier: argument.type
-			count: 1
-			path: includes/Webhook_Manager.php
-
-		-
-			message: '#^Parameter \#2 \$data of function hash_hmac expects string, string\|false given\.$#'
-			identifier: argument.type
 			count: 1
 			path: includes/Webhook_Manager.php
 

@@ -319,7 +319,7 @@ class Webhook_Manager {
 		}
 
 		// Dedup: prevent duplicate notifications for the same event+payload within 10 seconds.
-		$dedup_key = 'convoca_webhook_dedup_' . $event . '_' . md5( wp_json_encode( $payload ) );
+		$dedup_key = 'convoca_webhook_dedup_' . $event . '_' . md5( (string) wp_json_encode( $payload ) );
 		if ( get_transient( $dedup_key ) ) {
 			Logger::debug( "Webhook $event omitido (dedup dentro de 10s)", 'Common/Webhook' );
 			return;
@@ -373,7 +373,7 @@ class Webhook_Manager {
 		}
 
 		// Add HMAC signature if secret is configured.
-		$body        = wp_json_encode( $payload );
+		$body        = (string) wp_json_encode( $payload );
 		$delivery_id = wp_generate_uuid4();
 		$headers     = array(
 			'Content-Type'       => 'application/json',

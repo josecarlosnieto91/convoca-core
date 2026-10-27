@@ -231,6 +231,24 @@ class Utils {
 	}
 
 	/**
+	 * Abre el flujo de salida del CSV o falla con un mensaje claro.
+	 *
+	 * Va en un método aparte para no sumar complejidad a `stream_csv()`/`csv_headers()`,
+	 * que ya están en el límite que vigila la puerta de calidad.
+	 *
+	 * @return resource Flujo listo para escribir.
+	 */
+	private static function abrir_salida_csv() {
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- CSV a php://output: no hay equivalente en WP_Filesystem para un flujo de salida.
+		$out = fopen( 'php://output', 'w' );
+		if ( false === $out ) {
+			throw new \RuntimeException( 'No se pudo abrir el flujo de salida del CSV.' );
+		}
+
+		return $out;
+	}
+
+	/**
 	 * Vuelca un CSV al navegador: cabeceras, BOM y filas, todo en UN solo flujo.
 	 *
 	 * Por qué no vale `csv_headers()`: abría el flujo, escribía el BOM y lo cerraba, así que quien
@@ -265,8 +283,7 @@ class Utils {
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
 
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- CSV a php://output: no hay equivalente en WP_Filesystem para un flujo de salida.
-		$out = fopen( 'php://output', 'w' );
+		$out = self::abrir_salida_csv();
 
 		// BOM: sin él, Excel en Windows se come los acentos del castellano.
 		fprintf( $out, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) );
@@ -315,7 +332,7 @@ class Utils {
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
 
-		$out = fopen( 'php://output', 'w' );
+		$out = self::abrir_salida_csv();
 		// BOM for Excel.
 		fprintf( $out, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) );
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- closing php://output stream after BOM write, no WP_Filesystem equivalent for CSV streams
