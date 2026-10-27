@@ -384,6 +384,10 @@ class Utils {
 	 * @param mixed  ...$args     The arguments to pass both hooks.
 	 */
 	public static function do_action( string $new_hook, string $old_hook = '', ...$args ): void {
+		if ( '' === $new_hook ) {
+			return;
+		}
+
 		self::record_fired( $new_hook );
 		do_action( $new_hook, ...$args );
 
@@ -432,6 +436,10 @@ class Utils {
 	 * @return mixed The filtered value.
 	 */
 	public static function apply_filters( string $new_hook, string $old_hook = '', $value = null, ...$args ): mixed {
+		if ( '' === $new_hook ) {
+			return $value;
+		}
+
 		$value = apply_filters( $new_hook, $value, ...$args );
 
 		if ( ! empty( $old_hook ) && has_filter( $old_hook ) ) {

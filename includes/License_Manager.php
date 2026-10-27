@@ -457,7 +457,8 @@ class License_Manager {
 		self::ensure_cron();
 		set_transient( 'convoca_license_message', __( 'Licencia desactivada.', 'convoca-core' ), 30 );
 
-		wp_safe_redirect( wp_get_referer() );
+		$volver = wp_get_referer();
+		wp_safe_redirect( false === $volver ? admin_url() : $volver );
 		exit;
 	}
 

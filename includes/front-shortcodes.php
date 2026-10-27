@@ -52,7 +52,7 @@ function shortcode_menu( $atts ): string {
 			'location' => 'top',
 			'class'    => 'convoca-nav',
 		),
-		$atts,
+		(array) $atts,
 		'convoca_menu'
 	);
 
@@ -184,7 +184,7 @@ add_shortcode( 'convoca_donde', __NAMESPACE__ . '\\shortcode_where' );
  * @return string HTML de la lista, o cadena vacía.
  */
 function shortcode_related( $atts ): string {
-	$atts = shortcode_atts( array( 'number' => 3 ), $atts, 'convoca_relacionadas' );
+	$atts = shortcode_atts( array( 'number' => 3 ), (array) $atts, 'convoca_relacionadas' );
 
 	$id = get_the_ID();
 	if ( ! $id ) {
@@ -213,11 +213,11 @@ function shortcode_related( $atts ): string {
 		$q->the_post();
 		$salida .= '<li class="convoca-card">';
 		if ( has_post_thumbnail() ) {
-			$salida .= '<a class="convoca-card__media" href="' . esc_url( get_permalink() ) . '" tabindex="-1" aria-hidden="true">'
+			$salida .= '<a class="convoca-card__media" href="' . esc_url( (string) get_permalink() ) . '" tabindex="-1" aria-hidden="true">'
 				. get_the_post_thumbnail( null, 'medium_large', array( 'loading' => 'lazy' ) ) . '</a>';
 		}
-		$salida .= '<h3 class="convoca-card__titulo"><a href="' . esc_url( get_permalink() ) . '">' . esc_html( get_the_title() ) . '</a></h3>';
-		$salida .= '<span class="convoca-card__fecha">' . esc_html( get_the_date( 'j \d\e F, Y' ) ) . '</span>';
+		$salida .= '<h3 class="convoca-card__titulo"><a href="' . esc_url( (string) get_permalink() ) . '">' . esc_html( get_the_title() ) . '</a></h3>';
+		$salida .= '<span class="convoca-card__fecha">' . esc_html( (string) get_the_date( 'j \d\e F, Y' ) ) . '</span>';
 		$salida .= '</li>';
 	}
 	$salida .= '</ul>';
