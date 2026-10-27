@@ -226,7 +226,7 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 			}
 			// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML construido con esc_url()/esc_attr(); cierre literal seguro.
 			echo $tag_open;
-			echo '<div style="background:' . esc_attr( $color ) . ';color:#fff;width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;margin-bottom:8px;position:relative;z-index:1;box-shadow:0 0 0 4px #fff;' . esc_attr( $cursor ) . '">' . esc_html( $done ? '✓' : $i ) . '</div>';
+			echo '<div style="background:' . esc_attr( $color ) . ';color:#fff;width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;margin-bottom:8px;position:relative;z-index:1;box-shadow:0 0 0 4px #fff;' . esc_attr( $cursor ) . '">' . esc_html( $done ? '✓' : (string) $i ) . '</div>';
 			echo '<div style="font-size:12px;color:' . ( $active ? '#1e293b' : '#64748b' ) . ';font-weight:' . ( $active ? '700' : '500' ) . ';">' . esc_html( $labels[ $i ] ) . '</div>';
 			echo $tag_close;
 			// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped

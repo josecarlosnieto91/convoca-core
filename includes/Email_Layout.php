@@ -182,7 +182,7 @@ img{display:block;border:0;height:auto;line-height:100%;outline:none;text-decora
 </td></tr>
 <tr><td class="email-footer">
 <p style="margin:0 0 8px">&copy; <?php echo esc_html( $year ); ?> <?php echo esc_html( $site_name ); ?></p>
-<p style="margin:0 0 8px"><?php echo esc_html( $footer_text ); ?></p>
+<p style="margin:0 0 8px"><?php echo esc_html( (string) $footer_text ); ?></p>
 <p style="margin:0">
 		<?php
 		// Los enlaces del pie se resuelven contra las páginas reales del sitio:
@@ -210,7 +210,7 @@ img{display:block;border:0;height:auto;line-height:100%;outline:none;text-decora
 </body>
 </html>
 		<?php
-		return ob_get_clean();
+		return (string) ob_get_clean();
 	}
 
 	/**

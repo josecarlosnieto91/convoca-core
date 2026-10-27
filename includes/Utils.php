@@ -125,7 +125,7 @@ class Utils {
 			$tz = new \DateTimeZone( wp_timezone_string() );
 			$dt = date_create( $date, $tz );
 
-			return $dt ? wp_date( $format, $dt->getTimestamp() ) : $date;
+			return $dt ? (string) wp_date( $format, $dt->getTimestamp() ) : $date;
 		} catch ( \Throwable $e ) {
 			return $date;
 		}

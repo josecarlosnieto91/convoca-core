@@ -253,7 +253,7 @@ class Signature {
         <div style="margin-top: 50px; padding: 20px; border: 2px dashed #ccc; background-color: #fcfcfc; font-size: 11px; font-family: monospace;">
             <p style="margin:0 0 10px 0; font-weight: bold; font-size: 14px; text-transform: uppercase;">Sello de Aceptación Digital</p>
             <p style="margin:2px 0;"><strong>Aceptado por:</strong> ' . esc_html( $acceptor_name ) . '</p>
-            <p style="margin:2px 0;"><strong>Fecha y Hora:</strong> ' . esc_html( $date ) . '</p>
+            <p style="margin:2px 0;"><strong>Fecha y Hora:</strong> ' . esc_html( (string) $date ) . '</p>
             <p style="margin:2px 0;"><strong>Dirección IP:</strong> ' . esc_html( $ip ) . '</p>
             <p style="margin:10px 0 0 0; word-break: break-all; color: #555;"><strong>Hash Criptográfico (SHA-256):</strong><br>' . esc_html( $hash ) . '</p>
         </div>';

@@ -175,12 +175,6 @@ parameters:
 			path: includes/Admin_Logs_List.php
 
 		-
-			message: '#^Parameter \#1 \$text of function esc_html expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: includes/Admin_Logs_List.php
-
-		-
 			message: '#^Property Convoca\\Core\\Admin_Logs_List\:\:\$approx_total has no type specified\.$#'
 			identifier: missingType.property
 			count: 1
@@ -231,12 +225,6 @@ parameters:
 		-
 			message: '#^Method Convoca\\Core\\Admin_Setup_Wizard\:\:summary_rows\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: includes/Admin_Setup_Wizard.php
-
-		-
-			message: '#^Parameter \#1 \$text of function esc_html expects string, int\<1, 7\>\|string given\.$#'
-			identifier: argument.type
 			count: 1
 			path: includes/Admin_Setup_Wizard.php
 
@@ -381,12 +369,6 @@ parameters:
 		-
 			message: '#^Method Convoca\\Core\\Email_Layout\:\:render\(\) has parameter \$opts with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: includes/Email_Layout.php
-
-		-
-			message: '#^Method Convoca\\Core\\Email_Layout\:\:render\(\) should return string but returns string\|false\.$#'
-			identifier: return.type
 			count: 1
 			path: includes/Email_Layout.php
 
@@ -539,12 +521,6 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: includes/Notifications.php
-
-		-
-			message: '#^Parameter \#1 \$string of function substr expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: includes/Performance_Probe.php
 
 		-
 			message: '#^Property Convoca\\Core\\Performance_Probe\:\:\$hook_stack type has no value type specified in iterable type array\.$#'
@@ -709,12 +685,6 @@ parameters:
 			path: includes/Signature.php
 
 		-
-			message: '#^Parameter \#1 \$text of function esc_html expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: includes/Signature.php
-
-		-
 			message: '#^Property Convoca\\Core\\Signature\:\:\$last_error has no type specified\.$#'
 			identifier: missingType.property
 			count: 1
@@ -741,12 +711,6 @@ parameters:
 		-
 			message: '#^Method Convoca\\Core\\Utils\:\:create_payment\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: includes/Utils.php
-
-		-
-			message: '#^Method Convoca\\Core\\Utils\:\:format_date\(\) should return string but returns string\|false\.$#'
-			identifier: return.type
 			count: 1
 			path: includes/Utils.php
 

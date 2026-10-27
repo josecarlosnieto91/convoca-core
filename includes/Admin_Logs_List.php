@@ -72,7 +72,7 @@ class Admin_Logs_List extends \WP_List_Table {
 	}
 
 	protected function column_created_at( $item ): string {
-		return '<strong>' . esc_html( wp_date( 'd/m/Y H:i:s', strtotime( $item->created_at ) ) ) . '</strong>';
+		return '<strong>' . esc_html( (string) wp_date( 'd/m/Y H:i:s', (int) strtotime( (string) $item->created_at ) ) ) . '</strong>';
 	}
 
 	protected function column_level( $item ): string {
