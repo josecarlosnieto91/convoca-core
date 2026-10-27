@@ -193,6 +193,25 @@ class Admin_Backup {
 	}
 
 	/**
+	 * Abre el flujo temporal en memoria para un CSV.
+	 *
+	 * Vivía dentro de `construir_zip()`, pero la comprobación de `fopen()` subía la complejidad
+	 * ciclomática de un método que ya está en el límite. Un fallo aquí tiene que sonar: escribir
+	 * el CSV sobre `false` produce un ZIP con un fichero vacío.
+	 *
+	 * @return resource Flujo listo para escribir.
+	 */
+	private static function temp_stream() {
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- temp stream for CSV in memory
+		$handle = fopen( 'php://temp', 'r+' );
+		if ( false === $handle ) {
+			throw new \RuntimeException( 'No se pudo abrir el flujo temporal del CSV.' );
+		}
+
+		return $handle;
+	}
+
+	/**
 	 * Construye el ZIP de la copia: los cuatro CSV y el `settings.json`.
 	 *
 	 * Se separa de `handle_export()` (nonce, permisos, descarga y `exit`) para poder comprobarlo: un backup que
@@ -209,11 +228,7 @@ class Admin_Backup {
 		}
 
 		$add_csv = function ( $name, $headers, $rows ) use ( $zip ) {
-			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- temp stream for CSV in memory
-			$handle = fopen( 'php://temp', 'r+' );
-			if ( false === $handle ) {
-				return;
-			}
+			$handle = self::temp_stream();
 			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- writing BOM + CSV data to temp stream
 			fwrite( $handle, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) ); // BOM for UTF-8.
 			fputcsv( $handle, $headers, ',', '"', '\\' );
@@ -580,11 +595,7 @@ class Admin_Backup {
 			}
 
 			$csv_name = $entity . '.csv';
-			if ( $zip->locateName( $csv_name ) === false ) {
-				continue;
-			}
-
-			$stream = $zip->getStream( $csv_name );
+			$stream   = false === $zip->locateName( $csv_name ) ? false : $zip->getStream( $csv_name );
 			if ( false === $stream ) {
 				continue;
 			}
