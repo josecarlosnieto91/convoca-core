@@ -2263,3 +2263,22 @@ if (!function_exists('get_plugin_data')) {
         return array_merge(array('Name' => '', 'Version' => ''), $datos);
     }
 }
+
+/* Arranque del plugin en pruebas: los ganchos de ciclo de vida no hacen nada. */
+if ( ! function_exists( 'register_activation_hook' ) ) {
+	function register_activation_hook( $file, $callback ) {
+		unset( $file, $callback );
+	}
+}
+
+if ( ! function_exists( 'register_deactivation_hook' ) ) {
+	function register_deactivation_hook( $file, $callback ) {
+		unset( $file, $callback );
+	}
+}
+
+if ( ! function_exists( 'register_uninstall_hook' ) ) {
+	function register_uninstall_hook( $file, $callback ) {
+		unset( $file, $callback );
+	}
+}

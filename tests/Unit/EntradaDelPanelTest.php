@@ -104,9 +104,14 @@ class EntradaDelPanelTest extends TestCase {
 			'`WP_Site_Health::get_test_result()` no existe: usarlo (aunque sea detrás de un method_exists) convierte el «no sé» en un «todo va bien»'
 		);
 		$this->assertStringContainsString(
-			"'get_test_' . \$nombre",
+			"'get_test_' .",
 			$fuente,
 			'Cada prueba de salud es un método de la clase: get_test_<nombre>'
+		);
+		$this->assertStringContainsString(
+			'evaluar_pruebas',
+			$fuente,
+			'El recuento vive en una función propia que se puede probar sin WordPress entero'
 		);
 		$this->assertStringContainsString(
 			'if ( 0 === $miradas ) {',

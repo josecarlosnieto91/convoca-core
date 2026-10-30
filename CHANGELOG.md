@@ -1,3 +1,9 @@
+## [2.3.51] — 2026-10-30
+
+### Cambiado
+
+- **arranque defensivo, salud con cobertura y registro sin ruido**
+
 ## [2.3.50] — 2026-10-26
 
 ### Cambiado

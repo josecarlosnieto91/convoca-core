@@ -38,6 +38,6 @@ class PosturaHTTPTest extends TestCase {
 
 	public function test_esta_enganchada(): void {
 		$arranque = (string) file_get_contents( dirname( __DIR__, 2 ) . '/convoca-core.php' );
-		$this->assertStringContainsString( 'Postura_HTTP::init()', $arranque, 'Una clase que nadie llama no quita nada' );
+		$this->assertStringContainsString( 'convoca_core_init( Postura_HTTP::class )', $arranque, 'Una clase que nadie llama no quita nada' );
 	}
 }

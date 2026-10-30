@@ -146,6 +146,94 @@ class Admin_Entrada {
 	 *
 	 * @return array{estado:string,texto:string,detalle:string}
 	 */
+	/**
+	 * Ejecuta las pruebas directas y devuelve el recuento y la cobertura.
+	 *
+	 * Se separa de `salud()` para poder probarlo sin un WordPress entero: recibe las pruebas y el objeto que
+	 * las ejecuta. La API de Site Health admite el nombre de un método, un callable suelto y un callable en
+	 * array; las tres formas se atienden (core#30) y lo que no se puede ejecutar se declara (core#31).
+	 *
+	 * @param object                $salud     Objeto con los métodos `get_test_*` (normalmente WP_Site_Health).
+	 * @param array<array-key,mixed> $directas Pruebas directas registradas.
+	 * @param string[]            $excluidas  Nombres que no se cuentan.
+	 * @return array{cuenta: array<string,int>, primer_crit: string, miradas: int, omitidas: int, total: int}
+	 */
+	public static function evaluar_pruebas( $salud, array $directas, array $excluidas = array() ): array {
+		$cuenta      = array(
+			'good'        => 0,
+			'recommended' => 0,
+			'critical'    => 0,
+		);
+		$primer_crit = '';
+		$miradas     = 0;
+		$omitidas    = 0;
+		$total       = 0;
+
+		// Solo las pruebas «directas»: no salen a la red. Las asíncronas (comunicación con WordPress.org,
+		// bucle de retorno…) las lanza el propio widget de salud desde el navegador; hacerlo aquí dejaría
+		// esperando a quien entra a trabajar.
+		foreach ( $directas as $clave => $prueba ) {
+			$callback = $prueba['test'] ?? '';
+
+			// El nombre solo se puede componer con algo escalar: con un array, `(string)` daba «Array» y un
+			// warning (core#30).
+			$nombre = is_scalar( $callback ) && '' !== (string) $callback
+				? (string) $callback
+				: (string) $clave;
+
+			if ( '' === $nombre || in_array( $nombre, $excluidas, true ) ) {
+				continue;
+			}
+
+			++$total;
+
+			// Hay tres formas de registrar una prueba y la API admite las tres:
+			//   · el nombre de un método de `WP_Site_Health` (casi todo el núcleo),
+			//   · un callable suelto (Performance Lab),
+			//   · un callable en array, `array( $objeto, 'metodo' )` (WP Consent API).
+			// Antes se hacía `(string)` del callback: con un array saltaba un warning, el nombre quedaba en
+			// «Array» y la prueba se descartaba en silencio (core#30).
+			$resultado = null;
+
+			if ( is_string( $callback ) && method_exists( $salud, 'get_test_' . $callback ) ) {
+				$resultado = $salud->{'get_test_' . $callback}();
+			} elseif ( is_callable( $callback ) ) {
+				$resultado = call_user_func( $callback );
+			} elseif ( method_exists( $salud, 'get_test_' . $clave ) ) {
+				$resultado = $salud->{'get_test_' . $clave}();
+			}
+
+			// Lo que no se puede ejecutar no se cuenta —y desde luego no se da por bueno—, pero tampoco se
+			// inventa: se declara en la cobertura (core#31).
+			if ( ! is_array( $resultado ) ) {
+				++$omitidas;
+				continue;
+			}
+
+			++$miradas;
+			$estado = (string) ( $resultado['status'] ?? '' );
+			if ( isset( $cuenta[ $estado ] ) ) {
+				++$cuenta[ $estado ];
+			}
+			if ( 'critical' === $estado && '' === $primer_crit ) {
+				$primer_crit = wp_strip_all_tags( (string) ( $resultado['label'] ?? $prueba['label'] ?? '' ) );
+			}
+		}
+
+		return array(
+			'cuenta'      => $cuenta,
+			'primer_crit' => $primer_crit,
+			'miradas'     => $miradas,
+			'omitidas'    => $omitidas,
+			'total'       => $total,
+		);
+	}
+
+	/**
+	 * Estado del servidor en lenguaje de asociación.
+	 *
+	 * @return array<string,mixed>
+	 */
 	public static function salud(): array {
 		$sin_datos = array(
 			'estado'  => 'sin_datos',
@@ -189,63 +277,64 @@ class Admin_Entrada {
 		 */
 		$excluidas = (array) apply_filters( 'convoca_core_salud_excluir', array() );
 
-		$cuenta      = array(
-			'good'        => 0,
-			'recommended' => 0,
-			'critical'    => 0,
-		);
-		$primer_crit = '';
-		$miradas     = 0;
+		$evaluacion = self::evaluar_pruebas( $salud, (array) ( $pruebas['direct'] ?? array() ), $excluidas );
 
-		// Solo las pruebas «directas»: no salen a la red. Las asíncronas (comunicación con WordPress.org,
-		// bucle de retorno…) las lanza el propio widget de salud desde el navegador; hacerlo aquí dejaría
-		// esperando a quien entra a trabajar.
-		foreach ( (array) ( $pruebas['direct'] ?? array() ) as $prueba ) {
-			$nombre = (string) ( $prueba['test'] ?? '' );
-			if ( '' === $nombre || in_array( $nombre, $excluidas, true ) ) {
-				continue;
-			}
-
-			// Cada prueba es un MÉTODO de la clase (`get_test_<nombre>`); no hay un accesor único. Lo que no se
-			// puede ejecutar no se cuenta —y desde luego no se da por bueno—, pero tampoco se inventa.
-			$metodo = 'get_test_' . $nombre;
-			if ( ! method_exists( $salud, $metodo ) ) {
-				continue;
-			}
-
-			++$miradas;
-			$resultado = $salud->$metodo();
-			$estado    = (string) ( $resultado['status'] ?? '' );
-			if ( isset( $cuenta[ $estado ] ) ) {
-				++$cuenta[ $estado ];
-			}
-			if ( 'critical' === $estado && '' === $primer_crit ) {
-				$primer_crit = wp_strip_all_tags( (string) ( $resultado['label'] ?? $prueba['label'] ?? '' ) );
-			}
-		}
+		$cuenta      = $evaluacion['cuenta'];
+		$primer_crit = $evaluacion['primer_crit'];
+		$miradas     = $evaluacion['miradas'];
+		$omitidas    = $evaluacion['omitidas'];
+		$total       = $evaluacion['total'];
 
 		// Si no se ha podido mirar NINGUNA prueba, no se dice que todo va bien: se dice que no se sabe.
 		if ( 0 === $miradas ) {
 			return $sin_datos;
 		}
 
+		// Cobertura: decir cuántas se han mirado y cuántas no. Un «va bien» sobre 22 de 28 pruebas es
+		// verdad a medias, y el día que el problema viva en una de las 6 nadie lo sabría (core#31).
+		$cobertura = '';
+
+		if ( $omitidas > 0 ) {
+			$cobertura = sprintf(
+				/* translators: 1: pruebas revisadas, 2: pruebas totales */
+				__( '%1$d de %2$d pruebas revisadas: las que no se pueden ejecutar desde aquí las lanza el propio WordPress.', 'convoca-core' ),
+				$miradas,
+				$total
+			);
+		}
+
+		$datos = array(
+			'miradas'  => $miradas,
+			'total'    => $total,
+			'omitidas' => $omitidas,
+		);
+
 		if ( $cuenta['critical'] > 0 ) {
-			$respuesta = array(
-				'estado'  => 'critical',
-				'texto'   => __( 'El servidor tiene algo que conviene enseñar a quien te instaló esto.', 'convoca-core' ),
-				'detalle' => $primer_crit,
+			$respuesta = array_merge(
+				array(
+					'estado'  => 'critical',
+					'texto'   => __( 'El servidor tiene algo que conviene enseñar a quien te instaló esto.', 'convoca-core' ),
+					'detalle' => trim( $primer_crit . ' ' . $cobertura ),
+				),
+				$datos
 			);
 		} elseif ( $cuenta['recommended'] > 0 ) {
-			$respuesta = array(
-				'estado'  => 'recommended',
-				'texto'   => __( 'El servidor va bien, con algún aviso que no corre prisa.', 'convoca-core' ),
-				'detalle' => '',
+			$respuesta = array_merge(
+				array(
+					'estado'  => 'recommended',
+					'texto'   => __( 'El servidor va bien, con algún aviso que no corre prisa.', 'convoca-core' ),
+					'detalle' => $cobertura,
+				),
+				$datos
 			);
 		} else {
-			$respuesta = array(
-				'estado'  => 'good',
-				'texto'   => __( 'El servidor va bien: no hay nada urgente.', 'convoca-core' ),
-				'detalle' => '',
+			$respuesta = array_merge(
+				array(
+					'estado'  => 'good',
+					'texto'   => __( 'El servidor va bien: no hay nada urgente.', 'convoca-core' ),
+					'detalle' => $cobertura,
+				),
+				$datos
 			);
 		}
 

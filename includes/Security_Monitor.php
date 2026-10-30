@@ -103,10 +103,18 @@ class Security_Monitor {
 		$code = is_wp_error( $response ) ? $response->get_error_code() : 'http_' . $status;
 		$ip   = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ?? 'unknown' ) );
 
-		Logger::warning(
-			sprintf( 'Acceso REST no autorizado (%s) a %s desde %s', $code, $route, $ip ),
-			'Common/Security'
-		);
+		// Un 401 desde la propia máquina es el sondeo de salud llamándose a sí mismo y recibiendo la
+		// respuesta correcta. Registrarlo como aviso llenaba el registro de «incidentes» que no lo son
+		// (43 en 30 días) y enseñaba a no mirarlo (core#33). Desde fuera sigue siendo aviso.
+		$loopback = in_array( $ip, array( '127.0.0.1', '::1', '::ffff:127.0.0.1' ), true );
+
+		$mensaje = sprintf( 'Acceso REST no autorizado (%s) a %s desde %s', $code, $route, $ip );
+
+		if ( $loopback ) {
+			Logger::info( $mensaje . ' (sondeo local)', 'Common/Security' );
+		} else {
+			Logger::warning( $mensaje, 'Common/Security' );
+		}
 
 		return $response;
 	}
@@ -116,7 +124,26 @@ class Security_Monitor {
 	 * Called by Utils::acquire_lock() when a lock cannot be acquired.
 	 */
 	public static function lock_contended( string $key ): void {
-		Logger::warning( 'Lock no adquirido (contención): ' . $key, 'Core/Lock' );
+		// Dos comprobaciones de salud que coinciden es operativo normal, no un incidente. Se cuenta y solo
+		// se avisa si la contención se sale de lo razonable (> 20 en una hora): entonces sí es señal de que
+		// algo se está pisando de verdad (core#33).
+		$cuenta = (int) get_transient( 'convoca_core_lock_contention' );
+		++$cuenta;
+		set_transient( 'convoca_core_lock_contention', $cuenta, HOUR_IN_SECONDS );
+
+		$umbrales = (array) apply_filters( 'convoca_security_thresholds', self::THRESHOLDS );
+		$umbral   = (int) ( $umbrales['lock_contentions'] ?? 10 );
+
+		if ( $cuenta > $umbral ) {
+			Logger::warning(
+				sprintf( 'Contención de cerrojos anómala: %d en la última hora (último: %s)', $cuenta, $key ),
+				'Core/Lock'
+			);
+			delete_transient( 'convoca_core_lock_contention' );
+			return;
+		}
+
+		Logger::info( 'Lock no adquirido (contención): ' . $key, 'Core/Lock' );
 	}
 
 	/**

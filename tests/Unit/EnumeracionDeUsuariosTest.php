@@ -82,7 +82,7 @@ class EnumeracionDeUsuariosTest extends TestCase
 
 		$this->assertIsString( $arranque );
 		$this->assertStringContainsString(
-			'Rest_Hardening::init()',
+			'convoca_core_init( Rest_Hardening::class )',
 			$arranque,
 			'El endurecimiento de la API REST no está enganchado en el arranque: el filtro no se aplicaría.'
 		);

@@ -3,7 +3,7 @@
  * Plugin Name:       Convoca Core
  * Plugin URI:        https://getconvoca.app
  * Description:       Common functions, validation, logging, and shared infrastructure.
- * Version: 2.3.50
+ * Version: 2.3.51
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Tested up to:      7.1.3
@@ -65,7 +65,74 @@ if ( file_exists( $composer_autoload ) ) {
  * (ocurrió el 13/10/2026 al desplegar este cambio). Va aquí arriba, no junto al enganche, para que
  * valga aunque más adelante alguien llame a la clase al cargar el fichero en vez de en un enganche.
  */
-require_once __DIR__ . '/includes/Rest_Hardening.php';
+
+/**
+ * Carga un módulo del núcleo sin tumbar el sitio si falta el fichero.
+ *
+ * Un `rsync` a medias dejó un sitio del ecosistema con 8 fatales entre las 00:18 y las 00:26 del
+ * 14/10/2026: el código llamaba a `Rest_Hardening` y el fichero aún no había llegado. Un sitio de una
+ * asociación no puede caerse entero porque un despliegue vaya por la mitad (core#32).
+ *
+ * @param string $relativo Ruta dentro de `includes/`.
+ * @return bool
+ */
+function convoca_core_require( string $relativo ): bool {
+	$ruta = __DIR__ . '/includes/' . ltrim( $relativo, '/' );
+
+	if ( file_exists( $ruta ) ) {
+		require_once $ruta;
+		return true;
+	}
+
+	// Se registra con la versión que se está ejecutando: distingue «despliegue a medias» de «fichero
+	// borrado» en un minuto. Y se usa error_log porque el propio Log puede ser lo que falte.
+	$mensaje = sprintf(
+		'[convoca-core %s] Falta includes/%s: el sitio sigue sirviendo sin ese módulo. Parece un despliegue a medias.',
+		defined( 'CONVOCA_COMMON_VERSION' ) ? CONVOCA_COMMON_VERSION : '?',
+		$relativo
+	);
+
+	try {
+		Logger::warning( $mensaje, 'Core/Boot' );
+	} catch ( \Throwable $e ) {
+		// Si el propio Logger es lo que falta, el aviso queda al menos en el registro de PHP.
+		error_log( $mensaje ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- el registro propio puede ser lo que falte.
+	}
+
+	return false;
+}
+
+/**
+ * Arranca un módulo solo si su clase está cargada.
+ *
+ * @param string $clase Nombre completo de la clase.
+ * @return bool
+ */
+function convoca_core_init( string $clase ): bool {
+	$clase = ltrim( $clase, '\\' );
+
+	if ( class_exists( $clase ) && method_exists( $clase, 'init' ) ) {
+		$clase::init();
+		return true;
+	}
+
+	$mensaje = sprintf(
+		'[convoca-core %s] Módulo ausente en el arranque: %s',
+		defined( 'CONVOCA_COMMON_VERSION' ) ? CONVOCA_COMMON_VERSION : '?',
+		$clase
+	);
+
+	try {
+		Logger::warning( $mensaje, 'Core/Boot' );
+	} catch ( \Throwable $e ) {
+		// Si el propio Logger es lo que falta, el aviso queda al menos en el registro de PHP.
+		error_log( $mensaje ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- el registro propio puede ser lo que falte.
+	}
+
+	return false;
+}
+
+convoca_core_require( 'Rest_Hardening.php' );
 
 /**
  * Basic Autoloader fallback.
@@ -123,7 +190,7 @@ add_action(
 add_action(
 	'plugins_loaded',
 	function (): void {
-		\Convoca\Core\Security_Monitor::init();
+		convoca_core_init( Security_Monitor::class );
 	},
 	20
 );
@@ -132,8 +199,8 @@ add_action(
 add_action(
 	'plugins_loaded',
 	function (): void {
-		\Convoca\Core\Rest_Hardening::init();
-		\Convoca\Core\Postura_HTTP::init();
+		convoca_core_init( Rest_Hardening::class );
+		convoca_core_init( Postura_HTTP::class );
 	},
 	21
 );
@@ -161,9 +228,9 @@ add_action(
 					$admin_role->add_cap( 'manage_convoca_logs' );
 				}
 			}
-			Admin_Templates::init();
+			convoca_core_init( Admin_Templates::class );
 			new Admin_Setup_Wizard();
-			Admin_Entrada::init();
+			convoca_core_init( Admin_Entrada::class );
 			new Admin_Backup();
 			add_filter( 'screen_options_show_screen', 'Convoca\Core\convoca_hide_screen_options', 10, 2 );
 			add_filter( 'admin_footer_text', 'Convoca\Core\convoca_admin_footer', 999 );
@@ -173,43 +240,43 @@ add_action(
 		}
 
 		// Initialize common blocks.
-		Blocks_Common::init();
+		convoca_core_init( Blocks_Common::class );
 
 		// Initialize notifications.
-		Notifications::init();
+		convoca_core_init( Notifications::class );
 
 		// Initialize memory report generator.
-		Memory_Report::init();
+		convoca_core_init( Memory_Report::class );
 
 		// Initialize license manager.
-		License_Manager::init();
+		convoca_core_init( License_Manager::class );
 
 		// Initialize module registry (marketplace).
-		Module_Registry::init();
+		convoca_core_init( Module_Registry::class );
 
 		// Initialize performance probe (?convoca_probe=1).
-		Performance_Probe::init();
+		convoca_core_init( Performance_Probe::class );
 	}
 );
 
 /* ── Global Convoca menu → extracted to includes/admin-global-menu.php ── */
-require_once __DIR__ . '/includes/admin-global-menu.php';
+convoca_core_require( 'admin-global-menu.php' );
 
 /* ── Module Registry (marketplace) ── */
-require_once __DIR__ . '/includes/class-module-registry.php';
+convoca_core_require( 'class-module-registry.php' );
 
 /* ── Admin Appearance → extracted to includes/admin-appearance.php ── */
-require_once __DIR__ . '/includes/admin-appearance.php';
-require_once __DIR__ . '/includes/Admin_Entrada.php';
+convoca_core_require( 'admin-appearance.php' );
+convoca_core_require( 'Admin_Entrada.php' );
 
 /* ── Ajuste de desinstalación: qué hacer con los datos (compartido por los uninstall.php) ── */
-require_once __DIR__ . '/includes/Uninstall_Settings.php';
+convoca_core_require( 'Uninstall_Settings.php' );
 
 /* ── Datos de evento de una entrada (metabox, guardado y acceso) ── */
-require_once __DIR__ . '/includes/event-meta.php';
+convoca_core_require( 'event-meta.php' );
 
 /* ── Shortcodes de front comunes a cualquier instalación (menú, redes, relacionadas, cifras) ── */
-require_once __DIR__ . '/includes/front-shortcodes.php';
+convoca_core_require( 'front-shortcodes.php' );
 
 
 /* ── REST endpoint: /convoca/v1/admin/metrics ── */

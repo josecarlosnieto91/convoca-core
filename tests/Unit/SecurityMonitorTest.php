@@ -96,6 +96,81 @@ final class SecurityMonitorTest extends TestCase {
 	}
 
 	/**
+	 * Lo registrado, con su nivel.
+	 *
+	 * @return array<int, array{level: string, message: string}>
+	 */
+	private function registros(): array {
+		$salida = array();
+
+		foreach ( (array) ( $GLOBALS['_wp_stores']['db_inserts'] ?? array() ) as $insert ) {
+			if ( false !== strpos( (string) ( $insert['table'] ?? '' ), 'convoca_logs' ) ) {
+				$salida[] = array(
+					'level'   => (string) ( $insert['data']['level'] ?? '' ),
+					'message' => (string) ( $insert['data']['message'] ?? '' ),
+				);
+			}
+		}
+
+		return $salida;
+	}
+
+	/**
+	 * Un 401 desde la propia máquina es el sondeo de salud, no un incidente (core#33).
+	 */
+	public function test_el_401_del_sondeo_local_va_a_info(): void {
+		$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+
+		$this->respuesta( '/convoca/v1/admin/metrics', 401 );
+
+		$registros = $this->registros();
+
+		$this->assertCount( 1, $registros );
+		$this->assertSame( 'info', $registros[0]['level'], 'el 401 esperado no es un aviso' );
+		$this->assertStringContainsString( 'sondeo local', $registros[0]['message'] );
+	}
+
+	/**
+	 * Un 401 desde fuera sigue siendo un aviso.
+	 */
+	public function test_el_401_externo_sigue_siendo_aviso(): void {
+		$_SERVER['REMOTE_ADDR'] = '198.51.100.7';
+
+		$this->respuesta( '/convoca/v1/admin/metrics', 401 );
+
+		$registros = $this->registros();
+
+		$this->assertCount( 1, $registros );
+		$this->assertSame( 'warning', $registros[0]['level'] );
+	}
+
+	/**
+	 * La contención normal del cerrojo no inunda; el exceso sí avisa.
+	 */
+	public function test_la_contencion_del_cerrojo_no_inunda(): void {
+		Security_Monitor::lock_contended( 'hc_lock' );
+
+		$registros = $this->registros();
+		$this->assertSame( 'info', $registros[0]['level'], 'una contención es operativo normal' );
+
+		$GLOBALS['_wp_stores']['db_inserts'] = array();
+
+		for ( $i = 0; $i < 12; $i++ ) {
+			Security_Monitor::lock_contended( 'hc_lock' );
+		}
+
+		$avisos = array_filter(
+			$this->registros(),
+			static function ( array $registro ): bool {
+				return 'warning' === $registro['level'];
+			}
+		);
+
+		$this->assertNotEmpty( $avisos, 'pasado el umbral, avisa' );
+		$this->assertStringContainsString( 'anómala', (string) reset( $avisos )['message'] );
+	}
+
+	/**
 	 * Un 401 en una ruta de Convoca se registra con su código, su ruta y su IP.
 	 */
 	public function test_un_401_se_registra(): void {
