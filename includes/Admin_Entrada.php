@@ -147,6 +147,65 @@ class Admin_Entrada {
 	 * @return array{estado:string,texto:string,detalle:string}
 	 */
 	/**
+	 * Nombre canónico de una prueba.
+	 *
+	 * Se compone solo con algo escalar: con un array, `(string)` daba «Array» y un warning (core#30).
+	 *
+	 * @param array<string,mixed> $prueba Definición registrada.
+	 * @param string              $clave  Clave del registro.
+	 * @return string
+	 */
+	private static function nombre_prueba( array $prueba, string $clave ): string {
+		$callback = $prueba['test'] ?? '';
+
+		if ( is_scalar( $callback ) && '' !== (string) $callback ) {
+			return (string) $callback;
+		}
+
+		return $clave;
+	}
+
+	/**
+	 * Ejecuta una prueba registrada, sea cual sea la forma en que se registró.
+	 *
+	 * La API de Site Health admite tres y las tres se atienden:
+	 *   · el nombre de un método de `WP_Site_Health` (casi todo el núcleo),
+	 *   · un callable suelto (Performance Lab),
+	 *   · un callable en array, `array( $objeto, 'metodo' )` (WP Consent API).
+	 *
+	 * Antes se hacía `(string)` del callback: con un array saltaba un warning, el nombre quedaba en «Array»
+	 * y la prueba se descartaba en silencio (core#30).
+	 *
+	 * @param object              $salud Objeto con los métodos `get_test_*`.
+	 * @param string              $clave Clave con la que se registró.
+	 * @param array<string,mixed> $prueba Definición de la prueba.
+	 * @return array<string,mixed>|null Resultado, o null si no se puede ejecutar.
+	 */
+	private static function ejecutar_prueba( $salud, string $clave, array $prueba ): ?array {
+		$callback = $prueba['test'] ?? '';
+
+		if ( is_string( $callback ) && method_exists( $salud, 'get_test_' . $callback ) ) {
+			$resultado = $salud->{'get_test_' . $callback}();
+
+			return is_array( $resultado ) ? $resultado : null;
+		}
+
+		if ( is_callable( $callback ) ) {
+			$resultado = call_user_func( $callback );
+
+			return is_array( $resultado ) ? $resultado : null;
+		}
+
+		if ( '' !== $clave && method_exists( $salud, 'get_test_' . $clave ) ) {
+			$resultado = $salud->{'get_test_' . $clave}();
+
+			return is_array( $resultado ) ? $resultado : null;
+		}
+
+		return null;
+	}
+
+	/**
 	 * Ejecuta las pruebas directas y devuelve el recuento y la cobertura.
 	 *
 	 * Se separa de `salud()` para poder probarlo sin un WordPress entero: recibe las pruebas y el objeto que
@@ -173,13 +232,7 @@ class Admin_Entrada {
 		// bucle de retorno…) las lanza el propio widget de salud desde el navegador; hacerlo aquí dejaría
 		// esperando a quien entra a trabajar.
 		foreach ( $directas as $clave => $prueba ) {
-			$callback = $prueba['test'] ?? '';
-
-			// El nombre solo se puede componer con algo escalar: con un array, `(string)` daba «Array» y un
-			// warning (core#30).
-			$nombre = is_scalar( $callback ) && '' !== (string) $callback
-				? (string) $callback
-				: (string) $clave;
+			$nombre = self::nombre_prueba( $prueba, (string) $clave );
 
 			if ( '' === $nombre || in_array( $nombre, $excluidas, true ) ) {
 				continue;
@@ -187,25 +240,11 @@ class Admin_Entrada {
 
 			++$total;
 
-			// Hay tres formas de registrar una prueba y la API admite las tres:
-			//   · el nombre de un método de `WP_Site_Health` (casi todo el núcleo),
-			//   · un callable suelto (Performance Lab),
-			//   · un callable en array, `array( $objeto, 'metodo' )` (WP Consent API).
-			// Antes se hacía `(string)` del callback: con un array saltaba un warning, el nombre quedaba en
-			// «Array» y la prueba se descartaba en silencio (core#30).
-			$resultado = null;
-
-			if ( is_string( $callback ) && method_exists( $salud, 'get_test_' . $callback ) ) {
-				$resultado = $salud->{'get_test_' . $callback}();
-			} elseif ( is_callable( $callback ) ) {
-				$resultado = call_user_func( $callback );
-			} elseif ( method_exists( $salud, 'get_test_' . $clave ) ) {
-				$resultado = $salud->{'get_test_' . $clave}();
-			}
+			$resultado = self::ejecutar_prueba( $salud, (string) $clave, $prueba );
 
 			// Lo que no se puede ejecutar no se cuenta —y desde luego no se da por bueno—, pero tampoco se
 			// inventa: se declara en la cobertura (core#31).
-			if ( ! is_array( $resultado ) ) {
+			if ( null === $resultado ) {
 				++$omitidas;
 				continue;
 			}
@@ -279,6 +318,23 @@ class Admin_Entrada {
 
 		$evaluacion = self::evaluar_pruebas( $salud, (array) ( $pruebas['direct'] ?? array() ), $excluidas );
 
+		$respuesta = self::respuesta_de_salud( $evaluacion );
+
+		set_transient( 'convoca_core_salud', $respuesta, 30 * MINUTE_IN_SECONDS );
+
+		return $respuesta;
+	}
+
+	/**
+	 * Traduce la evaluación a la respuesta que se enseña.
+	 *
+	 * La cobertura solo se nombra cuando falta alguna prueba: si están todas, añadirla sería ruido.
+	 * El estado no cambia por este dato (core#31).
+	 *
+	 * @param array{cuenta: array<string,int>, primer_crit: string, miradas: int, omitidas: int, total: int} $evaluacion Evaluación.
+	 * @return array<string,mixed>
+	 */
+	private static function respuesta_de_salud( array $evaluacion ): array {
 		$cuenta      = $evaluacion['cuenta'];
 		$primer_crit = $evaluacion['primer_crit'];
 		$miradas     = $evaluacion['miradas'];
@@ -287,7 +343,11 @@ class Admin_Entrada {
 
 		// Si no se ha podido mirar NINGUNA prueba, no se dice que todo va bien: se dice que no se sabe.
 		if ( 0 === $miradas ) {
-			return $sin_datos;
+			return array(
+				'estado'  => 'sin_datos',
+				'texto'   => __( 'No hemos podido consultar el estado del servidor ahora mismo.', 'convoca-core' ),
+				'detalle' => '',
+			);
 		}
 
 		// Cobertura: decir cuántas se han mirado y cuántas no. Un «va bien» sobre 22 de 28 pruebas es
@@ -338,14 +398,9 @@ class Admin_Entrada {
 			);
 		}
 
-		set_transient( 'convoca_core_salud', $respuesta, 30 * MINUTE_IN_SECONDS );
-
 		return $respuesta;
 	}
 
-	/**
-	 * La tarjeta del Escritorio.
-	 */
 	public static function tarjeta(): void {
 		$salud = self::salud();
 		$panel = admin_url( 'admin.php?page=conv-dashboard' );
