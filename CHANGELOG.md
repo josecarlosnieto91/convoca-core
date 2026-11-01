@@ -1,3 +1,13 @@
+## [2.3.54] — 2026-11-01
+
+### Corregido
+
+- **eventos de cron huérfanos**: las instalaciones que vienen del prefijo `bdv_`/`bde_`
+  conservaban cuatro eventos sin oyente. Ocupan sitio en el array de cron (que WordPress
+  carga en cada petición) y despiertan WP-Cron para nada. Se retiran al arrancar.
+  Medido en la demo: 50 eventos programados, 4 huérfanos, 7 contando los de plugins
+  de terceros que no se tocan.
+
 ## [2.3.53] — 2026-11-01
 
 ### Cambiado
