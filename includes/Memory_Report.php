@@ -52,8 +52,18 @@ class Memory_Report {
 			return; // Only run during the first week.
 		}
 
-		$last_month = strtotime( 'first day of last month' );
-		$label      = wp_date( 'F Y', $last_month );
+		// El mes se calcula con el MISMO reloj que el día de arriba. Con `strtotime( 'last month' )`
+		// a secas se mezclaban dos fuentes de tiempo —`wp_date()` respeta la zona del sitio y
+		// `strtotime()` usa la de PHP—, y en un sitio con zona extrema las dos pueden caer en meses
+		// distintos el día 1. En el arnés de pruebas solo `wp_date()` es controlable, así que la
+		// memoria salía con el mes real y el caso de la primera semana se rompía cada mes.
+		$last_month = strtotime( wp_date( 'Y-m-01' ) . ' -1 month' );
+
+		if ( false === $last_month ) {
+			return;
+		}
+
+		$label = wp_date( 'F Y', $last_month );
 
 		// Check if already generated this month.
 		$cache_key = 'convoca_memory_' . wp_date( 'Y_m', $last_month );
