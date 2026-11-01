@@ -139,27 +139,7 @@ class Installer {
 
 		// Run migrations.
 		self::ensure_member_access_codes();
-		self::limpiar_ganchos_legacy();
-	}
-
-	/**
-	 * Retira los eventos de cron con nombres anteriores al prefijo `convoca_`.
-	 *
-	 * Quedaron programados en instalaciones que venían de la nomenclatura `bdv_`/`bde_`. Sin
-	 * oyente siguen ocupando sitio en el array de cron —que WordPress carga en cada petición—
-	 * y despertando WP-Cron para nada. Medido en la demo el 1/11/2026: cuatro eventos
-	 * huérfanos, de 50 programados.
-	 */
-	public static function limpiar_ganchos_legacy(): void {
-		$legacy = array(
-			'bdv_weekly_event',
-			'bdv_log_purge',
-			'bdv_daily_event',
-			'bde_daily_maintenance',
-		);
-		foreach ( $legacy as $gancho ) {
-			wp_clear_scheduled_hook( $gancho );
-		}
+		Cron_Limpieza::limpiar();
 	}
 
 	/**

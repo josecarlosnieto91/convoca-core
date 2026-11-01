@@ -14,13 +14,13 @@
 
 namespace Convoca\Core\Tests;
 
-use Convoca\Core\Installer;
+use Convoca\Core\Cron_Limpieza;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Los ganchos antiguos se retiran.
  */
-final class InstallerLegacyCronTest extends TestCase {
+final class CronLimpiezaTest extends TestCase {
 
 	/**
 	 * Prepara el registro de limpiezas.
@@ -33,7 +33,7 @@ final class InstallerLegacyCronTest extends TestCase {
 	 * Los cuatro ganchos antiguos se limpian.
 	 */
 	public function test_limpia_los_ganchos_anteriores_al_prefijo(): void {
-		Installer::limpiar_ganchos_legacy();
+		Cron_Limpieza::limpiar();
 
 		$limpiados = $GLOBALS['_wp_cron']['limpiados'];
 		foreach ( array( 'bdv_weekly_event', 'bdv_log_purge', 'bdv_daily_event', 'bde_daily_maintenance' ) as $gancho ) {
@@ -50,7 +50,7 @@ final class InstallerLegacyCronTest extends TestCase {
 			'convoca_log_cleanup'   => time(),
 		);
 
-		Installer::limpiar_ganchos_legacy();
+		Cron_Limpieza::limpiar();
 
 		$this->assertSame( array(), array_intersect(
 			array( 'convoca_daily_event', 'convoca_log_cleanup' ),
