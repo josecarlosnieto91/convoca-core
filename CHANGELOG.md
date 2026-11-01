@@ -1,3 +1,12 @@
+## [2.3.53] — 2026-11-01
+
+### Cambiado
+
+- **un solo diagnóstico**: `Admin\Diagnostico` en Core centraliza las comprobaciones
+  genéricas (PHP, tablas, cron) y el pintado de la pantalla de estado. `Admin_Status`
+  de Members y de Shifts dejan de duplicar el HTML y la lógica; cada plugin aporta sus
+  datos. Sin cambios de comportamiento ni de textos visibles.
+
 ## [2.3.52] — 2026-11-01
 
 ### Cambiado
