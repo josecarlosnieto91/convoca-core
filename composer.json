@@ -4,7 +4,8 @@
     "license": "GPL-2.0-or-later",
     "description": "Core shared utilities for Convoca plugins",
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.2",
+        "chillerlan/php-qrcode": "^6.0",
         "dompdf/dompdf": "^3.0"
     },
     "require-dev": {

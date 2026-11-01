@@ -1,3 +1,15 @@
+## [2.3.55] — 2026-11-02
+
+### Añadido
+
+- **`chillerlan/php-qrcode` pasa a vivir en Core**: la usaban tres plugins (Members, Courses y
+  Enroll) y viajaba tres veces en cada sitio. Una sola copia compartida ahorra 1,1 MB de paquete.
+
+### Cambiado
+
+- **suelo de PHP 8.1 → 8.2**, que es el que ya pedía la librería de QR. Declararlo evita prometer
+  compatibilidad con una versión en la que el plugin no puede funcionar.
+
 ## [2.3.54] — 2026-11-01
 
 ### Corregido
