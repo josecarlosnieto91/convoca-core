@@ -119,6 +119,10 @@ class Diagnostico {
 	 * @param string $fix      Qué hacer para arreglarlo, si aplica.
 	 *
 	 * @return array<string, mixed>
+	 *
+	 * @SuppressWarnings(PHPMD.ExcessiveParameterList) Cinco campos son los de una
+	 * comprobación (id, etiqueta, mensaje, gravedad y arreglo); empaquetarlos en un array
+	 * solo cambia el problema de sitio y hace las llamadas menos legibles.
 	 */
 	public static function resultado(
 		string $id,
@@ -137,55 +141,85 @@ class Diagnostico {
 	 * @param string                           $titulo     Encabezado de la pantalla, ya traducido.
 	 */
 	public static function pintar( array $resultados, string $titulo ): void {
-		$hay_errores = false;
-		$hay_avisos  = false;
-		foreach ( $resultados as $resultado ) {
-			if ( self::SEVERITY_ERROR === $resultado['severity'] ) {
-				$hay_errores = true;
-			}
-			if ( self::SEVERITY_WARNING === $resultado['severity'] ) {
-				$hay_avisos = true;
-			}
-		}
-
-		$estado = $hay_errores ? 'error' : ( $hay_avisos ? 'warning' : 'success' );
+		$hay_errores = self::hay_severidad( $resultados, self::SEVERITY_ERROR );
+		$hay_avisos  = self::hay_severidad( $resultados, self::SEVERITY_WARNING );
+		$estado      = $hay_errores ? 'error' : ( $hay_avisos ? 'warning' : 'success' );
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html( $titulo ); ?></h1>
 			<div class="convoca-diagnostic">
-				<div class="convoca-diagnostic-header convoca-diagnostic-header--<?php echo esc_attr( $estado ); ?>">
-					<div class="convoca-diagnostic-icon">
-						<?php echo esc_html( self::icono( $hay_errores ? self::SEVERITY_ERROR : ( $hay_avisos ? self::SEVERITY_WARNING : self::SEVERITY_OK ) ) ); ?>
-					</div>
-					<div class="convoca-diagnostic-summary">
-						<h3><?php echo esc_html( self::resumen( $estado ) ); ?></h3>
-						<p>
-							<?php
-							printf(
-								/* translators: %d: number of checks run */
-								esc_html__( '%d comprobaciones realizadas.', 'convoca-core' ),
-								count( $resultados )
-							);
-							?>
-						</p>
-					</div>
-				</div>
+				<?php self::pintar_cabecera( $estado, count( $resultados ) ); ?>
 				<div class="convoca-diagnostic-results">
 					<?php foreach ( $resultados as $resultado ) : ?>
-						<div class="convoca-diagnostic-row">
-							<div class="convoca-diagnostic-severity convoca-badge--<?php echo esc_attr( self::clase_badge( $resultado['severity'] ) ); ?>">
-								<?php echo esc_html( self::icono( $resultado['severity'] ) ); ?>
-							</div>
-							<div class="convoca-diagnostic-content">
-								<strong><?php echo esc_html( $resultado['label'] ); ?></strong>
-								<div class="convoca-diagnostic-message"><?php echo esc_html( $resultado['message'] ); ?></div>
-								<?php if ( ! empty( $resultado['fix'] ) ) : ?>
-									<div class="convoca-diagnostic-fix"><?php echo esc_html( $resultado['fix'] ); ?></div>
-								<?php endif; ?>
-							</div>
-						</div>
+						<?php self::pintar_fila( $resultado ); ?>
 					<?php endforeach; ?>
 				</div>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * ¿Hay alguna comprobación con esta severidad?
+	 *
+	 * @param array<int, array<string, mixed>> $resultados Salida de las comprobaciones.
+	 * @param string                           $severidad  Una de las constantes SEVERITY_*.
+	 */
+	private static function hay_severidad( array $resultados, string $severidad ): bool {
+		foreach ( $resultados as $resultado ) {
+			if ( $severidad === $resultado['severity'] ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Cabecera con el resumen global.
+	 *
+	 * @param string $estado error, warning o success.
+	 * @param int    $total  Número de comprobaciones.
+	 */
+	private static function pintar_cabecera( string $estado, int $total ): void {
+		$severidad = 'success' === $estado
+			? self::SEVERITY_OK
+			: ( 'warning' === $estado ? self::SEVERITY_WARNING : self::SEVERITY_ERROR );
+		?>
+		<div class="convoca-diagnostic-header convoca-diagnostic-header--<?php echo esc_attr( $estado ); ?>">
+			<div class="convoca-diagnostic-icon"><?php echo esc_html( self::icono( $severidad ) ); ?></div>
+			<div class="convoca-diagnostic-summary">
+				<h3><?php echo esc_html( self::resumen( $estado ) ); ?></h3>
+				<p>
+					<?php
+					printf(
+						/* translators: %d: number of checks run */
+						esc_html__( '%d comprobaciones realizadas.', 'convoca-core' ),
+						$total
+					);
+					?>
+				</p>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Una fila de la tabla de resultados.
+	 *
+	 * @param array<string, mixed> $resultado Una comprobación.
+	 */
+	private static function pintar_fila( array $resultado ): void {
+		?>
+		<div class="convoca-diagnostic-row">
+			<div class="convoca-diagnostic-severity convoca-badge--<?php echo esc_attr( self::clase_badge( $resultado['severity'] ) ); ?>">
+				<?php echo esc_html( self::icono( $resultado['severity'] ) ); ?>
+			</div>
+			<div class="convoca-diagnostic-content">
+				<strong><?php echo esc_html( $resultado['label'] ); ?></strong>
+				<div class="convoca-diagnostic-message"><?php echo esc_html( $resultado['message'] ); ?></div>
+				<?php if ( ! empty( $resultado['fix'] ) ) : ?>
+					<div class="convoca-diagnostic-fix"><?php echo esc_html( $resultado['fix'] ); ?></div>
+				<?php endif; ?>
 			</div>
 		</div>
 		<?php
