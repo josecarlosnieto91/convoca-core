@@ -171,7 +171,10 @@ final class DiagnosticoTest extends TestCase {
 	 * `resultado()` mantiene la forma que consumen los plugins.
 	 */
 	public function test_resultado_tiene_la_forma_esperada(): void {
-		$r = Diagnostico::resultado( 'x', 'Etiqueta', 'Mensaje', Diagnostico::SEVERITY_OK, 'Arreglo' );
+		$r = Diagnostico::con_arreglo(
+			Diagnostico::resultado( 'x', 'Etiqueta', 'Mensaje', Diagnostico::SEVERITY_OK ),
+			'Arreglo'
+		);
 
 		$this->assertSame( array( 'id', 'label', 'message', 'severity', 'fix' ), array_keys( $r ) );
 	}
@@ -182,7 +185,10 @@ final class DiagnosticoTest extends TestCase {
 	public function test_pintar_muestra_cada_comprobacion(): void {
 		$resultados = array(
 			Diagnostico::resultado( 'uno', 'Primera', 'Todo bien', Diagnostico::SEVERITY_OK ),
-			Diagnostico::resultado( 'dos', 'Segunda', 'Falta algo', Diagnostico::SEVERITY_ERROR, 'Arréglalo' ),
+			Diagnostico::con_arreglo(
+				Diagnostico::resultado( 'dos', 'Segunda', 'Falta algo', Diagnostico::SEVERITY_ERROR ),
+				'Arréglalo'
+			),
 		);
 
 		ob_start();

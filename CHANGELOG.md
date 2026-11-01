@@ -7,6 +7,8 @@
   carga en cada petición) y despiertan WP-Cron para nada. Se retiran al arrancar.
   Medido en la demo: 50 eventos programados, 4 huérfanos, 7 contando los de plugins
   de terceros que no se tocan.
+- **`Diagnostico` cumple el gate de calidad**: el pintado se parte en cabecera y fila y
+  `resultado()` baja a cuatro parámetros, con `con_arreglo()` para el texto del arreglo.
 
 ## [2.3.53] — 2026-11-01
 

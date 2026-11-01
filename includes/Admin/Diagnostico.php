@@ -39,11 +39,13 @@ class Diagnostico {
 			return self::resultado( 'php', 'PHP', sprintf( 'Versión %s', $actual ), self::SEVERITY_OK );
 		}
 
-		return self::resultado(
-			'php',
-			'PHP',
-			sprintf( 'Versión %s (mínimo %s)', $actual, $minimo ),
-			self::SEVERITY_ERROR,
+		return self::con_arreglo(
+			self::resultado(
+				'php',
+				'PHP',
+				sprintf( 'Versión %s (mínimo %s)', $actual, $minimo ),
+				self::SEVERITY_ERROR
+			),
 			sprintf( 'Actualiza PHP a %s o superior.', $minimo )
 		);
 	}
@@ -71,11 +73,13 @@ class Diagnostico {
 			return self::resultado( 'tables', 'Tablas BD', 'Todas las tablas existen', self::SEVERITY_OK );
 		}
 
-		return self::resultado(
-			'tables',
-			'Tablas BD',
-			sprintf( 'Faltan: %s', implode( ', ', $faltan ) ),
-			self::SEVERITY_ERROR,
+		return self::con_arreglo(
+			self::resultado(
+				'tables',
+				'Tablas BD',
+				sprintf( 'Faltan: %s', implode( ', ', $faltan ) ),
+				self::SEVERITY_ERROR
+			),
 			$arreglo
 		);
 	}
@@ -100,11 +104,13 @@ class Diagnostico {
 			return self::resultado( 'cron', 'Cron', 'Eventos programados activos', self::SEVERITY_OK );
 		}
 
-		return self::resultado(
-			'cron',
-			'Cron',
-			sprintf( 'Faltan: %s', implode( ', ', $faltan ) ),
-			self::SEVERITY_WARNING,
+		return self::con_arreglo(
+			self::resultado(
+				'cron',
+				'Cron',
+				sprintf( 'Faltan: %s', implode( ', ', $faltan ) ),
+				self::SEVERITY_WARNING
+			),
 			$arreglo
 		);
 	}
@@ -112,26 +118,40 @@ class Diagnostico {
 	/**
 	 * Construye el resultado de una comprobación.
 	 *
+	 * Cinco campos son los de una comprobación (id, etiqueta, mensaje, gravedad y arreglo);
+	 * empaquetarlos en un array solo cambia el problema de sitio y hace las llamadas menos
+	 * legibles.
+	 *
 	 * @param string $id       Identificador estable.
 	 * @param string $label    Etiqueta visible.
 	 * @param string $message  Resultado legible.
 	 * @param string $severity Una de las constantes SEVERITY_*.
-	 * @param string $fix      Qué hacer para arreglarlo, si aplica.
 	 *
 	 * @return array<string, mixed>
-	 *
-	 * @SuppressWarnings(PHPMD.ExcessiveParameterList) Cinco campos son los de una
-	 * comprobación (id, etiqueta, mensaje, gravedad y arreglo); empaquetarlos en un array
-	 * solo cambia el problema de sitio y hace las llamadas menos legibles.
 	 */
 	public static function resultado(
 		string $id,
 		string $label,
 		string $message,
-		string $severity,
-		string $fix = ''
+		string $severity
 	): array {
-		return compact( 'id', 'label', 'message', 'severity', 'fix' );
+		return compact( 'id', 'label', 'message', 'severity' ) + array( 'fix' => '' );
+	}
+
+	/**
+	 * Añade el arreglo a una comprobación ya construida.
+	 *
+	 * Va aparte porque PHPMD marca cinco parámetros y el quinto es opcional en la mayoría de
+	 * las comprobaciones: así la firma principal se queda en cuatro.
+	 *
+	 * @param array<string, mixed> $resultado Comprobación.
+	 * @param string               $fix       Qué hacer para arreglarlo.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public static function con_arreglo( array $resultado, string $fix ): array {
+		$resultado['fix'] = $fix;
+		return $resultado;
 	}
 
 	/**
