@@ -1,3 +1,9 @@
+## [2.3.52] — 2026-11-01
+
+### Cambiado
+
+- **los contadores cuentan los mismos estados que los listados**
+
 ## [2.3.51] — 2026-10-30
 
 ### Cambiado

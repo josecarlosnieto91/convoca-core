@@ -719,7 +719,7 @@ function convoca_build_metrics(): array {
 	}
 
 	$metrics['members_new_month'] = (int) $wpdb->get_var(
-		"SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'miembro' AND post_status = 'publish' AND MONTH(post_date) = MONTH(NOW()) AND YEAR(post_date) = YEAR(NOW())"
+		"SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'miembro' AND post_status IN ( " . \Convoca\Core\Admin_Analytics::in_vivos() . ' ) AND MONTH(post_date) = MONTH(NOW()) AND YEAR(post_date) = YEAR(NOW())'
 	);
 
 	if ( \Convoca\Core\Features::has( 'enroll' ) ) {
@@ -755,8 +755,8 @@ function convoca_build_metrics(): array {
 		"SELECT COUNT(*) FROM {$wpdb->postmeta} pm
          JOIN {$wpdb->posts} p ON p.ID = pm.post_id
          WHERE pm.meta_key = '_estado' AND pm.meta_value = 'abierto_disponible'
-         AND p.post_type = 'centro_turno' AND p.post_status = 'publish'
-         AND p.post_date >= NOW()"
+         AND p.post_type = 'centro_turno' AND p.post_status IN ( " . \Convoca\Core\Admin_Analytics::in_vivos() . ' )
+         AND p.post_date >= NOW()'
 	);
 	$metrics['turnos_url']        = admin_url( 'edit.php?post_type=centro_turno&page=convoca-shifts-turnos-list' );
 

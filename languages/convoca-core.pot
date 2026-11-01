@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Core 2.3.51\n"
+"Project-Id-Version: Convoca Core 2.3.52\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-core\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-30T21:02:12+00:00\n"
+"POT-Creation-Date: 2026-11-01T15:27:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-core\n"
@@ -61,7 +61,7 @@ msgstr ""
 #: includes/Admin_Backup.php:143
 #: includes/License_Manager.php:429
 #: includes/License_Manager.php:454
-#: includes/Memory_Report.php:102
+#: includes/Memory_Report.php:112
 msgid "Nonce inválido."
 msgstr ""
 
@@ -78,7 +78,7 @@ msgstr ""
 #: includes/License_Manager.php:322
 #: includes/License_Manager.php:432
 #: includes/License_Manager.php:457
-#: includes/Memory_Report.php:105
+#: includes/Memory_Report.php:115
 #: includes/Uninstall_Settings.php:53
 #: includes/Uninstall_Settings.php:66
 msgid "No tienes permisos."
@@ -340,7 +340,7 @@ msgstr ""
 msgid "No se ha podido completar la operación. Vuelve a intentarlo; si el problema continúa, avisa a la asociación."
 msgstr ""
 
-#: includes/Admin_Analytics.php:485
+#: includes/Admin_Analytics.php:524
 msgid "Sin datos todavía"
 msgstr ""
 
@@ -510,53 +510,54 @@ msgstr ""
 msgid "Convoca: por dónde empiezo"
 msgstr ""
 
-#: includes/Admin_Entrada.php:240
+#: includes/Admin_Entrada.php:279
+#: includes/Admin_Entrada.php:348
 msgid "No hemos podido consultar el estado del servidor ahora mismo."
 msgstr ""
 
 #. translators: 1: pruebas revisadas, 2: pruebas totales
-#: includes/Admin_Entrada.php:300
+#: includes/Admin_Entrada.php:360
 #, php-format
 msgid "%1$d de %2$d pruebas revisadas: las que no se pueden ejecutar desde aquí las lanza el propio WordPress."
 msgstr ""
 
-#: includes/Admin_Entrada.php:316
+#: includes/Admin_Entrada.php:376
 msgid "El servidor tiene algo que conviene enseñar a quien te instaló esto."
 msgstr ""
 
-#: includes/Admin_Entrada.php:325
+#: includes/Admin_Entrada.php:385
 msgid "El servidor va bien, con algún aviso que no corre prisa."
 msgstr ""
 
-#: includes/Admin_Entrada.php:334
+#: includes/Admin_Entrada.php:394
 msgid "El servidor va bien: no hay nada urgente."
 msgstr ""
 
-#: includes/Admin_Entrada.php:355
+#: includes/Admin_Entrada.php:410
 msgid "Lo que te interesa de la asociación está en tu panel:"
 msgstr ""
 
-#: includes/Admin_Entrada.php:357
+#: includes/Admin_Entrada.php:412
 msgid "Abrir el Panel de Control"
 msgstr ""
 
-#: includes/Admin_Entrada.php:373
+#: includes/Admin_Entrada.php:428
 msgid "¿Por dónde empiezo?"
 msgstr ""
 
-#: includes/Admin_Entrada.php:375
+#: includes/Admin_Entrada.php:430
 msgid "Mira el Panel de Control: socios activos, altas del mes, inscripciones e ingresos."
 msgstr ""
 
-#: includes/Admin_Entrada.php:376
+#: includes/Admin_Entrada.php:431
 msgid "Publica las actividades de las próximas semanas y comprueba que tienen plazas."
 msgstr ""
 
-#: includes/Admin_Entrada.php:377
+#: includes/Admin_Entrada.php:432
 msgid "Reparte los turnos del centro entre los voluntarios (Turnos → Delegados lo ven)."
 msgstr ""
 
-#: includes/Admin_Entrada.php:378
+#: includes/Admin_Entrada.php:433
 msgid "Si algo del servidor pide atención, avisa a quien te lo instaló; no hace falta que lo entiendas."
 msgstr ""
 
@@ -1458,7 +1459,7 @@ msgstr ""
 msgid "Funcionalidades"
 msgstr ""
 
-#: includes/Memory_Report.php:115
+#: includes/Memory_Report.php:125
 msgid "Error al generar la memoria."
 msgstr ""
 

@@ -40,6 +40,18 @@ class Admin_Analytics {
 	const CACHE_PREFIX = 'convoca_analytics_';
 
 	/**
+	 * Estados de post "vivos": los que lista un panel de administración.
+	 *
+	 * Es lo que significa `any` en WP_Query: quedan fuera `trash`, `auto-draft` e `inherit`. Un
+	 * contador que filtra solo `publish` y un listado que enseña `any` no cuadran nunca — la fila
+	 * se ve y el número dice cero. Coincide con `Admin_List::ESTADOS_LISTADOS` (members) y
+	 * `Admin_Turnos_List::ESTADOS_LISTADOS` (shifts).
+	 *
+	 * @var string[]
+	 */
+	const ESTADOS_VIVOS = array( 'publish', 'pending', 'draft', 'private', 'future' );
+
+	/**
 	 * Get all metrics aggregated across plugins.
 	 *
 	 * @param bool $force_refresh Skip transient cache.
@@ -70,10 +82,23 @@ class Admin_Analytics {
 	/* ── Members ──────────────────────────────────── */
 
 	/**
+	 * Los estados vivos como lista literal para un `IN (...)`.
+	 *
+	 * Son constantes del código, no datos: no hay nada que escapar y evita repetir el `prepare()`
+	 * en cada contador. Con datos de usuario, `prepare()` siempre.
+	 *
+	 * @return string
+	 */
+	public static function in_vivos(): string {
+		return "'" . implode( "','", self::ESTADOS_VIVOS ) . "'";
+	}
+
+	/**
 	 * Member statistics: counts by estado, new this month, expiring soon.
 	 *
 	 * @return array<string, mixed>
 	 */
+
 	public static function get_member_stats(): array {
 		global $wpdb;
 
@@ -93,40 +118,54 @@ class Admin_Analytics {
 			return $default;
 		}
 
-		$campo = "{$wpdb->posts}.post_type = 'miembro' AND {$wpdb->posts}.post_status = 'publish'";
+		$estados_vivos = implode( ', ', array_fill( 0, count( self::ESTADOS_VIVOS ), '%s' ) );
+		$campo         = "{$wpdb->posts}.post_type = 'miembro' AND {$wpdb->posts}.post_status IN ( {$estados_vivos} )";
+		$valores       = self::ESTADOS_VIVOS;
 
 		// Active.
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared -- placeholders generados, no datos.
 		$counts = $wpdb->get_row(
-			"SELECT
+			$wpdb->prepare(
+				"SELECT
                 SUM(IF(pm.meta_value = 'activo', 1, 0)) AS activos,
                 SUM(IF(pm.meta_value = 'pendiente_pago', 1, 0)) AS pendientes_pago,
                 SUM(IF(pm.meta_value = 'pendiente_documentacion', 1, 0)) AS pendientes_doc
              FROM {$wpdb->postmeta} pm
              JOIN {$wpdb->posts} ON {$wpdb->posts}.ID = pm.post_id AND $campo
-             WHERE pm.meta_key = '_convoca_estado_miembro'"
+             WHERE pm.meta_key = '_convoca_estado_miembro'",
+				$valores
+			)
 		);
 
 		$total = (int) $wpdb->get_var(
-			"SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'miembro' AND post_status = 'publish'"
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- placeholders generados, no datos.
+				"SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'miembro' AND post_status IN ( {$estados_vivos} )",
+				self::ESTADOS_VIVOS
+			)
 		);
 
 		$nuevos_mes = (int) $wpdb->get_var(
-			"SELECT COUNT(*) FROM {$wpdb->posts}
-             WHERE post_type = 'miembro' AND post_status = 'publish'
-             AND MONTH(post_date) = MONTH(NOW()) AND YEAR(post_date) = YEAR(NOW())"
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- placeholders generados, no datos.
+				"SELECT COUNT(*) FROM {$wpdb->posts}
+             WHERE post_type = 'miembro' AND post_status IN ( {$estados_vivos} )
+             AND MONTH(post_date) = MONTH(NOW()) AND YEAR(post_date) = YEAR(NOW())",
+				self::ESTADOS_VIVOS
+			)
 		);
 
 		$hoy       = wp_date( 'Y-m-d' );
 		$semana    = wp_date( 'Y-m-d', strtotime( '+7 days' ) );
 		$vencen_7d = (int) $wpdb->get_var(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- placeholders generados, no datos.
 				"SELECT COUNT(*) FROM {$wpdb->posts} p
              JOIN {$wpdb->postmeta} pe ON p.ID = pe.post_id AND pe.meta_key = '_convoca_estado_miembro' AND pe.meta_value = 'activo'
              JOIN {$wpdb->postmeta} pr ON p.ID = pr.post_id AND pr.meta_key = '_convoca_fecha_renovacion'
-             WHERE p.post_type = 'miembro' AND p.post_status = 'publish'
+             WHERE p.post_type = 'miembro' AND p.post_status IN ( {$estados_vivos} )
              AND CAST(pr.meta_value AS DATE) BETWEEN %s AND %s",
-				$hoy,
-				$semana
+				array_merge( self::ESTADOS_VIVOS, array( $hoy, $semana ) )
 			)
 		);
 
@@ -176,13 +215,13 @@ class Admin_Analytics {
              JOIN {$wpdb->posts} p ON p.ID = pm.post_id
              WHERE pm.meta_key = '_convoca_estado'
                AND p.post_type = 'inscripcion'
-               AND p.post_status = 'publish'"
+               AND p.post_status IN ( " . self::in_vivos() . ' )'
 		);
 
 		// Active activities.
 		$actividades = (int) $wpdb->get_var(
 			"SELECT COUNT(*) FROM {$wpdb->posts}
-             WHERE post_type = 'actividad' AND post_status = 'publish'"
+             WHERE post_type = 'actividad' AND post_status IN ( " . self::in_vivos() . ' )'
 		);
 
 		// Upcoming activities (future).
@@ -247,8 +286,8 @@ class Admin_Analytics {
              JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_convoca_amount_cents'
              LEFT JOIN {$wpdb->postmeta} pm3 ON p.ID = pm3.post_id AND pm3.meta_key = '_convoca_method'
              LEFT JOIN {$wpdb->postmeta} pm4 ON p.ID = pm4.post_id AND pm4.meta_key = '_convoca_paid_at'
-             WHERE p.post_type = 'pago' AND p.post_status = 'publish'
-               AND p.post_date >= %s",
+             WHERE p.post_type = 'pago' AND p.post_status IN ( " . self::in_vivos() . ' )
+               AND p.post_date >= %s',
 				wp_date( 'Y-m-d H:i:s', $mes_inicio )
 			)
 		);
@@ -294,9 +333,9 @@ class Admin_Analytics {
              FROM {$wpdb->posts} p
              JOIN {$wpdb->postmeta} ms ON p.ID = ms.post_id AND ms.meta_key = '_convoca_status' AND ms.meta_value = 'paid'
              JOIN {$wpdb->postmeta} ma ON p.ID = ma.post_id AND ma.meta_key = '_convoca_amount_cents'
-             WHERE p.post_type = 'pago' AND p.post_status = 'publish'
+             WHERE p.post_type = 'pago' AND p.post_status IN ( " . self::in_vivos() . ' )
                AND p.post_date >= %s
-             GROUP BY DATE(p.post_date) ORDER BY day ASC",
+             GROUP BY DATE(p.post_date) ORDER BY day ASC',
 				wp_date( 'Y-m-d H:i:s', $semana_inicio )
 			)
 		);
@@ -352,7 +391,7 @@ class Admin_Analytics {
              JOIN {$wpdb->posts} p ON p.ID = pm.post_id
              WHERE pm.meta_key = '_estado'
                AND p.post_type = 'centro_turno'
-               AND p.post_status = 'publish'"
+               AND p.post_status IN ( " . self::in_vivos() . ' )'
 		);
 
 		return array(
@@ -395,7 +434,7 @@ class Admin_Analytics {
 			$members_trend[] = (int) $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(*) FROM {$wpdb->posts}
-                 WHERE post_type = 'miembro' AND post_status = 'publish'
+                 WHERE post_type = 'miembro' AND post_status IN ( " . self::in_vivos() . " )
                  AND DATE_FORMAT(post_date, '%%Y-%%m') = %s",
 					$ym
 				)
@@ -405,7 +444,7 @@ class Admin_Analytics {
 			$inscriptions_trend[] = (int) $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(*) FROM {$wpdb->posts}
-                 WHERE post_type = 'inscripcion' AND post_status = 'publish'
+                 WHERE post_type = 'inscripcion' AND post_status IN ( " . self::in_vivos() . " )
                  AND DATE_FORMAT(post_date, '%%Y-%%m') = %s",
 					$ym
 				)
@@ -418,7 +457,7 @@ class Admin_Analytics {
                  FROM {$wpdb->posts} p
                  JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_convoca_amount_cents'
                  JOIN {$wpdb->postmeta} ps ON p.ID = ps.post_id AND ps.meta_key = '_convoca_status' AND ps.meta_value = 'paid'
-                 WHERE p.post_type = 'pago' AND p.post_status = 'publish'
+                 WHERE p.post_type = 'pago' AND p.post_status IN ( " . self::in_vivos() . " )
                  AND DATE_FORMAT(p.post_date, '%%Y-%%m') = %s",
 					$ym
 				)
