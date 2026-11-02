@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Core 2.3.54\n"
+"Project-Id-Version: Convoca Core 2.3.56\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-core\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-01T15:27:57+00:00\n"
+"POT-Creation-Date: 2026-11-02T06:39:25+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-core\n"
@@ -338,6 +338,24 @@ msgstr ""
 
 #: includes/admin-global-menu.php:281
 msgid "No se ha podido completar la operación. Vuelve a intentarlo; si el problema continúa, avisa a la asociación."
+msgstr ""
+
+#. translators: %d: number of checks run
+#: includes/Admin/Diagnostico.php:216
+#, php-format
+msgid "%d comprobaciones realizadas."
+msgstr ""
+
+#: includes/Admin/Diagnostico.php:255
+msgid "Se encontraron errores"
+msgstr ""
+
+#: includes/Admin/Diagnostico.php:258
+msgid "Atención: algunas comprobaciones requieren revisión"
+msgstr ""
+
+#: includes/Admin/Diagnostico.php:260
+msgid "Todo correcto"
 msgstr ""
 
 #: includes/Admin_Analytics.php:524
@@ -1681,55 +1699,55 @@ msgstr ""
 msgid "La pasarela de pago no está activa."
 msgstr ""
 
-#: includes/Utils.php:1010
+#: includes/Utils.php:1027
 msgid "Se han detectado problemas críticos que impiden el funcionamiento."
 msgstr ""
 
-#: includes/Utils.php:1011
+#: includes/Utils.php:1028
 msgid "Estado: Errores detectados"
 msgstr ""
 
-#: includes/Utils.php:1015
+#: includes/Utils.php:1032
 msgid "Hay advertencias que podrían afectar el funcionamiento."
 msgstr ""
 
-#: includes/Utils.php:1016
+#: includes/Utils.php:1033
 msgid "Estado: Advertencias"
 msgstr ""
 
-#: includes/Utils.php:1020
+#: includes/Utils.php:1037
 msgid "Todos los componentes están configurados correctamente."
 msgstr ""
 
-#: includes/Utils.php:1021
+#: includes/Utils.php:1038
 msgid "Estado: Todo correcto"
 msgstr ""
 
-#: includes/Utils.php:1049
+#: includes/Utils.php:1066
 msgid "Reparar"
 msgstr ""
 
-#: includes/Utils.php:1240
-#: includes/Utils.php:1247
+#: includes/Utils.php:1257
+#: includes/Utils.php:1264
 msgid "Aportación"
 msgstr ""
 
-#: includes/Utils.php:1244
+#: includes/Utils.php:1261
 msgctxt "plural"
 msgid "Aportaciones"
 msgstr ""
 
-#: includes/Utils.php:1250
+#: includes/Utils.php:1267
 msgctxt "trasgu"
 msgid "Aportación Trasgu"
 msgstr ""
 
-#: includes/Utils.php:1253
+#: includes/Utils.php:1270
 msgctxt "socio"
 msgid "Aportación sugerida para socios"
 msgstr ""
 
-#: includes/Utils.php:1256
+#: includes/Utils.php:1273
 msgctxt "no-socio"
 msgid "Aportación sugerida para no socios"
 msgstr ""
