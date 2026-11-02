@@ -1,3 +1,12 @@
+## [2.3.56] — 2026-11-02
+
+### Añadido
+
+- **`Utils::set_document_theme()`**: el tema de documentos tenía **dos escritores** (el asistente de
+  configuración de Core y los ajustes de Members), cada uno con su copia de la validación. Ahora la
+  regla vive en un sitio y los dos pasan por ella: lo que se guarda es exactamente lo que el lector
+  va a devolver. Con su prueba (válido, inválido y vacío).
+
 ## [2.3.55] — 2026-11-02
 
 ### Añadido

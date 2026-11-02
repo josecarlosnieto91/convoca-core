@@ -1034,7 +1034,7 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 		if ( $step === 6 && isset( $_POST['document_theme'] ) ) {
 			// Tema de documentos (claro/oscuro) guardado desde el paso 6 (Ecosistema).
 			$theme = sanitize_key( wp_unslash( $_POST['document_theme'] ) );
-			update_option( 'convoca_document_theme', in_array( $theme, array( 'light', 'dark' ), true ) ? $theme : 'light' );
+			\Convoca\Core\Utils::set_document_theme( $theme );
 			set_transient( 'convoca_wizard_theme_saved', 1, 30 );
 			wp_safe_redirect( admin_url( 'admin.php?page=conv-setup-wizard&step=6&theme_saved=1' ) );
 			exit;

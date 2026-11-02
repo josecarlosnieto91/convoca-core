@@ -979,6 +979,23 @@ class Utils {
 	}
 
 	/**
+	 * Stores the document theme, with the same rule as the reader.
+	 *
+	 * Two plugins used to write this option with their own copy of the validation. One rule, one
+	 * place: whoever writes, writes through here, and anything that is not 'light' or 'dark'
+	 * becomes 'light' — exactly what `get_document_theme()` would have returned anyway.
+	 *
+	 * @param string $theme 'light' or 'dark'.
+	 * @return string The value actually stored.
+	 */
+	public static function set_document_theme( string $theme ): string {
+		$theme = in_array( $theme, array( 'light', 'dark' ), true ) ? $theme : 'light';
+		\update_option( 'convoca_document_theme', $theme );
+
+		return $theme;
+	}
+
+	/**
 	 * Get a persistent salt for the Convoca ecosystem.
 	 * Unlike wp_salt(), this is stored in the database and remains consistent
 	 * even if WordPress salts are regenerated.

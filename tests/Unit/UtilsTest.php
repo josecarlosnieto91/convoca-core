@@ -155,4 +155,21 @@ class UtilsTest extends TestCase
         $this->stubThemeOption('neon');
         $this->assertSame('light', \Convoca\Core\Utils::get_document_theme());
     }
+
+    /**
+     * El escritor valida con la MISMA regla que el lector.
+     *
+     * Había dos plugins escribiendo la opción con su copia de la validación; ahora los dos pasan
+     * por aquí, y lo que se guarda es lo que el lector va a devolver.
+     */
+    public function test_el_escritor_guarda_lo_que_el_lector_devuelve(): void
+    {
+        $this->assertSame('dark', \Convoca\Core\Utils::set_document_theme('dark'));
+        $this->assertSame('dark', $GLOBALS['_wp_stores']['options']['convoca_document_theme']);
+        $this->assertSame('dark', \Convoca\Core\Utils::get_document_theme());
+
+        $this->assertSame('light', \Convoca\Core\Utils::set_document_theme('neon'), 'lo inválido se guarda como light');
+        $this->assertSame('light', $GLOBALS['_wp_stores']['options']['convoca_document_theme']);
+        $this->assertSame('light', \Convoca\Core\Utils::set_document_theme(''), 'y el vacío también');
+    }
 }
