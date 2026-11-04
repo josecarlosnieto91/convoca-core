@@ -1,3 +1,10 @@
+## [2.4.2] — 2026-11-05
+
+### Cambiado
+
+- La pantalla del sitio se divide en filas reutilizables (`fila_mapa`, `fila_texto`, `fila_area`) para no
+  pasar el ratchet de PHPMD. Sin cambios de comportamiento: el marcado es el mismo.
+
 ## [2.4.1] — 2026-11-04
 
 ### Añadido

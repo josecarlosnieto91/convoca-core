@@ -217,6 +217,10 @@ class Site_Settings {
 	/**
 	 * Pinta la pantalla.
 	 *
+	 * La forma del formulario son muchas líneas de marcado y pocas de lógica: PHPMD cuenta el HTML como
+	 * si fuera código y da un falso positivo. Se silencia aquí, no en el resto de la clase.
+	 *
+	 * @SuppressWarnings("PHPMD.ExcessiveMethodLength")
 	 * @return void
 	 */
 	public static function render(): void {
@@ -228,63 +232,85 @@ class Site_Settings {
 		?>
 		<div class="wrap">
 			<h1><?php esc_html_e( 'Sitio', 'convoca-core' ); ?></h1>
-			<p class="description"><?php esc_html_e( 'Valores de esta instalación: los enlaces y textos que el tema deja vacíos a propósito. Si un mu-plugin o el tema los pone por código, manda el código.', 'convoca-core' ); ?></p>
+			<p class="description"><?php esc_html_e( 'Valores de esta instalación: los enlaces y textos que el tema deja vacíos a propósito. Si un mu-plugin o el tema los ponen por código, manda el código.', 'convoca-core' ); ?></p>
 
 			<form method="post" action="options.php">
 				<?php settings_fields( self::GROUP ); ?>
 				<table class="form-table" role="presentation">
-					<tr>
-						<th scope="row"><label for="convoca-site-links"><?php esc_html_e( 'Redes y enlaces del sitio', 'convoca-core' ); ?></label></th>
-						<td>
-							<textarea id="convoca-site-links" name="<?php echo esc_attr( self::OPTION ); ?>[site_links]" rows="5" class="large-text code"><?php echo esc_textarea( self::a_mapa( $datos['site_links'] ?? array() ) ); ?></textarea>
-							<p class="description"><?php esc_html_e( 'Una por línea: «servicio | URL». El servicio es la clave (facebook, instagram, email…).', 'convoca-core' ); ?></p>
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="convoca-social-links"><?php esc_html_e( 'Redes sociales', 'convoca-core' ); ?></label></th>
-						<td>
-							<textarea id="convoca-social-links" name="<?php echo esc_attr( self::OPTION ); ?>[social_links]" rows="3" class="large-text code"><?php echo esc_textarea( self::a_mapa( $datos['social_links'] ?? array() ) ); ?></textarea>
-							<p class="description"><?php esc_html_e( 'Una por línea: «servicio | URL». Alimenta [convoca_socials] y los tokens del pie.', 'convoca-core' ); ?></p>
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="convoca-link-labels"><?php esc_html_e( 'Etiquetas de esos enlaces', 'convoca-core' ); ?></label></th>
-						<td>
-							<textarea id="convoca-link-labels" name="<?php echo esc_attr( self::OPTION ); ?>[link_labels]" rows="5" class="large-text code"><?php echo esc_textarea( self::a_mapa( $datos['link_labels'] ?? array() ) ); ?></textarea>
-							<p class="description"><?php esc_html_e( 'Una por línea: «servicio | etiqueta visible».', 'convoca-core' ); ?></p>
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="convoca-cta-url"><?php esc_html_e( 'Botón de la cabecera', 'convoca-core' ); ?></label></th>
-						<td>
-							<input type="url" id="convoca-cta-url" class="regular-text" name="<?php echo esc_attr( self::OPTION ); ?>[cta_url]" value="<?php echo esc_attr( self::valor( 'cta_url' ) ); ?>">
-							<input type="text" class="regular-text" name="<?php echo esc_attr( self::OPTION ); ?>[cta_label]" value="<?php echo esc_attr( self::valor( 'cta_label' ) ); ?>" placeholder="<?php esc_attr_e( 'Texto del botón', 'convoca-core' ); ?>">
-							<p class="description"><?php esc_html_e( 'URL y texto del botón de la cabecera.', 'convoca-core' ); ?></p>
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="convoca-cta-heading"><?php esc_html_e( 'Bloque CTA', 'convoca-core' ); ?></label></th>
-						<td>
-							<input type="text" id="convoca-cta-heading" class="regular-text" name="<?php echo esc_attr( self::OPTION ); ?>[cta_heading]" value="<?php echo esc_attr( self::valor( 'cta_heading' ) ); ?>">
-							<textarea class="large-text" rows="3" name="<?php echo esc_attr( self::OPTION ); ?>[cta_text]"><?php echo esc_textarea( self::valor( 'cta_text' ) ); ?></textarea>
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="convoca-volunteer-email"><?php esc_html_e( 'Correo de voluntariado', 'convoca-core' ); ?></label></th>
-						<td>
-							<input type="email" id="convoca-volunteer-email" class="regular-text" name="<?php echo esc_attr( self::OPTION ); ?>[volunteer_email]" value="<?php echo esc_attr( self::valor( 'volunteer_email' ) ); ?>">
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="convoca-copyright"><?php esc_html_e( 'Aviso del pie', 'convoca-core' ); ?></label></th>
-						<td>
-							<input type="text" id="convoca-copyright" class="large-text" name="<?php echo esc_attr( self::OPTION ); ?>[copyright_extra]" value="<?php echo esc_attr( self::valor( 'copyright_extra' ) ); ?>">
-						</td>
-					</tr>
+					<?php
+					self::fila_mapa( 'site_links', __( 'Redes y enlaces del sitio', 'convoca-core' ), __( 'Una por línea: «servicio | URL». El servicio es la clave (facebook, instagram, email…).', 'convoca-core' ), 5 );
+					self::fila_mapa( 'social_links', __( 'Redes sociales', 'convoca-core' ), __( 'Una por línea: «servicio | URL». Alimenta [convoca_socials] y los tokens del pie.', 'convoca-core' ), 3 );
+					self::fila_mapa( 'link_labels', __( 'Etiquetas de esos enlaces', 'convoca-core' ), __( 'Una por línea: «servicio | etiqueta visible».', 'convoca-core' ), 5 );
+					self::fila_texto( 'cta_url', __( 'Botón de la cabecera', 'convoca-core' ), 'url' );
+					self::fila_texto( 'cta_label', __( 'Texto del botón', 'convoca-core' ), 'text' );
+					self::fila_texto( 'cta_heading', __( 'Titular del bloque CTA', 'convoca-core' ), 'text' );
+					self::fila_area( 'cta_text', __( 'Texto del bloque CTA', 'convoca-core' ) );
+					self::fila_texto( 'volunteer_email', __( 'Correo de voluntariado', 'convoca-core' ), 'email' );
+					self::fila_texto( 'copyright_extra', __( 'Aviso del pie', 'convoca-core' ), 'text', 'large-text' );
+					?>
 				</table>
 				<?php submit_button(); ?>
 			</form>
 		</div>
+		<?php
+	}
+
+	/**
+	 * Una fila de mapa (líneas «clave | valor»).
+	 *
+	 * @param string               $clave       Clave de la opción.
+	 * @param string               $titulo      Etiqueta de la fila.
+	 * @param string               $ayuda       Texto de ayuda.
+	 * @param int                  $filas       Altura.
+	 * @return void
+	 */
+	private static function fila_mapa( string $clave, string $titulo, string $ayuda, int $filas ): void {
+		$datos = self::datos();
+		$id    = 'convoca-' . str_replace( '_', '-', $clave );
+		?>
+		<tr>
+			<th scope="row"><label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $titulo ); ?></label></th>
+			<td>
+				<textarea id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( self::OPTION ); ?>[<?php echo esc_attr( $clave ); ?>]" rows="<?php echo esc_attr( (string) $filas ); ?>" class="large-text code"><?php echo esc_textarea( self::a_mapa( $datos[ $clave ] ?? array() ) ); ?></textarea>
+				<p class="description"><?php echo esc_html( $ayuda ); ?></p>
+			</td>
+		</tr>
+		<?php
+	}
+
+	/**
+	 * Una fila de texto corto.
+	 *
+	 * @param string               $clave  Clave de la opción.
+	 * @param string               $titulo Etiqueta.
+	 * @param string               $tipo   Tipo de input.
+	 * @param string               $clase  Clase del input.
+	 * @return void
+	 */
+	private static function fila_texto( string $clave, string $titulo, string $tipo, string $clase = 'regular-text' ): void {
+		$id = 'convoca-' . str_replace( '_', '-', $clave );
+		?>
+		<tr>
+			<th scope="row"><label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $titulo ); ?></label></th>
+			<td><input type="<?php echo esc_attr( $tipo ); ?>" id="<?php echo esc_attr( $id ); ?>" class="<?php echo esc_attr( $clase ); ?>" name="<?php echo esc_attr( self::OPTION ); ?>[<?php echo esc_attr( $clave ); ?>]" value="<?php echo esc_attr( self::valor( $clave ) ); ?>"></td>
+		</tr>
+		<?php
+	}
+
+	/**
+	 * Una fila de texto largo.
+	 *
+	 * @param string               $clave  Clave de la opción.
+	 * @param string               $titulo Etiqueta.
+	 * @return void
+	 */
+	private static function fila_area( string $clave, string $titulo ): void {
+		$id = 'convoca-' . str_replace( '_', '-', $clave );
+		?>
+		<tr>
+			<th scope="row"><label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $titulo ); ?></label></th>
+			<td><textarea id="<?php echo esc_attr( $id ); ?>" class="large-text" rows="3" name="<?php echo esc_attr( self::OPTION ); ?>[<?php echo esc_attr( $clave ); ?>]"><?php echo esc_textarea( self::valor( $clave ) ); ?></textarea></td>
+		</tr>
 		<?php
 	}
 
