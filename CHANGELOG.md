@@ -1,3 +1,21 @@
+## [2.4.0] — 2026-11-04
+
+### Añadido
+
+- **Pantalla «Convoca → Sitio»**: redes, etiquetas de esos enlaces, botón y bloque CTA, correo de
+  voluntariado y aviso del pie, guardados en la opción `convoca_site_settings`. Los filtros del tema se
+  mantienen y leen la opción como valor por defecto; un filtro del sitio añadido después manda sobre
+  ella. Los datos dejan de vivir en un mu-plugin por sitio.
+- **`wp convoca-core sitio claves-legado --claves="canonica=antigua,..."`**: el mapa de claves heredadas
+  de los datos de evento se carga una vez y el filtro `convoca_event_meta_legacy_keys` lo lee.
+- Comandos `sitio mostrar` y `sitio limpiar-claves-legado`.
+
+### Pruebas
+
+- 6 nuevas: saneado de enlaces y etiquetas, el filtro devuelve lo guardado, sin opción no pisa el valor
+  del tema, un filtro del sitio manda, las claves heredadas salen de la opción y el comando está
+  registrado.
+
 ## [2.3.57] — 2026-11-04
 
 ### Corregido

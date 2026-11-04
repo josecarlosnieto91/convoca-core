@@ -3,7 +3,7 @@
  * Plugin Name:       Convoca Core
  * Plugin URI:        https://getconvoca.app
  * Description:       Common functions, validation, logging, and shared infrastructure.
- * Version: 2.3.57
+ * Version: 2.4.0
  * Requires at least: 6.4
  * Requires PHP:      8.2
  * Tested up to:      7.1.3
@@ -277,6 +277,18 @@ convoca_core_require( 'event-meta.php' );
 
 /* ── Shortcodes de front comunes a cualquier instalación (menú, redes, relacionadas, cifras) ── */
 convoca_core_require( 'front-shortcodes.php' );
+
+/* ── Valores del sitio (redes, etiquetas, CTA) y claves heredadas de los datos de evento ── */
+convoca_core_require( 'Site_Settings.php' );
+if ( class_exists( 'Convoca\\Core\\Site_Settings' ) ) {
+	\Convoca\Core\Site_Settings::register();
+}
+
+/* ── Comandos de consola de los valores del sitio ── */
+convoca_core_require( 'CLI_Site.php' );
+if ( defined( 'WP_CLI' ) && WP_CLI && class_exists( 'Convoca\\Core\\CLI_Site' ) ) {
+	\WP_CLI::add_command( 'convoca-core sitio', \Convoca\Core\CLI_Site::class );
+}
 
 
 /* ── REST endpoint: /convoca/v1/admin/metrics ── */

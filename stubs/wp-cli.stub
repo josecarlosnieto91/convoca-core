@@ -1,0 +1,21 @@
+<?php
+/**
+ * WP-CLI para el análisis estático.
+ *
+ * Los comandos de Core solo existen cuando corre bajo WP-CLI, así que la clase no está en los stubs de
+ * WordPress. Sin esto, PHPStan marca cada llamada como «unknown class» (falso positivo).
+ */
+
+class WP_CLI_Command
+{
+}
+
+class WP_CLI
+{
+    public static function log( mixed ...$args ): void {}
+    public static function line( mixed ...$args ): void {}
+    public static function success( mixed ...$args ): void {}
+    public static function warning( mixed ...$args ): void {}
+    public static function error( mixed ...$args ): void {}
+    public static function add_command( mixed ...$args ): void {}
+}
