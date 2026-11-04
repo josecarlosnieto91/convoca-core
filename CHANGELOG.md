@@ -1,3 +1,10 @@
+## [2.4.1] — 2026-11-04
+
+### Añadido
+
+- **Las redes sociales y el aviso del pie también salen de la opción del sitio**: `convoca_social_links`
+  se alimenta de la pantalla y `copyright_extra` admite el HTML permitido del pie (CC BY-NC, etc.).
+
 ## [2.4.0] — 2026-11-04
 
 ### Añadido

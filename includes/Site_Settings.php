@@ -164,13 +164,14 @@ class Site_Settings {
 		$datos = array();
 
 		$datos['site_links']      = self::mapa( (string) ( $input['site_links'] ?? '' ), true );
+		$datos['social_links']    = self::mapa( (string) ( $input['social_links'] ?? '' ), true );
 		$datos['link_labels']     = self::mapa( (string) ( $input['link_labels'] ?? '' ), false );
 		$datos['cta_url']         = esc_url_raw( (string) ( $input['cta_url'] ?? '' ) );
 		$datos['cta_label']       = sanitize_text_field( (string) ( $input['cta_label'] ?? '' ) );
 		$datos['cta_heading']     = sanitize_text_field( (string) ( $input['cta_heading'] ?? '' ) );
 		$datos['cta_text']        = sanitize_textarea_field( (string) ( $input['cta_text'] ?? '' ) );
 		$datos['volunteer_email'] = sanitize_email( (string) ( $input['volunteer_email'] ?? '' ) );
-		$datos['copyright_extra'] = sanitize_text_field( (string) ( $input['copyright_extra'] ?? '' ) );
+		$datos['copyright_extra'] = wp_kses_post( (string) ( $input['copyright_extra'] ?? '' ) );
 
 		// Las claves de legado no se editan a mano en la pantalla: las carga el comando de una pasada.
 		$previas = self::datos();
@@ -237,6 +238,13 @@ class Site_Settings {
 						<td>
 							<textarea id="convoca-site-links" name="<?php echo esc_attr( self::OPTION ); ?>[site_links]" rows="5" class="large-text code"><?php echo esc_textarea( self::a_mapa( $datos['site_links'] ?? array() ) ); ?></textarea>
 							<p class="description"><?php esc_html_e( 'Una por línea: «servicio | URL». El servicio es la clave (facebook, instagram, email…).', 'convoca-core' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="convoca-social-links"><?php esc_html_e( 'Redes sociales', 'convoca-core' ); ?></label></th>
+						<td>
+							<textarea id="convoca-social-links" name="<?php echo esc_attr( self::OPTION ); ?>[social_links]" rows="3" class="large-text code"><?php echo esc_textarea( self::a_mapa( $datos['social_links'] ?? array() ) ); ?></textarea>
+							<p class="description"><?php esc_html_e( 'Una por línea: «servicio | URL». Alimenta [convoca_socials] y los tokens del pie.', 'convoca-core' ); ?></p>
 						</td>
 					</tr>
 					<tr>
