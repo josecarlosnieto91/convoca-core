@@ -43,7 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Los ficheros .html de templates/ y parts/ no ejecutan PHP, así que el menú
  * (que se gestiona desde el escritorio) se pinta con este shortcode.
  *
- * @param array<string,string>|string $atts Atributos: location, class.
+ * @param array<string,string>|string $atts Atributos: location, class, label.
  * @return string HTML del menú, o cadena vacía si no hay menú en esa ubicación.
  */
 function shortcode_menu( $atts ): string {
@@ -51,6 +51,7 @@ function shortcode_menu( $atts ): string {
 		array(
 			'location' => 'top',
 			'class'    => 'convoca-nav',
+			'label'    => '',
 		),
 		(array) $atts,
 		'convoca_menu'
@@ -60,15 +61,26 @@ function shortcode_menu( $atts ): string {
 		return '';
 	}
 
+	// Sin nombre accesible, dos <nav> en la misma página son indistinguibles para
+	// un lector de pantalla (axe: landmark-unique). El valor por defecto depende de
+	// la ubicación; `label` permite afinarlo desde la plantilla.
+	$label = trim( (string) $atts['label'] );
+	if ( '' === $label ) {
+		$label = 'top' === $atts['location']
+			? __( 'Enlaces rápidos', 'convoca-core' )
+			: __( 'Navegación', 'convoca-core' );
+	}
+
 	$html = wp_nav_menu(
 		array(
-			'theme_location'  => $atts['location'],
-			'container'       => 'nav',
-			'container_class' => $atts['class'],
-			'menu_class'      => $atts['class'] . '__list',
-			'depth'           => 2,
-			'echo'            => false,
-			'fallback_cb'     => false,
+			'theme_location'       => $atts['location'],
+			'container'            => 'nav',
+			'container_class'      => $atts['class'],
+			'container_aria_label' => $label,
+			'menu_class'           => $atts['class'] . '__list',
+			'depth'                => 2,
+			'echo'                 => false,
+			'fallback_cb'          => false,
 		)
 	);
 

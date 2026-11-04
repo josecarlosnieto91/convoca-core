@@ -306,6 +306,54 @@ final class FrontShortcodesTest extends TestCase {
 	}
 
 	/**
+	 * Un `<nav>` sin nombre accesible es indistinguible del principal para un lector de pantalla (axe:
+	 * landmark-unique). El shortcode tiene que pedirle a WordPress el `aria-label` del contenedor.
+	 */
+	public function test_el_menu_lleva_nombre_accesible_por_defecto(): void {
+		$GLOBALS['_wp_stores']['nav_menus']['top'] = true;
+		$GLOBALS['_wp_stores']['nav_html']['top']  = '<nav class="convoca-nav"><ul><li>Inicio</li></ul></nav>';
+
+		$html = \Convoca\Core\shortcode_menu( array( 'location' => 'top' ) );
+
+		$this->assertStringContainsString( 'aria-label="Enlaces rápidos"', $html );
+		$this->assertSame(
+			'Enlaces rápidos',
+			$GLOBALS['_wp_stores']['nav_args'][0]['container_aria_label'],
+			'la etiqueta viaja en los argumentos que recibe wp_nav_menu'
+		);
+	}
+
+	/**
+	 * El nombre por defecto depende de la ubicación, y `label` permite afinarlo desde la plantilla.
+	 */
+	public function test_el_menu_acepta_etiqueta_propia_y_la_escapa(): void {
+		$GLOBALS['_wp_stores']['nav_menus']['footer'] = true;
+		$GLOBALS['_wp_stores']['nav_html']['footer']  = '<nav class="convoca-nav"><ul><li>Aviso legal</li></ul></nav>';
+
+		$html = \Convoca\Core\shortcode_menu(
+			array(
+				'location' => 'footer',
+				'label'    => 'Menú "del pie"',
+			)
+		);
+
+		$this->assertStringContainsString( 'aria-label="Menú &quot;del pie&quot;"', $html );
+		$this->assertSame( 'Menú "del pie"', $GLOBALS['_wp_stores']['nav_args'][0]['container_aria_label'] );
+	}
+
+	/**
+	 * Sin `label`, una ubicación que no es la barra superior se anuncia como «Navegación».
+	 */
+	public function test_el_menu_usa_el_nombre_generico_fuera_de_la_barra_superior(): void {
+		$GLOBALS['_wp_stores']['nav_menus']['footer'] = true;
+		$GLOBALS['_wp_stores']['nav_html']['footer']  = '<nav class="convoca-nav"><ul><li>Aviso legal</li></ul></nav>';
+
+		$html = \Convoca\Core\shortcode_menu( array( 'location' => 'footer' ) );
+
+		$this->assertStringContainsString( 'aria-label="Navegación"', $html );
+	}
+
+	/**
 	 * Los shortcodes quedan registrados con su etiqueta: si no, en la página se lee el texto crudo entre corchetes.
 	 */
 	public function test_los_shortcodes_quedan_registrados(): void {

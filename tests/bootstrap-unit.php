@@ -2020,7 +2020,27 @@ if (!function_exists('wp_nav_menu')) {
      * se imprime, como en WordPress.
      */
     function wp_nav_menu($args = array()) {
-        $html = (string) ($GLOBALS['_wp_stores']['nav_html'][(string) ($args['theme_location'] ?? '')] ?? '');
+        // Se guardan los argumentos: es la única forma de comprobar que el producto
+        // pide el nombre accesible del landmark en vez de fiarse del almacén.
+        $GLOBALS['_wp_stores']['nav_args'][] = $args;
+        $raw = (string) ($GLOBALS['_wp_stores']['nav_html'][(string) ($args['theme_location'] ?? '')] ?? '');
+        $label = (string) ($args['container_aria_label'] ?? '');
+        if ('' === trim($raw)) {
+            $html = '';
+        } elseif (0 === stripos(ltrim($raw), '<nav')) {
+            // El almacén trae el menú completo: se le añade el nombre accesible,
+            // como hace WordPress al pintar el contenedor.
+            $html = $raw;
+            if ('' !== $label && false === stripos($html, 'aria-label')) {
+                $html = (string) preg_replace('/<nav\b/i', '<nav aria-label="' . esc_attr($label) . '"', $html, 1);
+            }
+        } else {
+            // El almacén trae solo los items: el contenedor lo pone el arnés.
+            $attrs = '';
+            if (!empty($args['container_class'])) { $attrs .= ' class="' . esc_attr($args['container_class']) . '"'; }
+            if ('' !== $label) { $attrs .= ' aria-label="' . esc_attr($label) . '"'; }
+            $html = ('nav' === ($args['container'] ?? '')) ? '<nav' . $attrs . '>' . $raw . '</nav>' : $raw;
+        }
         if (!empty($args['echo'])) { echo $html; return true; }
         return $html;
     }

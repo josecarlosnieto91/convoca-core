@@ -1,3 +1,15 @@
+## [2.3.57] — 2026-11-04
+
+### Corregido
+
+- **`[convoca_menu]` pinta un `<nav>` con nombre accesible.** El shortcode no aceptaba etiqueta y el
+  contenedor salía sin `aria-label`, así que en una página con otra navegación un lector de pantalla
+  anunciaba «navegación» dos veces sin poder distinguirlas (axe `landmark-unique`, medido en las 28
+  páginas de biodevas.org). Ahora acepta `label` y, si no se le pasa, usa `Enlaces rápidos` para la
+  barra superior y `Navegación` para el resto; el valor viaja en `container_aria_label`.
+- **El arnés de pruebas pinta el contenedor del menú como WordPress**, en vez de devolver un HTML fijo:
+  sin eso, una prueba del `aria-label` habría medido el doble y no el producto.
+
 ## [2.3.56] — 2026-11-02
 
 ### Añadido
