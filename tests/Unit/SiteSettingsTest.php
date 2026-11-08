@@ -138,6 +138,7 @@ final class SiteSettingsTest extends TestCase {
 		$css = (string) ob_get_clean();
 
 		$this->assertStringContainsString( '--conv-accent: #FF8700', $css );
+		$this->assertStringContainsString( ':root:root{', $css, 'tiene que ganar al :root de las hojas del plugin' );
 		$this->assertStringNotContainsString( 'accent-strong', $css, 'sin valor no se imprime el token' );
 	}
 

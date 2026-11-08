@@ -42,7 +42,7 @@ class Site_Settings {
 	 */
 	public static function register(): void {
 		add_action( 'admin_menu', array( __CLASS__, 'add_page' ), 20 );
-		add_action( 'wp_head', array( __CLASS__, 'imprimir_colores' ), 5 );
+		add_action( 'wp_head', array( __CLASS__, 'imprimir_colores' ), 999 );
 		add_action( 'admin_init', array( __CLASS__, 'register_setting' ) );
 		self::aplicar_filtros();
 	}
@@ -356,7 +356,9 @@ class Site_Settings {
 			return;
 		}
 
-		echo '<style id="convoca-site-colors">:root{' . esc_html( implode( ';', $pares ) ) . ';}</style>' . "\n";
+		// `:root:root` gana al `:root` de las hojas del plugin sin depender del orden de carga: los estilos
+		// encolados se imprimen después de este enganche y, con la misma especificidad, ganaban ellos.
+		echo '<style id="convoca-site-colors">:root:root{' . esc_html( implode( ';', $pares ) ) . ';}</style>' . "\n";
 	}
 
 	/**

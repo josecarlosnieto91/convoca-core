@@ -1,3 +1,11 @@
+## [2.4.8] — 2026-11-08
+
+### Corregido
+
+- **el color del sitio no ganaba a las hojas del plugin**: el `<style>` salía en `wp_head` antes de los
+  estilos encolados y, con la misma especificidad, ganaba el `:root` del plugin. Se imprime al final
+  (`priority 999`) y con `:root:root`, que gana por especificidad y no por orden.
+
 ## [2.4.7] — 2026-11-08
 
 ### Añadido
