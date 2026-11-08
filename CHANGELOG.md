@@ -1,3 +1,16 @@
+## [2.4.3] — 2026-11-08
+
+### Corregido
+
+- **La poda del correo ya no borra los párrafos que solo llevan una imagen.** `prune_empty_html()`
+  decidía «vacío» por el texto, así que un párrafo con el QR de check-in (solo `<img>`) desaparecía y
+  el correo prometía un QR que no llegaba. Ahora un párrafo con `<img>` se conserva; los vacíos de
+  verdad (una raya, un valor ausente) siguen fuera.
+
+### Pruebas
+
+- 2 nuevas: un párrafo con imagen no se poda y uno vacío de verdad sí.
+
 ## [2.4.2] — 2026-11-05
 
 ### Cambiado

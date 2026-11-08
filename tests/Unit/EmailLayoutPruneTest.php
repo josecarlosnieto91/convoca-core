@@ -35,6 +35,22 @@ class EmailLayoutPruneTest extends TestCase {
 		return '<p style="text-align:center;margin:24px 0 0"><a href="' . $url . '" class="email-btn">' . $texto . '</a></p>';
 	}
 
+	/**
+	 * Un párrafo con una imagen no está vacío: así viaja el QR de check-in.
+	 */
+	public function test_un_parrafo_con_imagen_no_se_poda(): void {
+		$html = '<p style="text-align:center"><img src="https://ejemplo.test/qr.png" alt="QR" width="220"></p>';
+
+		$this->assertStringContainsString( 'qr.png', Email_Layout::prune_empty_html( $html ), 'la imagen se queda' );
+	}
+
+	/**
+	 * Y un párrafo vacío de verdad sigue desapareciendo.
+	 */
+	public function test_un_parrafo_vacio_sigue_desapareciendo(): void {
+		$this->assertSame( '', Email_Layout::prune_empty_html( '<p>—</p>' ) );
+	}
+
 	public function test_una_fila_sin_valor_desaparece(): void {
 		$html = $this->caja( array( $this->fila( 'Nueva fecha renovación', '—' ) ) );
 

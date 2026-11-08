@@ -279,6 +279,13 @@ img{display:block;border:0;height:auto;line-height:100%;outline:none;text-decora
 		$html = preg_replace_callback(
 			'#<p\b[^>]*>(?:(?!</p>).)*</p>#is',
 			static function ( array $m ): string {
+				// Un párrafo con una imagen no está vacío aunque no tenga texto: así viaja el QR de
+				// check-in. Antes se borraba el párrafo entero y el correo prometía un QR que no
+				// llegaba (issue convoca-enroll#57).
+				if ( preg_match( '/<img\b/i', $m[0] ) ) {
+					return $m[0];
+				}
+
 				$texto = trim( html_entity_decode( wp_strip_all_tags( $m[0] ), ENT_QUOTES, 'UTF-8' ) );
 				if ( self::is_missing( $texto ) ) {
 					return '';
