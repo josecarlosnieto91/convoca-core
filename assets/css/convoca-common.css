@@ -1,3 +1,19 @@
+:root {
+	/* Tokens neutros del producto: cualquier sitio puede sobrescribirlos desde su CSS. */
+	--conv-bg: #ffffff;
+	--conv-surface: #f6f7f7;
+	--conv-fg: #1d2327;
+	--conv-muted: #50575e;
+	--conv-border: #dcdcde;
+	--conv-accent: #2271b1;
+	--conv-accent-strong: #135e96;
+	--conv-highlight: #8a6500;
+	--conv-ok: #0a7c3f;
+	--conv-accent-alt: #3858e9;
+	--conv-font-display: 'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	--conv-font-body: 'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
 /**
  * Convoca Common CSS (Shared across ecosystem)
  * Version: 1.0.0
@@ -124,7 +140,7 @@
     font-weight: 700;
     font-size: 0.9rem;
     margin-bottom: 0.3rem;
-    color: var(--wp--preset--color--violeta, #320028);
+    color: var(--conv-accent-alt);
 }
 
 .convoca-field input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
@@ -132,46 +148,46 @@
 .convoca-field textarea {
     width: 100%;
     padding: 0.75rem 1rem;
-    border: 2px solid var(--wp--preset--color--gris-medio, #e0e0e0);
+    border: 2px solid var(--conv-muted);
     border-radius: var(--wp--custom--radius--small, 8px);
     font-size: 0.95rem;
     font-family: inherit;
     transition: border-color var(--wp--custom--transition, 0.3s ease), box-shadow var(--wp--custom--transition, 0.3s ease);
-    background: var(--wp--preset--color--blanco, #fff);
-    color: var(--wp--preset--color--antracita, #1a1a1a);
+    background: var(--conv-bg);
+    color: var(--conv-fg);
 }
 
 .convoca-field input:focus,
 .convoca-field select:focus,
 .convoca-field textarea:focus {
     outline: none;
-    border-color: var(--wp--preset--color--naranja, #ff8700);
+    border-color: var(--conv-accent);
     box-shadow: 0 0 0 4px rgba(255, 135, 0, 0.12);
 }
 
 .convoca-field input:focus-visible,
 .convoca-field select:focus-visible,
 .convoca-field textarea:focus-visible {
-    outline: 3px solid var(--wp--preset--color--amarillo, #ffab00);
+    outline: 3px solid var(--conv-highlight);
     outline-offset: 2px;
 }
 
 /* File Upload */
 .convoca-field input[type="file"] {
     padding: 0.5rem;
-    border: 2px dashed var(--wp--preset--color--gris-medio, #e0e0e0);
+    border: 2px dashed var(--conv-muted);
     border-radius: var(--wp--custom--radius--small, 8px);
     cursor: pointer;
     width: 100%;
 }
 .convoca-field input[type="file"]:hover {
-    border-color: var(--wp--preset--color--naranja, #ff8700);
+    border-color: var(--conv-accent);
     background: rgba(255, 135, 0, 0.03);
 }
 
 /* Error States */
 .convoca-error-msg {
-    color: var(--wp--preset--color--naranja-intenso, #ff500a);
+    color: var(--conv-accent);
     font-size: 0.85rem;
     margin-top: 0.2rem;
     display: none;
@@ -180,7 +196,7 @@
 .convoca-field.has-error input,
 .convoca-field.has-error select,
 .convoca-field.has-error textarea {
-    border-color: var(--wp--preset--color--naranja-intenso, #ff500a);
+    border-color: var(--conv-accent);
 }
 .convoca-field.has-error .convoca-error-msg {
     display: block;
@@ -196,7 +212,7 @@
 
 .convoca-check-group input[type="checkbox"] {
     margin-top: 4px;
-    accent-color: var(--wp--preset--color--naranja, #ff8700);
+    accent-color: var(--conv-accent);
     flex-shrink: 0;
     width: 18px;
     height: 18px;
@@ -204,7 +220,7 @@
 }
 
 .convoca-check-group input[type="checkbox"]:focus-visible {
-    outline: 3px solid var(--wp--preset--color--amarillo, #ffab00);
+    outline: 3px solid var(--conv-highlight);
     outline-offset: 2px;
 }
 
@@ -217,7 +233,7 @@
 
 .convoca-check-group a {
     /* Naranja oscuro: el brillante da 2.41:1 sobre blanco (mínimo 4.5:1). */
-    color: var(--wp--preset--color--naranja-oscuro, #b05500);
+    color: var(--conv-accent-strong);
 }
 .convoca-check-group a:hover {
     color: #8f4400;
@@ -229,13 +245,13 @@
     gap: 10px;
     cursor: pointer;
     padding: 12px;
-    border: 1px solid var(--wp--preset--color--gris-medio, #e0e0e0);
+    border: 1px solid var(--conv-muted);
     border-radius: var(--wp--custom--radius--small, 8px);
-    background: var(--wp--preset--color--gris-piedra, #f4f4f4);
+    background: var(--conv-border);
     transition: all 0.2s ease;
 }
 .convoca-checkbox-box:hover {
-    border-color: var(--wp--preset--color--naranja, #ff8700);
+    border-color: var(--conv-accent);
 }
 
 /* ── Buttons ──────────────────────────────────── */
@@ -246,7 +262,7 @@
     gap: 0.3rem;
     padding: 0.75rem 1.5rem;
     border-radius: var(--wp--custom--radius--pill, 50px);
-    font-family: var(--wp--preset--font-family--display, 'Outfit', sans-serif);
+    font-family: var(--conv-font-display);
     font-weight: 600;
     font-size: 0.95rem;
     cursor: pointer;
@@ -265,22 +281,22 @@
        marca de siempre — hay sitios cuyo tema ajusta el TEXTO a su paleta oscura
        (texto uva sobre naranja brillante = 7.47:1) y ponerles aquí un fondo oscuro
        a la fuerza les rompía el contraste. */
-    background: var(--wp--preset--color--naranja-oscuro, #b05500);
-    color: var(--wp--preset--color--blanco, #fff);
-    border-color: var(--wp--preset--color--naranja-oscuro, var(--wp--preset--color--naranja, #b05500));
+    background: var(--conv-accent-strong);
+    color: var(--conv-bg);
+    border-color: var(--conv-accent-strong));
 }
 .convoca-btn-primary:hover {
     /* Mismo criterio en el hover: un paso más oscuro donde la paleta lo declare
        (blanco encima = 7.01:1), y el naranja intenso de siempre donde no. */
-    background: var(--wp--preset--color--naranja-oscuro-hover, #8f4400);
-    border-color: var(--wp--preset--color--naranja-oscuro-hover, var(--wp--preset--color--naranja-intenso, #ff500a));
-    color: var(--wp--preset--color--blanco, #fff);
+    background: var(--conv-accent-strong);
+    border-color: var(--conv-accent-strong));
+    color: var(--conv-bg);
 }
 
 .convoca-btn-secondary {
-    background: var(--wp--preset--color--amarillo, #ffab00);
-    border-color: var(--wp--preset--color--amarillo, #ffab00);
-    color: var(--wp--preset--color--violeta, #320028);
+    background: var(--conv-highlight);
+    border-color: var(--conv-highlight);
+    color: var(--conv-accent-alt);
 }
 .convoca-btn-secondary:hover {
     background: #e69a00;
@@ -291,13 +307,13 @@
     background: transparent;
     /* Texto y borde en naranja OSCURO: el brillante da 2.41:1 sobre blanco, por
        debajo del 4.5:1 del texto (1.4.3) y del 3:1 del límite del control (1.4.11). */
-    color: var(--wp--preset--color--naranja-oscuro, #b05500);
-    border-color: var(--wp--preset--color--naranja-oscuro, #b05500);
+    color: var(--conv-accent-strong);
+    border-color: var(--conv-accent-strong);
 }
 .convoca-btn-outline:hover {
-    background: var(--wp--preset--color--naranja-oscuro, #b05500);
-    border-color: var(--wp--preset--color--naranja-oscuro, #b05500);
-    color: var(--wp--preset--color--blanco, #fff);
+    background: var(--conv-accent-strong);
+    border-color: var(--conv-accent-strong);
+    color: var(--conv-bg);
 }
 
 .convoca-btn:disabled {
@@ -333,7 +349,7 @@
 /* ── Diagnostic Panel ───────────────────────── */
 .convoca-diagnostic {
     background: #fff;
-    border: 1px solid var(--wp--preset--color--gris-medio, #c3c4c7);
+    border: 1px solid var(--conv-muted);
     box-shadow: 0 1px 1px rgba(0,0,0,.04);
     margin-top: 20px;
     border-radius: var(--wp--custom--radius--small, 8px);
@@ -344,8 +360,8 @@
     display: flex;
     align-items: center;
     padding: 20px;
-    border-bottom: 1px solid var(--wp--preset--color--gris claros, #eee);
-    background: var(--wp--preset--color--gris claros, #fafafa);
+    border-bottom: 1px solid var(--conv-border);
+    background: var(--conv-surface);
 }
 
 .convoca-diagnostic-header--success { background: #f0fdf4; border-left: 4px solid #46b450; }
@@ -393,7 +409,7 @@
 .convoca-diagnostic-summary h3 {
     margin: 0;
     font-size: 1.4em;
-    color: var(--wp--preset--color--antracita, #1a1a1a);
+    color: var(--conv-fg);
 }
 
 .convoca-diagnostic-summary p {
@@ -410,7 +426,7 @@
     align-items: flex-start;
     gap: 12px;
     padding: 15px 20px;
-    border-bottom: 1px solid var(--wp--preset--color--gris claros, #f0f0f1);
+    border-bottom: 1px solid var(--conv-border);
 }
 
 .convoca-diagnostic-row:last-child {
@@ -476,13 +492,13 @@
 
 .convoca-rating-star .convoca-star {
     font-size: 1.5rem;
-    color: var(--wp--preset--color--gris-medio, #e0e0e0);
+    color: var(--conv-muted);
     transition: color 0.15s ease;
 }
 
 .convoca-rating-star:hover .convoca-star,
 .convoca-rating-star:has(input:checked) .convoca-star {
-    color: var(--wp--preset--color--amarillo, #ffab00);
+    color: var(--conv-highlight);
 }
 
 /* ── Email Preview Layout ──────────────────── */
@@ -499,7 +515,7 @@
     display: block;
     width: 100%;
     background: #fff;
-    border: 1px solid var(--wp--preset--color--gris-medio, #e0e0e0);
+    border: 1px solid var(--conv-muted);
     border-radius: var(--wp--custom--radius--small, 8px);
     padding: 20px;
     min-height: 250px;
@@ -525,17 +541,17 @@
 /* ── Chips Component ─────────────────────────── */
 .conv-chips-container {
     display: flex; flex-wrap: wrap; gap: 6px; padding: 8px;
-    border: 2px solid var(--wp--preset--color--gris-medio, #e0e0e0);
+    border: 2px solid var(--conv-muted);
     border-radius: var(--wp--custom--radius--small, 8px);
     min-height: 42px; cursor: text; background: #fff;
 }
 .conv-chips-container:focus-within {
-    border-color: var(--wp--preset--color--naranja, #ff8700);
+    border-color: var(--conv-accent);
     box-shadow: 0 0 0 4px rgba(255,135,0,0.12);
 }
 .conv-chip {
     display: inline-flex; align-items: center; gap: 4px;
-    background: var(--wp--preset--color--violeta, #320028);
+    background: var(--conv-accent-alt);
     color: #fff; padding: 4px 10px; border-radius: 20px;
     font-size: 12px; font-weight: 600; line-height: 1.4;
 }
@@ -574,7 +590,7 @@
 
 /* ── Dark Mode: form fields follow the theme ──── */
 .dark-mode .convoca-field label {
-    color: var(--dark-orange, #ff8700);
+    color: var(--dark-orange, var(--conv-accent));
 }
 
 .dark-mode .convoca-field input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),

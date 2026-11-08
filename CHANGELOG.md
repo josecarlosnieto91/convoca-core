@@ -1,3 +1,11 @@
+## [2.4.6] — 2026-11-08
+
+### Cambiado
+
+- **el CSS deja de depender de la paleta del tema**: El CSS común usa tokens neutros (`--conv-*`) en vez de **44 presets del tema** y **17 colores fijos** de la paleta de un cliente. En un tema que no define esos presets, la interfaz se pintaba con la paleta de otro sitio. Los plugins usan tokens `--conv-*` con valor
+  neutro y el tema de Convoca los rellena con su paleta, así que su aspecto no cambia. Prueba nueva
+  (`CssTokensTest`) que falla si vuelven los presets o un color de cliente.
+
 ## [2.4.5] — 2026-11-08
 
 ### Cambiado
