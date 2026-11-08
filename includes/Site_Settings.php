@@ -104,6 +104,27 @@ class Site_Settings {
 	}
 
 	/**
+	 * Un color del sitio, o su valor neutro.
+	 *
+	 * Los correos llevan estilos en línea (los clientes ignoran las variables CSS), así que necesitan el
+	 * valor en hexadecimal, no el token. Este es el único sitio donde se decide.
+	 *
+	 * @param string $clave   `acento` o `acento_fuerte`.
+	 * @param string $defecto Valor neutro si el sitio no ha elegido.
+	 * @return string
+	 */
+	public static function color( string $clave, string $defecto = '' ): string {
+		$mapa = array(
+			'acento'        => 'color_acento',
+			'acento_fuerte' => 'color_acento_fuerte',
+		);
+
+		$valor = isset( $mapa[ $clave ] ) ? self::valor( $mapa[ $clave ] ) : '';
+
+		return $valor ? $valor : $defecto;
+	}
+
+	/**
 	 * Los filtros del tema y de los datos de evento, alimentados por la opción.
 	 *
 	 * Se añaden siempre; si la opción está vacía devuelven el valor que traían (`$valor`), así que el

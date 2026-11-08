@@ -201,17 +201,17 @@ class Memory_Report {
         <meta charset="UTF-8">
         <style>
             body { font-family: "Helvetica", "Arial", sans-serif; font-size: 12px; color: #333; line-height: 1.6; }
-            .header { text-align: center; padding: 30px 0; border-bottom: 3px solid #FF8700; }
-            .header h1 { color: #320028; font-size: 24px; margin: 10px 0 0; }
+            .header { text-align: center; padding: 30px 0; border-bottom: 3px solid #2271b1; }
+            .header h1 { color: #1d2327; font-size: 24px; margin: 10px 0 0; }
             .header p { color: #666; font-size: 14px; margin: 5px 0 0; }
             .section { margin: 20px 0; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; }
-            .section h2 { color: #FF8700; font-size: 16px; margin: 0 0 15px; border-bottom: 2px solid #FF8700; padding-bottom: 5px; }
+            .section h2 { color: #2271b1; font-size: 16px; margin: 0 0 15px; border-bottom: 2px solid #2271b1; padding-bottom: 5px; }
             table { width: 100%; border-collapse: collapse; }
-            th { background: #320028; color: #fff; padding: 8px; text-align: left; font-size: 11px; }
+            th { background: #1d2327; color: #fff; padding: 8px; text-align: left; font-size: 11px; }
             td { padding: 6px 8px; border-bottom: 1px solid #e0e0e0; }
             tr:nth-child(even) { background: #f9f9f9; }
             .stat { display: inline-block; width: 45%; margin: 5px; padding: 10px; background: #f5f5f5; border-radius: 6px; }
-            .stat-value { font-size: 22px; font-weight: 700; color: #320028; }
+            .stat-value { font-size: 22px; font-weight: 700; color: #1d2327; }
             .stat-label { font-size: 11px; color: #666; }
             .footer { text-align: center; padding: 20px; color: #999; font-size: 10px; border-top: 1px solid #e0e0e0; margin-top: 30px; }
             .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }

@@ -144,10 +144,10 @@ function convoca_export_pdf( string $title, array $headers, array $rows, string 
 
 	$html  = '<html><head><meta charset="UTF-8"><style>
         body { font-family: Helvetica, Arial, sans-serif; font-size: 10pt; color: #333; }
-        h1 { font-size: 18pt; color: #320028; margin-bottom: 5px; }
+        h1 { font-size: 18pt; color: #1d2327; margin-bottom: 5px; }
         .subtitle { color: #666; font-size: 9pt; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { background: #320028; color: #fff; padding: 8px 10px; text-align: left; font-size: 9pt; }
+        th { background: #1d2327; color: #fff; padding: 8px 10px; text-align: left; font-size: 9pt; }
         td { padding: 6px 10px; border-bottom: 1px solid #e0e0e0; font-size: 9pt; }
         tr:nth-child(even) td { background: #f8f8f8; }
         .footer { position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 8pt; color: #999; border-top: 1px solid #e0e0e0; padding-top: 5px; }
@@ -533,14 +533,14 @@ function convoca_dashboard_page(): void {
 						array(
 							'label'  => 'Altas socios',
 							'data'   => $trend['members'],
-							'color'  => '#320028',
-							'border' => '#320028',
+							'color'  => '#1d2327',
+							'border' => '#1d2327',
 						),
 						array(
 							'label'  => 'Inscripciones',
 							'data'   => $trend['inscriptions'],
 							'color'  => 'rgba(255,135,0,0.2)',
-							'border' => '#FF8700',
+							'border' => '#2271b1',
 						),
 					)
 				);
@@ -617,7 +617,7 @@ function convoca_dashboard_page(): void {
 						array(
 							'label'  => 'Importe (€)',
 							'data'   => array_map( fn( $d ) => round( $d['total'] / 100, 2 ), $p['last_7_days'] ),
-							'color'  => '#FF8700',
+							'color'  => '#2271b1',
 							'border' => '#e67a00',
 						),
 					),
@@ -651,7 +651,7 @@ function convoca_dashboard_page(): void {
 		box-shadow: 0 6px 16px rgba(0,0,0,.1);
 	}
 	.conv-card-icon { font-size: 28px; margin-bottom: 6px; }
-	.conv-card-value { font-size: 26px; font-weight: 800; color: #320028; line-height: 1.2; }
+	.conv-card-value { font-size: 26px; font-weight: 800; color: #1d2327; line-height: 1.2; }
 	.conv-card-total { font-size: 13px; color: #94a3b8; }
 	.conv-card-label { font-size: 12px; color: #64748b; margin-top: 4px; }
 
@@ -671,8 +671,8 @@ function convoca_dashboard_page(): void {
 	.conv-chart-card h3 {
 		margin: 0 0 16px;
 		font-size: 15px;
-		color: #320028;
-		border-bottom: 2px solid #FF8700;
+		color: #1d2327;
+		border-bottom: 2px solid #2271b1;
 		padding-bottom: 8px;
 	}
 	.conv-chart-card--wide { grid-column: 1 / -1; }

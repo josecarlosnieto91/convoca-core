@@ -143,6 +143,27 @@ final class SiteSettingsTest extends TestCase {
 	}
 
 	/**
+	 * Los correos usan el color del sitio, no la paleta de un cliente (#37).
+	 */
+	public function test_el_correo_usa_el_color_del_sitio(): void {
+		$GLOBALS['_wp_stores']['options'][ \Convoca\Core\Site_Settings::OPTION ] = array(
+			'color_acento' => '#123456',
+		);
+
+		$this->assertSame( '#123456', \Convoca\Core\Site_Settings::color( 'acento', '#2271b1' ) );
+		$this->assertSame( '#2271b1', \Convoca\Core\Site_Settings::color( 'acento_fuerte', '#2271b1' ), 'sin valor, el neutro' );
+	}
+
+	/**
+	 * Sin ajuste, el correo cae al neutro y no a la paleta de un cliente.
+	 */
+	public function test_sin_ajuste_el_color_del_correo_es_neutro(): void {
+		$GLOBALS['_wp_stores']['options'][ \Convoca\Core\Site_Settings::OPTION ] = array();
+
+		$this->assertSame( '#2271b1', \Convoca\Core\Site_Settings::color( 'acento', '#2271b1' ) );
+	}
+
+	/**
 	 * Sin colores configurados no se imprime nada.
 	 */
 	public function test_sin_colores_no_se_imprime_css(): void {

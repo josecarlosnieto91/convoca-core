@@ -74,11 +74,14 @@ class Email_Layout {
 		$raw_theme = $opts['theme'] ?? Utils::get_document_theme( 'email' );
 		$theme     = in_array( $raw_theme, array( 'light', 'dark' ), true ) ? $raw_theme : 'light';
 
-		$header_color = $opts['header_color'] ?? ( 'light' === $theme ? '#ffffff' : '#320028' );
-		$header_text  = 'light' === $theme ? '#320028' : '#ffffff';
-		$accent_color = $opts['accent_color'] ?? '#FF8700';
+		// Los colores salen del ajuste del sitio (#37): el correo no puede llevar la paleta de otro cliente.
+		$fuerte       = Site_Settings::color( 'acento_fuerte', '#1d2327' );
+		$header_color = $opts['header_color'] ?? ( 'light' === $theme ? '#ffffff' : $fuerte );
+		$header_text  = 'light' === $theme ? $fuerte : '#ffffff';
+		$accent_color = $opts['accent_color'] ?? Site_Settings::color( 'acento', '#2271b1' );
 		// Bajo la cabecera, una línea naranja mantiene la familia visual en ambos temas.
-		$header_border = '4px solid ' . $accent_color;
+		$header_border    = '4px solid ' . $accent_color;
+		$header_text_dark = 'light' === $theme ? $header_text : '#1d2327';
 
 		$logo_style = 'max-width:180px;height:auto;display:block;margin:0 auto;color:' . $header_text . ';';
 		$logo_html  = Utils::get_branding_html( 'email', '', $logo_style );
@@ -129,8 +132,8 @@ img{display:block;border:0;height:auto;line-height:100%;outline:none;text-decora
 .email-header img{max-width:180px;height:auto;display:block;margin:0 auto}
 /* ── Body ───────────────────────────────────────── */
 .email-body{padding:36px 32px;color:#1e293b;font-size:16px;line-height:1.7}
-.email-body h1{color:#320028;font-size:26px;margin:0 0 20px;font-weight:700}
-.email-body h2{color:#320028;font-size:20px;margin:24px 0 12px;font-weight:600}
+.email-body h1{color:<?php echo esc_attr( $header_text_dark ); ?>;font-size:26px;margin:0 0 20px;font-weight:700}
+.email-body h2{color:<?php echo esc_attr( $header_text_dark ); ?>;font-size:20px;margin:24px 0 12px;font-weight:600}
 .email-body p{margin:0 0 18px}
 .email-body a{color:<?php echo esc_attr( $accent_color ); ?>;font-weight:600;text-decoration:underline}
 /* ── Meta box (detalles de actividad/socio) ────── */

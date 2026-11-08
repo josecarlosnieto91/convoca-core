@@ -1,3 +1,16 @@
+## [2.4.9] — 2026-11-08
+
+### Corregido
+
+- **los correos y el admin ya no llevan la paleta de un cliente** (#37): `Email_Layout` y el aviso de
+  copia leen el acento del ajuste del sitio (con el neutro como respaldo) y ya no clavan `#FF8700` y
+  `#320028`. Las pantallas de administración (apariencia, informe de memoria, asistente de puesta en
+  marcha) pasan a los colores de WordPress.
+- Nuevo `Site_Settings::color()`: un solo sitio decide el color, porque los correos necesitan el valor en
+  hexadecimal y no pueden usar variables CSS.
+
+Dos pruebas nuevas: el correo usa el color configurado y, sin ajuste, cae al neutro.
+
 ## [2.4.8] — 2026-11-08
 
 ### Corregido

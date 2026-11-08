@@ -174,7 +174,10 @@ class Email_Copy {
 			$subject
 		);
 
-		$notice = '<div style="border-left:4px solid #ff8700;background:#fff7ed;padding:12px 14px;margin:0 0 16px;font-family:sans-serif;font-size:13px;color:#320028">'
+		$acento = Site_Settings::color( 'acento', '#2271b1' );
+		$texto  = Site_Settings::color( 'acento_fuerte', '#1d2327' );
+
+		$notice = '<div style="border-left:4px solid ' . esc_attr( $acento ) . ';background:#f6f7f7;padding:12px 14px;margin:0 0 16px;font-family:sans-serif;font-size:13px;color:' . esc_attr( $texto ) . '">'
 			. '<strong>' . esc_html__( 'Copia informativa', 'convoca-core' ) . '</strong><br>'
 			. sprintf(
 				/* translators: 1: destinatario del correo original, 2: origen del correo. */

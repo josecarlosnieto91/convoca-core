@@ -772,7 +772,7 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 			<?php esc_html_e( '¿Necesitas instalar algún módulo? Encuéntralos en WordPress.org o en getconvoca.app — los módulos base son gratuitos para siempre.', 'convoca-core' ); ?>
 		</p>
 		<hr style="border:none;border-top:1px solid #e2e8f0;margin:28px 0;">
-		<h3 style="color:#320028;margin:0 0 6px;"><?php esc_html_e( 'Tema de los documentos', 'convoca-core' ); ?></h3>
+		<h3 style="color:#1d2327;margin:0 0 6px;"><?php esc_html_e( 'Tema de los documentos', 'convoca-core' ); ?></h3>
 		<p style="color:#64748b;margin:0 0 16px;">
 			<?php esc_html_e( 'Elige el estilo por defecto de carnets, certificados y emails transaccionales. Podrás cambiarlo después en Ajustes → Documentos.', 'convoca-core' ); ?>
 		</p>
@@ -784,12 +784,12 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 				<legend class="screen-reader-text"><?php esc_html_e( 'Tema de los documentos', 'convoca-core' ); ?></legend>
 				<label style="display:inline-flex;align-items:center;gap:8px;margin-right:22px;cursor:pointer;">
 					<input type="radio" name="document_theme" value="light" <?php checked( \Convoca\Core\Utils::get_document_theme(), 'light' ); ?>>
-					<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid #320028;"></span>
+					<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid #1d2327;"></span>
 					<?php esc_html_e( 'Claro (por defecto)', 'convoca-core' ); ?>
 				</label>
 				<label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;">
 					<input type="radio" name="document_theme" value="dark" <?php checked( \Convoca\Core\Utils::get_document_theme(), 'dark' ); ?>>
-					<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#320028;border:2px solid #320028;"></span>
+					<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#1d2327;border:2px solid #1d2327;"></span>
 					<?php esc_html_e( 'Oscuro', 'convoca-core' ); ?>
 				</label>
 			</fieldset>
