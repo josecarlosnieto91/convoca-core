@@ -1,3 +1,11 @@
+## [2.4.4] — 2026-11-08
+
+### Cambiado
+
+- La misma corrección de 2.4.3, escrita sin añadir una rama a `prune_empty_html()`: una imagen cuenta
+  como contenido marcándola antes de quitar etiquetas. Sin cambio de comportamiento; deja el ratchet de
+  PHPMD donde estaba.
+
 ## [2.4.3] — 2026-11-08
 
 ### Corregido
