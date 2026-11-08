@@ -1022,9 +1022,24 @@ class Utils {
 		$has_warnings = array_filter( $checks, fn( $c ) => $c['status'] === 'warning' );
 
 		if ( $has_errors ) {
-			$icon          = '✗';
-			$level         = 'error';
-			$text          = __( 'Se han detectado problemas críticos que impiden el funcionamiento.', 'convoca-core' );
+			$icon  = '✗';
+			$level = 'error';
+			// Con la cuenta: «hay 1 error y 3 avisos» dice qué está roto y qué está sin configurar;
+			// «problemas críticos» a secas teñía de rojo un sitio que funcionaba (issue enroll#63).
+			$text = sprintf(
+				/* translators: %d: number of critical problems. */
+				_n( '%d problema crítico que impide el funcionamiento.', '%d problemas críticos que impiden el funcionamiento.', count( $has_errors ), 'convoca-core' ),
+				count( $has_errors )
+			);
+
+			if ( $has_warnings ) {
+				$text .= ' ' . sprintf(
+					/* translators: %d: number of pending configuration warnings. */
+					_n( 'Y %d aviso de configuración pendiente.', 'Y %d avisos de configuración pendientes.', count( $has_warnings ), 'convoca-core' ),
+					count( $has_warnings )
+				);
+			}
+
 			$default_title = __( 'Estado: Errores detectados', 'convoca-core' );
 		} elseif ( $has_warnings ) {
 			$icon          = '⚠';

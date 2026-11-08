@@ -1,3 +1,12 @@
+## [2.4.5] — 2026-11-08
+
+### Cambiado
+
+- **El panel de diagnóstico dice cuántos problemas hay de cada tipo.** Antes, con un solo aviso, el
+  resumen decía «problemas críticos que impiden el funcionamiento»; ahora cuenta los errores y los
+  avisos por separado («1 problema crítico… y 2 avisos de configuración pendientes»). Un sitio que
+  funciona deja de parecer roto por una página opcional sin configurar (issue convoca-enroll#63).
+
 ## [2.4.4] — 2026-11-08
 
 ### Cambiado

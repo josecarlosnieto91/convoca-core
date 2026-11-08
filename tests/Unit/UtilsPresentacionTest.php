@@ -106,6 +106,8 @@ final class UtilsPresentacionTest extends TestCase {
 			)
 		);
 		$this->assertStringContainsString( 'Estado: Errores detectados', $error, 'el error manda' );
+		$this->assertStringContainsString( '1 problema crítico', $error, 'con la cuenta de lo que está roto' );
+		$this->assertStringContainsString( '1 aviso de configuración pendiente', $error, 'y la de lo que falta por configurar' );
 		$this->assertStringContainsString( 'convoca-diagnostic-header--error', $error );
 		$this->assertStringContainsString( 'Revisa el puerto', $error );
 		$this->assertStringContainsString( 'href="https://example.test/fix"', $error );
