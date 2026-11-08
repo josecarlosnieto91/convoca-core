@@ -2,7 +2,7 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Core 2.2.7\n"
+"Project-Id-Version: Convoca Core 2.5.0"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-core\n"
 "Last-Translator: Jose Carlos Nieto Ramos\n"
 "Language-Team: English (United States)\n"

@@ -3,7 +3,7 @@
  * Plugin Name:       Convoca Core
  * Plugin URI:        https://getconvoca.app
  * Description:       Common functions, validation, logging, and shared infrastructure.
- * Version: 2.4.9
+ * Version: 2.5.0
  * Requires at least: 6.4
  * Requires PHP:      8.2
  * Tested up to:      7.1.3
@@ -256,6 +256,7 @@ add_action(
 
 		// Initialize performance probe (?convoca_probe=1).
 		convoca_core_init( Performance_Probe::class );
+		convoca_core_init( Intentos::class );
 	}
 );
 

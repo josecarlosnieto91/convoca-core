@@ -63,6 +63,10 @@ if ( ! function_exists( 'add_role' ) ) {
 
 // --- WordPress option functions ---
 if (!function_exists('get_option')) {
+    /**
+     * Sal del sitio: en WordPress sale de wp-config; aquí, fija para que las huellas sean estables.
+     */
+    function wp_salt($scheme = 'auth') { return 'sal-de-pruebas-' . $scheme; }
     function get_option($key, $default = false) {
         // SIN referencia y con `?? array()`: `$s = &$GLOBALS['_wp_stores']['options']` CREA la clave con `null`
         // cuando no existe, y el `array_key_exists()` siguiente revienta con TypeError — en una suite que no tiene

@@ -55,6 +55,7 @@ $options = array(
 	'convoca_log_retention_days',
 	'convoca_document_theme',
 	'convoca_utils_fired',
+	'convoca_intentos_db_version',
 );
 
 foreach ( $options as $option ) {
@@ -62,6 +63,7 @@ foreach ( $options as $option ) {
 }
 
 // Clean up cron jobs.
+wp_clear_scheduled_hook( 'convoca_intentos_purgar' );
 wp_clear_scheduled_hook( 'convoca_log_cleanup' );
 wp_clear_scheduled_hook( 'convoca_log_purge' );
 wp_clear_scheduled_hook( 'convoca_webhook_retry' );

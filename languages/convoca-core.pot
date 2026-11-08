@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Core 2.4.9\n"
+"Project-Id-Version: Convoca Core 2.5.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-core\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-04T23:34:13+00:00\n"
+"POT-Creation-Date: 2026-11-08T20:11:53+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-core\n"
@@ -1270,17 +1270,17 @@ msgstr ""
 msgid "[Copia] %s"
 msgstr ""
 
-#: includes/Email_Copy.php:178
+#: includes/Email_Copy.php:181
 msgid "Copia informativa"
 msgstr ""
 
 #. translators: 1: destinatario del correo original, 2: origen del correo.
-#: includes/Email_Copy.php:181
+#: includes/Email_Copy.php:184
 #, php-format
 msgid "Este correo se ha enviado a %1$s. Origen: %2$s."
 msgstr ""
 
-#: includes/Email_Copy.php:185
+#: includes/Email_Copy.php:188
 msgid "El correo original incluye archivos adjuntos."
 msgstr ""
 
@@ -1658,66 +1658,86 @@ msgstr ""
 msgid "No se pudo crear el archivo de protección index.php en %s."
 msgstr ""
 
-#: includes/Site_Settings.php:57
 #: includes/Site_Settings.php:58
-#: includes/Site_Settings.php:234
+#: includes/Site_Settings.php:59
+#: includes/Site_Settings.php:267
 msgid "Sitio"
 msgstr ""
 
-#: includes/Site_Settings.php:228
+#: includes/Site_Settings.php:261
 msgid "No tienes permisos para ver esta página."
 msgstr ""
 
-#: includes/Site_Settings.php:235
+#: includes/Site_Settings.php:268
 msgid "Valores de esta instalación: los enlaces y textos que el tema deja vacíos a propósito. Si un mu-plugin o el tema los ponen por código, manda el código."
 msgstr ""
 
-#: includes/Site_Settings.php:241
+#: includes/Site_Settings.php:274
 msgid "Redes y enlaces del sitio"
 msgstr ""
 
-#: includes/Site_Settings.php:241
+#: includes/Site_Settings.php:274
 msgid "Una por línea: «servicio | URL». El servicio es la clave (facebook, instagram, email…)."
 msgstr ""
 
-#: includes/Site_Settings.php:242
+#: includes/Site_Settings.php:275
 msgid "Redes sociales"
 msgstr ""
 
-#: includes/Site_Settings.php:242
+#: includes/Site_Settings.php:275
 msgid "Una por línea: «servicio | URL». Alimenta [convoca_socials] y los tokens del pie."
 msgstr ""
 
-#: includes/Site_Settings.php:243
+#: includes/Site_Settings.php:276
 msgid "Etiquetas de esos enlaces"
 msgstr ""
 
-#: includes/Site_Settings.php:243
+#: includes/Site_Settings.php:276
 msgid "Una por línea: «servicio | etiqueta visible»."
 msgstr ""
 
-#: includes/Site_Settings.php:244
+#: includes/Site_Settings.php:277
 msgid "Botón de la cabecera"
 msgstr ""
 
-#: includes/Site_Settings.php:245
+#: includes/Site_Settings.php:278
 msgid "Texto del botón"
 msgstr ""
 
-#: includes/Site_Settings.php:246
+#: includes/Site_Settings.php:279
 msgid "Titular del bloque CTA"
 msgstr ""
 
-#: includes/Site_Settings.php:247
+#: includes/Site_Settings.php:280
 msgid "Texto del bloque CTA"
 msgstr ""
 
-#: includes/Site_Settings.php:248
+#: includes/Site_Settings.php:281
 msgid "Correo de voluntariado"
 msgstr ""
 
-#: includes/Site_Settings.php:249
+#: includes/Site_Settings.php:282
 msgid "Aviso del pie"
+msgstr ""
+
+#: includes/Site_Settings.php:283
+msgid "Color de acento"
+msgstr ""
+
+#: includes/Site_Settings.php:283
+msgid "Botones, enlaces y realces de los componentes de Convoca. Vacío = el valor neutro del producto."
+msgstr ""
+
+#: includes/Site_Settings.php:284
+msgid "Acento fuerte"
+msgstr ""
+
+#: includes/Site_Settings.php:284
+msgid "Para el texto sobre el acento y los estados activos. Vacío = el valor neutro."
+msgstr ""
+
+#: includes/Site_Settings.php:350
+msgid "Usar el valor neutro"
 msgstr ""
 
 #: includes/System_Checks.php:96
@@ -1769,55 +1789,67 @@ msgstr ""
 msgid "La pasarela de pago no está activa."
 msgstr ""
 
-#: includes/Utils.php:1027
-msgid "Se han detectado problemas críticos que impiden el funcionamiento."
-msgstr ""
+#. translators: %d: number of critical problems.
+#: includes/Utils.php:1031
+#, php-format
+msgid "%d problema crítico que impide el funcionamiento."
+msgid_plural "%d problemas críticos que impiden el funcionamiento."
+msgstr[0] ""
+msgstr[1] ""
 
-#: includes/Utils.php:1028
+#. translators: %d: number of pending configuration warnings.
+#: includes/Utils.php:1038
+#, php-format
+msgid "Y %d aviso de configuración pendiente."
+msgid_plural "Y %d avisos de configuración pendientes."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Utils.php:1043
 msgid "Estado: Errores detectados"
 msgstr ""
 
-#: includes/Utils.php:1032
+#: includes/Utils.php:1047
 msgid "Hay advertencias que podrían afectar el funcionamiento."
 msgstr ""
 
-#: includes/Utils.php:1033
+#: includes/Utils.php:1048
 msgid "Estado: Advertencias"
 msgstr ""
 
-#: includes/Utils.php:1037
+#: includes/Utils.php:1052
 msgid "Todos los componentes están configurados correctamente."
 msgstr ""
 
-#: includes/Utils.php:1038
+#: includes/Utils.php:1053
 msgid "Estado: Todo correcto"
 msgstr ""
 
-#: includes/Utils.php:1066
+#: includes/Utils.php:1081
 msgid "Reparar"
 msgstr ""
 
-#: includes/Utils.php:1257
-#: includes/Utils.php:1264
+#: includes/Utils.php:1272
+#: includes/Utils.php:1279
 msgid "Aportación"
 msgstr ""
 
-#: includes/Utils.php:1261
+#: includes/Utils.php:1276
 msgctxt "plural"
 msgid "Aportaciones"
 msgstr ""
 
-#: includes/Utils.php:1267
+#: includes/Utils.php:1282
 msgctxt "trasgu"
 msgid "Aportación Trasgu"
 msgstr ""
 
-#: includes/Utils.php:1270
+#: includes/Utils.php:1285
 msgctxt "socio"
 msgid "Aportación sugerida para socios"
 msgstr ""
 
-#: includes/Utils.php:1273
+#: includes/Utils.php:1288
 msgctxt "no-socio"
 msgid "Aportación sugerida para no socios"
 msgstr ""
