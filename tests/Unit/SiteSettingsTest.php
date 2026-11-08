@@ -116,6 +116,59 @@ final class SiteSettingsTest extends TestCase {
 	}
 
 	/**
+	 * Los colores del sitio se sanean y se imprimen como tokens (#65).
+	 *
+	 * Sin este ajuste, un sitio con un tema ajeno no tenía forma de poner su acento sin tocar CSS.
+	 */
+	public function test_los_colores_se_sanean_y_se_imprimen(): void {
+		$datos = \Convoca\Core\Site_Settings::sanitize(
+			array(
+				'color_acento'        => '#FF8700',
+				'color_acento_fuerte' => 'no-es-un-color',
+			)
+		);
+
+		$this->assertSame( '#FF8700', $datos['color_acento'], 'el hex válido se guarda' );
+		$this->assertSame( '', $datos['color_acento_fuerte'], 'lo que no es un color se descarta' );
+
+		$GLOBALS['_wp_stores']['options'][ \Convoca\Core\Site_Settings::OPTION ] = $datos;
+
+		ob_start();
+		\Convoca\Core\Site_Settings::imprimir_colores();
+		$css = (string) ob_get_clean();
+
+		$this->assertStringContainsString( '--conv-accent: #FF8700', $css );
+		$this->assertStringNotContainsString( 'accent-strong', $css, 'sin valor no se imprime el token' );
+	}
+
+	/**
+	 * Sin colores configurados no se imprime nada.
+	 */
+	public function test_sin_colores_no_se_imprime_css(): void {
+		$GLOBALS['_wp_stores']['options'][ \Convoca\Core\Site_Settings::OPTION ] = array();
+
+		ob_start();
+		\Convoca\Core\Site_Settings::imprimir_colores();
+		$css = (string) ob_get_clean();
+
+		$this->assertSame( '', $css );
+	}
+
+	/**
+	 * La casilla devuelve el color al valor neutro.
+	 */
+	public function test_la_casilla_limpia_el_color(): void {
+		$datos = \Convoca\Core\Site_Settings::sanitize(
+			array(
+				'color_acento'         => '#123456',
+				'limpiar_color_acento' => '1',
+			)
+		);
+
+		$this->assertSame( '', $datos['color_acento'] );
+	}
+
+	/**
 	 * El comando de claves queda registrado: si desaparece, el sitio vuelve a necesitar el mu-plugin.
 	 */
 	public function test_el_comando_de_claves_esta_registrado(): void {

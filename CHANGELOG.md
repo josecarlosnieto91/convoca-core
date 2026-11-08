@@ -1,3 +1,15 @@
+## [2.4.7] — 2026-11-08
+
+### Añadido
+
+- **colores del sitio en Convoca → Sitio**: dos campos (acento y acento fuerte) que se imprimen como
+  `--conv-accent` y `--conv-accent-strong` en la cabecera. Un sitio con un tema ajeno puede poner su
+  color sin tocar CSS; vacío = el valor neutro del producto. La casilla «Usar el valor neutro» lo
+  devuelve. Solo se imprime el CSS cuando hay color configurado.
+
+Tres pruebas nuevas: saneado (hex válido, basura descartada, casilla de limpiar) y que sin colores no se
+imprime nada.
+
 ## [2.4.6] — 2026-11-08
 
 ### Cambiado

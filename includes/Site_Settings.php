@@ -42,6 +42,7 @@ class Site_Settings {
 	 */
 	public static function register(): void {
 		add_action( 'admin_menu', array( __CLASS__, 'add_page' ), 20 );
+		add_action( 'wp_head', array( __CLASS__, 'imprimir_colores' ), 5 );
 		add_action( 'admin_init', array( __CLASS__, 'register_setting' ) );
 		self::aplicar_filtros();
 	}
@@ -173,6 +174,17 @@ class Site_Settings {
 		$datos['volunteer_email'] = sanitize_email( (string) ( $input['volunteer_email'] ?? '' ) );
 		$datos['copyright_extra'] = wp_kses_post( (string) ( $input['copyright_extra'] ?? '' ) );
 
+		// Colores de los componentes (#65): el sitio decide su acento. Vacío = el valor neutro del plugin.
+		foreach ( array( 'color_acento', 'color_acento_fuerte' ) as $clave ) {
+			// `input type=color` siempre manda un valor: para volver al neutro hay una casilla.
+			if ( ! empty( $input[ 'limpiar_' . $clave ] ) ) {
+				$datos[ $clave ] = '';
+				continue;
+			}
+			$color           = sanitize_hex_color( (string) ( $input[ $clave ] ?? '' ) );
+			$datos[ $clave ] = $color ? $color : '';
+		}
+
 		// Las claves de legado no se editan a mano en la pantalla: las carga el comando de una pasada.
 		$previas = self::datos();
 		if ( isset( $previas['legacy_keys'] ) && is_array( $previas['legacy_keys'] ) ) {
@@ -247,6 +259,8 @@ class Site_Settings {
 					self::fila_area( 'cta_text', __( 'Texto del bloque CTA', 'convoca-core' ) );
 					self::fila_texto( 'volunteer_email', __( 'Correo de voluntariado', 'convoca-core' ), 'email' );
 					self::fila_texto( 'copyright_extra', __( 'Aviso del pie', 'convoca-core' ), 'text', 'large-text' );
+					self::fila_color( 'color_acento', __( 'Color de acento', 'convoca-core' ), __( 'Botones, enlaces y realces de los componentes de Convoca. Vacío = el valor neutro del producto.', 'convoca-core' ) );
+					self::fila_color( 'color_acento_fuerte', __( 'Acento fuerte', 'convoca-core' ), __( 'Para el texto sobre el acento y los estados activos. Vacío = el valor neutro.', 'convoca-core' ) );
 					?>
 				</table>
 				<?php submit_button(); ?>
@@ -295,6 +309,54 @@ class Site_Settings {
 			<td><input type="<?php echo esc_attr( $tipo ); ?>" id="<?php echo esc_attr( $id ); ?>" class="<?php echo esc_attr( $clase ); ?>" name="<?php echo esc_attr( self::OPTION ); ?>[<?php echo esc_attr( $clave ); ?>]" value="<?php echo esc_attr( self::valor( $clave ) ); ?>"></td>
 		</tr>
 		<?php
+	}
+
+	/**
+	 * Una fila de color.
+	 *
+	 * @param string $clave  Clave de la opción.
+	 * @param string $titulo Etiqueta de la fila.
+	 * @param string $ayuda  Texto de ayuda.
+	 * @return void
+	 */
+	private static function fila_color( string $clave, string $titulo, string $ayuda ): void {
+		$valor = (string) self::valor( $clave );
+		?>
+		<tr>
+			<th scope="row"><label for="<?php echo esc_attr( $clave ); ?>"><?php echo esc_html( $titulo ); ?></label></th>
+			<td>
+				<input type="color" id="<?php echo esc_attr( $clave ); ?>" name="<?php echo esc_attr( self::OPTION . '[' . $clave . ']' ); ?>" value="<?php echo esc_attr( '' !== $valor ? $valor : '#2271b1' ); ?>">
+				<label><input type="checkbox" name="<?php echo esc_attr( self::OPTION . '[limpiar_' . $clave . ']' ); ?>" value="1"> <?php esc_html_e( 'Usar el valor neutro', 'convoca-core' ); ?></label>
+				<p class="description"><?php echo esc_html( $ayuda ); ?></p>
+			</td>
+		</tr>
+		<?php
+	}
+
+	/**
+	 * Imprime los tokens de color del sitio.
+	 *
+	 * Solo si hay color configurado: sin él, cada plugin usa su valor neutro y el tema, si es el de
+	 * Convoca, pone su paleta.
+	 *
+	 * @return void
+	 */
+	public static function imprimir_colores(): void {
+		$acento = (string) self::valor( 'color_acento' );
+		$fuerte = (string) self::valor( 'color_acento_fuerte' );
+		$pares  = array();
+
+		if ( '' !== $acento ) {
+			$pares[] = '--conv-accent: ' . $acento;
+		}
+		if ( '' !== $fuerte ) {
+			$pares[] = '--conv-accent-strong: ' . $fuerte;
+		}
+		if ( array() === $pares ) {
+			return;
+		}
+
+		echo '<style id="convoca-site-colors">:root{' . esc_html( implode( ';', $pares ) ) . ';}</style>' . "\n";
 	}
 
 	/**
