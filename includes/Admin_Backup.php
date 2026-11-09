@@ -282,23 +282,7 @@ class Admin_Backup {
 		$export_all(
 			'miembro',
 			array( 'ID', 'Nombre', 'Email', 'DNI', 'Plan', 'Estado', 'Vencimiento' ),
-			function ( $id, $title ) {
-				$dni = (string) get_post_meta( $id, '_convoca_dni', true );
-
-				if ( class_exists( __NAMESPACE__ . '\\Cifrado' ) ) {
-					$dni = Cifrado::descifrar( $dni );
-				}
-
-				return array(
-					$id,
-					$title,
-					get_post_meta( $id, '_convoca_email', true ),
-					$dni,
-					get_post_meta( $id, '_convoca_plan', true ),
-					get_post_meta( $id, '_convoca_estado_miembro', true ),
-					get_post_meta( $id, '_convoca_vencimiento', true ),
-				);
-			}
+			array( $this, 'fila_miembro' )
 		);
 
 		// Inscriptions.
@@ -670,18 +654,7 @@ class Admin_Backup {
 				update_post_meta( $id, '_convoca_email', sanitize_email( $data[2] ?? '' ) );
 
 				$dni = sanitize_text_field( $data[3] ?? '' );
-
-				if ( class_exists( __NAMESPACE__ . '\\Cifrado' ) ) {
-					update_post_meta( $id, '_convoca_dni', Cifrado::cifrar( $dni ) );
-
-					$indice = Cifrado::indice_ciego( $dni );
-
-					if ( '' !== $indice ) {
-						update_post_meta( $id, '_convoca_dni_idx', $indice );
-					}
-				} else {
-					update_post_meta( $id, '_convoca_dni', $dni );
-				}
+				self::guardar_dni_importado( $id, $dni );
 
 				update_post_meta( $id, '_convoca_plan', sanitize_text_field( $data[4] ?? '' ) );
 				// `??` no cubre la columna **vacía**: un socio importado sin estado se quedaba sin estado y los
@@ -769,6 +742,53 @@ class Admin_Backup {
 			} else {
 				update_option( $key, sanitize_text_field( $data[ $key ] ) );
 			}
+		}
+	}
+
+	/**
+	 * Fila del CSV de miembros, con el DNI descifrado.
+	 *
+	 * @param int    $id    Ficha.
+	 * @param string $title Título.
+	 * @return array<int,mixed>
+	 */
+	private function fila_miembro( int $id, string $title ): array {
+		$dni = (string) get_post_meta( $id, '_convoca_dni', true );
+
+		if ( class_exists( __NAMESPACE__ . '\\Cifrado' ) ) {
+			$dni = Cifrado::descifrar( $dni );
+		}
+
+		return array(
+			$id,
+			$title,
+			get_post_meta( $id, '_convoca_email', true ),
+			$dni,
+			get_post_meta( $id, '_convoca_plan', true ),
+			get_post_meta( $id, '_convoca_estado_miembro', true ),
+			get_post_meta( $id, '_convoca_vencimiento', true ),
+		);
+	}
+
+	/**
+	 * Guarda el DNI de una ficha importada: cifrado e índice si hay llave.
+	 *
+	 * @param int    $id  Ficha.
+	 * @param string $dni DNI en claro.
+	 * @return void
+	 */
+	private static function guardar_dni_importado( int $id, string $dni ): void {
+		if ( ! class_exists( __NAMESPACE__ . '\\Cifrado' ) ) {
+			update_post_meta( $id, '_convoca_dni', $dni );
+			return;
+		}
+
+		update_post_meta( $id, '_convoca_dni', Cifrado::cifrar( $dni ) );
+
+		$indice = Cifrado::indice_ciego( $dni );
+
+		if ( '' !== $indice ) {
+			update_post_meta( $id, '_convoca_dni_idx', $indice );
 		}
 	}
 
