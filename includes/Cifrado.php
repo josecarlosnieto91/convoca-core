@@ -74,12 +74,34 @@ final class Cifrado {
 		}
 
 		if ( function_exists( 'sodium_crypto_secretbox' ) ) {
-			$nonce   = random_bytes( SODIUM_CRYPTO_SECRETBOX_NONCEBYTES );
-			$cifrado = sodium_crypto_secretbox( $claro, $nonce, $clave );
-
-			return self::PREFIX . base64_encode( self::METODO_SODIUM . $nonce . $cifrado ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- formato binario propio, no ofuscación.
+			return self::cifrar_sodium( $claro, $clave );
 		}
 
+		return self::cifrar_openssl( $claro, $clave );
+	}
+
+	/**
+	 * Cifra con sodium secretbox.
+	 *
+	 * @param string $claro Valor en claro.
+	 * @param string $clave Llave binaria.
+	 * @return string
+	 */
+	private static function cifrar_sodium( string $claro, string $clave ): string {
+		$nonce   = random_bytes( SODIUM_CRYPTO_SECRETBOX_NONCEBYTES );
+		$cifrado = sodium_crypto_secretbox( $claro, $nonce, $clave );
+
+		return self::PREFIX . base64_encode( self::METODO_SODIUM . $nonce . $cifrado ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- formato binario propio, no ofuscación.
+	}
+
+	/**
+	 * Cifra con AES-256-GCM.
+	 *
+	 * @param string $claro Valor en claro.
+	 * @param string $clave Llave binaria.
+	 * @return string
+	 */
+	private static function cifrar_openssl( string $claro, string $clave ): string {
 		$nonce = random_bytes( 12 );
 		$tag   = '';
 		$texto = openssl_encrypt( $claro, 'aes-256-gcm', $clave, OPENSSL_RAW_DATA, $nonce, $tag, '', 16 );
@@ -122,32 +144,54 @@ final class Cifrado {
 		$metodo  = $raw[0];
 		$payload = substr( $raw, 1 );
 
-		if ( self::METODO_SODIUM === $metodo && function_exists( 'sodium_crypto_secretbox_open' ) ) {
-			if ( strlen( $payload ) <= SODIUM_CRYPTO_SECRETBOX_NONCEBYTES ) {
-				return '';
-			}
-
-			$nonce   = substr( $payload, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES );
-			$cifrado = substr( $payload, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES );
-			$claro   = sodium_crypto_secretbox_open( $cifrado, $nonce, $clave );
-
-			return false === $claro ? '' : $claro;
+		if ( self::METODO_SODIUM === $metodo ) {
+			return self::descifrar_sodium( $payload, $clave );
 		}
 
-		if ( self::METODO_OPENSSL === $metodo && function_exists( 'openssl_decrypt' ) ) {
-			if ( strlen( $payload ) <= 12 + 16 ) {
-				return '';
-			}
-
-			$nonce   = substr( $payload, 0, 12 );
-			$tag     = substr( $payload, 12, 16 );
-			$cifrado = substr( $payload, 28 );
-			$claro   = openssl_decrypt( $cifrado, 'aes-256-gcm', $clave, OPENSSL_RAW_DATA, $nonce, $tag );
-
-			return false === $claro ? '' : $claro;
+		if ( self::METODO_OPENSSL === $metodo ) {
+			return self::descifrar_openssl( $payload, $clave );
 		}
 
 		return '';
+	}
+
+	/**
+	 * Descifra con sodium secretbox.
+	 *
+	 * @param string $payload Nonce + ciphertext.
+	 * @param string $clave   Llave binaria.
+	 * @return string
+	 */
+	private static function descifrar_sodium( string $payload, string $clave ): string {
+		if ( ! function_exists( 'sodium_crypto_secretbox_open' ) || strlen( $payload ) <= SODIUM_CRYPTO_SECRETBOX_NONCEBYTES ) {
+			return '';
+		}
+
+		$nonce   = substr( $payload, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES );
+		$cifrado = substr( $payload, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES );
+		$claro   = sodium_crypto_secretbox_open( $cifrado, $nonce, $clave );
+
+		return false === $claro ? '' : $claro;
+	}
+
+	/**
+	 * Descifra con AES-256-GCM.
+	 *
+	 * @param string $payload Nonce + tag + ciphertext.
+	 * @param string $clave   Llave binaria.
+	 * @return string
+	 */
+	private static function descifrar_openssl( string $payload, string $clave ): string {
+		if ( ! function_exists( 'openssl_decrypt' ) || strlen( $payload ) <= 12 + 16 ) {
+			return '';
+		}
+
+		$nonce   = substr( $payload, 0, 12 );
+		$tag     = substr( $payload, 12, 16 );
+		$cifrado = substr( $payload, 28 );
+		$claro   = openssl_decrypt( $cifrado, 'aes-256-gcm', $clave, OPENSSL_RAW_DATA, $nonce, $tag );
+
+		return false === $claro ? '' : $claro;
 	}
 
 	/**

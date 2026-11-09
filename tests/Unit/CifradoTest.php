@@ -98,4 +98,83 @@ final class CifradoTest extends TestCase {
 	public function test_disponible(): void {
 		$this->assertTrue( Cifrado::disponible() );
 	}
+
+	/**
+	 * Sin llave no se cifra, pero tampoco se pierde el valor.
+	 */
+	public function test_sin_llave_no_cifra_pero_no_pierde(): void {
+		$cifrado = Cifrado::cifrar( '12345678Z' );
+
+		add_filter(
+			'convoca_cifrado_clave',
+			static function () {
+				return '';
+			}
+		);
+
+		$this->assertSame( '12345678Z', Cifrado::cifrar( '12345678Z' ) );
+		$this->assertSame( '', Cifrado::descifrar( $cifrado ) );
+		$this->assertFalse( Cifrado::disponible() );
+		$this->assertSame( '', Cifrado::indice_ciego( '12345678Z' ) );
+
+		remove_all_filters( 'convoca_cifrado_clave' );
+	}
+
+	/**
+	 * Una llave con formato inválido no se usa.
+	 */
+	public function test_llave_invalida_no_esta_disponible(): void {
+		add_filter(
+			'convoca_cifrado_clave',
+			static function () {
+				return 'no-es-base64';
+			}
+		);
+
+		$this->assertFalse( Cifrado::disponible() );
+		$this->assertSame( '', Cifrado::clave() );
+
+		remove_all_filters( 'convoca_cifrado_clave' );
+	}
+
+	/**
+	 * Una llave de 32 bytes en crudo también vale.
+	 */
+	public function test_llave_en_crudo(): void {
+		add_filter(
+			'convoca_cifrado_clave',
+			static function () {
+				return str_repeat( 'z', 32 );
+			}
+		);
+
+		$this->assertTrue( Cifrado::disponible() );
+		$this->assertSame( '12345678Z', Cifrado::descifrar( Cifrado::cifrar( '12345678Z' ) ) );
+
+		remove_all_filters( 'convoca_cifrado_clave' );
+	}
+
+	/**
+	 * Cargas inválidas no devuelven basura.
+	 */
+	public function test_cargas_invalidas(): void {
+		$this->assertSame( '', Cifrado::descifrar( 'enc:v1:!!!' ) );
+		$this->assertSame( '', Cifrado::descifrar( 'enc:v1:' . base64_encode( 'x' ) ) );
+		$this->assertSame( '', Cifrado::descifrar( 'enc:v1:' . base64_encode( 'z' . str_repeat( 'x', 50 ) ) ) );
+		$this->assertSame( '', Cifrado::descifrar( 'enc:v1:' . base64_encode( 's' . str_repeat( 'x', 10 ) ) ) );
+		$this->assertSame( '', Cifrado::descifrar( 'enc:v1:' . base64_encode( 'g' . str_repeat( 'x', 10 ) ) ) );
+	}
+
+	/**
+	 * El formato OpenSSL también se descifra (compatibilidad entre motores).
+	 */
+	public function test_descifra_el_formato_openssl(): void {
+		$clave = Cifrado::clave();
+		$nonce = random_bytes( 12 );
+		$tag   = '';
+		$cif   = openssl_encrypt( '12345678Z', 'aes-256-gcm', $clave, OPENSSL_RAW_DATA, $nonce, $tag, '', 16 );
+		$valor = 'enc:v1:' . base64_encode( 'g' . $nonce . $tag . $cif );
+
+		$this->assertSame( '12345678Z', Cifrado::descifrar( $valor ) );
+	}
 }
