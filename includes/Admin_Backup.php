@@ -283,11 +283,17 @@ class Admin_Backup {
 			'miembro',
 			array( 'ID', 'Nombre', 'Email', 'DNI', 'Plan', 'Estado', 'Vencimiento' ),
 			function ( $id, $title ) {
+				$dni = (string) get_post_meta( $id, '_convoca_dni', true );
+
+				if ( class_exists( __NAMESPACE__ . '\\Cifrado' ) ) {
+					$dni = Cifrado::descifrar( $dni );
+				}
+
 				return array(
 					$id,
 					$title,
 					get_post_meta( $id, '_convoca_email', true ),
-					get_post_meta( $id, '_convoca_dni', true ),
+					$dni,
 					get_post_meta( $id, '_convoca_plan', true ),
 					get_post_meta( $id, '_convoca_estado_miembro', true ),
 					get_post_meta( $id, '_convoca_vencimiento', true ),
@@ -662,7 +668,21 @@ class Admin_Backup {
 		switch ( $entity ) {
 			case 'miembros':
 				update_post_meta( $id, '_convoca_email', sanitize_email( $data[2] ?? '' ) );
-				update_post_meta( $id, '_convoca_dni', sanitize_text_field( $data[3] ?? '' ) );
+
+				$dni = sanitize_text_field( $data[3] ?? '' );
+
+				if ( class_exists( __NAMESPACE__ . '\\Cifrado' ) ) {
+					update_post_meta( $id, '_convoca_dni', Cifrado::cifrar( $dni ) );
+
+					$indice = Cifrado::indice_ciego( $dni );
+
+					if ( '' !== $indice ) {
+						update_post_meta( $id, '_convoca_dni_idx', $indice );
+					}
+				} else {
+					update_post_meta( $id, '_convoca_dni', $dni );
+				}
+
 				update_post_meta( $id, '_convoca_plan', sanitize_text_field( $data[4] ?? '' ) );
 				// `??` no cubre la columna **vacía**: un socio importado sin estado se quedaba sin estado y los
 				// agregados del panel (que buscan 'activo') no lo contaban. Sin valor → activo.
