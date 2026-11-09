@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Core 2.5.0\n"
+"Project-Id-Version: Convoca Core 2.5.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-core\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-08T20:11:53+00:00\n"
+"POT-Creation-Date: 2026-11-09T06:47:35+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-core\n"
@@ -72,8 +72,8 @@ msgstr ""
 #: includes/admin-global-menu.php:72
 #: includes/Admin_Backup.php:51
 #: includes/Admin_Backup.php:146
-#: includes/Admin_Backup.php:366
-#: includes/Admin_Backup.php:491
+#: includes/Admin_Backup.php:356
+#: includes/Admin_Backup.php:481
 #: includes/Admin_Setup_Wizard.php:162
 #: includes/License_Manager.php:322
 #: includes/License_Manager.php:432
@@ -434,91 +434,91 @@ msgstr ""
 msgid "No se pudo crear el archivo temporal ZIP."
 msgstr ""
 
-#: includes/Admin_Backup.php:355
+#: includes/Admin_Backup.php:345
 msgid "Error fatal: ZIP no generado."
 msgstr ""
 
-#: includes/Admin_Backup.php:370
+#: includes/Admin_Backup.php:360
 msgid "No se ha subido ningún archivo."
 msgstr ""
 
-#: includes/Admin_Backup.php:399
+#: includes/Admin_Backup.php:389
 msgid "Error en la subida: "
 msgstr ""
 
-#: includes/Admin_Backup.php:402
+#: includes/Admin_Backup.php:392
 msgid "Formato inválido. Solo ZIP."
 msgstr ""
 
-#: includes/Admin_Backup.php:405
+#: includes/Admin_Backup.php:395
 msgid "Archivo demasiado grande."
 msgstr ""
 
-#: includes/Admin_Backup.php:410
+#: includes/Admin_Backup.php:400
 msgid "No se pudo abrir el ZIP."
 msgstr ""
 
-#: includes/Admin_Backup.php:417
+#: includes/Admin_Backup.php:407
 msgid "El archivo ZIP no contiene datos compatibles de Convoca."
 msgstr ""
 
-#: includes/Admin_Backup.php:435
+#: includes/Admin_Backup.php:425
 msgid "Error al guardar el temporal."
 msgstr ""
 
-#: includes/Admin_Backup.php:477
+#: includes/Admin_Backup.php:467
 msgid "Configuración del Sistema"
 msgstr ""
 
-#: includes/Admin_Backup.php:496
+#: includes/Admin_Backup.php:486
 msgid "Token de sesión inválido o expirado."
 msgstr ""
 
 #. translators: %s: entity type name.
-#: includes/Admin_Backup.php:510
+#: includes/Admin_Backup.php:500
 #, php-format
 msgid "No tienes permisos para importar %s."
 msgstr ""
 
-#: includes/Admin_Backup.php:518
+#: includes/Admin_Backup.php:508
 msgid "Archivo temporal no encontrado."
 msgstr ""
 
-#: includes/Admin_Backup.php:523
+#: includes/Admin_Backup.php:513
 msgid "No se pudo procesar el ZIP."
 msgstr ""
 
-#: includes/Admin_Backup.php:531
+#: includes/Admin_Backup.php:521
 msgid "Otra importación está en curso. Espera a que termine."
 msgstr ""
 
 #. translators: %d: number of records processed
-#: includes/Admin_Backup.php:563
+#: includes/Admin_Backup.php:553
 #, php-format
 msgid "Importación finalizada. %d registros procesados."
 msgstr ""
 
-#: includes/Admin_Backup.php:629
+#: includes/Admin_Backup.php:619
 msgid "Importado"
 msgstr ""
 
-#: includes/Admin_Backup.php:636
+#: includes/Admin_Backup.php:626
 msgid "Error al crear el post importado."
 msgstr ""
 
-#: includes/Admin_Backup.php:757
+#: includes/Admin_Backup.php:797
 msgid "Miembros / Socios"
 msgstr ""
 
-#: includes/Admin_Backup.php:758
+#: includes/Admin_Backup.php:798
 msgid "Inscripciones a Actividades"
 msgstr ""
 
-#: includes/Admin_Backup.php:759
+#: includes/Admin_Backup.php:799
 msgid "Proyectos y Actividades"
 msgstr ""
 
-#: includes/Admin_Backup.php:760
+#: includes/Admin_Backup.php:800
 #: includes/Admin_Setup_Wizard.php:208
 #: includes/Blocks_Common.php:63
 msgid "Turnos"
