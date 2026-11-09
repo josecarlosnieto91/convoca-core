@@ -1,17 +1,9 @@
-## [2.5.0] — 2026-11-08
+## [2.5.1] — 2026-11-09
 
-### Añadido
+### Seguridad
 
-- **`Intentos`**: registro de cada intento de los formularios públicos —aceptado, rechazado, bloqueado o
-  detectado como bot— en la tabla `{prefijo}convoca_intentos`. Del correo y de la IP solo se guarda un HMAC:
-  no hay datos personales en claro. Retención de 90 días con purga diaria (`convoca_intentos_purgar`), y
-  `contar()` para medir. La tabla se crea sola en el primer uso: un sitio ya activo nunca vuelve a activarse.
-- **`Anti_Bot`**: honeypot (`convoca_web`) y trampa de tiempo con sello firmado (`convoca_t`), sin servicios
-  externos ni tokens. Un bot rellena el campo trampa o envía en menos de 3 segundos; el sello vale 24 horas.
-  Si el formulario llega **sin** sello no se bloquea —una página cacheada puede servirse sin él— pero queda
-  registrado como `sin_sello` para poder medirlo.
-
-5 pruebas nuevas en `IntentosTest`.
+- **Copias de seguridad compatibles con el DNI cifrado.** La exportación descifra el DNI para el CSV y
+  la importación lo vuelve a cifrar y genera su índice ciego. Sin llave, el comportamiento es el antiguo.
 
 ## [2.5.0] — 2026-11-08
 
