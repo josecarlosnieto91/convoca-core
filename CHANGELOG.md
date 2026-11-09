@@ -1,3 +1,11 @@
+## [2.5.2] — 2026-11-09
+
+### Seguridad
+
+- **IBAN cifrado en las opciones.** `Opciones_Cifradas` filtra `option_*` y `pre_update_option_*` de
+  `convoca_members_settings` y `convoca_gateway_settings`: al leer descifra `iban`, al guardar lo cifra.
+  Los consumidores siguen viendo el IBAN en claro y no hay dos caminos de lectura.
+
 ## [2.5.1] — 2026-11-09
 
 ### Seguridad
