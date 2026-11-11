@@ -69,11 +69,22 @@ final class RegresionesAsistentePaginasTest extends TestCase {
 	 * R6 — La detección no puede depender solo del slug.
 	 */
 	public function test_la_deteccion_de_paginas_no_depende_solo_del_slug(): void {
-		$this->markTestIncomplete(
-			'Pendiente del arreglo de convoca-core#14: page_state() recibe get_page_by_path( $slug ), así que ' .
-			'una página con el shortcode correcto bajo otro slug cuenta como «no existe» y el botón «Crear ' .
-			'páginas» inserta un duplicado. Al arreglarlo, comprobar aquí que una página con [convoca_mi_area] ' .
-			'en /mi-cuenta/ da estado «ok» y que no se inserta ninguna página nueva.'
+		$src = $this->fuentes();
+
+		$this->assertStringContainsString(
+			'buscar_pagina_del_sistema( $slug, $info[\'sc\'] )',
+			$src,
+			'El asistente debe resolver la página por slug y por shortcode.'
+		);
+		$this->assertStringContainsString(
+			'post_content LIKE',
+			$src,
+			'La búsqueda por shortcode tiene que consultar el contenido, no solo el slug.'
+		);
+		$this->assertStringContainsString(
+			'get_page_by_path( $slug )',
+			$src,
+			'El slug sigue siendo la primera vía de resolución.'
 		);
 	}
 }
