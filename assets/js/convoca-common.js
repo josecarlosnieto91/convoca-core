@@ -174,12 +174,18 @@ window.convoca = window.convoca || {};
 
 // Use standard WordPress AJAX endpoint.
       const endpoint = window.ajaxurl || '/wp-admin/admin-ajax.php';
+      // Una petición que no termina no puede dejar el botón en «Enviando...» para siempre
+      // (enroll#89): se aborta a los 20 s y el llamador recibe un error normalizado.
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000);
 
       fetch(endpoint, {
          method: 'POST',
-         body: fd
+         body: fd,
+         signal: controller.signal
       })
       .then(r => {
+          clearTimeout(timeoutId);
           // Cada fallo se traduce AQUÍ a un mensaje que diga qué hacer (nunca texto técnico
           // ni frases en inglés): el llamador solo tiene que pintar `data.message`.
           if (r.status === 403 || r.status === 401) {
@@ -215,6 +221,7 @@ window.convoca = window.convoca || {};
          }
      })
      .catch(err => {
+         clearTimeout(timeoutId);
          console.error('Convoca JS.ajaxPost Fetch Error:', err);
          if (onError) onError(conv.normalizarError(null, { message: conv.mensajes.sinConexion }));
      });
