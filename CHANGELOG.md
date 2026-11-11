@@ -1,3 +1,10 @@
+## [2.5.3] — 2026-11-11
+
+### Corregido
+
+- **El botón deja de quedarse bloqueado si la petición AJAX no responde**
+- Se aborta a los 20 s con AbortController y se restaura el estado del botón.
+
 ## [2.5.2] — 2026-11-09
 
 ### Seguridad
