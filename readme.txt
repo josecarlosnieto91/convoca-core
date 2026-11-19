@@ -2,7 +2,7 @@
 Contributors: josecarlosnietoramos
 Tags: common, utilities, logging, webhooks, licenses
 Requires at least: 6.4
-Tested up to: 7.1.4
+Tested up to: 7.1.5
 Requires PHP: 8.2
 Stable tag: 2.5.3
 License: GPL-2.0-or-later
