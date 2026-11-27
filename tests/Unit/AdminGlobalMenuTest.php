@@ -98,7 +98,7 @@ final class AdminGlobalMenuTest extends TestCase {
 
 		$menu = (array) $GLOBALS['_wp_stores']['menu_pages'];
 		$this->assertArrayHasKey( 'convoca-core', $menu );
-		$this->assertSame( 'manage_options', $menu['convoca-core']['capability'] );
+		$this->assertSame( 'view_reports', $menu['convoca-core']['capability'] );
 
 		$submenus = (array) $GLOBALS['_wp_stores']['submenu_pages'];
 		$por_slug = array();
@@ -110,7 +110,7 @@ final class AdminGlobalMenuTest extends TestCase {
 		$this->assertArrayHasKey( 'conv-dashboard', $por_slug );
 		$this->assertArrayHasKey( 'conv-logs-central', $por_slug );
 		$this->assertSame( 'common_view_logs', $por_slug['conv-logs-central']['capability'], 'los registros se leen con su capacidad' );
-		$this->assertSame( 'manage_options', $por_slug['conv-dashboard']['capability'] );
+		$this->assertSame( 'view_reports', $por_slug['conv-dashboard']['capability'] );
 	}
 
 	/**

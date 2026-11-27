@@ -27,7 +27,7 @@ function convoca_register_global_menu(): void {
 	add_menu_page(
 		'Convoca',
 		'Convoca',
-		'manage_options',
+		'view_reports',
 		'convoca-core',
 		'Convoca\Core\convoca_health_page',
 		'dashicons-admin-site-alt3',
@@ -48,7 +48,7 @@ function convoca_register_global_menu(): void {
 		'convoca-core',
 		__( 'Panel de Control', 'convoca-core' ),
 		__( 'Panel de Control', 'convoca-core' ),
-		'manage_options',
+		'view_reports',
 		'conv-dashboard',
 		'Convoca\Core\convoca_dashboard_page'
 	);

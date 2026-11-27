@@ -440,7 +440,7 @@ function convoca_logs_page(): void {
  * Unified Dashboard page.
  */
 function convoca_dashboard_page(): void {
-	if ( ! current_user_can( 'manage_options' ) ) {
+	if ( ! current_user_can( 'view_reports' ) && ! current_user_can( 'manage_options' ) ) {
 		wp_die( esc_html__( 'No tienes permisos.', 'convoca-core' ) );
 	}
 

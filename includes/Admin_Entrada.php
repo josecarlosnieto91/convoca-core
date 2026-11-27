@@ -63,7 +63,7 @@ class Admin_Entrada {
 	 * @return bool
 	 */
 	public static function puede_aterrizar( $user ): bool {
-		return ( $user instanceof \WP_User ) && user_can( $user, 'manage_options' );
+		return ( $user instanceof \WP_User ) && ( user_can( $user, 'view_reports' ) || user_can( $user, 'manage_options' ) );
 	}
 
 	/**

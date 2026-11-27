@@ -96,10 +96,10 @@ final class AdminPagesTest extends TestCase {
 	}
 
 	/**
-	 * El escritorio exige `manage_options`.
+	 * El escritorio exige ver informes.
 	 */
 	public function test_el_escritorio_sin_permiso_muere(): void {
-		$GLOBALS['_test_caps'] = array( 'manage_options' => false );
+		$GLOBALS['_test_caps'] = array( 'manage_options' => false, 'view_reports' => false );
 
 		$this->expectException( \RuntimeException::class );
 		\Convoca\Core\convoca_dashboard_page();

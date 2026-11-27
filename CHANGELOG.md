@@ -1,3 +1,10 @@
+## [2.5.7] — 2026-11-27
+
+### Corregido
+
+- **La junta y los monitores entran al Panel de Control con `view_reports` (#56).** El menú, el
+  panel y el aterrizaje dejan de exigir `manage_options`; un suscriptor sigue sin acceso.
+
 ## [2.5.6] — 2026-11-27
 
 ### Corregido
