@@ -142,7 +142,19 @@ class Blocks_Common {
 			return '';
 		}
 
-		$value = get_post_meta( $post_id, $attributes['metaField'], true );
+		$campo = (string) $attributes['metaField'];
+
+		// Solo metadatos públicos: una clave interna (DNI, datos de la ficha) no se pinta aunque
+		// el editor la escriba a mano en el bloque (core#53).
+		$permitidas = (array) apply_filters(
+			'convoca_common_meta_publicas',
+			array( '_convoca_fecha_inicio', '_convoca_fecha_fin', '_convoca_lugar', '_convoca_plazas_totales' )
+		);
+		if ( ! in_array( $campo, $permitidas, true ) ) {
+			return '';
+		}
+
+		$value = get_post_meta( $post_id, $campo, true );
 
 		if ( $value === '' || $value === null ) {
 			return '';

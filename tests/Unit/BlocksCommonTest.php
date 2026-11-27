@@ -55,7 +55,7 @@ final class BlocksCommonTest extends TestCase {
 		return (string) Blocks_Common::render_post_meta_field(
 			array_merge(
 				array(
-					'metaField' => '_convoca_campo',
+					'metaField' => '_convoca_fecha_inicio',
 					'type'      => 'text',
 					'prefix'    => '',
 					'suffix'    => '',
@@ -132,6 +132,14 @@ final class BlocksCommonTest extends TestCase {
 		} ) )[0]['title'], 'y se respeta la que ya estaba' );
 	}
 
+
+	/** Una clave interna no se publica (core#53). */
+	public function test_una_clave_fuera_de_la_lista_blanca_no_se_pinta(): void {
+		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_dni' => '12345678Z' );
+
+		$this->assertSame( '', $this->pintar( array( 'metaField' => '_convoca_dni' ) ) );
+	}
+
 	/**
 	 * El bloque se registra con su devolución de pintado y sus atributos.
 	 */
@@ -162,7 +170,7 @@ final class BlocksCommonTest extends TestCase {
 	 * Sin entrada en contexto no se lee la base: no existe la entrada 0.
 	 */
 	public function test_sin_entrada_no_pinta(): void {
-		$GLOBALS['_wp_stores']['post_meta'][0] = array( '_convoca_campo' => 'de nadie' );
+		$GLOBALS['_wp_stores']['post_meta'][0] = array( '_convoca_fecha_inicio' => 'de nadie' );
 
 		$this->assertSame( '', $this->pintar( array(), 0 ) );
 		$this->assertSame( array(), $GLOBALS['_wp_stores']['meta_reads'], 'ni una lectura' );
@@ -172,7 +180,7 @@ final class BlocksCommonTest extends TestCase {
 	 * Valor vacío no deja hueco ni prefijo suelto.
 	 */
 	public function test_valor_vacio_no_pinta(): void {
-		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_campo' => '' );
+		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_fecha_inicio' => '' );
 
 		$this->assertSame( '', $this->pintar( array( 'prefix' => 'Desde ' ) ), 'ni el prefijo' );
 	}
@@ -181,7 +189,7 @@ final class BlocksCommonTest extends TestCase {
 	 * **Un cero es un valor**: si se confundiera con vacío, un precio de 0 € desaparecería.
 	 */
 	public function test_el_cero_se_pinta(): void {
-		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_campo' => '0' );
+		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_fecha_inicio' => '0' );
 
 		$this->assertSame( '0', $this->pintar( array() ), 'el cero sale' );
 		$this->assertSame( '0,00 €', $this->pintar( array( 'type' => 'price' ) ) );
@@ -191,7 +199,7 @@ final class BlocksCommonTest extends TestCase {
 	 * El precio sale en formato español, con sus miles y su coma.
 	 */
 	public function test_el_precio(): void {
-		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_campo' => '1234.5' );
+		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_fecha_inicio' => '1234.5' );
 
 		$this->assertSame( '1.234,50 €', $this->pintar( array( 'type' => 'price' ) ) );
 	}
@@ -200,7 +208,7 @@ final class BlocksCommonTest extends TestCase {
 	 * Un número sin decimales, con separador de miles.
 	 */
 	public function test_el_numero(): void {
-		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_campo' => '1234' );
+		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_fecha_inicio' => '1234' );
 
 		$this->assertSame( '1.234', $this->pintar( array( 'type' => 'number' ) ) );
 	}
@@ -209,7 +217,7 @@ final class BlocksCommonTest extends TestCase {
 	 * La fecha, en el formato que haya configurado el sitio (y no en uno fijo).
 	 */
 	public function test_la_fecha(): void {
-		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_campo' => '2026-11-07' );
+		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_fecha_inicio' => '2026-11-07' );
 
 		$this->assertSame( '7 de November de 2026', $this->pintar( array( 'type' => 'date' ) ) );
 
@@ -221,7 +229,7 @@ final class BlocksCommonTest extends TestCase {
 	 * Una fecha que no se puede interpretar se deja tal cual: mejor eso que un hueco.
 	 */
 	public function test_una_fecha_ilegible_se_deja(): void {
-		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_campo' => 'sin fecha' );
+		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_fecha_inicio' => 'sin fecha' );
 
 		$this->assertSame( 'sin fecha', $this->pintar( array( 'type' => 'date' ) ) );
 	}
@@ -231,7 +239,7 @@ final class BlocksCommonTest extends TestCase {
 	 */
 	public function test_el_texto_no_se_pinta_crudo(): void {
 		$GLOBALS['_wp_stores']['post_meta'][42] = array(
-			'_convoca_campo' => '<b>Hola</b> <script>alert(1)</script>',
+			'_convoca_fecha_inicio' => '<b>Hola</b> <script>alert(1)</script>',
 		);
 
 		$salida = $this->pintar( array() );
@@ -244,7 +252,7 @@ final class BlocksCommonTest extends TestCase {
 	 * Una URL suelta se convierte en enlace (el campo es texto libre).
 	 */
 	public function test_una_url_se_convierte_en_enlace(): void {
-		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_campo' => 'Ver https://example.test/actividad' );
+		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_fecha_inicio' => 'Ver https://example.test/actividad' );
 
 		$salida = $this->pintar( array() );
 
@@ -255,7 +263,7 @@ final class BlocksCommonTest extends TestCase {
 	 * Prefijo y sufijo se escapan: los pone quien edita el bloque, y no son HTML.
 	 */
 	public function test_el_prefijo_se_escapa(): void {
-		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_campo' => '10' );
+		$GLOBALS['_wp_stores']['post_meta'][42] = array( '_convoca_fecha_inicio' => '10' );
 
 		$salida = $this->pintar(
 			array(
