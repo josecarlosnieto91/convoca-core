@@ -148,7 +148,7 @@ class Memory_Report {
 		$year        = wp_date( 'Y', $timestamp );
 		$month_num   = wp_date( 'm', $timestamp );
 		$month_start = $timestamp;
-		$month_end   = strtotime( 'last day of this month', $timestamp );
+		$month_end   = strtotime( 'first day of next month', $timestamp ); // Límite exclusivo: incluye el último día completo.
 
 		// Fetch data.
 		$analytics = Admin_Analytics::get_all( true );

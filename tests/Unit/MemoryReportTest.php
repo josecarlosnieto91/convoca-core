@@ -227,6 +227,19 @@ final class MemoryReportTest extends TestCase {
 		$this->assertGreaterThan( 3000, strlen( $pdf ), 'con contenido, no una hoja en blanco' );
 	}
 
+
+	/**
+	 * El límite es el primer día del mes siguiente: el último día entra completo.
+	 */
+	public function test_la_memoria_incluye_el_ultimo_dia_del_mes(): void {
+		Memory_Report::generate_pdf( strtotime( '2026-01-15 10:00:00' ) );
+
+		$consultas = implode( "\n", (array) ( $GLOBALS['_wp_stores']['db_reads'] ?? array() ) );
+
+		$this->assertStringContainsString( '2026-02-01', $consultas, 'el límite es el 1 de febrero' );
+		$this->assertStringNotContainsString( '2026-01-31', $consultas, 'no se corta el 31 de enero' );
+	}
+
 	/**
 	 * La generación manual exige nonce: sin él, muere.
 	 */

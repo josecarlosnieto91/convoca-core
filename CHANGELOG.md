@@ -1,3 +1,11 @@
+## [2.5.5] — 2026-11-27
+
+### Corregido
+
+- **La memoria mensual incluye el último día del mes (#58).** El límite pasa a ser el primer día
+  del mes siguiente, exclusivo; antes el 31 de enero quedaba fuera y las cifras de la asamblea salían
+  cortas.
+
 ## [2.5.4] — 2026-11-27
 
 ### Corregido
