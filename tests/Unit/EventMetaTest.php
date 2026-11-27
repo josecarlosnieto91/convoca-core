@@ -96,6 +96,23 @@ final class EventMetaTest extends TestCase {
 		$this->assertSame( 'un día de mayo', \Convoca\Core\event_when( 11 ) );
 	}
 
+
+	/** La hora guardada se lee en la zona del sitio, no en la de PHP (core#63). */
+	public function test_la_hora_no_se_desplaza_con_php_en_utc(): void {
+		$anterior = date_default_timezone_get();
+		date_default_timezone_set( 'UTC' );
+		update_option( 'timezone_string', 'Europe/Madrid' );
+		$GLOBALS['_wp_stores']['post_meta'][12]['_convoca_event_start_date'] = '2026-01-15 18:00:00';
+
+		$texto = \Convoca\Core\event_when( 12 );
+
+		$this->assertStringContainsString( '18:00', $texto, 'la hora que se guardó, no la de PHP' );
+		$this->assertStringNotContainsString( '19:00', $texto );
+
+		date_default_timezone_set( $anterior );
+		delete_option( 'timezone_string' );
+	}
+
 	/**
 	 * El lugar: se queda con lo de antes de la primera coma si es una dirección larga.
 	 */
