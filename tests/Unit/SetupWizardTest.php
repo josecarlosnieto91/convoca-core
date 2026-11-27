@@ -173,7 +173,16 @@ final class SetupWizardTest extends TestCase {
 	/**
 	 * **Si todo está bien no se toca nada**: ni una creación, ni una actualización.
 	 */
+
+	/** Registra los cinco shortcodes del asistente, como en una instalación completa. */
+	private function registrar_shortcodes(): void {
+		foreach ( array( 'convoca_alta_socio', 'convoca_mi_area', 'convoca_pago', 'convoca_verificar_socio', 'convoca_verificar_certificado' ) as $tag ) {
+			$GLOBALS['_wp_shortcodes'][ $tag ] = '__return_empty';
+		}
+	}
+
 	public function test_si_esta_todo_no_hace_nada(): void {
+		$this->registrar_shortcodes();
 		$tipos = array(
 			1 => array( 'alta-socios', '[convoca_alta_socio]' ),
 			2 => array( 'panel-socio', '[convoca_mi_area]' ),
@@ -187,7 +196,7 @@ final class SetupWizardTest extends TestCase {
 
 		$resumen = $this->wizard->crear_paginas_del_sistema();
 
-		$this->assertSame( array( 'creadas' => 0, 'reparadas' => 0, 'ok' => 5 ), $resumen );
+		$this->assertSame( array( 'creadas' => 0, 'reparadas' => 0, 'ok' => 5, 'faltan' => array() ), $resumen );
 		$this->assertSame( array(), (array) ( $GLOBALS['_wp_stores']['queries'] ?? array() ), 'no se escribe nada' );
 	}
 
@@ -195,6 +204,7 @@ final class SetupWizardTest extends TestCase {
 	 * Las que faltan se crean **publicadas** y con su shortcode.
 	 */
 	public function test_crea_las_que_faltan(): void {
+		$this->registrar_shortcodes();
 		$this->pagina( 1, 'alta-socios', '[convoca_alta_socio]' );
 
 		$resumen = $this->wizard->crear_paginas_del_sistema();
@@ -218,6 +228,7 @@ final class SetupWizardTest extends TestCase {
 	 * **Una página con el shortcode pero otro slug no se duplica** (issue #14): se reconoce por su shortcode.
 	 */
 	public function test_no_duplica_la_que_ya_tiene_el_shortcode(): void {
+		$this->registrar_shortcodes();
 		$this->pagina( 9, 'mi-panel', '[convoca_mi_area]', 'publish' );
 		$this->pagina( 1, 'alta-socios', '[convoca_alta_socio]' );
 		$this->pagina( 3, 'pago', '[convoca_pago]' );
@@ -234,6 +245,7 @@ final class SetupWizardTest extends TestCase {
 	 * Una página que existe **sin** el shortcode se repara sin borrar el texto del autor.
 	 */
 	public function test_repara_sin_pisar_el_texto(): void {
+		$this->registrar_shortcodes();
 		$this->pagina( 2, 'panel-socio', '<h2>Bienvenido</h2><p>Texto de la asociación.</p>' );
 		$this->sembrar_las_otras_cuatro();
 
@@ -249,6 +261,7 @@ final class SetupWizardTest extends TestCase {
 	 * Un shortcode viejo (`[mi_panel]`) se sustituye por el actual, sin duplicar el nuevo.
 	 */
 	public function test_sustituye_el_shortcode_retirado(): void {
+		$this->registrar_shortcodes();
 		$this->pagina( 2, 'panel-socio', '<p>Tu área:</p>[mi_panel]' );
 		$this->sembrar_las_otras_cuatro();
 
@@ -265,6 +278,7 @@ final class SetupWizardTest extends TestCase {
 	 * crea publicada.
 	 */
 	public function test_un_borrador_no_cuenta(): void {
+		$this->registrar_shortcodes();
 		$this->pagina( 9, 'mi-panel', '[convoca_mi_area]', 'draft' );
 		$this->sembrar_las_otras_cuatro();
 
@@ -281,7 +295,7 @@ final class SetupWizardTest extends TestCase {
 	 * como texto literal entre corchetes.
 	 */
 	public function test_avisa_si_el_shortcode_no_esta_registrado(): void {
-		$this->wizard->crear_paginas_del_sistema();
+		$resumen = $this->wizard->crear_paginas_del_sistema();
 
 		$mensajes = implode(
 			' | ',
@@ -290,7 +304,9 @@ final class SetupWizardTest extends TestCase {
 				array_column( array_column( (array) $GLOBALS['_wp_stores']['db_inserts'], 'data' ), 'message' )
 			)
 		);
-		$this->assertStringContainsString( 'ningún plugin activo registra', $mensajes );
+		$this->assertStringContainsString( 'falta Convoca Members', $mensajes, 'dice qué módulo falta' );
+		$this->assertSame( 0, $resumen['creadas'], 'no se publica ninguna página rota' );
+		$this->assertArrayHasKey( 'alta-socios', $resumen['faltan'] );
 	}
 
 	/**

@@ -282,6 +282,25 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 
 	/* ── Step 2: Pages ── */
 
+
+	/**
+	 * Módulo que aporta cada shortcode del asistente.
+	 *
+	 * @param string $tag Shortcode sin corchetes.
+	 * @return string Nombre del plugin o «el módulo correspondiente».
+	 */
+	private static function modulo_del_shortcode( string $tag ): string {
+		$modulos = array(
+			'convoca_alta_socio'            => 'Convoca Members',
+			'convoca_mi_area'               => 'Convoca Members',
+			'convoca_verificar_socio'       => 'Convoca Members',
+			'convoca_pago'                  => 'Convoca Gateway',
+			'convoca_verificar_certificado' => 'Convoca Courses',
+		);
+
+		return $modulos[ $tag ] ?? 'el módulo correspondiente';
+	}
+
 	/**
 	 * Páginas del sistema y shortcode que debe contener cada una.
 	 *
@@ -430,9 +449,11 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 				);
 			}
 			if ( ! shortcode_exists( $tag ) ) {
-				$notes[] = sprintf(
-					/* translators: %s: plugin/shortcode name */
-					__( 'Ningún plugin activo registra %s: actívalo antes de crearla.', 'convoca-core' ),
+				$all_mand = false;
+				$notes[]  = sprintf(
+					/* translators: 1: module name, 2: shortcode */
+					__( 'Falta %1$s: ningún plugin activo registra %2$s.', 'convoca-core' ),
+					self::modulo_del_shortcode( $tag ),
 					$info['sc']
 				);
 			}
@@ -459,25 +480,29 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 	 * `exit`— para poder probar la lógica de verdad: crear lo que falta, reparar lo que existe sin el shortcode y
 	 * **no duplicar** lo que ya está bien (issue #14).
 	 *
-	 * @return array{creadas:int,reparadas:int,ok:int}
+	 * @return array{creadas:int,reparadas:int,ok:int,faltan:array<string,string>}
 	 */
 	public function crear_paginas_del_sistema(): array {
 		$resumen = array(
 			'creadas'   => 0,
 			'reparadas' => 0,
 			'ok'        => 0,
+			'faltan'    => array(),
 		);
 
 		foreach ( self::system_pages() as $slug => $info ) {
 			$tag = trim( $info['sc'], '[]' );
 
-			// Un shortcode que nadie registra se pinta como texto literal: mejor
-			// dejarlo anotado en el log que publicar la página rota en silencio.
+			// Sin el plugin que registra el shortcode no se publica una página rota:
+			// se anota qué módulo falta y se sigue (core#60).
 			if ( ! shortcode_exists( $tag ) ) {
+				$modulo = self::modulo_del_shortcode( $tag );
 				\Convoca\Core\Logger::warning(
-					sprintf( 'La página %s espera el shortcode [%s], que ningún plugin activo registra.', $slug, $tag ),
+					sprintf( 'La página %s no se crea: falta %s (shortcode [%s]).', $slug, $modulo, $tag ),
 					'Common/SetupWizard'
 				);
+				$resumen['faltan'][ $slug ] = $modulo;
+				continue;
 			}
 
 			$page  = self::buscar_pagina_del_sistema( $slug, $info['sc'] );
