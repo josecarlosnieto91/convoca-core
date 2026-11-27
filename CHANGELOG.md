@@ -1,3 +1,11 @@
+## [2.5.14] — 2026-11-27
+
+### Corregido
+
+- **La fecha de una actividad se lee en la zona del sitio (#63).** `event_when()` construye la fecha
+  con `DateTimeImmutable` y `wp_timezone()` y formatea con `wp_date()`; con PHP en UTC y el sitio en
+  Madrid, las 18:00 siguen siendo las 18:00.
+
 ## [2.5.13] — 2026-11-27
 
 ### Corregido

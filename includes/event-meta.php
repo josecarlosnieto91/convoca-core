@@ -107,18 +107,28 @@ function event_meta( int $post_id, string $meta_key ): string {
  * @return string Texto de la fecha, o cadena vacía.
  */
 function event_when( int $post_id ): string {
-	$ini = event_meta( $post_id, '_convoca_event_start_date' );
+	$ini = (string) event_meta( $post_id, '_convoca_event_start_date' );
 	if ( '' === $ini ) {
 		return '';
 	}
 
-	$fin  = event_meta( $post_id, '_convoca_event_end_date' );
-	$ts   = strtotime( $ini );
-	$text = $ts ? date_i18n( 'j \d\e F, H:i', $ts ) : $ini;
+	$fin = (string) event_meta( $post_id, '_convoca_event_end_date' );
+
+	try {
+		$inicio = new \DateTimeImmutable( $ini, wp_timezone() );
+	} catch ( \Exception $e ) {
+		return $ini;
+	}
+
+	$text = (string) wp_date( 'j \d\e F, H:i', $inicio->getTimestamp() );
 
 	if ( '' !== $fin && substr( $fin, 0, 10 ) !== substr( $ini, 0, 10 ) ) {
-		$tsf  = strtotime( $fin );
-		$text = sprintf( '%s – %s', $text, $tsf ? date_i18n( 'j \d\e F', $tsf ) : $fin );
+		try {
+			$final = new \DateTimeImmutable( $fin, wp_timezone() );
+			$text  = sprintf( '%s – %s', $text, (string) wp_date( 'j \d\e F', $final->getTimestamp() ) );
+		} catch ( \Exception $e ) {
+			$text = sprintf( '%s – %s', $text, $fin );
+		}
 	}
 
 	return $text;
