@@ -525,12 +525,13 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 				);
 				if ( $page_id ) {
 					++$resumen['creadas'];
-				} else {
-					\Convoca\Core\Logger::error(
-						sprintf( 'Error creando página %s (wp_insert_post devolvió 0).', $slug ),
-						'Common/SetupWizard'
-					);
+					continue;
 				}
+
+				\Convoca\Core\Logger::error(
+					sprintf( 'Error creando página %s (wp_insert_post devolvió 0).', $slug ),
+					'Common/SetupWizard'
+				);
 				continue;
 			}
 
