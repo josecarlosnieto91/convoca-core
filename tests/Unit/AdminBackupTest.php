@@ -405,7 +405,7 @@ final class AdminBackupTest extends TestCase {
 		};
 		$GLOBALS['_wp_stores']['posts'] = array(
 			1 => $post( 1, 'miembro', 'Ada' ),
-			2 => $post( 2, 'miembro', 'Bea' ),
+			2 => $post( 2, 'miembro', '=SUM(1+1)' ),
 			3 => $post( 3, 'inscripcion', 'Inscripción' ),
 			4 => $post( 4, 'proyecto', 'Proyecto' ),
 			5 => $post( 5, 'centro_turno', 'Turno' ),
@@ -419,7 +419,7 @@ final class AdminBackupTest extends TestCase {
 				'_convoca_estado_miembro' => 'activo',
 				'_convoca_vencimiento'    => '2027-01-01',
 			),
-			3 => array( '_convoca_nombre' => 'Ada', '_convoca_actividad_id' => 4 ),
+			3 => array( '_convoca_nombre' => 'Inscripción', '_convoca_actividad_id' => 4 ),
 			4 => array( '_convoca_fecha_inicio' => '2026-01-01', '_convoca_activo' => '1' ),
 			5 => array( '_id_responsable' => '12', '_estado_real' => 'cubierto', '_hora_fin' => '14:00' ),
 			6 => array( '_convoca_fecha_inicio' => '2026-12-01 10:00:00', '_convoca_plazas_totales' => '20' ),
@@ -442,7 +442,8 @@ final class AdminBackupTest extends TestCase {
 		$this->assertStringContainsString( 'ID,Nombre,Email,DNI,Plan,Estado,Vencimiento', $miembros );
 		$this->assertStringContainsString( 'ada@example.test', $miembros );
 		$this->assertStringContainsString( '12345678Z', $miembros );
-		$this->assertStringContainsString( 'Bea', $miembros, 'salen los dos socios' );
+
+		$this->assertStringContainsString( "'=SUM(1+1)", $miembros, 'la celda con fórmula va neutralizada' );
 		$this->assertFalse( $zip->getFromName( 'miembro.csv' ), 'el nombre del CPT no está: el importador no lo encontraría' );
 
 		$actividades = $zip->getFromName( 'actividades.csv' );

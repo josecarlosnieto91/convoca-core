@@ -210,6 +210,26 @@ final class AdminPagesTest extends TestCase {
 		$this->assertArrayNotHasKey( 'convoca_log_retention_days', $GLOBALS['_wp_stores']['options'] );
 	}
 
+
+	/** El CSV de registros neutraliza fórmulas y conserva el BOM. */
+	public function test_el_csv_de_registros_neutraliza_formulas(): void {
+		$csv = \Convoca\Core\convoca_logs_csv(
+			array(
+				array(
+					'created_at' => '2026-01-01 10:00:00',
+					'level'      => 'info',
+					'context'    => 'Prueba',
+					'message'    => '=SUM(1+1)',
+					'user_id'    => 1,
+					'object_id'  => 2,
+				),
+			)
+		);
+
+		$this->assertStringStartsWith( "\xEF\xBB\xBF", $csv, 'BOM para Excel' );
+		$this->assertStringContainsString( "'=SUM(1+1)", $csv, 'la fórmula va neutralizada' );
+	}
+
 	/**
 	 * Al exportar se conservan los filtros: si no, se descarga «todo» creyendo que es «lo filtrado».
 	 */
