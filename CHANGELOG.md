@@ -1,3 +1,11 @@
+## [2.5.12] — 2026-11-27
+
+### Corregido
+
+- **Una clave nueva sin validar no hereda PRO (#54).** Con una licencia vigente, la clave
+  introducida se guarda como `pending_key`; la clave, el tipo y las funciones actuales no cambian
+  hasta que la API la valide.
+
 ## [2.5.11] — 2026-11-27
 
 ### Corregido

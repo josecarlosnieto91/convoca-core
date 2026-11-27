@@ -278,7 +278,8 @@ final class LicenseProTest extends TestCase {
 
 		$this->assertTrue( $resultado['success'], 'se guarda y se avisa de que la validación queda pendiente' );
 		$guardada = License_Manager::get_license();
-		$this->assertSame( 'CLAVE-SECRETA', $guardada['key'] );
+		$this->assertSame( 'CLAVE-DE-PRUEBA', $guardada['key'], 'la licencia vigente no cambia' );
+		$this->assertSame( 'CLAVE-SECRETA', $guardada['pending_key'], 'la nueva queda pendiente' );
 		$this->assertSame( 'active', $guardada['status'], 'el estado activo no se toca por un corte de red' );
 		$this->assertSame( 'unlimited', $guardada['type'], 'ni el tipo' );
 		$this->assertSame( array( 'members', 'courses' ), $guardada['features'], 'ni las funciones' );

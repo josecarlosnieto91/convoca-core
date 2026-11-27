@@ -365,6 +365,31 @@ class LicenseManagerTest extends TestCase
      *
      * @covers \Convoca\Core\License_Manager::get_status_label
      */
+
+    /** Con A activa y red caída, B queda pendiente y A conserva sus funciones (core#54). */
+    public function test_clave_nueva_con_red_caida_no_hereda_pro(): void
+    {
+        update_option(
+            License_Manager::OPTION_KEY,
+            array(
+                'key'      => 'A',
+                'status'   => 'active',
+                'type'     => 'single',
+                'features' => array( 'informes' ),
+                'expires'  => '2030-01-01',
+            )
+        );
+        $GLOBALS['_wp_stores']['http_response'] = new \WP_Error( 'http', 'sin red' );
+
+        License_Manager::validate_key( 'B' );
+
+        $guardada = get_option( License_Manager::OPTION_KEY );
+        $this->assertSame( 'A', $guardada['key'], 'la licencia vigente no cambia' );
+        $this->assertSame( 'B', $guardada['pending_key'], 'B queda pendiente' );
+        $this->assertTrue( License_Manager::has_pro( 'informes' ), 'A sigue dando PRO' );
+        $this->assertFalse( License_Manager::has_pro( 'otra_cosa' ), 'B no añade funciones' );
+    }
+
     public function test_status_label_activa(): void
     {
         self::licencia()['status'] = 'active';

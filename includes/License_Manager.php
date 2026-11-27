@@ -206,11 +206,13 @@ class License_Manager {
 			if ( $cached ) {
 				return $cached;
 			}
-			// Store pending validation. Keep existing type/features intact
-			// (do NOT downgrade an active license to free on a network hiccup).
-			$current        = self::get_license();
-			$current['key'] = $key;
-			if ( empty( $current['status'] ) || $current['status'] === 'inactive' ) {
+			// Si ya hay una licencia vigente, la clave nueva queda **pendiente**: no hereda
+			// tipo, funciones ni vencimiento hasta que la API la valide (core#54).
+			$current = self::get_license();
+			if ( ! empty( $current['key'] ) && in_array( $current['status'] ?? '', array( 'active', 'valid' ), true ) ) {
+				$current['pending_key'] = $key;
+			} else {
+				$current['key']    = $key;
 				$current['status'] = 'pending';
 			}
 			update_option( self::OPTION_KEY, $current );
@@ -253,10 +255,14 @@ class License_Manager {
 	 */
 	public static function validate_remote(): void {
 		$license = self::get_license();
-		if ( empty( $license['key'] ) ) {
+		$key     = (string) ( $license['pending_key'] ?? '' );
+		if ( '' === $key ) {
+			$key = (string) ( $license['key'] ?? '' );
+		}
+		if ( '' === $key ) {
 			return;
 		}
-		self::validate_key( $license['key'] );
+		self::validate_key( $key );
 	}
 
 	/**
