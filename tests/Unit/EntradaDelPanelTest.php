@@ -56,6 +56,22 @@ class EntradaDelPanelTest extends TestCase {
 		);
 	}
 
+
+	/** La junta y los monitores con `view_reports` también aterrizan en el panel. */
+	public function test_aterriza_con_ver_informes(): void {
+		$clase = $this->clase();
+		if ( ! class_exists( $clase ) ) {
+			$this->fail( 'No se ha podido cargar Admin_Entrada.' );
+		}
+
+		$user       = new \WP_User();
+		$user->ID   = 9;
+		$GLOBALS['_test_user_caps'][9]['manage_options'] = false;
+		$GLOBALS['_test_user_caps'][9]['view_reports']  = true;
+
+		$this->assertStringContainsString( 'page=conv-dashboard', (string) $clase::aterrizar( admin_url(), '', $user ) );
+	}
+
 	/** Sin permiso para el panel, no se cambia nada. */
 	public function test_sin_permiso_no_se_cambia_el_destino(): void {
 		$clase = $this->clase();
@@ -66,6 +82,7 @@ class EntradaDelPanelTest extends TestCase {
 		$user       = new \WP_User();
 		$user->ID   = 8;
 		$GLOBALS['_test_user_caps'][8]['manage_options'] = false;
+		$GLOBALS['_test_user_caps'][8]['view_reports']  = false;
 
 		$this->assertSame( admin_url(), $clase::aterrizar( admin_url(), '', $user ) );
 	}
