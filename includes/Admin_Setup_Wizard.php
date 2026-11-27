@@ -30,6 +30,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
+	/**
+	 * Módulo que aporta cada shortcode del asistente.
+	 *
+	 * @var array<string,string>
+	 */
+	private const MODULOS_SHORTCODE = array(
+		'convoca_alta_socio'            => 'Convoca Members',
+		'convoca_mi_area'               => 'Convoca Members',
+		'convoca_verificar_socio'       => 'Convoca Members',
+		'convoca_pago'                  => 'Convoca Gateway',
+		'convoca_verificar_certificado' => 'Convoca Courses',
+	);
+
 
 	/**
 	 * Ganchos de la pantalla, en una lista en vez del constructor copiado.
@@ -284,24 +297,6 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 
 
 	/**
-	 * Módulo que aporta cada shortcode del asistente.
-	 *
-	 * @param string $tag Shortcode sin corchetes.
-	 * @return string Nombre del plugin o «el módulo correspondiente».
-	 */
-	private static function moduloDelShortcode( string $tag ): string {
-		$modulos = array(
-			'convoca_alta_socio'            => 'Convoca Members',
-			'convoca_mi_area'               => 'Convoca Members',
-			'convoca_verificar_socio'       => 'Convoca Members',
-			'convoca_pago'                  => 'Convoca Gateway',
-			'convoca_verificar_certificado' => 'Convoca Courses',
-		);
-
-		return $modulos[ $tag ] ?? 'el módulo correspondiente';
-	}
-
-	/**
 	 * Páginas del sistema y shortcode que debe contener cada una.
 	 *
 	 * Única fuente de verdad: la usan el diagnóstico (step_pages), la creación y
@@ -453,7 +448,7 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 				$notes[]  = sprintf(
 					/* translators: 1: module name, 2: shortcode */
 					__( 'Falta %1$s: ningún plugin activo registra %2$s.', 'convoca-core' ),
-					self::moduloDelShortcode( $tag ),
+					( self::MODULOS_SHORTCODE[ $tag ] ?? 'el módulo correspondiente' ),
 					$info['sc']
 				);
 			}
@@ -496,7 +491,7 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 			// Sin el plugin que registra el shortcode no se publica una página rota:
 			// se anota qué módulo falta y se sigue (core#60).
 			if ( ! shortcode_exists( $tag ) ) {
-				$modulo = self::moduloDelShortcode( $tag );
+				$modulo = ( self::MODULOS_SHORTCODE[ $tag ] ?? 'el módulo correspondiente' );
 				\Convoca\Core\Logger::warning(
 					sprintf( 'La página %s no se crea: falta %s (shortcode [%s]).', $slug, $modulo, $tag ),
 					'Common/SetupWizard'
