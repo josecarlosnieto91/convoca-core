@@ -239,6 +239,43 @@ add_action(
 /**
  * Admin POST handler: Export current logs as CSV.
  */
+
+/**
+ * Construye el CSV de registros con BOM y celdas neutralizadas.
+ *
+ * @param array<int,array<string,mixed>> $rows Filas de la tabla de registros.
+ * @return string CSV completo.
+ */
+function convoca_logs_csv( array $rows ): string {
+	$csv  = "\xEF\xBB\xBF"; // UTF-8 BOM.
+	$csv .= implode( ',', array( 'created_at', 'level', 'context', 'message', 'user_id', 'object_id' ) ) . "\r\n";
+
+	foreach ( $rows as $row ) {
+		$fields = array(
+			$row['created_at'] ?? '',
+			$row['level'] ?? '',
+			$row['context'] ?? '',
+			$row['message'] ?? '',
+			$row['user_id'] ?? '',
+			$row['object_id'] ?? '',
+		);
+		$csv   .= implode(
+			',',
+			array_map(
+				static function ( $value ) {
+					$value = \Convoca\Core\Utils::neutralizar_formula( (string) $value );
+					return ( strpbrk( $value, ",\"\r\n" ) !== false )
+						? '"' . str_replace( '"', '""', $value ) . '"'
+						: $value;
+				},
+				$fields
+			)
+		) . "\r\n";
+	}
+
+	return $csv;
+}
+
 add_action(
 	'admin_post_convoca_export_logs_csv',
 	function () {
@@ -305,31 +342,7 @@ add_action(
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
 
-		// Build the CSV in memory (no direct filesystem calls) and stream it.
-		$csv  = "\xEF\xBB\xBF"; // UTF-8 BOM.
-		$csv .= implode( ',', array( 'created_at', 'level', 'context', 'message', 'user_id', 'object_id' ) ) . "\r\n";
-		foreach ( (array) $rows as $row ) {
-			$fields = array(
-				$row['created_at'] ?? '',
-				$row['level'] ?? '',
-				$row['context'] ?? '',
-				$row['message'] ?? '',
-				$row['user_id'] ?? '',
-				$row['object_id'] ?? '',
-			);
-			$csv   .= implode(
-				',',
-				array_map(
-					static function ( $value ) {
-						$value = (string) $value;
-						return ( strpbrk( $value, ",\"\r\n" ) !== false )
-							? '"' . str_replace( '"', '""', $value ) . '"'
-							: $value;
-					},
-					$fields
-				)
-			) . "\r\n";
-		}
+		$csv = convoca_logs_csv( (array) $rows );
 
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- CSV payload built with controlled quoting; browser download, not HTML.
 		echo $csv;

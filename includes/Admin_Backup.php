@@ -242,7 +242,13 @@ class Admin_Backup {
 			fwrite( $handle, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) ); // BOM for UTF-8.
 			fputcsv( $handle, $headers, ',', '"', '\\' );
 			foreach ( $rows as $row ) {
-				fputcsv( $handle, $row, ',', '"', '\\' );
+				fputcsv(
+					$handle,
+					array_map( array( \Convoca\Core\Utils::class, 'neutralizar_formula' ), $row ),
+					',',
+					'"',
+					'\\'
+				);
 			}
 			rewind( $handle );
 			$zip->addFromString( $name . '.csv', stream_get_contents( $handle ) );

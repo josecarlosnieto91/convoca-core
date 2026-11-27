@@ -1,3 +1,11 @@
+## [2.5.8] — 2026-11-27
+
+### Corregido
+
+- **Los CSV de copia y registros neutralizan fórmulas (#42).** Cada celda pasa por
+  `Utils::neutralizar_formula()`; un nombre o mensaje que empiece por `=`, `+`, `-` o `@`
+  se exporta con apóstrofo y no se ejecuta al abrirlo en una hoja de cálculo.
+
 ## [2.5.7] — 2026-11-27
 
 ### Corregido
