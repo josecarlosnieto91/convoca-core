@@ -289,7 +289,7 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 	 * @param string $tag Shortcode sin corchetes.
 	 * @return string Nombre del plugin o «el módulo correspondiente».
 	 */
-	private static function modulo_del_shortcode( string $tag ): string {
+	private static function moduloDelShortcode( string $tag ): string {
 		$modulos = array(
 			'convoca_alta_socio'            => 'Convoca Members',
 			'convoca_mi_area'               => 'Convoca Members',
@@ -453,7 +453,7 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 				$notes[]  = sprintf(
 					/* translators: 1: module name, 2: shortcode */
 					__( 'Falta %1$s: ningún plugin activo registra %2$s.', 'convoca-core' ),
-					self::modulo_del_shortcode( $tag ),
+					self::moduloDelShortcode( $tag ),
 					$info['sc']
 				);
 			}
@@ -496,7 +496,7 @@ class Admin_Setup_Wizard extends Admin\Pantalla_Admin {
 			// Sin el plugin que registra el shortcode no se publica una página rota:
 			// se anota qué módulo falta y se sigue (core#60).
 			if ( ! shortcode_exists( $tag ) ) {
-				$modulo = self::modulo_del_shortcode( $tag );
+				$modulo = self::moduloDelShortcode( $tag );
 				\Convoca\Core\Logger::warning(
 					sprintf( 'La página %s no se crea: falta %s (shortcode [%s]).', $slug, $modulo, $tag ),
 					'Common/SetupWizard'
