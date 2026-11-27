@@ -53,9 +53,15 @@ class Push_Notifier {
 			return false;
 		}
 
-		$server = untrailingslashit( $config['server'] ?? 'https://ntfy.sh' );
-		$topic  = ! empty( $topic ) ? $topic : ( $config['topic'] ?? 'convoca_alerts' );
-		$url    = $server . '/' . $topic;
+		$server = rtrim( (string) ( $config['server'] ?? 'https://ntfy.sh' ), '/' );
+		$topic  = ! empty( $topic ) ? $topic : (string) ( $config['topic'] ?? '' );
+
+		// Sin destino privado explícito no se publica: `convoca_alerts` era un canal público de fábrica.
+		if ( '' === $topic || 'convoca_alerts' === $topic ) {
+			return false;
+		}
+
+		$url = $server . '/' . $topic;
 
 		// Validate priority.
 		$valid_priorities = array( 'default', 'low', 'high', 'urgent', 'min', 'max' );
@@ -122,7 +128,7 @@ class Push_Notifier {
 	 */
 	public static function notify_admins( string $title, string $message, string $priority = 'default', array $tags = array() ): bool {
 		$config = get_option( self::CONFIG_OPTION, array() );
-		$topic  = $config['topic'] ?? 'convoca_alerts';
+		$topic  = (string) ( $config['topic'] ?? '' );
 
 		if ( empty( $topic ) ) {
 			return false;
@@ -139,7 +145,7 @@ class Push_Notifier {
 	public static function get_defaults(): array {
 		return array(
 			'enabled' => false,
-			'topic'   => 'convoca_alerts',
+			'topic'   => '',
 			'server'  => 'https://ntfy.sh',
 		);
 	}

@@ -1,3 +1,10 @@
+## [2.5.9] — 2026-11-27
+
+### Corregido
+
+- **El push exige un destino privado explícito (#51).** Sin tema configurado, o con el tema de
+  fábrica `convoca_alerts`, no se envía nada; ya no hay un canal público por defecto.
+
 ## [2.5.8] — 2026-11-27
 
 ### Corregido
