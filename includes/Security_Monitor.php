@@ -108,7 +108,7 @@ class Security_Monitor {
 		// (43 en 30 días) y enseñaba a no mirarlo (core#33). Desde fuera sigue siendo aviso.
 		$loopback = in_array( $ip, array( '127.0.0.1', '::1', '::ffff:127.0.0.1' ), true );
 
-		$mensaje = sprintf( 'Acceso REST no autorizado (%s) a %s desde %s', $code, $route, $ip );
+		$mensaje = sprintf( 'Acceso REST no autorizado (%s) a %s desde %s', $code, $route, Utils::etiqueta_privada( $ip ) );
 
 		if ( $loopback ) {
 			Logger::info( $mensaje . ' (sondeo local)', 'Common/Security' );

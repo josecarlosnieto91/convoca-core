@@ -1,3 +1,10 @@
+## [2.5.13] — 2026-11-27
+
+### Corregido
+
+- **Los registros enmascaran correo e IP (#64).** `Utils::etiqueta_privada()` pasa a ser público y
+  `Mailer` y `Security_Monitor` lo usan antes de escribir: `v***@dominio` y `198.51.100.x`.
+
 ## [2.5.12] — 2026-11-27
 
 ### Corregido

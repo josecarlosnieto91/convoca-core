@@ -108,7 +108,7 @@ class Mailer {
 			sprintf(
 				'Correo %s a %s (%s/%s).',
 				$sent ? 'enviado' : 'NO enviado',
-				implode( ', ', $recipients ),
+				implode( ', ', array_map( array( Utils::class, 'etiqueta_privada' ), $recipients ) ),
 				(string) $args['plugin'],
 				(string) ( $args['template'] ?: 'sin plantilla' )
 			),

@@ -638,7 +638,7 @@ class Utils {
 	 * @param string $valor IP o correo.
 	 * @return string
 	 */
-	private static function etiqueta_privada( string $valor ): string {
+	public static function etiqueta_privada( string $valor ): string {
 		if ( false !== strpos( $valor, '@' ) ) {
 			list( $usuario, $dominio ) = explode( '@', $valor, 2 );
 
