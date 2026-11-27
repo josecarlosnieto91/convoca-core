@@ -31,6 +31,7 @@ class Admin_Backup {
 	private const ENTITY_CPT_MAP = array(
 		'miembros'      => 'miembro',
 		'proyectos'     => 'proyecto',
+		'actividades'   => 'actividad',
 		'inscripciones' => 'inscripcion',
 		'turnos'        => 'centro_turno',
 	);
@@ -159,25 +160,10 @@ class Admin_Backup {
 		$temp_dir = get_temp_dir() . 'conv-export-' . wp_generate_password( 16, false ) . '/';
 		wp_mkdir_p( $temp_dir );
 		$tmp_file = $temp_dir . 'convoca-backup.zip';
-		$cleanup  = function () use ( $temp_dir ) {
-			if ( is_dir( $temp_dir ) ) {
-				$files = new \RecursiveIteratorIterator(
-					new \RecursiveDirectoryIterator( $temp_dir, \RecursiveDirectoryIterator::SKIP_DOTS ),
-					\RecursiveIteratorIterator::CHILD_FIRST
-				);
-				foreach ( $files as $file ) {
-					// phpcs:disable WordPress.WP.AlternativeFunctions -- temp cleanup in system temp dir
-					$file->isDir() ? rmdir( $file->getRealPath() ) : unlink( $file->getRealPath() );
-					// phpcs:enable
-				}
-				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- temp cleanup in system temp dir
-				rmdir( $temp_dir );
-			}
-		};
 
 		$error = $this->construir_zip( $tmp_file );
 		if ( '' !== $error ) {
-			$cleanup();
+			$this->limpiar_temporal( $temp_dir );
 			wp_die( $error );
 		}
 
@@ -188,8 +174,31 @@ class Admin_Backup {
 		header( 'Expires: 0' );
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- serving binary ZIP file, no escaping needed
 		readfile( $tmp_file );
-		$cleanup();
+		$this->limpiar_temporal( $temp_dir );
 		exit;
+	}
+
+	/**
+	 * Borra el directorio temporal de exportación.
+	 *
+	 * @param string $temp_dir Directorio.
+	 */
+	private function limpiar_temporal( string $temp_dir ): void {
+		if ( ! is_dir( $temp_dir ) ) {
+			return;
+		}
+
+		$files = new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator( $temp_dir, \RecursiveDirectoryIterator::SKIP_DOTS ),
+			\RecursiveIteratorIterator::CHILD_FIRST
+		);
+		foreach ( $files as $file ) {
+			// phpcs:disable WordPress.WP.AlternativeFunctions -- temp cleanup in system temp dir
+			$file->isDir() ? rmdir( $file->getRealPath() ) : unlink( $file->getRealPath() );
+			// phpcs:enable
+		}
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- temp cleanup in system temp dir
+		rmdir( $temp_dir );
 	}
 
 	/**
@@ -283,6 +292,21 @@ class Admin_Backup {
 			'miembro',
 			array( 'ID', 'Nombre', 'Email', 'DNI', 'Plan', 'Estado', 'Vencimiento' ),
 			array( $this, 'fila_miembro' )
+		);
+
+		// Activities (the CPT that inscriptions point to).
+		$export_all(
+			'actividad',
+			array( 'ID', 'Título', 'Fecha inicio', 'Fecha fin', 'Plazas' ),
+			function ( $id ) {
+				return array(
+					$id,
+					get_the_title( $id ),
+					get_post_meta( $id, '_convoca_fecha_inicio', true ),
+					get_post_meta( $id, '_convoca_fecha_fin', true ),
+					get_post_meta( $id, '_convoca_plazas_totales', true ),
+				);
+			}
 		);
 
 		// Inscriptions.
@@ -443,7 +467,7 @@ class Admin_Backup {
 	private function analizar_zip( \ZipArchive $zip ): array {
 		// Robust validation.
 		$entities       = array();
-		$valid_entities = array( 'miembros', 'inscripciones', 'proyectos', 'turnos' );
+		$valid_entities = array( 'miembros', 'inscripciones', 'actividades', 'proyectos', 'turnos' );
 		foreach ( $valid_entities as $name ) {
 			if ( $zip->locateName( $name . '.csv' ) !== false ) {
 				$stream = $zip->getStream( $name . '.csv' );
@@ -490,6 +514,7 @@ class Admin_Backup {
 
 		$cap_checks = array(
 			'proyectos'     => 'manage_inscripciones',
+			'actividades'   => 'manage_inscripciones',
 			'miembros'      => 'gestionar_miembros',
 			'inscripciones' => 'manage_inscripciones',
 			'turnos'        => 'convoca_shifts_manage_turnos',
@@ -573,7 +598,7 @@ class Admin_Backup {
 	private function importar_entidades( \ZipArchive $zip, array $seleccion, array &$creados ): int {
 		$total = 0;
 
-		$order = array( 'settings', 'proyectos', 'miembros', 'inscripciones', 'turnos' );
+		$order = array( 'settings', 'proyectos', 'actividades', 'miembros', 'inscripciones', 'turnos' );
 
 		foreach ( $order as $entity ) {
 			if ( ! in_array( $entity, $seleccion, true ) ) {
@@ -642,6 +667,36 @@ class Admin_Backup {
 	}
 
 	/**
+	 * Traduce el id antiguo de actividad al id nuevo. `proyecto` queda para ZIP antiguos.
+	 *
+	 * @param int $old_id Id en el sitio de origen.
+	 * @return int
+	 */
+	private function mapear_actividad_importada( int $old_id ): int {
+		if ( ! $old_id ) {
+			return 0;
+		}
+
+		foreach ( array( 'actividad', 'proyecto' ) as $tipo ) {
+			$mapped = get_posts(
+				array(
+					'post_type'      => $tipo,
+					'meta_key'       => '_convoca_old_import_id',
+					'meta_value'     => (string) $old_id,
+					'fields'         => 'ids',
+					'posts_per_page' => 1,
+					'post_status'    => 'any',
+				)
+			);
+			if ( ! empty( $mapped ) ) {
+				return (int) $mapped[0];
+			}
+		}
+
+		return $old_id;
+	}
+
+	/**
 	 * Aplica los metadatos importados.
 	 *
 	 * @param mixed $data
@@ -668,28 +723,17 @@ class Admin_Backup {
 				update_post_meta( $id, '_convoca_fecha_fin', sanitize_text_field( $data[3] ?? '' ) );
 				update_post_meta( $id, '_convoca_activo', sanitize_text_field( $data[4] ?? '1' ) );
 				break;
+			case 'actividades':
+				update_post_meta( $id, '_convoca_fecha_inicio', sanitize_text_field( $data[2] ?? '' ) );
+				update_post_meta( $id, '_convoca_fecha_fin', sanitize_text_field( $data[3] ?? '' ) );
+				update_post_meta( $id, '_convoca_plazas_totales', absint( $data[4] ?? 0 ) );
+				break;
 			case 'inscripciones':
 				update_post_meta( $id, '_convoca_nombre', sanitize_text_field( $data[1] ?? '' ) );
 				update_post_meta( $id, '_convoca_email', sanitize_email( $data[2] ?? '' ) );
 				update_post_meta( $id, '_convoca_estado', sanitize_text_field( $data[3] ?? 'pendiente' ) );
 
-				$old_pid = (int) ( $data[4] ?? 0 );
-				$new_pid = $old_pid;
-				if ( $old_pid ) {
-					$mapped = get_posts(
-						array(
-							'post_type'      => 'proyecto',
-							'meta_key'       => '_convoca_old_import_id',
-							'meta_value'     => (string) $old_pid,
-							'fields'         => 'ids',
-							'posts_per_page' => 1,
-							'post_status'    => 'any',
-						)
-					);
-					if ( ! empty( $mapped ) ) {
-						$new_pid = (int) $mapped[0];
-					}
-				}
+				$new_pid = $this->mapear_actividad_importada( (int) ( $data[4] ?? 0 ) );
 				update_post_meta( $id, '_convoca_actividad_id', $new_pid );
 				break;
 			case 'turnos':
@@ -796,7 +840,8 @@ class Admin_Backup {
 		return match ( $slug ) {
 			'miembros' => __( 'Miembros / Socios', 'convoca-core' ),
 			'inscripciones' => __( 'Inscripciones a Actividades', 'convoca-core' ),
-			'proyectos' => __( 'Proyectos y Actividades', 'convoca-core' ),
+			'actividades' => __( 'Actividades', 'convoca-core' ),
+			'proyectos' => __( 'Proyectos', 'convoca-core' ),
 			'turnos' => __( 'Turnos', 'convoca-core' ),
 			default => ucfirst( $slug ),
 		};

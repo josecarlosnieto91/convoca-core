@@ -111,7 +111,8 @@ final class AdminBackupTest extends TestCase {
 	public function test_las_etiquetas(): void {
 		$this->assertSame( 'Miembros / Socios', $this->privado( 'entity_label', 'miembros' ) );
 		$this->assertSame( 'Inscripciones a Actividades', $this->privado( 'entity_label', 'inscripciones' ) );
-		$this->assertSame( 'Proyectos y Actividades', $this->privado( 'entity_label', 'proyectos' ) );
+		$this->assertSame( 'Proyectos', $this->privado( 'entity_label', 'proyectos' ) );
+		$this->assertSame( 'Actividades', $this->privado( 'entity_label', 'actividades' ) );
 		$this->assertSame( 'Turnos', $this->privado( 'entity_label', 'turnos' ) );
 		$this->assertSame( 'Pagos', $this->privado( 'entity_label', 'pagos' ), 'lo desconocido se capitaliza' );
 	}
@@ -140,6 +141,33 @@ final class AdminBackupTest extends TestCase {
 	 * **La referencia a la actividad se remapea** al id nuevo: importar no puede dejar apuntando al id del sitio
 	 * de origen.
 	 */
+	public function test_la_actividad_importada_guarda_sus_fechas_y_plazas(): void {
+		$this->privado( 'apply_meta', 'actividades', 95, array( '95', 'Ruta', '2026-12-01 10:00:00', '2026-12-01 18:00:00', '20' ) );
+
+		$meta = (array) ( $GLOBALS['_wp_stores']['post_meta'][95] ?? array() );
+		$this->assertSame( '2026-12-01 10:00:00', $meta['_convoca_fecha_inicio'] );
+		$this->assertSame( '2026-12-01 18:00:00', $meta['_convoca_fecha_fin'] );
+		$this->assertSame( 20, (int) $meta['_convoca_plazas_totales'] );
+	}
+
+	/**
+	 * La actividad gana al proyecto cuando ambos tienen el mismo id antiguo.
+	 */
+	public function test_la_inscripcion_prefiere_la_actividad(): void {
+		$GLOBALS['_wp_stores']['posts'][901] = (object) array(
+			'ID'          => 901,
+			'post_type'   => 'actividad',
+			'post_status' => 'publish',
+			'post_title'  => 'Actividad nueva',
+			'post_date'   => '2026-01-01 10:00:00',
+		);
+		$GLOBALS['_wp_stores']['post_meta'][901] = array( '_convoca_old_import_id' => '55' );
+
+		$this->privado( 'apply_meta', 'inscripciones', 81, array( '81', 'Ana', 'ana@example.test', 'confirmada', '55' ) );
+
+		$this->assertSame( 901, (int) $GLOBALS['_wp_stores']['post_meta'][81]['_convoca_actividad_id'] );
+	}
+
 	public function test_la_inscripcion_apunta_al_proyecto_nuevo(): void {
 		$GLOBALS['_wp_stores']['posts'][900] = (object) array(
 			'ID'          => 900,
@@ -379,8 +407,9 @@ final class AdminBackupTest extends TestCase {
 			1 => $post( 1, 'miembro', 'Ada' ),
 			2 => $post( 2, 'miembro', 'Bea' ),
 			3 => $post( 3, 'inscripcion', 'Inscripción' ),
-			4 => $post( 4, 'proyecto', 'Actividad' ),
+			4 => $post( 4, 'proyecto', 'Proyecto' ),
 			5 => $post( 5, 'centro_turno', 'Turno' ),
+			6 => $post( 6, 'actividad', 'Ruta' ),
 		);
 		$GLOBALS['_wp_stores']['post_meta'] = array(
 			1 => array(
@@ -393,6 +422,7 @@ final class AdminBackupTest extends TestCase {
 			3 => array( '_convoca_nombre' => 'Ada', '_convoca_actividad_id' => 4 ),
 			4 => array( '_convoca_fecha_inicio' => '2026-01-01', '_convoca_activo' => '1' ),
 			5 => array( '_id_responsable' => '12', '_estado_real' => 'cubierto', '_hora_fin' => '14:00' ),
+			6 => array( '_convoca_fecha_inicio' => '2026-12-01 10:00:00', '_convoca_plazas_totales' => '20' ),
 		);
 		$GLOBALS['_wp_stores']['options'] = array(
 			'convoca_members_settings' => array( 'cuota' => 30 ),
@@ -414,6 +444,11 @@ final class AdminBackupTest extends TestCase {
 		$this->assertStringContainsString( '12345678Z', $miembros );
 		$this->assertStringContainsString( 'Bea', $miembros, 'salen los dos socios' );
 		$this->assertFalse( $zip->getFromName( 'miembro.csv' ), 'el nombre del CPT no está: el importador no lo encontraría' );
+
+		$actividades = $zip->getFromName( 'actividades.csv' );
+		$this->assertNotFalse( $actividades, 'la copia incluye las actividades' );
+		$this->assertStringContainsString( 'Ruta', $actividades );
+		$this->assertStringContainsString( '2026-12-01 10:00:00', $actividades );
 
 		foreach ( array( 'inscripciones.csv', 'proyectos.csv', 'turnos.csv' ) as $csv ) {
 			$this->assertNotFalse( $zip->getFromName( $csv ), $csv );
