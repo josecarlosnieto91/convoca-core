@@ -183,7 +183,8 @@ final class SecurityMonitorTest extends TestCase {
 		$this->assertCount( 1, $avisos, 'un aviso' );
 		$this->assertStringContainsString( '401', $avisos[0] );
 		$this->assertStringContainsString( '/convoca-members/v1/me', $avisos[0] );
-		$this->assertStringContainsString( '198.51.100.7', $avisos[0], 'y de dónde vino' );
+		$this->assertStringContainsString( '198.51.100.x', $avisos[0], 'y de dónde vino, enmascarado' );
+		$this->assertStringNotContainsString( '198.51.100.7', $avisos[0], 'la IP completa no se guarda' );
 	}
 
 	/**

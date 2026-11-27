@@ -190,6 +190,13 @@ final class UtilsBasicasTest extends TestCase {
 		$this->assertFalse( $GLOBALS['_wp_stores']['autoload']['convoca_utils_fired'] ?? null );
 	}
 
+
+	/** El helper de identidad privada se reutiliza en los registros (core#64). */
+	public function test_etiqueta_privada_enmascara_correo_e_ip(): void {
+		$this->assertSame( 'v***@ejemplo.org', Utils::etiqueta_privada( 'voluntaria@ejemplo.org' ) );
+		$this->assertSame( '198.51.100.x', Utils::etiqueta_privada( '198.51.100.7' ) );
+	}
+
 	/**
 	 * Sin el filtro de instrumentación no se escribe la opción (core#62).
 	 */
