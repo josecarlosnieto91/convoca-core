@@ -30,6 +30,7 @@ final class UtilsVariasTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		$GLOBALS['_wp_filters'] = array();
+		add_filter( 'convoca_utils_record_fired', '__return_true' );
 		$GLOBALS['_wp_stores']  = array(
 			'options'        => array(),
 			'post_meta'      => array(),

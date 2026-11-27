@@ -30,6 +30,7 @@ final class UtilsBasicasTest extends TestCase {
 	 * Prepara el caso.
 	 */
 	protected function setUp(): void {
+		add_filter( 'convoca_utils_record_fired', '__return_true' );
 		unset( $GLOBALS['_wp_stores'], $GLOBALS['_fired_hooks'] );
 		$GLOBALS['_wp_stores'] = array(
 			'options'    => array(),
@@ -174,6 +175,33 @@ final class UtilsBasicasTest extends TestCase {
 		$this->assertArrayHasKey( 'convoca_nuevo', Utils::get_fired(), 'queda constancia de lo disparado' );
 		Utils::clear_fired();
 		$this->assertSame( array(), Utils::get_fired(), 'y se puede vaciar' );
+	}
+
+
+
+	/**
+	 * Si la opción existe, se fuerza a no autoload (core#62).
+	 */
+	public function test_la_opcion_de_instrumentacion_no_queda_autoload(): void {
+		$GLOBALS['_wp_stores']['options']['convoca_utils_fired'] = array( 'convoca_x' => true );
+
+		Utils::ensure_not_autoloaded();
+
+		$this->assertFalse( $GLOBALS['_wp_stores']['autoload']['convoca_utils_fired'] ?? null );
+	}
+
+	/**
+	 * Sin el filtro de instrumentación no se escribe la opción (core#62).
+	 */
+	public function test_sin_instrumentacion_no_escribe_la_opcion(): void {
+		remove_all_filters( 'convoca_utils_record_fired' );
+		unset( $GLOBALS['_wp_stores']['options']['convoca_utils_fired'] );
+
+		Utils::do_action( 'convoca_sin_registro' );
+
+		$this->assertArrayNotHasKey( 'convoca_sin_registro', Utils::get_fired(), 'producción no registra' );
+
+		add_filter( 'convoca_utils_record_fired', '__return_true' );
 	}
 
 	/**

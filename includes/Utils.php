@@ -404,9 +404,29 @@ class Utils {
 	 * Record a hook name as "fired" (used by unit tests to assert emissions).
 	 */
 	private static function record_fired( string $hook ): void {
+		// Instrumentación de pruebas: en producción no se escribe nada. El filtro permite
+		// activarla sin dejar una opción autoload creciendo en cada hook nuevo.
+		if ( ! apply_filters( 'convoca_utils_record_fired', false ) ) {
+			return;
+		}
+
 		$fired          = self::get_fired();
 		$fired[ $hook ] = true;
-		update_option( 'convoca_utils_fired', $fired );
+		update_option( 'convoca_utils_fired', $fired, false );
+	}
+
+
+	/**
+	 * La opción de instrumentación nunca debe cargarse en todas las peticiones.
+	 */
+	public static function ensure_not_autoloaded(): void {
+		if ( ! function_exists( 'wp_set_option_autoload' ) ) {
+			return;
+		}
+		if ( false === get_option( 'convoca_utils_fired', false ) ) {
+			return;
+		}
+		wp_set_option_autoload( 'convoca_utils_fired', false );
 	}
 
 	/**

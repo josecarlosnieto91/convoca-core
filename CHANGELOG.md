@@ -1,3 +1,11 @@
+## [2.5.6] — 2026-11-27
+
+### Corregido
+
+- **La instrumentación de ganchos ya no escribe en producción (#62).** `Utils::do_action()` solo
+  registra si el filtro `convoca_utils_record_fired` está activo; la opción se guarda con
+  `autoload=false` y, si ya existía, se le quita el autoload al arrancar.
+
 ## [2.5.5] — 2026-11-27
 
 ### Corregido
