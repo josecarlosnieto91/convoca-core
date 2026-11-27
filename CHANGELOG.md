@@ -1,3 +1,10 @@
+## [2.5.11] — 2026-11-27
+
+### Corregido
+
+- **El bloque de metadatos solo pinta claves públicas (#53).** Lista blanca con filtro
+  `convoca_common_meta_publicas`; una clave interna como el DNI devuelve cadena vacía.
+
 ## [2.5.10] — 2026-11-27
 
 ### Corregido
