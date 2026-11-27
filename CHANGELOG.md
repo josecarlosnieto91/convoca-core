@@ -1,3 +1,13 @@
+## [2.5.4] — 2026-11-27
+
+### Corregido
+
+- **La copia de seguridad incluye las actividades (#40).** Se exporta el CPT `actividad` como
+  `actividades.csv` y la importación lee fechas y plazas. Antes solo viajaba `proyecto` y el ZIP decía
+  «Proyectos y Actividades».
+- **Las inscripciones se remapean contra la actividad nueva.** El importador busca primero `actividad` y
+  conserva `proyecto` solo para ZIP antiguos.
+
 ## [2.5.3] — 2026-11-11
 
 ### Corregido
