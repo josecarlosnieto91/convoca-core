@@ -1947,6 +1947,15 @@ if (!function_exists('trailingslashit')) {
 // El `Logger` limita los avisos por proceso (50 en 60 s) y la suite entera comparte proceso: cuando un fichero
 // registra mucho, las pruebas siguientes dejan de ver **sus** avisos y parecen rotas. Se sube el tope para medir;
 // el valor de producción sigue en 50 y el filtro es la vía prevista para cambiarlo.
+
+if ( ! function_exists( 'wp_set_option_autoload' ) ) {
+    function wp_set_option_autoload( $option, $autoload ) {
+        $GLOBALS['_wp_stores']['autoload'][ $option ] = $autoload;
+        return true;
+    }
+}
+
+add_filter( 'convoca_utils_record_fired', '__return_true' );
 add_filter(
 	'convoca_logger_rate_limit_max',
 	static function () {
