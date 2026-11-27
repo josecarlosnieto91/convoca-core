@@ -1,3 +1,11 @@
+## [2.5.10] — 2026-11-27
+
+### Corregido
+
+- **La copia de correos respeta la precedencia del núcleo (#57).** `enabled=false` del núcleo ya no
+  se sobrescribe con el ajuste de Members; el contexto de `Mailer` con `entity_id` de actividad
+  resuelve a sus monitores.
+
 ## [2.5.9] — 2026-11-27
 
 ### Corregido

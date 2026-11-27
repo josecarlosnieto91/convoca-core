@@ -49,13 +49,15 @@ class Email_Copy {
 	public static function enabled(): bool {
 		$enabled = true;
 
-		$option = get_option( self::OPTION, array() );
-		if ( is_array( $option ) && array_key_exists( 'enabled', $option ) ) {
+		$option   = get_option( self::OPTION, array() );
+		$has_core = is_array( $option ) && array_key_exists( 'enabled', $option );
+		if ( $has_core ) {
 			$enabled = (bool) $option['enabled'];
 		}
 
+		// Members solo decide si el mecanismo del núcleo no ha fijado nada (core#57).
 		$members = get_option( 'convoca_members_settings', array() );
-		if ( is_array( $members ) && array_key_exists( 'copy_all_emails', $members ) ) {
+		if ( ! $has_core && is_array( $members ) && array_key_exists( 'copy_all_emails', $members ) ) {
 			$enabled = (bool) $members['copy_all_emails'];
 		}
 
@@ -100,8 +102,13 @@ class Email_Copy {
 	public static function recipients( array $context = array() ): array {
 		$emails = array();
 
-		if ( ! empty( $context['actividad_id'] ) ) {
-			$emails = self::activity_monitors( (int) $context['actividad_id'] );
+		$actividad_id = (int) ( $context['actividad_id'] ?? 0 );
+		if ( ! $actividad_id && ! empty( $context['entity_id'] ) ) {
+			$actividad_id = (int) $context['entity_id'];
+		}
+
+		if ( $actividad_id > 0 ) {
+			$emails = self::activity_monitors( $actividad_id );
 		}
 
 		// Sin monitores (o sin actividad): a la administración.

@@ -46,6 +46,26 @@ class EmailCopyTest extends TestCase {
 		$this->assertFalse( Email_Copy::enabled() );
 	}
 
+
+	/** El ajuste del núcleo manda sobre el de Members (core#57). */
+	public function test_el_nucleo_manda_sobre_members(): void {
+		update_option( 'convoca_email_copy', array( 'enabled' => false ) );
+		update_option( 'convoca_members_settings', array( 'copy_all_emails' => 1 ) );
+
+		$this->assertFalse( Email_Copy::enabled() );
+	}
+
+	/** El contexto de Mailer trae `entity_id`; si es una actividad, van sus monitores. */
+	public function test_entity_id_de_actividad_resuelve_monitores(): void {
+		$this->usuario( 13, 'monitor3@ejemplo.org' );
+		update_post_meta( self::ACTIVIDAD, '_convoca_responsables', '13' );
+
+		$this->assertSame(
+			array( 'monitor3@ejemplo.org' ),
+			Email_Copy::recipients( array( 'entity_id' => self::ACTIVIDAD ) )
+		);
+	}
+
 	public function test_los_monitores_de_la_actividad_reciben_la_copia(): void {
 		$this->usuario( 11, 'monitor1@ejemplo.org' );
 		$this->usuario( 12, 'monitor2@ejemplo.org' );
