@@ -1,3 +1,10 @@
+## [2.5.15] — 2026-11-27
+
+### Corregido
+
+- **El asistente no publica páginas de módulos ausentes (#60).** Si el shortcode no está registrado,
+  la página no se crea, el paso queda incompleto y el aviso nombra el módulo que falta.
+
 ## [2.5.14] — 2026-11-27
 
 ### Corregido
