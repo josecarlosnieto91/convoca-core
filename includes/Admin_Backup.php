@@ -202,6 +202,21 @@ class Admin_Backup {
 	}
 
 	/**
+	 * Borra los CSV temporales que ya están dentro del ZIP.
+	 *
+	 * @param array<string,string> $paths Nombre => ruta.
+	 * @return void
+	 */
+	private function limpiar_csv_temporales( array $paths ): void {
+		foreach ( $paths as $path ) {
+			if ( file_exists( $path ) ) {
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- temporal propio, ya volcado al ZIP
+				unlink( $path );
+			}
+		}
+	}
+
+	/**
 	 * Añade `settings.json` al ZIP solo si quien exporta puede administrar el sitio.
 	 *
 	 * Copia de datos y copia de configuración son permisos distintos (core#43).
@@ -244,10 +259,8 @@ class Admin_Backup {
 
 		$abrir_csv = function ( $name, $headers ) use ( &$csv_paths ) {
 			$path   = get_temp_dir() . 'convoca-csv-' . wp_generate_password( 12, false ) . '.csv';
-			$handle = fopen( $path, 'wb' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- fichero temporal propio
-			if ( false === $handle ) {
-				throw new \RuntimeException( 'No se pudo abrir el CSV temporal.' );
-			}
+			$handle = fopen( $path, 'wb' ) // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- fichero temporal propio
+				?: throw new \RuntimeException( 'No se pudo abrir el CSV temporal.' );
 			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- writing BOM + CSV data to temp stream
 			fwrite( $handle, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) ); // BOM for UTF-8.
 			fputcsv( $handle, $headers, ',', '"', '\\' );
@@ -376,12 +389,7 @@ class Admin_Backup {
 
 		$zip->close();
 
-		foreach ( $csv_paths as $path ) {
-			if ( file_exists( $path ) ) {
-				// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- temporal propio, ya volcado al ZIP
-				unlink( $path );
-			}
-		}
+		$this->limpiar_csv_temporales( $csv_paths );
 
 		return file_exists( $tmp_file ) ? '' : esc_html__( 'Error fatal: ZIP no generado.', 'convoca-core' );
 	}
