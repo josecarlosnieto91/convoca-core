@@ -24,6 +24,7 @@ require_once dirname( __DIR__, 2 ) . '/includes/Utils.php';
 require_once dirname( __DIR__, 2 ) . '/includes/Logger.php';
 require_once dirname( __DIR__, 2 ) . '/includes/Backups.php';
 require_once dirname( __DIR__, 2 ) . '/includes/Admin_Backup.php';
+require_once dirname( __DIR__, 2 ) . '/includes/Cifrado.php';
 
 if ( ! defined( 'CONVOCA_IMAGES_URL' ) ) {
 	define( 'CONVOCA_IMAGES_URL', 'https://example.test/img/' );
@@ -66,6 +67,7 @@ final class AdminBackupTest extends TestCase {
 			'submenu_pages' => array(),
 		);
 		$GLOBALS['_test_caps'] = array();
+		add_filter( 'convoca_cifrado_clave', static fn(): string => base64_encode( str_repeat( 'k', 32 ) ) );
 		$this->backup          = new Admin_Backup();
 	}
 
@@ -131,7 +133,7 @@ final class AdminBackupTest extends TestCase {
 		$meta = (array) ( $GLOBALS['_wp_stores']['post_meta'][77] ?? array() );
 		// WordPress no pasa el correo a minúsculas: quita los espacios y poco más. La prueba no debe inventar más.
 		$this->assertSame( 'Ada@Example.TEST', $meta['_convoca_email'], 'sin espacios de sobra' );
-		$this->assertSame( '12345678Z', $meta['_convoca_dni'], 'sin espacios de sobra' );
+		$this->assertSame( '12345678Z', \Convoca\Core\Cifrado::descifrar( (string) $meta['_convoca_dni'] ), 'sin espacios de sobra y cifrado en reposo' );
 		$this->assertSame( 'premium', $meta['_convoca_plan'] );
 		$this->assertSame( 'activo', $meta['_convoca_estado_miembro'], 'un socio sin estado es activo' );
 		$this->assertSame( '2027-03-01', $meta['_convoca_vencimiento'] );
@@ -382,6 +384,7 @@ final class AdminBackupTest extends TestCase {
 	 */
 	protected function tearDown(): void {
 		$GLOBALS['_wp_stores'] = $this->previo;
+		remove_all_filters( 'convoca_cifrado_clave' );
 		unset( $GLOBALS['_wp_logged_in'], $GLOBALS['_test_user_id'], $GLOBALS['_wp_json'], $GLOBALS['_wp_die_lanza'] );
 	}
 

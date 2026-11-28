@@ -1,3 +1,10 @@
+## [2.5.33] — 2026-11-27
+
+### Corregido
+
+- **Sin clave de cifrado no se guardan datos sensibles en claro (#65).** `Cifrado::cifrar()` falla
+  cerrado con `RuntimeException`; el guardado del IBAN avisa en Ajustes y conserva el valor anterior.
+
 ## [2.5.32] — 2026-11-27
 
 ### Corregido

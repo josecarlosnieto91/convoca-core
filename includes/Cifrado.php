@@ -69,8 +69,7 @@ final class Cifrado {
 		$clave = self::clave();
 
 		if ( '' === $clave ) {
-			self::avisar( 'No hay CONVOCA_ENCRYPTION_KEY válida; el valor se guarda sin cifrar.' );
-			return $claro;
+			throw new \RuntimeException( 'No hay CONVOCA_ENCRYPTION_KEY válida: no se guardan datos sensibles sin cifrar.' );
 		}
 
 		if ( function_exists( 'sodium_crypto_secretbox' ) ) {

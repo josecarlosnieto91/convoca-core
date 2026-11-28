@@ -56,6 +56,19 @@ final class OpcionesCifradasTest extends TestCase {
 	}
 
 	/**
+	 * Sin llave no se guarda en claro: se conserva el valor anterior (core#65).
+	 */
+	public function test_sin_llave_conserva_el_valor_anterior(): void {
+		remove_filter( 'convoca_cifrado_clave', $this->filtro );
+		add_filter( 'convoca_cifrado_clave', static fn(): string => '' );
+		$anterior = array( 'iban' => 'ES00 0000' );
+
+		$salida = Opciones_Cifradas::escribir( array( 'iban' => 'ES91 2100 0418 4502 0005 1332' ), $anterior );
+
+		$this->assertSame( $anterior, $salida, 'no se escribe en claro' );
+	}
+
+	/**
 	 * Al leer, el IBAN vuelve en claro.
 	 */
 	public function test_leer_descifra_el_iban(): void {
