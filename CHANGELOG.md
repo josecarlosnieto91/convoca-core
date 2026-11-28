@@ -1,3 +1,11 @@
+## [2.5.23] — 2026-11-27
+
+### Seguridad
+
+- **Copia de datos y copia de configuración son permisos distintos (#43).** Sin `manage_options`, el ZIP
+  no incluye `settings.json` y no se puede importar la entidad `settings`; `common_manage_backup` sigue
+  bastando para las entidades de datos.
+
 ## [2.5.22] — 2026-11-27
 
 ### Corregido

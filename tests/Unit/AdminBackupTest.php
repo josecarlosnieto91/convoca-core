@@ -390,6 +390,7 @@ final class AdminBackupTest extends TestCase {
 	 * `settings.json` con las opciones permitidas. Un backup con los nombres del CPT restauraba cero filas.
 	 */
 	public function test_el_zip_de_la_copia(): void {
+		$GLOBALS['_test_caps'] = array( 'manage_options' => true );
 		$temp = ( getenv( 'TMPDIR' ) ?: sys_get_temp_dir() ) . '/convoca-zip-test-' . getmypid();
 		@mkdir( $temp, 0777, true );
 		$GLOBALS['_wp_stores']['temp_dir'] = $temp;
@@ -462,6 +463,45 @@ final class AdminBackupTest extends TestCase {
 
 		@unlink( $ruta );
 		@rmdir( $temp );
+	}
+
+	/**
+	 * Sin `manage_options` el ZIP no lleva `settings.json`: solo datos.
+	 */
+	public function test_sin_manage_options_la_copia_no_lleva_ajustes(): void {
+		$GLOBALS['_test_caps'] = array( 'common_manage_backup' => true, 'manage_options' => false );
+		$temp                  = ( getenv( 'TMPDIR' ) ?: sys_get_temp_dir() ) . '/convoca-zip-sin-ajustes-' . getmypid();
+		@mkdir( $temp, 0777, true );
+		$GLOBALS['_wp_stores']['temp_dir'] = $temp;
+
+		$ruta  = $temp . '/backup.zip';
+		$error = $this->privado( 'construir_zip', $ruta );
+		$this->assertSame( '', $error );
+
+		$zip = new \ZipArchive();
+		$this->assertTrue( $zip->open( $ruta ) );
+		$this->assertFalse( $zip->getFromName( 'settings.json' ), 'sin permiso no viajan ajustes ni credenciales' );
+		$zip->close();
+
+		@unlink( $ruta );
+		@rmdir( $temp );
+	}
+
+	/**
+	 * Importar `settings` exige `manage_options`; la capacidad de copia no basta.
+	 */
+	public function test_importar_ajustes_exige_manage_options(): void {
+		$GLOBALS['_test_caps']    = array( 'common_manage_backup' => true, 'manage_options' => false );
+		$GLOBALS['_wp_die_lanza'] = true;
+		$_POST                    = array(
+			'session_token' => 'tok',
+			'entities'      => array( 'settings' ),
+		);
+		$GLOBALS['_wp_stores']['transients'][ 'convoca_import_preview_' . get_current_user_id() ] = array( 'token' => 'tok' );
+
+		$this->expectException( \RuntimeException::class );
+		$this->expectExceptionMessage( 'wp_die' );
+		$this->backup->handle_import_run();
 	}
 
 	/**
