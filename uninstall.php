@@ -56,6 +56,21 @@ $options = array(
 	'convoca_document_theme',
 	'convoca_utils_fired',
 	'convoca_intentos_db_version',
+	'convoca_log_level',
+	// Ajustes propios creados por constante o propiedad estática (issue #52).
+	'convoca_site_settings',
+	'convoca_email_copy',
+	'convoca_ntfy_config',
+	'convoca_license',
+	'convoca_pdf_templates',
+	'convoca_pdf_templates_versions',
+	'convoca_pdf_templates_corruptas',
+	'convoca_core_entrada',
+	'convoca_setup_wizard_completed',
+	'convoca_setup_wizard_dismissed',
+	'convoca_setup_wizard_progress',
+	'convoca_setup_wizard_seen',
+	'convoca_uninstall_keep_data',
 );
 
 foreach ( $options as $option ) {
@@ -77,9 +92,15 @@ wp_clear_scheduled_hook( 'convoca_license_validate' );
 global $wpdb;
 $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_conv_%'" );
 $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_conv_%'" );
+$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_convoca_%'" );
+$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_convoca_%'" );
+
+// Claves que llevan un identificador detrás: límites por persona/IP y registros de cada webhook.
+$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE 'convoca_rl_%'" );
+$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE 'convoca_webhook_log_%'" );
 
 // Clean up custom tables.
-$tables_convoca = array( 'convoca_logs', 'convoca_webhook_retries', 'convoca_locks' );
+$tables_convoca = array( 'convoca_logs', 'convoca_webhook_retries', 'convoca_locks', 'convoca_intentos', 'convoca_member_sequence' );
 foreach ( $tables_convoca as $table ) {
 	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}{$table}" );
 }
