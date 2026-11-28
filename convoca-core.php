@@ -3,7 +3,7 @@
  * Plugin Name:       Convoca Core
  * Plugin URI:        https://getconvoca.app
  * Description:       Common functions, validation, logging, and shared infrastructure.
- * Version: 2.5.18
+ * Version: 2.5.19
  * Requires at least: 6.4
  * Requires PHP:      8.2
  * Tested up to:      7.1.3
@@ -219,6 +219,9 @@ add_action(
 
 		// Ensure granular capabilities exist on admin roles (handles upgrades without re-activation).
 		Capabilities::ensure();
+
+		// Un monitor edita actividades y turnos, no las entradas del blog (core#55).
+		add_filter( 'map_meta_cap', array( Capabilities::class, 'limitar_monitor' ), 10, 4 );
 
 		if ( is_admin() ) {
 			$admin_role = get_role( 'administrator' );

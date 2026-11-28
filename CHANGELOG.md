@@ -1,3 +1,11 @@
+## [2.5.19] — 2026-11-27
+
+### Seguridad
+
+- **El monitor no edita, borra ni publica entradas del blog (#55).** Un filtro de `map_meta_cap`
+  devuelve `do_not_allow` para objetos `post` cuando el usuario tiene `monitor_actividad`; las
+  actividades y los turnos siguen igual.
+
 ## [2.5.18] — 2026-11-27
 
 ### Corregido

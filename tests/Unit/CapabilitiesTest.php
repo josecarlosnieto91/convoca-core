@@ -15,6 +15,42 @@ class CapabilitiesTest extends TestCase
         $this->loadClass();
     }
 
+    public function test_un_monitor_no_edita_ni_borra_entradas(): void
+    {
+        $GLOBALS['_test_users'][5] = (object) array( 'ID' => 5, 'roles' => array( 'monitor_actividad' ) );
+        $GLOBALS['_test_posts'][10] = (object) array( 'ID' => 10, 'post_type' => 'post', 'post_author' => 2 );
+
+        foreach ( array( 'edit_post', 'delete_post', 'publish_post' ) as $cap ) {
+            $this->assertSame(
+                array( 'do_not_allow' ),
+                \Convoca\Core\Capabilities::limitar_monitor( array( 'edit_others_posts' ), $cap, 5, array( 10 ) ),
+                "un monitor no puede $cap una entrada"
+            );
+        }
+    }
+
+    public function test_un_monitor_sigue_editando_actividades(): void
+    {
+        $GLOBALS['_test_users'][5] = (object) array( 'ID' => 5, 'roles' => array( 'monitor_actividad' ) );
+        $GLOBALS['_test_posts'][11] = (object) array( 'ID' => 11, 'post_type' => 'actividad', 'post_author' => 2 );
+
+        $this->assertSame(
+            array( 'edit_others_posts' ),
+            \Convoca\Core\Capabilities::limitar_monitor( array( 'edit_others_posts' ), 'edit_post', 5, array( 11 ) )
+        );
+    }
+
+    public function test_un_administrador_no_queda_limitado(): void
+    {
+        $GLOBALS['_test_users'][1] = (object) array( 'ID' => 1, 'roles' => array( 'administrator' ) );
+        $GLOBALS['_test_posts'][10] = (object) array( 'ID' => 10, 'post_type' => 'post', 'post_author' => 2 );
+
+        $this->assertSame(
+            array( 'edit_others_posts' ),
+            \Convoca\Core\Capabilities::limitar_monitor( array( 'edit_others_posts' ), 'edit_post', 1, array( 10 ) )
+        );
+    }
+
     public function test_get_all_returns_array(): void
     {
         $caps = \Convoca\Core\Capabilities::get_all();

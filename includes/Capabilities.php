@@ -234,6 +234,37 @@ class Capabilities {
 	}
 
 	/**
+	 * Un monitor no toca entradas del blog: solo el contenido de sus módulos.
+	 *
+	 * Las entradas (`post`) comparten capacidades con las actividades y los turnos, así que el rol
+	 * conserva las primitivas para poder editarlos. Aquí se corta el paso solo cuando el objeto es
+	 * una entrada: editar, borrar o publicar una entrada queda denegado para `monitor_actividad`.
+	 *
+	 * @param array<int,string> $caps    Capacidades primitivas ya mapeadas.
+	 * @param string            $cap     Capacidad que se está comprobando.
+	 * @param int               $user_id Usuario.
+	 * @param array<int,mixed>  $args    Argumentos; el primero es el ID del objeto.
+	 * @return array<int,string>
+	 */
+	public static function limitar_monitor( array $caps, string $cap, int $user_id, array $args ): array {
+		if ( ! in_array( $cap, array( 'edit_post', 'delete_post', 'publish_post' ), true ) || empty( $args[0] ) ) {
+			return $caps;
+		}
+
+		$user = get_userdata( $user_id );
+		if ( ! $user || ! in_array( 'monitor_actividad', (array) $user->roles, true ) ) {
+			return $caps;
+		}
+
+		$post = get_post( (int) $args[0] );
+		if ( $post && 'post' === $post->post_type ) {
+			return array( 'do_not_allow' );
+		}
+
+		return $caps;
+	}
+
+	/**
 	 * Ensure all granular capabilities exist on all roles.
 	 *
 	 * Call on plugins_loaded to handle upgrades without re-activation.
