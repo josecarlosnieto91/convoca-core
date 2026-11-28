@@ -1544,6 +1544,11 @@ if (!isset($GLOBALS['wpdb'])) {
             if (is_string($q) && preg_match("/SHOW TABLES LIKE '?([A-Za-z0-9_]+)'?/i", $q, $m)) {
                 return $m[1];
             }
+            // Propietario del cerrojo (core#46): se devuelve el que la prueba haya fijado.
+            if (is_string($q) && preg_match('/SELECT owner FROM/i', $q)
+                && preg_match('/(convoca_lock_[A-Za-z0-9_]+)/', $q, $k)) {
+                return $GLOBALS['_wp_stores']['lock_owners'][$k[1]] ?? '';
+            }
             // Bloqueos: Utils::acquire_lock guarda un vencimiento y despues comprueba que
             // el valor leido es el suyo. Sin devolverlo, todo bloqueo parece contencion.
             if (is_string($q) && preg_match('/(convoca_lock_[A-Za-z0-9_]+)/', $q, $k)) {
@@ -1709,6 +1714,13 @@ if (!isset($GLOBALS['wpdb'])) {
             }
             if (preg_match('/DELETE FROM \S*(?:locks|options)/i', (string) $q)
                 && preg_match('/(convoca_lock_[A-Za-z0-9_]+)/', (string) $q, $k)) {
+                if (preg_match("/AND owner = '([^']+)'/", (string) $q, $owner)) {
+                    $actual = $GLOBALS['_wp_stores']['lock_owners'][$k[1]] ?? '';
+                    if ('' !== $actual && $actual !== $owner[1]) {
+                        return 0;
+                    }
+                    unset($GLOBALS['_wp_stores']['lock_owners'][$k[1]]);
+                }
                 unset($GLOBALS['_wp_stores']['locks'][$k[1]]);
                 return 1;
             }

@@ -1,3 +1,10 @@
+## [2.5.29] — 2026-11-27
+
+### Corregido
+
+- **Un proceso caducado no libera el cerrojo de su sucesor (#46).** Cada cerrojo lleva propietario; `acquire_lock()`
+  devuelve el token y `release_lock()` solo borra la fila si el token coincide.
+
 ## [2.5.28] — 2026-11-27
 
 ### Corregido

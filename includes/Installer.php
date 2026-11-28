@@ -31,6 +31,20 @@ class Installer {
 
 
 	/**
+	 * Añade la columna `owner` a instalaciones anteriores a #46.
+	 *
+	 * @param string $locks_table Tabla de cerrojos.
+	 * @return void
+	 */
+	public static function asegurar_columna_propietario( string $locks_table ): void {
+		global $wpdb;
+		$tiene_owner = $wpdb->get_var( "SHOW COLUMNS FROM $locks_table LIKE 'owner'" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		if ( empty( $tiene_owner ) ) {
+			$wpdb->query( "ALTER TABLE $locks_table ADD COLUMN owner varchar(64) NOT NULL DEFAULT ''" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		}
+	}
+
+	/**
 	 * Create/Update custom DB tables.
 	 */
 	public static function db_init(): void {
@@ -113,6 +127,7 @@ class Installer {
             lock_key varchar(100) NOT NULL,
             expires int(11) NOT NULL,
             created_at datetime NOT NULL,
+            owner varchar(64) NOT NULL DEFAULT '',
             PRIMARY KEY  (lock_key),
             KEY expires (expires)
         ) $charset_collate;";

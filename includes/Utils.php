@@ -28,6 +28,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Utils {
+	/**
+	 * Token del cerrojo que tiene este proceso, por clave. Sirve para no liberar el de otro.
+	 *
+	 * @var array<string,string>
+	 */
+	private static array $lock_owners = array();
+
 
 	/* ── Centralized Capability Definitions ── */
 	const CAP_MANAGE_INSCRIPCIONES        = 'manage_inscripciones';
@@ -752,12 +759,13 @@ class Utils {
 	 *
 	 * @param string $key     Unique lock identifier.
 	 * @param int    $ttl     Time to live in seconds (default 60).
-	 * @return bool True if lock acquired, false if already locked.
+	 * @return string|false Token del cerrojo si se adquiere; false si ya está tomado.
 	 */
-	public static function acquire_lock( string $key, int $ttl = 60 ): bool {
+	public static function acquire_lock( string $key, int $ttl = 60 ): string|false {
 		global $wpdb;
 		$lock_key = 'convoca_lock_' . $key;
 		$expires  = time() + $ttl;
+		$owner    = wp_generate_uuid4();
 
 		// Try dedicated locks table first.
 		$locks_table = self::locks_table();
@@ -765,6 +773,8 @@ class Utils {
 		$table_exists = $wpdb->get_var( "SHOW TABLES LIKE '$locks_table'" ) === $locks_table;
 
 		if ( $table_exists ) {
+			\Convoca\Core\Installer::asegurar_columna_propietario( $locks_table );
+
 			// Clean expired locks first.
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $locks_table is a hardcoded internal name
 			$wpdb->query( $wpdb->prepare( "DELETE FROM $locks_table WHERE expires < %d", time() ) );
@@ -772,14 +782,15 @@ class Utils {
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $locks_table is a hardcoded internal name
 			$result = $wpdb->query(
 				$wpdb->prepare(
-					"INSERT INTO $locks_table (lock_key, expires, created_at)
-                 VALUES (%s, %d, NOW())
+					"INSERT INTO $locks_table (lock_key, expires, created_at, owner)
+                 VALUES (%s, %d, NOW(), %s)
                  ON DUPLICATE KEY UPDATE
                  expires = CASE
                      WHEN expires < %d THEN %d
                      ELSE expires END",
 					$lock_key,
 					$expires,
+					$owner,
 					time(),
 					$expires
 				)
@@ -812,7 +823,19 @@ class Utils {
 				return false;
 			}
 
-			return true;
+			$owner_actual = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT owner FROM $locks_table WHERE lock_key = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+					$lock_key
+				)
+			);
+			if ( '' !== (string) $owner_actual && (string) $owner_actual !== $owner ) {
+				self::report_lock_contention( $key );
+				return false;
+			}
+
+			self::$lock_owners[ $key ] = $owner;
+			return $owner;
 		}
 
 		// Fallback: wp_options.
@@ -854,7 +877,8 @@ class Utils {
 			return false;
 		}
 
-		return true;
+		self::$lock_owners[ $key ] = $owner;
+		return $owner;
 	}
 
 	/**
@@ -875,7 +899,7 @@ class Utils {
 	 * @param string $key Lock identifier.
 	 * @return bool True if released.
 	 */
-	public static function release_lock( string $key ): bool {
+	public static function release_lock( string $key, ?string $owner = null ): bool {
 		global $wpdb;
 		$lock_key = 'convoca_lock_' . $key;
 
@@ -883,14 +907,27 @@ class Utils {
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $locks_table is a hardcoded internal name
 		$table_exists = $wpdb->get_var( "SHOW TABLES LIKE '$locks_table'" ) === $locks_table;
 
+		$owner = $owner ?? ( self::$lock_owners[ $key ] ?? '' );
+
 		if ( $table_exists ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $locks_table is a hardcoded internal name
-			$wpdb->query(
-				$wpdb->prepare(
-					"DELETE FROM $locks_table WHERE lock_key = %s",
-					$lock_key
-				)
-			);
+			if ( '' !== $owner ) {
+				// Solo borra si sigue siendo nuestro: A no puede liberar el cerrojo que ya tiene B (core#46).
+				$wpdb->query(
+					$wpdb->prepare(
+						"DELETE FROM $locks_table WHERE lock_key = %s AND owner = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+						$lock_key,
+						$owner
+					)
+				);
+			} else {
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $locks_table is a hardcoded internal name
+				$wpdb->query(
+					$wpdb->prepare(
+						"DELETE FROM $locks_table WHERE lock_key = %s",
+						$lock_key
+					)
+				);
+			}
 		} else {
 			$wpdb->query(
 				$wpdb->prepare(
@@ -901,6 +938,7 @@ class Utils {
 		}
 
 		wp_cache_delete( $lock_key, 'convoca_locks' );
+		unset( self::$lock_owners[ $key ] );
 		return true;
 	}
 
