@@ -60,15 +60,25 @@ final class Opciones_Cifradas {
 	/**
 	 * Cifra el IBAN al guardar la opción.
 	 *
-	 * @param mixed $valor Valor nuevo.
+	 * @param mixed $valor     Valor nuevo.
+	 * @param mixed $old_value Valor anterior, para no perderlo si no se puede cifrar.
 	 * @return mixed
 	 */
-	public static function escribir( $valor ) {
+	public static function escribir( $valor, $old_value = null ) {
 		if ( ! is_array( $valor ) || ! isset( $valor['iban'] ) || ! is_string( $valor['iban'] ) || '' === $valor['iban'] ) {
 			return $valor;
 		}
 
-		$valor['iban'] = Cifrado::cifrar( $valor['iban'] );
+		try {
+			$valor['iban'] = Cifrado::cifrar( $valor['iban'] );
+		} catch ( \RuntimeException $e ) {
+			if ( function_exists( 'add_settings_error' ) ) {
+				add_settings_error( 'convoca_cifrado', 'sin_clave', $e->getMessage(), 'error' );
+			}
+			Logger::error( $e->getMessage(), 'Core/Cifrado' );
+			// No se guarda en claro: la opción se queda como estaba.
+			return $old_value;
+		}
 
 		return $valor;
 	}

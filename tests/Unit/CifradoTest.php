@@ -100,9 +100,9 @@ final class CifradoTest extends TestCase {
 	}
 
 	/**
-	 * Sin llave no se cifra, pero tampoco se pierde el valor.
+	 * Sin llave no se guarda en claro: falla cerrado (core#65).
 	 */
-	public function test_sin_llave_no_cifra_pero_no_pierde(): void {
+	public function test_sin_llave_no_cifra_y_falla(): void {
 		$cifrado = Cifrado::cifrar( '12345678Z' );
 
 		add_filter(
@@ -112,11 +112,14 @@ final class CifradoTest extends TestCase {
 			}
 		);
 
-		$this->assertSame( '12345678Z', Cifrado::cifrar( '12345678Z' ) );
-		$this->assertSame( '', Cifrado::descifrar( $cifrado ) );
-		$this->assertFalse( Cifrado::disponible() );
+		$this->expectException( \RuntimeException::class );
+		try {
+			Cifrado::cifrar( '12345678Z' );
+		} finally {
+			$this->assertSame( '', Cifrado::descifrar( $cifrado ) );
+			$this->assertFalse( Cifrado::disponible() );
+		}
 		$this->assertSame( '', Cifrado::indice_ciego( '12345678Z' ) );
-
 		remove_all_filters( 'convoca_cifrado_clave' );
 	}
 
