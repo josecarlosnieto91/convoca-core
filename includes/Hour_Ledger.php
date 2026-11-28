@@ -178,6 +178,22 @@ class Hour_Ledger {
 		update_post_meta( $log_id, '_convoca_tareas', (string) ( $args['tareas'] ?? '' ) );
 		self::link_origin( $log_id, $origen, $origen_id );
 
+		self::vincular_socio( $log_id, $user, $origen, $origen_id );
+
+		\Convoca\Core\Utils::release_lock( $lock_key );
+		return (int) $log_id;
+	}
+
+	/**
+	 * Vincula el registro con la ficha de socio por correo.
+	 *
+	 * @param int      $log_id    Registro de horas.
+	 * @param \WP_User $user      Usuario.
+	 * @param string   $origen    Origen.
+	 * @param int      $origen_id ID del origen.
+	 * @return void
+	 */
+	private static function vincular_socio( int $log_id, \WP_User $user, string $origen, int $origen_id ): void {
 		// Vínculo con el socio: Members lee `_convoca_member_id` (clave compartida).
 		$members = get_posts(
 			array(
@@ -193,16 +209,14 @@ class Hour_Ledger {
 			// ficha: es la referencia de qué socio son estas horas. Como acoplamiento es real (el nombre
 			// del meta es de Members), queda a la vista para decidir en F1 si pasa al contrato.
 			update_post_meta( $log_id, '_convoca_member_id', (int) $members[0] );
-		} else {
-			Logger::info(
-				sprintf( 'Horas acreditadas sin socio vinculado (%s #%d): el usuario %d no tiene ficha de socio.', $origen, $origen_id, $user_id ),
-				'Core/HourLedger',
-				$log_id
-			);
+			return;
 		}
 
-		\Convoca\Core\Utils::release_lock( $lock_key );
-		return (int) $log_id;
+		Logger::info(
+			sprintf( 'Horas acreditadas sin socio vinculado (%s #%d): el usuario %d no tiene ficha de socio.', $origen, $origen_id, $user->ID ),
+			'Core/HourLedger',
+			$log_id
+		);
 	}
 
 	/**
