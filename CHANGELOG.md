@@ -1,3 +1,11 @@
+## [2.5.21] — 2026-11-27
+
+### Corregido
+
+- **Desinstalar borra todo lo del núcleo (#52).** La lista incluye las opciones creadas por constante
+  (sitio, correo, ntfy, licencia, plantillas, entrada y asistente), borra por prefijo los `convoca_rl_*`
+  y `convoca_webhook_log_*`, y elimina también `convoca_intentos` y `convoca_member_sequence`.
+
 ## [2.5.20] — 2026-11-27
 
 ### Corregido

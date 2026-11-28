@@ -72,6 +72,54 @@ class OpcionesSeBorranAlDesinstalarTest extends TestCase {
 	}
 
 
+
+	/**
+	 * Claves escritas por constante o propiedad estática: el escáner de literales no las veía (#52).
+	 */
+	public function test_las_claves_por_constante_tambien_se_borran(): void {
+		$desinstalador = (string) file_get_contents( $this->raiz() . '/uninstall.php' );
+		$claves        = array(
+			'convoca_site_settings',
+			'convoca_email_copy',
+			'convoca_ntfy_config',
+			'convoca_license',
+			'convoca_pdf_templates',
+			'convoca_pdf_templates_versions',
+			'convoca_pdf_templates_corruptas',
+			'convoca_core_entrada',
+			'convoca_setup_wizard_completed',
+			'convoca_setup_wizard_dismissed',
+			'convoca_setup_wizard_progress',
+			'convoca_setup_wizard_seen',
+			'convoca_log_level',
+		);
+
+		foreach ( $claves as $clave ) {
+			$this->assertStringContainsString( "'" . $clave . "'", $desinstalador, "falta borrar {$clave}" );
+		}
+	}
+
+	/**
+	 * Las claves con identificador detrás se borran por prefijo, no una a una.
+	 */
+	public function test_las_claves_dinamicas_se_borran_por_prefijo(): void {
+		$desinstalador = (string) file_get_contents( $this->raiz() . '/uninstall.php' );
+
+		$this->assertStringContainsString( "LIKE 'convoca_rl_%'", $desinstalador );
+		$this->assertStringContainsString( "LIKE 'convoca_webhook_log_%'", $desinstalador );
+	}
+
+	/**
+	 * Las tablas propias del núcleo, incluidas las que no estaban en la lista.
+	 */
+	public function test_las_tablas_del_nucleo_se_borran(): void {
+		$desinstalador = (string) file_get_contents( $this->raiz() . '/uninstall.php' );
+
+		foreach ( array( 'convoca_logs', 'convoca_webhook_retries', 'convoca_locks', 'convoca_intentos', 'convoca_member_sequence' ) as $tabla ) {
+			$this->assertStringContainsString( "'" . $tabla . "'", $desinstalador, "falta la tabla {$tabla}" );
+		}
+	}
+
 	public function test_todas_las_opciones_del_plugin_se_borran(): void {
 		$desinstalador = (string) file_get_contents( $this->raiz() . '/uninstall.php' );
 		$faltan        = array();
