@@ -819,14 +819,24 @@ class Admin_Backup {
 			}
 		} catch ( \Throwable $e ) {
 			// Si algo se rompe a mitad, los ajustes vuelven a como estaban (core#41).
-			foreach ( $previos as $key => $valor ) {
-				if ( false === $valor ) {
-					delete_option( $key );
-				} else {
-					update_option( $key, $valor );
-				}
-			}
+			$this->restaurar_ajustes( $previos );
 			throw $e;
+		}
+	}
+
+	/**
+	 * Devuelve cada opción a su valor previo.
+	 *
+	 * @param array<string,mixed> $previos Valor anterior por clave.
+	 * @return void
+	 */
+	private function restaurar_ajustes( array $previos ): void {
+		foreach ( $previos as $key => $valor ) {
+			if ( false === $valor ) {
+				delete_option( $key );
+			} else {
+				update_option( $key, $valor );
+			}
 		}
 	}
 
