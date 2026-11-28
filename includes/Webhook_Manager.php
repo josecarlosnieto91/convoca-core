@@ -487,7 +487,10 @@ class Webhook_Manager {
 			)
 		);
 
-		// Schedule cron job if not already scheduled.
+		// El primer reintento no espera al cron horario: se programa para cuando toca (core#47).
+		wp_schedule_single_event( time() + $delay, 'convoca_webhook_retry' );
+
+		// El horario queda como red de seguridad para los reintentos que se reprogramen.
 		if ( ! wp_next_scheduled( 'convoca_webhook_retry' ) ) {
 			wp_schedule_event( time(), 'hourly', 'convoca_webhook_retry' );
 		}
@@ -514,7 +517,7 @@ class Webhook_Manager {
 			$retries = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT * FROM $table_name WHERE scheduled_at <= %s ORDER BY created_at ASC LIMIT 50",
-					current_time( 'mysql' )
+					gmdate( 'Y-m-d H:i:s' )
 				)
 			);
 

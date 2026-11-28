@@ -1228,6 +1228,12 @@ if (!function_exists('wp_next_scheduled')) {
         return $GLOBALS['_wp_cron']['programados'][$h] ?? false;
     }
 }
+if (!function_exists('wp_schedule_single_event')) {
+    function wp_schedule_single_event($ts, $h, $a = []) {
+        $GLOBALS['_wp_cron']['agendados'][] = ['hook' => $h, 'ts' => $ts, 'recurrencia' => 'single'];
+        return true;
+    }
+}
 if (!function_exists('wp_schedule_event')) {
     function wp_schedule_event($ts, $r, $h, $a = []) {
         $GLOBALS['_wp_cron']['programados'][$h] = $ts;

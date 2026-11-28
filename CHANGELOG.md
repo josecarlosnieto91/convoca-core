@@ -1,3 +1,10 @@
+## [2.5.27] — 2026-11-27
+
+### Corregido
+
+- **El primer reintento de webhook respeta el backoff (#47).** Se programa un evento único a 60 s y se
+  compara `scheduled_at` en UTC, sin mezclar con la hora local del sitio.
+
 ## [2.5.26] — 2026-11-27
 
 ### Corregido
