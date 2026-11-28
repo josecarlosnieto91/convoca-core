@@ -1,3 +1,10 @@
+## [2.5.26] — 2026-11-27
+
+### Corregido
+
+- **Un módulo incompatible no figura como activo (#68).** `register()` publica el módulo en el mapa solo
+  después de validar núcleo, features y capacidades; si falla, no entra y `is_active()` devuelve falso.
+
 ## [2.5.25] — 2026-11-27
 
 ### Corregido
