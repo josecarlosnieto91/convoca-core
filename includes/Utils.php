@@ -773,11 +773,7 @@ class Utils {
 		$table_exists = $wpdb->get_var( "SHOW TABLES LIKE '$locks_table'" ) === $locks_table;
 
 		if ( $table_exists ) {
-			// Instalaciones anteriores a #46 no tienen propietario: se añade una vez.
-			$tiene_owner = $wpdb->get_var( "SHOW COLUMNS FROM $locks_table LIKE 'owner'" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			if ( empty( $tiene_owner ) ) {
-				$wpdb->query( "ALTER TABLE $locks_table ADD COLUMN owner varchar(64) NOT NULL DEFAULT ''" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			}
+			\Convoca\Core\Installer::asegurar_columna_propietario( $locks_table );
 
 			// Clean expired locks first.
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $locks_table is a hardcoded internal name
