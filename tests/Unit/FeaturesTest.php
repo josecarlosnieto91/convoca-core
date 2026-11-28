@@ -98,6 +98,18 @@ class FeaturesTest extends TestCase
         $this->assertEmpty($missing);
     }
 
+    /**
+     * @runInSeparateProcess
+     */
+    public function test_get_missing_dependencies_reconoce_turnos_por_su_alias(): void
+    {
+        $this->loadClass();
+        $missing = \Convoca\Core\Features::get_missing_dependencies([
+            'turnos' => 'Convoca Shifts',
+        ]);
+        $this->assertContains('Convoca Shifts', $missing, 'sin Shifts, turnos debe faltar');
+    }
+
     // ── is_convoca_shifts_active ──────────────────
 
     public function test_is_shifts_active_by_constant(): void
