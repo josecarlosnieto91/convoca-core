@@ -130,6 +130,7 @@ class Webhook_Manager {
 
 		// Register cron hook for webhook retries.
 		add_action( 'convoca_webhook_retry', array( __CLASS__, 'process_retries' ) );
+		add_action( 'convoca_webhook_dispatch', array( $this, 'dispatch_async' ), 10, 2 );
 	}
 
 	/**
@@ -322,6 +323,34 @@ class Webhook_Manager {
 	 * @param array<string, mixed> $payload Data to send.
 	 */
 	public function dispatch( string $event, array $payload = array() ): void {
+		// Fuera de la petición: un destino caído no frena un alta ni el retorno del pago (core#49).
+		if ( apply_filters( 'convoca_webhook_async', true ) ) {
+			wp_schedule_single_event( time(), 'convoca_webhook_dispatch', array( $event, $payload ) );
+			return;
+		}
+
+		$this->dispatch_now( $event, $payload );
+	}
+
+	/**
+	 * Ejecuta una entrega ya programada.
+	 *
+	 * @param string $event   Evento.
+	 * @param array<string,mixed> $payload Datos.
+	 * @return void
+	 */
+	public function dispatch_async( string $event, array $payload = array() ): void {
+		$this->dispatch_now( $event, $payload );
+	}
+
+	/**
+	 * Entrega síncrona (la usan el cron y el modo síncrono de las pruebas).
+	 *
+	 * @param string $event   Evento.
+	 * @param array<string,mixed> $payload Datos.
+	 * @return void
+	 */
+	public function dispatch_now( string $event, array $payload = array() ): void {
 		$webhooks = self::get_webhooks();
 
 		if ( empty( $webhooks ) ) {

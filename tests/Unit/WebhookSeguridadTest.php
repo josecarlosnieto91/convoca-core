@@ -40,6 +40,7 @@ final class WebhookSeguridadTest extends TestCase {
 	protected function setUp(): void {
 		$this->limpiar();
 		$this->gestor = new Webhook_Manager();
+		add_filter( 'convoca_webhook_async', '__return_false' );
 	}
 
 	/**
@@ -49,6 +50,7 @@ final class WebhookSeguridadTest extends TestCase {
 		$this->limpiar();
 		remove_all_filters( 'convoca_webhook_retry_backoff' );
 		remove_all_filters( 'convoca_common_webhook_sslverify' );
+		remove_all_filters( 'convoca_webhook_async' );
 	}
 
 	/**
@@ -73,6 +75,32 @@ final class WebhookSeguridadTest extends TestCase {
 	 */
 	public function test_el_catalogo_incluye_horas_rechazadas(): void {
 		$this->assertArrayHasKey( 'volunteer.hours_rejected', Webhook_Manager::events() );
+	}
+
+	/**
+	 * Por defecto la entrega se encola: la petición no espera al destino (core#49).
+	 */
+	public function test_la_entrega_se_encola_fuera_de_la_peticion(): void {
+		remove_all_filters( 'convoca_webhook_async' );
+		$this->webhooks(
+			array(
+				array(
+					'id'     => 'wh-1',
+					'url'    => 'https://destino.example.test/hook',
+					'active' => true,
+					'events' => array( 'member_created' ),
+				),
+			)
+		);
+
+		$this->gestor->dispatch( 'member_created', array( 'member_id' => 1 ) );
+
+		$this->assertSame( array(), $this->salidas(), 'no se llama a la red dentro de la petición' );
+		$eventos = array_filter(
+			(array) $GLOBALS['_wp_cron']['agendados'],
+			static fn( array $e ): bool => 'convoca_webhook_dispatch' === $e['hook']
+		);
+		$this->assertNotEmpty( $eventos, 'queda programada la entrega' );
 	}
 
 	/**
