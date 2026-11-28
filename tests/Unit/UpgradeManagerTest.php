@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
 require_once dirname( __DIR__, 2 ) . '/includes/Utils.php';
 require_once dirname( __DIR__, 2 ) . '/includes/Logger.php';
 require_once dirname( __DIR__, 2 ) . '/includes/Upgrade_Manager.php';
+require_once dirname( __DIR__, 2 ) . '/includes/Migration_History.php';
 
 /**
  * Gestor de migraciones de prueba: versión y callbacks controlados desde el test.
@@ -193,6 +194,14 @@ final class UpgradeManagerTest extends TestCase {
 			'la versión se queda en la última buena'
 		);
 		$this->assertArrayNotHasKey( 'convoca_lock_upgrade_convoca_prueba', $GLOBALS['_wp_stores']['locks'], 'el cerrojo se suelta' );
+
+		$historial = \Convoca\Core\Migration_History::get_all();
+		$this->assertCount( 2, $historial, 'una buena y una fallida' );
+		$this->assertSame( 'success', $historial[0]['status'] );
+		$this->assertSame( '1.0.1', $historial[0]['to'] );
+		$this->assertSame( 'failed', $historial[1]['status'] );
+		$this->assertSame( '1.5.0', $historial[1]['to'] );
+		$this->assertStringContainsString( 'se rompe', $historial[1]['error'] );
 	}
 
 	/**

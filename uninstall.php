@@ -57,6 +57,7 @@ $options = array(
 	'convoca_utils_fired',
 	'convoca_intentos_db_version',
 	'convoca_log_level',
+	'convoca_migration_history',
 	// Ajustes propios creados por constante o propiedad estática (issue #52).
 	'convoca_site_settings',
 	'convoca_email_copy',

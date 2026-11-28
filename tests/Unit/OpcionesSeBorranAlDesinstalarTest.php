@@ -92,6 +92,7 @@ class OpcionesSeBorranAlDesinstalarTest extends TestCase {
 			'convoca_setup_wizard_progress',
 			'convoca_setup_wizard_seen',
 			'convoca_log_level',
+			'convoca_migration_history',
 		);
 
 		foreach ( $claves as $clave ) {

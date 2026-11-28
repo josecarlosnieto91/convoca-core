@@ -1,3 +1,10 @@
+## [2.5.22] — 2026-11-27
+
+### Corregido
+
+- **El historial de migraciones registra de verdad (#69).** `Upgrade_Manager::run_upgrades()` anota cada
+  migración buena y cada fallo, con versión, duración y error. El historial se borra al desinstalar.
+
 ## [2.5.21] — 2026-11-27
 
 ### Corregido

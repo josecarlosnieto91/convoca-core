@@ -127,12 +127,16 @@ abstract class Upgrade_Manager {
 			if ( version_compare( $from, $version, '<' ) && version_compare( $version, $to, '<=' ) ) {
 				if ( ! is_callable( $callback ) ) {
 					Logger::error( "Upgrade $version callback not callable in {$this->get_transient_prefix()}", 'System' );
+					Migration_History::record_failure( $this->get_transient_prefix(), $from, (string) $version, 'callback_not_callable' );
 					throw new \RuntimeException( esc_html( "Upgrade callback not callable for version $version" ) );
 				}
+				$inicio = microtime( true );
 				try {
 					call_user_func( $callback );
+					Migration_History::record( $this->get_transient_prefix(), $from, (string) $version, microtime( true ) - $inicio );
 					$last_successful = $version;
 				} catch ( \Throwable $e ) {
+					Migration_History::record_failure( $this->get_transient_prefix(), $from, (string) $version, $e->getMessage() );
 					Logger::error(
 						"Upgrade $version failed in {$this->get_transient_prefix()}: " . $e->getMessage(),
 						'System'
