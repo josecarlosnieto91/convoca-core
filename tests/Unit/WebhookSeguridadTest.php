@@ -65,6 +65,7 @@ final class WebhookSeguridadTest extends TestCase {
 			'db_inserts' => array(),
 		);
 		$GLOBALS['_wp_http_posts'] = array();
+		$GLOBALS['_wp_cron']       = array( 'programados' => array(), 'agendados' => array() );
 	}
 
 	/**
@@ -72,6 +73,36 @@ final class WebhookSeguridadTest extends TestCase {
 	 */
 	public function test_el_catalogo_incluye_horas_rechazadas(): void {
 		$this->assertArrayHasKey( 'volunteer.hours_rejected', Webhook_Manager::events() );
+	}
+
+	/**
+	 * El primer reintento se programa para el backoff (60 s), no para la hora siguiente.
+	 */
+	public function test_el_primer_reintento_se_programa_a_su_hora(): void {
+		$this->webhooks(
+			array(
+				array(
+					'id'     => 'wh-1',
+					'url'    => 'https://destino.example.test/hook',
+					'active' => true,
+					'events' => array( 'member_created' ),
+				),
+			)
+		);
+		$GLOBALS['_wp_stores']['http_response'] = array( 'response' => array( 'code' => 500 ) );
+
+		$antes = time();
+		$this->gestor->dispatch( 'member_created', array( 'member_id' => 1 ) );
+
+		$singles = array_values(
+			array_filter(
+				(array) $GLOBALS['_wp_cron']['agendados'],
+				static fn( array $e ): bool => 'convoca_webhook_retry' === $e['hook'] && 'single' === $e['recurrencia']
+			)
+		);
+		$this->assertNotEmpty( $singles, 'se programa un evento único' );
+		$this->assertGreaterThanOrEqual( $antes + 60, (int) $singles[0]['ts'], 'ni antes del backoff' );
+		$this->assertLessThanOrEqual( $antes + 120, (int) $singles[0]['ts'], 'ni una hora después' );
 	}
 
 	/**
