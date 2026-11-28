@@ -1,3 +1,10 @@
+## [2.5.30] — 2026-11-27
+
+### Corregido
+
+- **Los ajustes se importan al final y se revierten si falla (#41).** Una entidad rota ya no deja la pasarela
+  o los planes cambiados; `import_settings()` guarda el valor previo y lo restaura ante cualquier error.
+
 ## [2.5.29] — 2026-11-27
 
 ### Corregido
