@@ -221,6 +221,27 @@ class Admin_Backup {
 	}
 
 	/**
+	 * Añade `settings.json` al ZIP solo si quien exporta puede administrar el sitio.
+	 *
+	 * Copia de datos y copia de configuración son permisos distintos (core#43).
+	 *
+	 * @param \ZipArchive $zip Archivo abierto.
+	 * @return void
+	 */
+	private function anadir_ajustes( \ZipArchive $zip ): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$settings        = array();
+		$allowed_options = array( 'convoca_gateway_settings', 'convoca_members_settings', 'convoca_members_plans', 'convoca_enroll_settings', 'convoca_shifts_hora_apertura', 'convoca_shifts_hora_cierre', 'convoca_shifts_calendar_page_url' );
+		foreach ( $allowed_options as $k ) {
+			$settings[ $k ] = get_option( $k );
+		}
+		$zip->addFromString( 'settings.json', (string) wp_json_encode( $settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) );
+	}
+
+	/**
 	 * Construye el ZIP de la copia: los cuatro CSV y el `settings.json`.
 	 *
 	 * Se separa de `handle_export()` (nonce, permisos, descarga y `exit`) para poder comprobarlo: un backup que
@@ -361,16 +382,7 @@ class Admin_Backup {
 			}
 		);
 
-		// Settings (Whitelist based). Copia de datos y copia de configuración son permisos
-		// distintos: sin `manage_options` el ZIP sale sin credenciales ni ajustes (core#43).
-		if ( current_user_can( 'manage_options' ) ) {
-			$settings        = array();
-			$allowed_options = array( 'convoca_gateway_settings', 'convoca_members_settings', 'convoca_members_plans', 'convoca_enroll_settings', 'convoca_shifts_hora_apertura', 'convoca_shifts_hora_cierre', 'convoca_shifts_calendar_page_url' );
-			foreach ( $allowed_options as $k ) {
-				$settings[ $k ] = get_option( $k );
-			}
-			$zip->addFromString( 'settings.json', (string) wp_json_encode( $settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) );
-		}
+		$this->anadir_ajustes( $zip );
 
 		$zip->close();
 
