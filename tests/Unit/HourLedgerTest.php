@@ -31,7 +31,7 @@ class HourLedgerTest extends TestCase {
 
 	protected function setUp(): void {
 		parent::setUp();
-		$GLOBALS['_wp_stores']          = array( 'posts' => array(), 'post_meta' => array(), 'post_types' => array(), 'options' => array(), 'transients' => array() );
+		$GLOBALS['_wp_stores']          = array( 'posts' => array(), 'post_meta' => array(), 'post_types' => array(), 'options' => array(), 'transients' => array(), 'locks' => array() );
 		$GLOBALS['_wp_stub_next_id']    = 900;
 		$GLOBALS['_test_users']         = array();
 
@@ -127,6 +127,22 @@ class HourLedgerTest extends TestCase {
 			}
 		}
 		return $ids;
+	}
+
+	/**
+	 * Con el cerrojo de ese origen tomado, otra acreditación no crea un segundo registro (core#45).
+	 */
+	public function test_si_otro_proceso_tiene_el_cerrojo_no_duplica(): void {
+		$llave = 'hour_credit_' . Hour_Ledger::ORIGEN_INSCRIPCION . '_' . self::INSC_1;
+		$token = \Convoca\Core\Utils::acquire_lock( $llave, 30 );
+		$this->assertIsString( $token );
+
+		$id = $this->marcar( self::INSC_1, self::USER_A, self::ACT_1 );
+
+		$this->assertSame( 0, $id, 'sin el cerrojo no se acredita' );
+		$this->assertCount( 0, $this->registros_de( Hour_Ledger::ORIGEN_INSCRIPCION, self::INSC_1 ), 'ni se crea el registro' );
+
+		\Convoca\Core\Utils::release_lock( $llave, $token );
 	}
 
 	public function test_primera_marcacion_crea_un_unico_registro_aprobado(): void {
