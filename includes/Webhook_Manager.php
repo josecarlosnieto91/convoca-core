@@ -57,6 +57,7 @@ class Webhook_Manager {
 			'enrollment.checkin'       => __( 'Check-in realizado', 'convoca-core' ),
 			'volunteer.hours_logged'   => __( 'Horas de voluntariado registradas', 'convoca-core' ),
 			'volunteer.hours_approved' => __( 'Horas de voluntariado aprobadas', 'convoca-core' ),
+			'volunteer.hours_rejected' => __( 'Horas de voluntariado rechazadas', 'convoca-core' ),
 		);
 	}
 
@@ -733,7 +734,8 @@ class Webhook_Manager {
 		}
 
 		$manager = new self();
-		$manager->deliver(
+
+		return $manager->deliver(
 			$webhook,
 			array(
 				'event'     => 'test.ping',
@@ -745,8 +747,6 @@ class Webhook_Manager {
 				),
 			)
 		);
-
-		return true;
 	}
 
 	/* ── Delivery Logs ────────────────────────────────────── */
