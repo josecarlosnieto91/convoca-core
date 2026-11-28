@@ -202,22 +202,18 @@ class Admin_Backup {
 	}
 
 	/**
-	 * Abre el flujo temporal en memoria para un CSV.
+	 * Borra los CSV temporales que ya están dentro del ZIP.
 	 *
-	 * Vivía dentro de `construir_zip()`, pero la comprobación de `fopen()` subía la complejidad
-	 * ciclomática de un método que ya está en el límite. Un fallo aquí tiene que sonar: escribir
-	 * el CSV sobre `false` produce un ZIP con un fichero vacío.
-	 *
-	 * @return resource Flujo listo para escribir.
+	 * @param array<string,string> $paths Nombre => ruta.
+	 * @return void
 	 */
-	private static function temp_stream() {
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- temp stream for CSV in memory
-		$handle = fopen( 'php://temp', 'r+' );
-		if ( false === $handle ) {
-			throw new \RuntimeException( 'No se pudo abrir el flujo temporal del CSV.' );
+	private function limpiar_csv_temporales( array $paths ): void {
+		foreach ( $paths as $path ) {
+			if ( file_exists( $path ) ) {
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink -- temporal propio, ya volcado al ZIP
+				unlink( $path );
+			}
 		}
-
-		return $handle;
 	}
 
 	/**
@@ -257,30 +253,31 @@ class Admin_Backup {
 			return esc_html__( 'No se pudo crear el archivo temporal ZIP.', 'convoca-core' );
 		}
 
-		$add_csv = function ( $name, $headers, $rows ) use ( $zip ) {
-			$handle = self::temp_stream();
+		// Cada CSV se escribe en un fichero temporal según llegan los lotes y el ZIP lee del disco al
+		// cerrarse: no se acumulan todas las filas en memoria (core#44).
+		$csv_paths = array();
+
+		$abrir_csv = function ( $name, $headers ) use ( &$csv_paths ) {
+			$path   = get_temp_dir() . 'convoca-csv-' . wp_generate_password( 12, false ) . '.csv';
+			$handle = fopen( $path, 'wb' ) // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- fichero temporal propio
+				?: throw new \RuntimeException( 'No se pudo abrir el CSV temporal.' );
 			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- writing BOM + CSV data to temp stream
 			fwrite( $handle, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) ); // BOM for UTF-8.
 			fputcsv( $handle, $headers, ',', '"', '\\' );
-			foreach ( $rows as $row ) {
-				fputcsv(
-					$handle,
-					array_map( array( \Convoca\Core\Utils::class, 'neutralizar_formula' ), $row ),
-					',',
-					'"',
-					'\\'
-				);
-			}
-			rewind( $handle );
-			$zip->addFromString( $name . '.csv', stream_get_contents( $handle ) );
+			$csv_paths[ $name ] = $path;
+			return $handle;
+		};
+
+		$cerrar_csv = function ( $name, $handle ) use ( $zip, &$csv_paths ) {
 			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- temp stream cleanup
 			fclose( $handle );
+			$zip->addFile( $csv_paths[ $name ], $name . '.csv' );
 		};
 
 		$batch_size = 500;
 
 		// Helper to export all posts of a type in batches.
-		$export_all = function ( $post_type, $headers, $fields_fn ) use ( $add_csv, $batch_size ) {
+		$export_all = function ( $post_type, $headers, $fields_fn ) use ( $abrir_csv, $cerrar_csv, $batch_size ) {
 			// El archivo CSV se nombra con la ENTIDAD (plural, la clave del
 			// mapa ENTITY_CPT_MAP), que es lo que el importador busca:
 			// miembros.csv, proyectos.csv, inscripciones.csv, turnos.csv.
@@ -288,7 +285,7 @@ class Admin_Backup {
 			// encontraba los CSVs → solo importaba settings.json.
 			$entity_key = array_search( $post_type, self::ENTITY_CPT_MAP, true );
 			$file_base  = $entity_key ? $entity_key : $post_type;
-			$all_rows   = array();
+			$handle     = $abrir_csv( $file_base, $headers );
 			$page       = 1;
 			do {
 				$posts = get_posts(
@@ -307,11 +304,17 @@ class Admin_Backup {
 				update_meta_cache( 'post', $ids );
 				$titles = wp_list_pluck( $posts, 'post_title', 'ID' );
 				foreach ( $ids as $id ) {
-					$all_rows[] = $fields_fn( $id, $titles[ $id ] ?? '' );
+					fputcsv(
+						$handle,
+						array_map( array( \Convoca\Core\Utils::class, 'neutralizar_formula' ), $fields_fn( $id, $titles[ $id ] ?? '' ) ),
+						',',
+						'"',
+						'\\'
+					);
 				}
 				++$page;
 			} while ( count( $ids ) === $batch_size );
-			$add_csv( $file_base, $headers, $all_rows );
+			$cerrar_csv( $file_base, $handle );
 		};
 
 		// Members.
@@ -385,6 +388,8 @@ class Admin_Backup {
 		$this->anadir_ajustes( $zip );
 
 		$zip->close();
+
+		$this->limpiar_csv_temporales( $csv_paths );
 
 		return file_exists( $tmp_file ) ? '' : esc_html__( 'Error fatal: ZIP no generado.', 'convoca-core' );
 	}
