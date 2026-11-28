@@ -27,6 +27,18 @@ if ( ! defined( 'ABSPATH' ) ) {
  * scattered class_exists or function_exists checks that make refactoring hard.
  */
 class Features {
+	/**
+	 * Alias de detección por nombre corto. Única fuente para `has()` y las dependencias.
+	 *
+	 * @var array<string,string>
+	 */
+	private const ALIAS = array(
+		'members' => 'is_members_active',
+		'enroll'  => 'is_enroll_active',
+		'gateway' => 'is_gateway_active',
+		'turnos'  => 'is_convoca_shifts_active',
+	);
+
 
 	/**
 	 * Comprueba si el plugin Convoca Shifts está activo.
@@ -84,14 +96,7 @@ class Features {
 	 * @return bool
 	 */
 	public static function has( string $feature ): bool {
-		$alias = array(
-			'members' => 'is_members_active',
-			'enroll'  => 'is_enroll_active',
-			'gateway' => 'is_gateway_active',
-			'turnos'  => 'is_convoca_shifts_active',
-		);
-
-		$metodo = $alias[ $feature ] ?? '';
+		$metodo = self::ALIAS[ $feature ] ?? '';
 
 		return '' !== $metodo && method_exists( self::class, $metodo ) && self::$metodo();
 	}
@@ -107,8 +112,10 @@ class Features {
 		$missing = array();
 
 		foreach ( $required_features as $feature => $name ) {
-			$method = "is_{$feature}_active";
-			if ( method_exists( self::class, $method ) && ! self::$method() ) {
+			// El alias lo resuelve el mismo mapa que `has()`: `turnos` es
+			// `is_convoca_shifts_active`, no `is_turnos_active` (core#67).
+			$method = self::ALIAS[ $feature ] ?? '';
+			if ( '' !== $method && method_exists( self::class, $method ) && ! self::$method() ) {
 				$missing[] = $name;
 			}
 		}

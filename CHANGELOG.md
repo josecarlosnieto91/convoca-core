@@ -1,3 +1,10 @@
+## [2.5.16] — 2026-11-27
+
+### Corregido
+
+- **La dependencia `turnos` se detecta como faltante (#67).** `get_missing_dependencies()` resuelve el
+  alias con el mismo mapa que `has()`; sin Convoca Shifts, el módulo ya no puede activarse a medias.
+
 ## [2.5.15] — 2026-11-27
 
 ### Corregido
