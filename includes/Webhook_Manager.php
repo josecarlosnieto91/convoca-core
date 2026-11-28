@@ -130,7 +130,7 @@ class Webhook_Manager {
 
 		// Register cron hook for webhook retries.
 		add_action( 'convoca_webhook_retry', array( __CLASS__, 'process_retries' ) );
-		add_action( 'convoca_webhook_dispatch', array( $this, 'dispatch_async' ), 10, 2 );
+		add_action( 'convoca_webhook_dispatch', array( $this, 'dispatch_now' ), 10, 2 );
 	}
 
 	/**
@@ -329,17 +329,6 @@ class Webhook_Manager {
 			return;
 		}
 
-		$this->dispatch_now( $event, $payload );
-	}
-
-	/**
-	 * Ejecuta una entrega ya programada.
-	 *
-	 * @param string $event   Evento.
-	 * @param array<string,mixed> $payload Datos.
-	 * @return void
-	 */
-	public function dispatch_async( string $event, array $payload = array() ): void {
 		$this->dispatch_now( $event, $payload );
 	}
 
