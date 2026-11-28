@@ -1,3 +1,10 @@
+## [2.5.32] — 2026-11-27
+
+### Corregido
+
+- **Las horas no se duplican (#45).** `Hour_Ledger::credit()` toma un cerrojo por origen antes de buscar e
+  insertar; dos productores simultáneos producen un solo `registro_hora`.
+
 ## [2.5.31] — 2026-11-27
 
 ### Corregido

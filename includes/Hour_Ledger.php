@@ -117,6 +117,12 @@ class Hour_Ledger {
 
 		$fecha = (string) ( $args['fecha'] ?? wp_date( 'Y-m-d' ) );
 
+		// Buscar e insertar son dos pasos: sin cerrojo, dos productores crean dos registros (core#45).
+		$lock_key = 'hour_credit_' . $origen . '_' . $origen_id;
+		if ( ! \Convoca\Core\Utils::acquire_lock( $lock_key, 30 ) ) {
+			return 0;
+		}
+
 		$log_id = self::find( $origen, $origen_id );
 
 		if ( $log_id ) {
@@ -146,6 +152,7 @@ class Hour_Ledger {
 				$log_id
 			);
 
+			\Convoca\Core\Utils::release_lock( $lock_key );
 			return $log_id;
 		}
 
@@ -159,6 +166,7 @@ class Hour_Ledger {
 		);
 
 		if ( ! $log_id ) {
+			\Convoca\Core\Utils::release_lock( $lock_key );
 			return 0;
 		}
 
@@ -193,6 +201,7 @@ class Hour_Ledger {
 			);
 		}
 
+		\Convoca\Core\Utils::release_lock( $lock_key );
 		return (int) $log_id;
 	}
 
