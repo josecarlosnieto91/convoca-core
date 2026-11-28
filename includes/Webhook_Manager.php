@@ -506,17 +506,24 @@ class Webhook_Manager {
 		global $wpdb;
 		$table_name = self::get_retry_table_name();
 
-		// Acquire lock to prevent concurrent runs.
-		if ( get_transient( 'convoca_webhook_retry_lock' ) ) {
+		// Un solo procesador a la vez: el cerrojo transitorio era check+set, no atómico (core#48).
+		if ( ! \Convoca\Core\Utils::acquire_lock( 'convoca_webhook_retry', 10 * MINUTE_IN_SECONDS ) ) {
 			return;
 		}
-		set_transient( 'convoca_webhook_retry_lock', true, 10 * MINUTE_IN_SECONDS );
 
 		try {
-			// Get retries that are due.
+			// Una fila «processing» de hace más de 10 minutos es de un proceso que murió: vuelve a la cola.
+			$wpdb->query(
+				$wpdb->prepare(
+					"UPDATE $table_name SET status = 'pending' WHERE status = 'processing' AND scheduled_at < %s",
+					gmdate( 'Y-m-d H:i:s', time() - 10 * MINUTE_IN_SECONDS )
+				)
+			);
+
+			// Solo las pendientes vencidas.
 			$retries = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT * FROM $table_name WHERE scheduled_at <= %s ORDER BY created_at ASC LIMIT 50",
+					"SELECT * FROM $table_name WHERE scheduled_at <= %s AND status = 'pending' ORDER BY created_at ASC LIMIT 50",
 					gmdate( 'Y-m-d H:i:s' )
 				)
 			);
@@ -526,12 +533,16 @@ class Webhook_Manager {
 			}
 
 			foreach ( $retries as $retry ) {
-				// Mark as processing to prevent data loss on crash.
-				$wpdb->update(
-					$table_name,
-					array( 'status' => 'processing' ),
-					array( 'id' => $retry->id )
+				// Reclamo atómico: si otra ejecución ya la cogió, esta no la entrega.
+				$reclamada = $wpdb->query(
+					$wpdb->prepare(
+						"UPDATE $table_name SET status = 'processing' WHERE id = %d AND status = 'pending'",
+						(int) $retry->id
+					)
 				);
+				if ( ! $reclamada ) {
+					continue;
+				}
 
 				// Attempt delivery.
 				$manager = new self();
@@ -582,7 +593,7 @@ class Webhook_Manager {
 				}
 			}
 		} finally {
-			delete_transient( 'convoca_webhook_retry_lock' );
+			\Convoca\Core\Utils::release_lock( 'convoca_webhook_retry' );
 		}
 	}
 
