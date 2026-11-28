@@ -466,6 +466,44 @@ final class AdminBackupTest extends TestCase {
 	}
 
 	/**
+	 * Miles de socios: el CSV se escribe por lotes y llegan todas las filas.
+	 */
+	public function test_la_copia_vuelca_por_lotes_sin_perder_filas(): void {
+		$GLOBALS['_test_caps'] = array( 'manage_options' => true );
+		$temp                  = ( getenv( 'TMPDIR' ) ?: sys_get_temp_dir() ) . '/convoca-zip-lotes-' . getmypid();
+		@mkdir( $temp, 0777, true );
+		$GLOBALS['_wp_stores']['temp_dir'] = $temp;
+
+		for ( $i = 1; $i <= 1100; $i++ ) {
+			$p               = new \WP_Post();
+			$p->ID           = $i;
+			$p->post_type    = 'miembro';
+			$p->post_status  = 'publish';
+			$p->post_title   = 'Socio ' . $i;
+			$p->post_content = '';
+			$GLOBALS['_wp_stores']['posts'][ $i ] = $p;
+			$GLOBALS['_wp_stores']['post_meta'][ $i ] = array(
+				'_convoca_email' => 'socio' . $i . '@example.test',
+			);
+		}
+
+		$ruta  = $temp . '/backup.zip';
+		$error = $this->privado( 'construir_zip', $ruta );
+		$this->assertSame( '', $error );
+
+		$zip = new \ZipArchive();
+		$this->assertTrue( $zip->open( $ruta ) );
+		$csv = (string) $zip->getFromName( 'miembros.csv' );
+		$zip->close();
+
+		$this->assertSame( 1101, substr_count( $csv, "\n" ), 'cabecera + 1.100 socios, en tres lotes' );
+		$this->assertStringContainsString( 'socio1100@example.test', $csv );
+
+		@unlink( $ruta );
+		@rmdir( $temp );
+	}
+
+	/**
 	 * Sin `manage_options` el ZIP no lleva `settings.json`: solo datos.
 	 */
 	public function test_sin_manage_options_la_copia_no_lleva_ajustes(): void {

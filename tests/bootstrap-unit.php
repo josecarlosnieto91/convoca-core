@@ -1098,6 +1098,9 @@ if (!function_exists('get_posts')) {
         }
 
         $out = [];
+        $paged  = max(1, (int) ($args['paged'] ?? 1));
+        $offset = ($paged - 1) * max(0, $limit);
+        $vistos = 0;
         foreach ($posts as $id => $p) {
             if (!in_array($p->post_type ?? '', $types, true)) { continue; }
             $estado = $p->post_status ?? 'publish';
@@ -1107,6 +1110,7 @@ if (!function_exists('get_posts')) {
                 if (in_array($estado, ['trash', 'auto-draft', 'inherit'], true)) { continue; }
             } elseif (!in_array($estado, $status, true)) { continue; }
             if (!_wp_stub_meta_matches((int) $id, $mq)) { continue; }
+            if ($vistos++ < $offset) { continue; }
             $out[] = ($fields === 'ids') ? (int) $id : $p;
             if ($limit > 0 && count($out) >= $limit) { break; }
         }

@@ -1,3 +1,10 @@
+## [2.5.25] — 2026-11-27
+
+### Corregido
+
+- **La copia se escribe por lotes, sin retener todas las filas (#44).** Cada CSV va a un fichero
+  temporal y el ZIP lo lee del disco al cerrarse; ya no hay `$all_rows` con decenas de miles de socios.
+
 ## [2.5.24] — 2026-11-27
 
 ### Corregido
