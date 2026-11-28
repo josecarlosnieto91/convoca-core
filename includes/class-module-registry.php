@@ -80,8 +80,8 @@ class Module_Registry {
 			)
 		);
 
-		self::$modules[ $slug ] = $definition;
-
+		// Validate before publishing it in the map: an incompatible module must not
+		// look active (core#68).
 		// Validate core compatibility.
 		if ( ! self::is_core_compatible( $definition['core_min'] ) ) {
 			self::log_incompatible( $slug, 'core_min', $definition['core_min'] );
@@ -105,6 +105,8 @@ class Module_Registry {
 				}
 			}
 		}
+
+		self::$modules[ $slug ] = $definition;
 
 		// Bootstrap the module.
 		if ( is_callable( $definition['bootstrap'] ) ) {

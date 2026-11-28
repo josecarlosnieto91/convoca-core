@@ -108,6 +108,8 @@ class RegistroModulosTest extends TestCase
         ));
 
         $this->assertFalse($arrancado, 'un módulo incompatible no se arranca');
+        $this->assertFalse(Module_Registry::is_active('futuro'), 'ni figura como activo');
+        $this->assertArrayNotHasKey('futuro', Module_Registry::get_modules(), 'ni entra en el mapa');
         $this->assertNotEmpty($GLOBALS['_wp_hooks']['admin_notices'] ?? array(), 'y se avisa en el panel');
     }
 
