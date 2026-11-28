@@ -68,6 +68,35 @@ final class WebhookSeguridadTest extends TestCase {
 	}
 
 	/**
+	 * El catálogo incluye el rechazo de horas: se puede suscribir un webhook a ese evento.
+	 */
+	public function test_el_catalogo_incluye_horas_rechazadas(): void {
+		$this->assertArrayHasKey( 'volunteer.hours_rejected', Webhook_Manager::events() );
+	}
+
+	/**
+	 * «Probar» devuelve lo que pasó de verdad con la URL, no un sí de cortesía.
+	 */
+	public function test_probar_devuelve_el_resultado_real(): void {
+		$this->webhooks(
+			array(
+				array(
+					'id'     => 'wh-1',
+					'url'    => 'https://destino.example.test/hook',
+					'active' => true,
+					'events' => array( 'test.ping' ),
+				),
+			)
+		);
+
+		$GLOBALS['_wp_stores']['http_response'] = array( 'response' => array( 'code' => 500 ) );
+		$this->assertFalse( Webhook_Manager::test_webhook( 'wh-1' ), 'un 500 no es un envío correcto' );
+
+		$GLOBALS['_wp_stores']['http_response'] = array( 'response' => array( 'code' => 200 ) );
+		$this->assertTrue( Webhook_Manager::test_webhook( 'wh-1' ), 'un 200 sí' );
+	}
+
+	/**
 	 * Configura webhooks.
 	 *
 	 * @param array $webhooks Lista.

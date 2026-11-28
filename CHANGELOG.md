@@ -1,3 +1,12 @@
+## [2.5.20] — 2026-11-27
+
+### Corregido
+
+- **El rechazo de horas entra en el catálogo de webhooks (#50).** `volunteer.hours_rejected` ya se puede
+  elegir al suscribir un webhook.
+- **«Probar» devuelve el resultado real (#50).** `test_webhook()` devuelve lo que diga la entrega, no `true`
+  de cortesía.
+
 ## [2.5.19] — 2026-11-27
 
 ### Seguridad
