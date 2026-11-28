@@ -374,11 +374,7 @@ class Admin_Backup {
 
 		$zip->close();
 
-		if ( ! file_exists( $tmp_file ) ) {
-			return esc_html__( 'Error fatal: ZIP no generado.', 'convoca-core' );
-		}
-
-		return '';
+		return file_exists( $tmp_file ) ? '' : esc_html__( 'Error fatal: ZIP no generado.', 'convoca-core' );
 	}
 
 	/* ── Import Preview ── */
