@@ -621,7 +621,8 @@ class Admin_Backup {
 	private function importar_entidades( \ZipArchive $zip, array $seleccion, array &$creados ): int {
 		$total = 0;
 
-		$order = array( 'settings', 'proyectos', 'actividades', 'miembros', 'inscripciones', 'turnos' );
+		// Los ajustes van al final: si una entidad falla, no se han tocado (core#41).
+		$order = array( 'proyectos', 'actividades', 'miembros', 'inscripciones', 'turnos', 'settings' );
 
 		foreach ( $order as $entity ) {
 			if ( ! in_array( $entity, $seleccion, true ) ) {
@@ -792,22 +793,49 @@ class Admin_Backup {
 
 		$allowed = array( 'convoca_gateway_settings', 'convoca_members_settings', 'convoca_members_plans', 'convoca_enroll_settings', 'convoca_shifts_hora_apertura', 'convoca_shifts_hora_cierre', 'convoca_shifts_calendar_page_url' );
 
+		$previos = array();
 		foreach ( $allowed as $key ) {
-			if ( ! isset( $data[ $key ] ) ) {
-				continue;
-			}
+			$previos[ $key ] = get_option( $key );
+		}
 
-			// Copia antes de sobrescribir, con retención (issue #9): antes se guardaba una opción
-			// nueva con la fecha en el nombre y no se borraba ninguna.
-			$current = get_option( $key );
-			if ( $current ) {
-				\Convoca\Core\Backups::anadir( $key, $current );
-			}
+		try {
+			foreach ( $allowed as $key ) {
+				if ( ! isset( $data[ $key ] ) ) {
+					continue;
+				}
 
-			if ( is_array( $data[ $key ] ) ) {
-				update_option( $key, $data[ $key ] );
+				// Copia antes de sobrescribir, con retención (issue #9): antes se guardaba una opción
+				// nueva con la fecha en el nombre y no se borraba ninguna.
+				$current = get_option( $key );
+				if ( $current ) {
+					\Convoca\Core\Backups::anadir( $key, $current );
+				}
+
+				if ( is_array( $data[ $key ] ) ) {
+					update_option( $key, $data[ $key ] );
+				} else {
+					update_option( $key, sanitize_text_field( $data[ $key ] ) );
+				}
+			}
+		} catch ( \Throwable $e ) {
+			// Si algo se rompe a mitad, los ajustes vuelven a como estaban (core#41).
+			$this->restaurar_ajustes( $previos );
+			throw $e;
+		}
+	}
+
+	/**
+	 * Devuelve cada opción a su valor previo.
+	 *
+	 * @param array<string,mixed> $previos Valor anterior por clave.
+	 * @return void
+	 */
+	private function restaurar_ajustes( array $previos ): void {
+		foreach ( $previos as $key => $valor ) {
+			if ( false === $valor ) {
+				delete_option( $key );
 			} else {
-				update_option( $key, sanitize_text_field( $data[ $key ] ) );
+				update_option( $key, $valor );
 			}
 		}
 	}

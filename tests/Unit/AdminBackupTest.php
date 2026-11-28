@@ -637,6 +637,39 @@ final class AdminBackupTest extends TestCase {
 	}
 
 	/**
+	 * Si una entidad falla, los ajustes no se han aplicado: van al final (core#41).
+	 */
+	public function test_un_fallo_de_entidad_no_toca_los_ajustes(): void {
+		$ruta = ( getenv( 'TMPDIR' ) ?: sys_get_temp_dir() ) . '/convoca-importar41-' . getmypid() . '.zip';
+		$zip  = new \ZipArchive();
+		$zip->open( $ruta, \ZipArchive::CREATE | \ZipArchive::OVERWRITE );
+		$zip->addFromString( 'miembros.csv', "ID,Nombre\n1,Ada\n" );
+		$zip->addFromString( 'settings.json', (string) wp_json_encode( array( 'convoca_members_settings' => array( 'cuota' => 99 ) ) ) );
+		$zip->close();
+
+		$zip = new \ZipArchive();
+		$zip->open( $ruta );
+
+		$GLOBALS['_wp_stores']['options']['convoca_members_settings'] = array( 'cuota' => 12 );
+		$GLOBALS['_wp_insert_devuelve_cero'] = true;
+		$creados = array();
+		$reflejo = new \ReflectionMethod( Admin_Backup::class, 'importar_entidades' );
+
+		try {
+			$reflejo->invokeArgs( $this->backup, array( $zip, array( 'miembros', 'settings' ), &$creados ) );
+			$this->fail( 'debía lanzar' );
+		} catch ( \RuntimeException $e ) {
+			$this->assertStringContainsString( 'Error al crear el post importado', $e->getMessage() );
+		} finally {
+			unset( $GLOBALS['_wp_insert_devuelve_cero'] );
+		}
+
+		$this->assertSame( array( 'cuota' => 12 ), $GLOBALS['_wp_stores']['options']['convoca_members_settings'], 'sin cambios' );
+		$zip->close();
+		@unlink( $ruta );
+	}
+
+	/**
 	 * Sólo se importa lo seleccionado, y un `wp_insert_post` que devuelve 0 es un error que corta (no un silencio).
 	 */
 	public function test_importar_solo_lo_seleccionado_y_el_error(): void {

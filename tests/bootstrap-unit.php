@@ -954,6 +954,9 @@ if (!function_exists('wp_insert_post')) {
         if (!empty($GLOBALS['_wp_insert_devuelve_error'])) {
             return new \WP_Error('insert_fallido', (string) $GLOBALS['_wp_insert_devuelve_error']);
         }
+        if (!empty($GLOBALS['_wp_insert_devuelve_cero'])) {
+            return 0;
+        }
         // Store de posts para los tests que necesitan recorrer un ciclo real
         // (crear → consultar → actualizar). El primer ID sigue siendo 99, así que los
         // tests que solo comprobaban "se creó algo" no cambian.
