@@ -361,13 +361,16 @@ class Admin_Backup {
 			}
 		);
 
-		// Settings (Whitelist based).
-		$settings        = array();
-		$allowed_options = array( 'convoca_gateway_settings', 'convoca_members_settings', 'convoca_members_plans', 'convoca_enroll_settings', 'convoca_shifts_hora_apertura', 'convoca_shifts_hora_cierre', 'convoca_shifts_calendar_page_url' );
-		foreach ( $allowed_options as $k ) {
-			$settings[ $k ] = get_option( $k );
+		// Settings (Whitelist based). Copia de datos y copia de configuración son permisos
+		// distintos: sin `manage_options` el ZIP sale sin credenciales ni ajustes (core#43).
+		if ( current_user_can( 'manage_options' ) ) {
+			$settings        = array();
+			$allowed_options = array( 'convoca_gateway_settings', 'convoca_members_settings', 'convoca_members_plans', 'convoca_enroll_settings', 'convoca_shifts_hora_apertura', 'convoca_shifts_hora_cierre', 'convoca_shifts_calendar_page_url' );
+			foreach ( $allowed_options as $k ) {
+				$settings[ $k ] = get_option( $k );
+			}
+			$zip->addFromString( 'settings.json', (string) wp_json_encode( $settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) );
 		}
-		$zip->addFromString( 'settings.json', (string) wp_json_encode( $settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) );
 
 		$zip->close();
 
@@ -492,7 +495,7 @@ class Admin_Backup {
 				);
 			}
 		}
-		if ( $zip->locateName( 'settings.json' ) !== false ) {
+		if ( current_user_can( 'manage_options' ) && $zip->locateName( 'settings.json' ) !== false ) {
 			$entities['settings'] = array(
 				'label' => __( 'Configuración del Sistema', 'convoca-core' ),
 				'count' => 1,
@@ -519,6 +522,7 @@ class Admin_Backup {
 		$selected = isset( $_POST['entities'] ) ? (array) wp_unslash( $_POST['entities'] ) : array();
 
 		$cap_checks = array(
+			'settings'      => 'manage_options',
 			'proyectos'     => 'manage_inscripciones',
 			'actividades'   => 'manage_inscripciones',
 			'miembros'      => 'gestionar_miembros',
