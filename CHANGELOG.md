@@ -1,3 +1,10 @@
+## [2.5.28] — 2026-11-27
+
+### Corregido
+
+- **La cola de webhooks no entrega dos veces (#48).** Cerrojo atómico de ejecución, reclamo por fila con
+  `UPDATE ... WHERE status = 'pending'`, solo se leen pendientes y las `processing` viejas vuelven a la cola.
+
 ## [2.5.27] — 2026-11-27
 
 ### Corregido

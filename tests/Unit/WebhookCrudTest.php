@@ -283,7 +283,7 @@ final class WebhookCrudTest extends TestCase {
 	 * Con el cerrojo de la cola tomado no se procesa nada (dos crons a la vez entregarían dos veces).
 	 */
 	public function test_la_cola_respeta_su_cerrojo(): void {
-		$GLOBALS['_wp_stores']['transients']['convoca_webhook_retry_lock'] = true;
+		$GLOBALS['_wp_stores']['locks']['convoca_lock_convoca_webhook_retry'] = time() + 600;
 		$GLOBALS['_wp_stores']['results'] = array(
 			(object) array(
 				'id'             => 1,
@@ -302,12 +302,23 @@ final class WebhookCrudTest extends TestCase {
 	}
 
 	/**
+	 * La cola solo toma pendientes vencidas y recupera las «processing» viejas.
+	 */
+	public function test_la_cola_solo_toma_pendientes_y_recicla_las_viejas(): void {
+		Webhook_Manager::process_retries();
+
+		$consultas = implode( "\n", array_map( 'strval', (array) $GLOBALS['_wp_stores']['queries'] ) );
+		$this->assertStringContainsString( "status = 'processing' AND scheduled_at <", $consultas, 'recicla las bloqueadas viejas' );
+		$this->assertStringContainsString( "status = 'pending'", $consultas, 'y solo procesa pendientes' );
+	}
+
+	/**
 	 * Sin nada vencido no se toca la red ni la tabla.
 	 */
 	public function test_la_cola_vacia(): void {
 		Webhook_Manager::process_retries();
 
 		$this->assertSame( array(), $GLOBALS['_wp_http_posts'] );
-		$this->assertArrayNotHasKey( 'convoca_webhook_retry_lock', $GLOBALS['_wp_stores']['transients'], 'el cerrojo se suelta' );
+		$this->assertArrayNotHasKey( 'convoca_lock_convoca_webhook_retry', $GLOBALS['_wp_stores']['locks'], 'el cerrojo se suelta' );
 	}
 }
