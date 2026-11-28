@@ -83,6 +83,7 @@ wp_clear_scheduled_hook( 'convoca_intentos_purgar' );
 wp_clear_scheduled_hook( 'convoca_log_cleanup' );
 wp_clear_scheduled_hook( 'convoca_log_purge' );
 wp_clear_scheduled_hook( 'convoca_webhook_retry' );
+wp_clear_scheduled_hook( 'convoca_webhook_dispatch' );
 // Faltaba: se programa en convoca-core.php y seguía disparándose tras desinstalar.
 wp_clear_scheduled_hook( 'convoca_security_digest' );
 // Y estos dos, del módulo de licencias/accesos: los encontró la prueba de contrato (13/10/2026).

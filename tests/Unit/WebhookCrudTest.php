@@ -37,6 +37,7 @@ final class WebhookCrudTest extends TestCase {
 	protected function setUp(): void {
 		$this->previo           = $GLOBALS['_wp_stores'] ?? array();
 		$GLOBALS['_wp_filters'] = array();
+		add_filter( 'convoca_webhook_async', '__return_false' );
 		$GLOBALS['_wp_http_posts'] = array();
 		$GLOBALS['_wp_stores']  = array(
 			'options'       => array(),
@@ -62,6 +63,7 @@ final class WebhookCrudTest extends TestCase {
 	 */
 	protected function tearDown(): void {
 		$GLOBALS['_wp_stores'] = $this->previo;
+		remove_all_filters( 'convoca_webhook_async' );
 	}
 
 	/**

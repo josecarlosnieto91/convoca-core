@@ -1,3 +1,11 @@
+## [2.5.31] — 2026-11-27
+
+### Corregido
+
+- **Los webhooks se entregan fuera de la petición (#49).** `dispatch()` encola un evento único de WP-Cron;
+  un destino caído ya no añade 5 s al alta, al check-in ni al retorno del pago. El filtro
+  `convoca_webhook_async` permite volver al modo síncrono.
+
 ## [2.5.30] — 2026-11-27
 
 ### Corregido
