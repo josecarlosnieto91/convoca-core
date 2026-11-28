@@ -72,9 +72,10 @@ class Common_Upgrade_Manager extends Upgrade_Manager {
 	 * `$wpdb->prefix . 'convoca_*'`—, pero una tabla duplicada con datos invita a que alguien lea la vieja
 	 * (issue #12), y en un sitio con otro prefijo el problema se multiplica.
 	 *
-	 * La limpieza es CONSERVADORA a propósito: solo borra la tabla vieja cuando puede demostrar que la
-	 * nueva tiene al menos tantas filas. Si la vieja tiene más, no se toca y se avisa en el log para que lo
-	 * mire una persona: no se destruye nada que no se pueda cuadrar.
+	 * La limpieza es CONSERVADORA a propósito: **no borra nada por defecto**. Un conteo igual no demuestra
+	 * que el contenido sea el mismo (core#61), así que solo se borra cuando una persona ha marcado la
+	 * migración como verificada (`convoca_migracion_prefijo_verificada`) y, además, la nueva tiene al
+	 * menos tantas filas. Si no, se deja y se avisa en el log.
 	 *
 	 * @return array<string, mixed> Resumen: [ tabla_vieja => estado ].
 	 */
@@ -106,6 +107,16 @@ class Common_Upgrade_Manager extends Upgrade_Manager {
 				$resumen[ $vieja ] = sprintf( 'se deja: tiene %d filas y la nueva %d', $filas_viejas, $filas_nuevas );
 				\Convoca\Core\Logger::warning(
 					sprintf( 'Tabla del prefijo viejo con más filas que su equivalente: %s (%d) frente a %s (%d). No se borra.', $vieja, $filas_viejas, $nueva, $filas_nuevas ),
+					'Common/Upgrade'
+				);
+				continue;
+			}
+
+			// Conteo igual o menor no demuestra contenido igual: sin marca humana, se deja.
+			if ( ! get_option( 'convoca_migracion_prefijo_verificada', false ) ) {
+				$resumen[ $vieja ] = sprintf( 'se deja: migración no verificada (%d filas frente a %d)', $filas_viejas, $filas_nuevas );
+				\Convoca\Core\Logger::warning(
+					sprintf( 'Tabla del prefijo viejo sin verificación: %s (%d) frente a %s (%d). No se borra; marca convoca_migracion_prefijo_verificada cuando hayas comprobado el contenido.', $vieja, $filas_viejas, $nueva, $filas_nuevas ),
 					'Common/Upgrade'
 				);
 				continue;

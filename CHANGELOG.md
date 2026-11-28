@@ -1,3 +1,11 @@
+## [2.5.24] — 2026-11-27
+
+### Corregido
+
+- **La limpieza del prefijo viejo no borra por conteo (#61).** Sin la marca humana
+  `convoca_migracion_prefijo_verificada`, la tabla vieja se deja y se avisa; un número igual de filas
+  no demuestra que el contenido sea el mismo.
+
 ## [2.5.23] — 2026-11-27
 
 ### Seguridad

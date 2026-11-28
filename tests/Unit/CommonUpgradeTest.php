@@ -93,7 +93,13 @@ final class CommonUpgradeTest extends TestCase {
 
 		$resumen = Common_Upgrade_Manager::limpiar_tablas_del_prefijo_viejo();
 
-		$this->assertStringContainsString( 'borrada', $resumen['wp_conv_media_templates'], 'cuadra: 8 frente a 8' );
+		$this->assertStringContainsString( 'no verificada', $resumen['wp_conv_media_templates'], '8 frente a 8 no basta' );
+		$this->assertFalse( $this->se_borro( 'wp_conv_media_templates' ), 'sin marca humana no se borra' );
+
+		// Con la migración verificada a mano, sí se retira la que cuadra.
+		$GLOBALS['_wp_stores']['options']['convoca_migracion_prefijo_verificada'] = true;
+		$resumen = Common_Upgrade_Manager::limpiar_tablas_del_prefijo_viejo();
+		$this->assertStringContainsString( 'borrada', $resumen['wp_conv_media_templates'], 'cuadra y está verificada' );
 		$this->assertTrue( $this->se_borro( 'wp_conv_media_templates' ) );
 
 		$this->assertStringContainsString( 'se deja', $resumen['wp_conv_logs'], '40 frente a 12' );
