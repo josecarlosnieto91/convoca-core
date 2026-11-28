@@ -297,6 +297,24 @@ final class NotificationsTest extends TestCase {
 	}
 
 	/**
+	 * Los dos nombres del alta acaban en la campana: singular y plural.
+	 */
+	public function test_las_dos_puertas_del_alta_avisan(): void {
+		$this->usuario( 1 );
+		$GLOBALS['_test_user_id'] = 1;
+		Notifications::init();
+
+		do_action( 'convoca_member_created', 77, array( 'nombre' => 'Ada Lovelace' ) );
+		do_action( 'convoca_members_created', 88, array( 'nombre' => 'Grace Hopper' ) );
+
+		$avisos = Notifications::get();
+		$this->assertCount( 2, $avisos, 'una por cada puerta de entrada' );
+		$titulos = implode( ' | ', array_column( $avisos, 'title' ) );
+		$this->assertStringContainsString( 'Ada Lovelace', $titulos, 'la del singular' );
+		$this->assertStringContainsString( 'Grace Hopper', $titulos, 'la del plural' );
+	}
+
+	/**
 	 * Sin sesión en el ajax se sale antes de tocar nada.
 	 */
 	public function test_sin_sesion_el_ajax_no_toca_nada(): void {

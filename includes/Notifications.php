@@ -49,7 +49,10 @@ class Notifications {
 		add_action( 'admin_head', array( __CLASS__, 'enqueue_styles' ) );
 
 		// Event hooks.
+		// Dos productores, un mismo aviso: el formulario público emite el singular y
+		// `Process_Member` el plural (core#59). Se escuchan los dos.
 		add_action( 'convoca_member_created', array( __CLASS__, 'on_member_created' ), 10, 2 );
+		add_action( 'convoca_members_created', array( __CLASS__, 'on_member_created' ), 10, 2 );
 		add_action( 'convoca_gateway_payment_failed', array( __CLASS__, 'on_payment_failed' ), 10, 2 );
 		add_action( 'convoca_members_hours_submitted', array( __CLASS__, 'on_hours_submitted' ), 10, 2 );
 		add_action( 'convoca_inscripcion_pendiente_pago', array( __CLASS__, 'on_inscripcion_pendiente' ), 10, 2 );

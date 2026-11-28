@@ -1,3 +1,10 @@
+## [2.5.18] — 2026-11-27
+
+### Corregido
+
+- **Las dos puertas del alta generan aviso (#59).** `Notifications` escucha `convoca_member_created` y
+  `convoca_members_created`: el formulario y `Process_Member` dejan la misma notificación.
+
 ## [2.5.17] — 2026-11-27
 
 ### Corregido
