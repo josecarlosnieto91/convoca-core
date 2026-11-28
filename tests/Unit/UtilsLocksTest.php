@@ -62,7 +62,7 @@ final class UtilsLocksTest extends TestCase {
 	 * vencimiento (si se lo cambiara, el cerrojo no caducaría nunca y el proceso que lo tiene perdería la propiedad).
 	 */
 	public function test_un_cerrojo_vivo_no_se_cede(): void {
-		$this->assertTrue( Utils::acquire_lock( 'informe' ) );
+		$this->assertIsString( Utils::acquire_lock( 'informe' ) );
 		$vencimiento = $GLOBALS['_wp_stores']['locks']['convoca_lock_informe'];
 		$this->assertGreaterThan( time(), (int) $vencimiento );
 
@@ -76,7 +76,7 @@ final class UtilsLocksTest extends TestCase {
 	public function test_un_cerrojo_caducado_se_puede_tomar(): void {
 		$GLOBALS['_wp_stores']['locks']['convoca_lock_informe'] = time() - 30;
 
-		$this->assertTrue( Utils::acquire_lock( 'informe', 120 ) );
+		$this->assertIsString( Utils::acquire_lock( 'informe', 120 ) );
 		$this->assertGreaterThan( time() + 100, (int) $GLOBALS['_wp_stores']['locks']['convoca_lock_informe'] );
 	}
 
@@ -88,7 +88,21 @@ final class UtilsLocksTest extends TestCase {
 		$this->assertTrue( Utils::release_lock( 'envio' ) );
 
 		$this->assertArrayNotHasKey( 'convoca_lock_envio', $GLOBALS['_wp_stores']['locks'] );
-		$this->assertTrue( Utils::acquire_lock( 'envio' ) );
+		$this->assertIsString( Utils::acquire_lock( 'envio' ) );
+	}
+
+	/**
+	 * Un proceso caducado no puede liberar el cerrojo que ya tiene su sucesor (core#46).
+	 */
+	public function test_un_proceso_caducado_no_libera_el_cerrojo_ajeno(): void {
+		$token_a = Utils::acquire_lock( 'importacion', 1 );
+		$this->assertIsString( $token_a );
+
+		// B toma el cerrojo: el propietario de la fila cambia.
+		$GLOBALS['_wp_stores']['lock_owners']['convoca_lock_importacion'] = 'token-b';
+
+		$this->assertTrue( Utils::release_lock( 'importacion', $token_a ) );
+		$this->assertArrayHasKey( 'convoca_lock_importacion', $GLOBALS['_wp_stores']['locks'], 'B conserva el cerrojo' );
 	}
 
 	/**

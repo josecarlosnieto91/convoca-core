@@ -113,6 +113,7 @@ class Installer {
             lock_key varchar(100) NOT NULL,
             expires int(11) NOT NULL,
             created_at datetime NOT NULL,
+            owner varchar(64) NOT NULL DEFAULT '',
             PRIMARY KEY  (lock_key),
             KEY expires (expires)
         ) $charset_collate;";
