@@ -159,6 +159,24 @@ final class SigiloAceptacionTest extends TestCase {
 	}
 
 	/**
+	 * Sin permiso de escritura no hay sello: el PDF no puede darse por firmado.
+	 */
+	public function test_sin_permiso_de_escritura_no_hay_sello(): void {
+		$pdf = $this->dir . '/sin-permiso.pdf';
+		file_put_contents( $pdf, '%PDF-1.4' );
+		chmod( $this->dir, 0555 );
+
+		try {
+			$devuelto = $this->firma->add_acceptance_stamp( $pdf, 'Ada Lovelace', '10.0.0.1', 1700000000 );
+		} finally {
+			chmod( $this->dir, 0755 );
+		}
+
+		$this->assertFalse( $devuelto, 'no se devuelve la ruta de un PDF que no lleva sello' );
+		$this->assertFileDoesNotExist( $pdf . '.sig' );
+	}
+
+	/**
 	 * El directorio de documentos queda cerrado al web: motor PHP apagado y sin listado.
 	 */
 	public function test_la_proteccion_del_directorio(): void {

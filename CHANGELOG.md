@@ -1,3 +1,10 @@
+## [2.5.17] — 2026-11-27
+
+### Corregido
+
+- **Sin sello de firma no se devuelve el PDF como firmado (#66).** Si el directorio no permite
+  escribir el `.sig`, `add_acceptance_stamp()` registra el fallo y devuelve `false`.
+
 ## [2.5.16] — 2026-11-27
 
 ### Corregido

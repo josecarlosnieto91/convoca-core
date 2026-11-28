@@ -249,7 +249,13 @@ class Signature {
 
 		// We could append it as PDF metadata or just create a .sig file.
 		$sig_path = $pdf_path . '.sig';
-		file_put_contents( $sig_path, $stamp_text );
+		if ( ! wp_is_writable( dirname( $sig_path ) ) || false === file_put_contents( $sig_path, $stamp_text ) ) {
+			\Convoca\Core\Logger::error(
+				sprintf( 'No se pudo escribir el sello de firma junto a %s.', basename( (string) $pdf_path ) ),
+				'Common/Signature'
+			);
+			return false;
+		}
 
 		return $pdf_path;
 	}

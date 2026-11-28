@@ -2139,6 +2139,7 @@ if (!function_exists('wp_upload_dir')) {
 }
 if (!function_exists('wp_mkdir_p')) {
     function wp_mkdir_p($dir) { return is_dir($dir) || @mkdir($dir, 0777, true); }
+    function wp_is_writable($path) { return is_writable($path); }
 }
 if (!function_exists('sanitize_file_name')) {
     function sanitize_file_name($name) { return trim(preg_replace('/[^A-Za-z0-9._-]+/', '-', (string) $name), '-'); }
